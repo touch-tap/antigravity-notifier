@@ -123,3 +123,13 @@ two share the server and the phone apps and nothing else. Server:
 codex-notifier is source-available under the [PolyForm Shield License 1.0.0](LICENSE.md). You can
 use it, change it and share it, including at work, as long as you keep the copyright notice and
 don't use it to build a product that competes with Codex Notifier.
+
+## npm
+
+`npm/codex-notifier` is `@touchtap/codex-notifier` (command `codex-notifier`), which pulls in the
+binary for the platform from `@touchtap/codex-notifier-<os>-<cpu>`. `npm/codexnotifier` is the
+unscoped `codexnotifier` alias: it depends on the real package and only forwards to it, for people
+who type the name that way. `scripts/npm-packages.sh <version> <dist>` builds all eight from a
+release's archives (`codex-notifier-<target>.tar.gz`/`.zip`) and `scripts/npm-publish.sh` publishes
+them in order. Publishing under `@touchtap` needs an owner of the npm org. There is no release
+workflow yet: port ccn's `.github/workflows/release.yml` and `scripts/release.sh` with the names changed.

@@ -1,0 +1,11 @@
+{
+  "name": "codexnotifier",
+  "version": "0.1.0",
+  "description": "Alias for @touchtap/codex-notifier: phone notifications and approvals for OpenAI Codex",
+  "homepage": "https://codexnotifier.com/cli",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "bin": { "codexnotifier": "bin/codexnotifier.js" },
+  "files": ["bin", "LICENSE.md"],
+  "engines": { "node": ">=16" },
+  "dependencies": { "@touchtap/codex-notifier": "0.1.0" }
+}
