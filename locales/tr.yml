@@ -316,6 +316,13 @@ payload:
   finished_prompt: "Bitti: %{prompt}"
   question_header: "Soru"
   search: "Arama: %{pattern}"
+  # What the phone shows for an apply_patch call: no files named, one, or the first and how
+  # many more (%{count} is 1 or more)
+  apply_patch: "Yama uygula"
+  edit_file: "%{file} dosyasını düzenle"
+  edit_files: "%{file} ve %{count} dosya daha düzenle"
+  # What the phone shows for an update_plan call
+  update_plan: "Planı güncelle"
 
 net:
   unreachable: "Codex Notifier sunucusuna ulaşılamadı. İnternet bağlantınızı kontrol edip tekrar deneyin."

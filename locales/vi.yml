@@ -316,6 +316,13 @@ payload:
   finished_prompt: "Đã xong: %{prompt}"
   question_header: "Câu hỏi"
   search: "Tìm kiếm: %{pattern}"
+  # What the phone shows for an apply_patch call: no files named, one, or the first and how
+  # many more (%{count} is 1 or more)
+  apply_patch: "Áp dụng bản vá"
+  edit_file: "Sửa %{file}"
+  edit_files: "Sửa %{file} và %{count} tệp khác"
+  # What the phone shows for an update_plan call
+  update_plan: "Cập nhật kế hoạch"
 
 net:
   unreachable: "Không kết nối được tới máy chủ Codex Notifier. Hãy kiểm tra kết nối internet rồi thử lại."

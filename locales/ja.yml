@@ -315,6 +315,13 @@ payload:
   finished_prompt: "完了: %{prompt}"
   question_header: "質問"
   search: "検索: %{pattern}"
+  # What the phone shows for an apply_patch call: no files named, one, or the first and how
+  # many more (%{count} is 1 or more)
+  apply_patch: "パッチを適用"
+  edit_file: "%{file} を編集"
+  edit_files: "%{file} ほか %{count} 件を編集"
+  # What the phone shows for an update_plan call
+  update_plan: "プランを更新"
 
 net:
   unreachable: "Codex Notifier のサーバーに接続できませんでした。インターネット接続を確認して、もう一度お試しください。"

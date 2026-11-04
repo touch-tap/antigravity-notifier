@@ -315,6 +315,13 @@ payload:
   finished_prompt: "已完成：%{prompt}"
   question_header: "问题"
   search: "搜索：%{pattern}"
+  # What the phone shows for an apply_patch call: no files named, one, or the first and how
+  # many more (%{count} is 1 or more)
+  apply_patch: "应用补丁"
+  edit_file: "编辑 %{file}"
+  edit_files: "编辑 %{file} 及另外 %{count} 个文件"
+  # What the phone shows for an update_plan call
+  update_plan: "更新计划"
 
 net:
   unreachable: "无法连接 Codex Notifier 服务器。请检查网络连接后重试。"

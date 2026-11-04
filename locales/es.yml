@@ -315,6 +315,13 @@ payload:
   finished_prompt: "Terminado: %{prompt}"
   question_header: "Pregunta"
   search: "Búsqueda: %{pattern}"
+  # What the phone shows for an apply_patch call: no files named, one, or the first and how
+  # many more (%{count} is 1 or more)
+  apply_patch: "Aplicar un parche"
+  edit_file: "Editar %{file}"
+  edit_files: "Editar %{file} y %{count} más"
+  # What the phone shows for an update_plan call
+  update_plan: "Actualizar el plan"
 
 net:
   unreachable: "No se pudo conectar con el servidor de Codex Notifier. Revisa tu conexión a internet y vuelve a intentarlo."

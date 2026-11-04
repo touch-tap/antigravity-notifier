@@ -118,14 +118,14 @@ pub fn tool_summary(tool_name: &str, input: &Value) -> Option<String> {
         "apply_patch" => {
             let files = patch_files(input);
             match files.len() {
-                0 => Some("Apply a patch".to_string()),
-                1 => Some(format!("Edit {}", files[0])),
-                n => Some(format!("Edit {} and {} more", files[0], n - 1)),
+                0 => Some(t!("payload.apply_patch").into_owned()),
+                1 => Some(t!("payload.edit_file", file = files[0]).into_owned()),
+                n => Some(t!("payload.edit_files", file = files[0], count = n - 1).into_owned()),
             }
         }
         "web_search" => field("query").map(|q| t!("payload.search", pattern = q).into_owned()),
         "view_image" => field("path"),
-        "update_plan" => Some("Update the plan".to_string()),
+        "update_plan" => Some(t!("payload.update_plan").into_owned()),
         name if is_question_tool(name) => first_question(input),
         _ => {
             // First string field, else a compact JSON rendering
