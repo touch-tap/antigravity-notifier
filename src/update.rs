@@ -11,8 +11,10 @@
 //! for the hook to return as its output. `codex-notifier config set auto_update off` or
 //! `CODEX_NOTIFIER_NO_AUTO_UPDATE=1` turns all of this off.
 //!
-//! Where the latest version comes from: `GET {server}/api/cli/latest`, falling back to the GitHub
-//! releases API. The assets are the ones .github/workflows/release.yml publishes under the
+//! Where the latest version comes from: `GET {server}/api/cli/latest` when its reply lists
+//! codex-notifier's archives (today it only knows ccn's, so it never does), falling back to the
+//! GitHub releases API. The assets are the ones a release workflow (ccn's release.yml, not yet
+//! carried over) publishes under the
 //! release's `downloadBase`: `codex-notifier-<triple>.tar.gz` (Unix) or `codex-notifier-<triple>.zip` (Windows), plus
 //! `SHA256SUMS`. That base is pinned to this repository's GitHub releases over https whatever the
 //! server says (`CODEX_NOTIFIER_DOWNLOAD_BASE` overrides it for tests), because SHA256SUMS comes from the same
@@ -42,6 +44,8 @@ const CHECK_EVERY: i64 = 24 * 60 * 60;
 const ANNOUNCE_EVERY: i64 = 7 * 24 * 60 * 60;
 /// `codex-notifier upgrade --check` exits with this when a newer release exists.
 const EXIT_UPDATE_AVAILABLE: i32 = 10;
+// PLACEHOLDER: the touch-tap/codex-notifier repository doesn't exist yet (Nov 2026). Until it
+// does and has a release, `codex-notifier upgrade` finds nothing and says so.
 const GITHUB_LATEST: &str = "https://api.github.com/repos/touch-tap/codex-notifier/releases/latest";
 const RELEASES_BASE: &str = "https://github.com/touch-tap/codex-notifier/releases/download";
 /// Release archives are about 2 MB; anything near this is not one of ours.
@@ -51,12 +55,17 @@ const MAX_DOWNLOAD: u64 = 64 * 1024 * 1024;
 const STALE_LOCK: Duration = Duration::from_secs(10 * 60);
 /// How long the new binary's `--version` may take before it counts as not running.
 const PROBE_TIMEOUT: Duration = Duration::from_secs(10);
-/// The ed25519 public keys a release's `SHA256SUMS.sig` must verify against. The private key is
-/// in the release Mac's keychain (scripts/release.sh signs with it; RELEASING.md, "The update
-/// signing key"). Pinning the download to GitHub stops anyone with the server choosing the files;
-/// the signature also stops anyone who could change the release's files on GitHub. To rotate,
-/// ship a release that lists both keys, then sign with the new one.
-const RELEASE_KEYS: &[&str] = &["9af037468a4b22787da3e45609bcacb9421648ef17e8694e815793e02317380a"];
+/// The ed25519 public keys a release's `SHA256SUMS.sig` must verify against. Pinning the
+/// download to GitHub stops anyone with the server choosing the files; the signature also stops
+/// anyone who could change the release's files on GitHub. To rotate, ship a release that lists
+/// both keys, then sign with the new one.
+///
+/// EMPTY ON PURPOSE: ccn's release key (9af03746…) was not carried over, since trusting it would
+/// let anything signed for ccn install as codex-notifier. Until Codex Notifier has its own key
+/// (`cargo run --example release-sign -- keygen`, private half in the release Mac's keychain),
+/// no release verifies, so a release build's `upgrade` refuses every download. Debug builds
+/// also trust `CODEX_NOTIFIER_UPDATE_PUBLIC_KEY`, which is how the tests sign their releases.
+const RELEASE_KEYS: &[&str] = &[];
 
 pub struct Mode {
     /// Only report whether a newer release exists
@@ -485,6 +494,9 @@ fn is_newer(candidate: &str, current: &str) -> bool {
     compare_versions(candidate, current) == Some(Ordering::Greater)
 }
 
+/// Every codex-notifier release archive starts with this.
+const ASSET_PREFIX: &str = "codex-notifier-";
+
 /// The release asset for an OS and processor, named as release.yml names them.
 fn asset_name(os: &str, arch: &str) -> Option<String> {
     if !matches!(arch, "x86_64" | "aarch64") {
@@ -665,10 +677,21 @@ fn latest_from_server(v: &Value) -> Result<Latest> {
             "update: ignoring the server's downloadBase {base:?}; using {download_base}"
         ));
     }
+    // One Worker serves Claude Code Notifier and Codex Notifier, and (Nov 2026) its
+    // /api/cli/latest only knows ccn's releases. A reply that doesn't list codex-notifier's
+    // archives is someone else's release, so GitHub is asked instead.
+    // TODO: drop this once the server answers per app (X-App or clientKind codex_cli).
+    let assets = asset_list(&v["assets"], |a| a.as_str());
+    if !assets
+        .as_ref()
+        .is_some_and(|names| names.iter().any(|n| n.starts_with(ASSET_PREFIX)))
+    {
+        bail!("the server's latest release is not codex-notifier's");
+    }
     Ok(Latest {
         version,
         download_base,
-        assets: asset_list(&v["assets"], |a| a.as_str()),
+        assets,
     })
 }
 
@@ -1072,12 +1095,14 @@ deadbeef  codex-notifier-x86_64-apple-darwin.tar.gz
         );
         assert_eq!(latest.assets.unwrap().len(), 2);
 
-        let bare = latest_from_server(&json!({ "version": "0.4.0" })).unwrap();
-        assert_eq!(
-            bare.download_base,
-            "https://github.com/touch-tap/codex-notifier/releases/download/v0.4.0"
-        );
-        assert!(bare.assets.is_none());
+        // ccn's release, or a reply that doesn't say whose it is, is not taken for ours
+        let ccn = json!({
+            "version": "0.4.1", "tag": "v0.4.1",
+            "downloadBase": "https://github.com/touch-tap/ccn/releases/download/v0.4.1",
+            "assets": ["ccn-aarch64-apple-darwin.tar.gz", "SHA256SUMS"]
+        });
+        assert!(latest_from_server(&ccn).is_err());
+        assert!(latest_from_server(&json!({ "version": "0.4.0" })).is_err());
 
         let github = json!({
             "tag_name": "v0.3.1",
@@ -1106,14 +1131,16 @@ deadbeef  codex-notifier-x86_64-apple-darwin.tar.gz
             "https://github.com/touch-tap/codex-notifier/releases/download/v0.4.0/../../../x",
         ] {
             let latest = latest_from_server(&json!({
-                "version": "0.4.0", "tag": "v0.4.0", "downloadBase": hostile
+                "version": "0.4.0", "tag": "v0.4.0", "downloadBase": hostile,
+                "assets": ["codex-notifier-aarch64-apple-darwin.tar.gz"]
             }))
             .unwrap();
             assert_eq!(latest.download_base, pinned, "{hostile} was not ignored");
         }
         // A trailing slash on the right base is still the right base
         let latest = latest_from_server(&json!({
-            "version": "0.4.0", "tag": "v0.4.0", "downloadBase": format!("{pinned}/")
+            "version": "0.4.0", "tag": "v0.4.0", "downloadBase": format!("{pinned}/"),
+            "assets": ["codex-notifier-aarch64-apple-darwin.tar.gz"]
         }))
         .unwrap();
         assert_eq!(latest.download_base, pinned);
