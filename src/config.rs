@@ -7,11 +7,11 @@ use std::fs;
 use std::io::Write;
 use std::path::{Path, PathBuf};
 
-pub const DEFAULT_SERVER_URL: &str = "https://api.claudecodenotifier.com";
-/// The server's first address, saved in the config of older installs. It is the same
-/// Worker and stays up, but *.workers.dev is blocked or unreliable in mainland China, so a saved copy
-/// of it is read as the default.
-pub const LEGACY_SERVER_URL: &str = "https://ccnotifier-api.touchtap.workers.dev";
+/// The Worker that serves both Claude Code Notifier and Codex Notifier, at its workers.dev address.
+/// ccn moved to api.claudecodenotifier.com (the same Worker, reachable from mainland China, where
+/// *.workers.dev is blocked); that name is Claude-branded, so Codex keeps the neutral address.
+/// TODO: a Codex-branded API host (e.g. api.codexnotifier.com) once codexnotifier.com has DNS.
+pub const DEFAULT_SERVER_URL: &str = "https://ccnotifier-api.touchtap.workers.dev";
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 pub const KEYRING_SERVICE: &str = "com.touchtap.codexnotifier";
 pub const KEYRING_USER: &str = "auth_token";
@@ -468,10 +468,10 @@ fn merge_changes(on_disk: &mut toml::Table, was: &toml::Table, now: &toml::Table
     }
 }
 
-/// The server to talk to for a saved `server_url`: empty or the legacy workers.dev address mean the
-/// default; anything else (a staging or local server) is kept.
+/// The server to talk to for a saved `server_url`: empty means the default; anything else (a
+/// staging or local server, or the same Worker under another name) is kept.
 fn effective_server_url(saved: &str) -> String {
-    if saved.is_empty() || saved.trim_end_matches('/') == LEGACY_SERVER_URL {
+    if saved.is_empty() {
         DEFAULT_SERVER_URL.to_string()
     } else {
         saved.to_string()
@@ -1099,12 +1099,11 @@ mod write_tests {
     use super::*;
 
     #[test]
-    fn legacy_server_url_reads_as_the_default() {
+    fn an_empty_server_url_reads_as_the_default() {
         assert_eq!(effective_server_url(""), DEFAULT_SERVER_URL);
-        assert_eq!(effective_server_url(LEGACY_SERVER_URL), DEFAULT_SERVER_URL);
         assert_eq!(
-            effective_server_url("https://ccnotifier-api.touchtap.workers.dev/"),
-            DEFAULT_SERVER_URL
+            effective_server_url("https://api.claudecodenotifier.com"),
+            "https://api.claudecodenotifier.com"
         );
         assert_eq!(
             effective_server_url("https://ccnotifier-api-staging.touchtap.workers.dev"),
