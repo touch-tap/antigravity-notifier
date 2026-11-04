@@ -43,13 +43,13 @@ pub fn pair_system_message() -> String {
     t!("local.pair_message").into_owned()
 }
 
-/// `ccn config set pair_nudges off`, or `CCN_NO_NUDGE=1`, keeps every suggestion to pair quiet.
+/// `ccn config set pair_nudges off`, or `CODEXNOTIFIER_NO_NUDGE=1`, keeps every suggestion to pair quiet.
 pub fn nudges_enabled(cfg: &Config) -> bool {
     cfg.pair_nudges && !no_nudge_env()
 }
 
 pub fn no_nudge_env() -> bool {
-    std::env::var("CCN_NO_NUDGE")
+    std::env::var("CODEXNOTIFIER_NO_NUDGE")
         .map(|v| !v.is_empty() && v != "0")
         .unwrap_or(false)
 }
@@ -125,7 +125,8 @@ pub fn run(
             state.tool_input = Some(tool_input.clone());
             state.tool_at = Some(now);
             let _ = state.save();
-            if tool_name.as_deref() == Some("AskUserQuestion") && cfg.settings.notify_on_question()
+            if tool_name.as_deref().is_some_and(payload::is_question_tool)
+                && cfg.settings.notify_on_question()
             {
                 let title = question_title();
                 let first = payload::first_question(&tool_input).unwrap_or_else(|| title.clone());
@@ -133,21 +134,13 @@ pub fn run(
             }
             None
         }
-        "Notification" => {
-            if inp.str("notification_type") != Some("permission_prompt")
-                || !cfg.settings.notify_on_permission()
-            {
+        // Codex has no Notification event: its PermissionRequest hook carries the tool, and
+        // returning nothing leaves the prompt to the terminal
+        "PermissionRequest" => {
+            if !cfg.settings.notify_on_permission() {
                 return None;
             }
-            // The Notification event carries no tool; use what PreToolUse recorded
-            let (card, _, _) = if state.tool_name.is_some() && inp.tool_name().is_none() {
-                let mut synthetic = input.clone();
-                synthetic["tool_name"] = Value::String(state.tool_name.clone().unwrap_or_default());
-                synthetic["tool_input"] = state.tool_input.clone().unwrap_or(Value::Null);
-                payload::permission_card(&Input(&synthetic), false)
-            } else {
-                payload::permission_card(&inp, false)
-            };
+            let (card, _, _) = payload::permission_card(&inp, false);
             let title = permission_title();
             let body = card["promptText"]
                 .as_str()

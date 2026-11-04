@@ -9,7 +9,7 @@
 //! the anyhow contexts that wrap an OS error around a path or request ("reading X",
 //! "GET url"), which are diagnostics and what `telemetry::failure_reason` classifies.
 
-/// Sets the process locale from `CCN_LANG` or the OS, and makes sure the console can show it.
+/// Sets the process locale from `CODEXNOTIFIER_LANG` or the OS, and makes sure the console can show it.
 pub fn init() {
     utf8_console();
     rust_i18n::set_locale(&crate::config::locale());

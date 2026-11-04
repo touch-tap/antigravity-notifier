@@ -1,4 +1,4 @@
-//! Per-session state, one small JSON file per Claude Code session. Written by the fast hooks
+//! Per-session state, one small JSON file per Codex session. Written by the fast hooks
 //! (PreToolUse, UserPromptSubmit) and read by the ones that notify.
 
 use anyhow::Result;
@@ -50,7 +50,7 @@ pub struct SessionState {
     /// What the current turn has done, for the phone's lock-screen card
     pub turn: Turn,
     pub last_card: Option<Card>,
-    /// Claude Code has shown this session the "not paired any more" message
+    /// Codex has shown this session the "not paired any more" message
     pub unpaired_warned: bool,
     pub updated_at: i64,
 }
@@ -116,7 +116,7 @@ impl SessionState {
 
 /// Deletes every session file (and any temp file a crash left), then the sessions directory if
 /// that leaves it empty. Only files that look like ccn's: uninstall must not empty a `sessions`
-/// folder of someone else's when `CCN_HOME` points somewhere shared.
+/// folder of someone else's when `CODEXNOTIFIER_HOME` points somewhere shared.
 pub fn remove_all() {
     let dir = config::sessions_dir();
     let Ok(entries) = fs::read_dir(&dir) else {

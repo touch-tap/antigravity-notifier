@@ -1,8 +1,8 @@
-//! ccn: Claude Code Notifier for the terminal.
+//! codexnotifier: Codex Notifier for the terminal.
 //!
-//! One binary, invoked by Claude Code's hooks. It runs for milliseconds and exits: there is no
-//! daemon, no socket and no window. `ccn pair` installs the hooks once; after that every
-//! `claude` session is covered.
+//! One binary, invoked by OpenAI Codex's lifecycle hooks. It runs for milliseconds and exits:
+//! there is no daemon, no socket and no window. `codexnotifier pair` installs the hooks once
+//! (and marks them trusted); after that every `codex` session is covered.
 
 mod api;
 mod commands;
@@ -48,16 +48,11 @@ enum Command {
         code: Option<String>,
         #[arg(long, help = t!("cli.pair.name").to_string())]
         name: Option<String>,
-        #[arg(long, help = t!("cli.pair.replace_mac_app").to_string())]
-        replace_mac_app: bool,
         #[arg(long, help = t!("cli.pair.no_wait").to_string())]
         no_wait: bool,
     },
     #[command(about = t!("cli.setup.about").to_string())]
-    Setup {
-        #[arg(long, help = t!("cli.setup.replace_mac_app").to_string())]
-        replace_mac_app: bool,
-    },
+    Setup,
     #[command(about = t!("cli.doctor.about").to_string())]
     Doctor,
     #[command(about = t!("cli.test.about").to_string())]
@@ -113,13 +108,9 @@ enum Command {
         #[arg(help = t!("clap.help_command_arg").to_string())]
         command: Vec<String>,
     },
-    // Run as a Claude Code hook: reads the event JSON on stdin
+    // Run as a Codex hook: reads the event JSON on stdin
     #[command(hide = true)]
-    Hook {
-        // Called by the Claude Code plugin, which stands aside when settings.json has ccn's hooks too
-        #[arg(long)]
-        plugin: bool,
-    },
+    Hook,
 }
 
 #[derive(Subcommand)]
@@ -148,15 +139,13 @@ fn main() {
         return;
     };
     let result = match command {
-        // The plugin's stand-aside check needs the event's cwd, so hook.rs makes it
-        Command::Hook { plugin } => hook::run(plugin),
+        Command::Hook => hook::run(),
         Command::Pair {
             code,
             name,
-            replace_mac_app,
             no_wait,
-        } => commands::pair(code, name, replace_mac_app, no_wait),
-        Command::Setup { replace_mac_app } => commands::setup(replace_mac_app),
+        } => commands::pair(code, name, no_wait),
+        Command::Setup => commands::setup(),
         Command::Doctor => commands::doctor(),
         Command::Test => commands::test(),
         Command::Devices { action } => match action {

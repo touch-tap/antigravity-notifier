@@ -1,4 +1,4 @@
-//! `ccn forget` end to end: the real binary against a one-request fake server, in a temp home.
+//! `codexnotifier forget` end to end: the real binary against a one-request fake server, in a temp home.
 
 use std::io::{Read, Write};
 use std::net::TcpListener;
@@ -7,45 +7,46 @@ use std::process::{Command, Output, Stdio};
 
 struct Sandbox {
     root: PathBuf,
-    /// What `CCN_LANG` says; English unless a test is about the language
+    /// What `CODEXNOTIFIER_LANG` says; English unless a test is about the language
     lang: &'static str,
 }
 
 impl Sandbox {
     fn new(name: &str) -> Sandbox {
-        let root = std::env::temp_dir().join(format!("ccn-forget-{name}-{}", std::process::id()));
+        let root = std::env::temp_dir().join(format!("codexnotifier-forget-{name}-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&root);
-        std::fs::create_dir_all(root.join("claude")).unwrap();
-        std::fs::create_dir_all(root.join("ccn")).unwrap();
+        std::fs::create_dir_all(root.join("codex")).unwrap();
+        std::fs::create_dir_all(root.join("codexnotifier")).unwrap();
         std::fs::write(
-            root.join("ccn/config.toml"),
+            root.join("codexnotifier/config.toml"),
             "client_id = \"test-computer\"\n",
         )
         .unwrap();
-        std::fs::write(root.join("ccn/credentials"), "test-token\n").unwrap();
+        std::fs::write(root.join("codexnotifier/credentials"), "test-token\n").unwrap();
+        std::fs::write(root.join("codex/config.toml"), "model = \"gpt-5.4\"\n").unwrap();
         std::fs::write(
-            root.join("claude/settings.json"),
-            r#"{"permissions":{"allow":["Bash(ls)"]}}"#,
+            root.join("codex/hooks.json"),
+            r#"{"hooks":{"Stop":[{"hooks":[{"type":"command","command":"echo hi"}]}]}}"#,
         )
         .unwrap();
         Sandbox { root, lang: "en" }
     }
 
-    fn ccn_dir(&self) -> PathBuf {
-        self.root.join("ccn")
+    fn app_dir(&self) -> PathBuf {
+        self.root.join("codexnotifier")
     }
 
     fn run(&self, server: &str, args: &[&str]) -> Output {
-        Command::new(env!("CARGO_BIN_EXE_ccn"))
+        Command::new(env!("CARGO_BIN_EXE_codexnotifier"))
             .args(args)
             .env("HOME", &self.root)
-            .env("CCN_HOME", self.ccn_dir())
-            .env("CLAUDE_CONFIG_DIR", self.root.join("claude"))
-            .env("CCN_SERVER_URL", server)
-            .env("CCN_CREDENTIAL_STORE", "file")
-            .env("CCN_NOTIFY", "off")
-            .env("CCN_NO_ANALYTICS", "1")
-            .env("CCN_LANG", self.lang)
+            .env("CODEXNOTIFIER_HOME", self.app_dir())
+            .env("CODEX_HOME", self.root.join("codex"))
+            .env("CODEXNOTIFIER_SERVER_URL", server)
+            .env("CODEXNOTIFIER_CREDENTIAL_STORE", "file")
+            .env("CODEXNOTIFIER_NOTIFY", "off")
+            .env("CODEXNOTIFIER_NO_ANALYTICS", "1")
+            .env("CODEXNOTIFIER_LANG", self.lang)
             .stdin(Stdio::null())
             .output()
             .unwrap()
@@ -110,9 +111,11 @@ fn text(bytes: &[u8]) -> String {
 }
 
 fn settings_hooks_gone(sandbox: &Sandbox) -> bool {
-    let settings =
-        std::fs::read_to_string(Path::new(&sandbox.root).join("claude/settings.json")).unwrap();
-    !settings.contains("\"hooks\"")
+    let hooks =
+        std::fs::read_to_string(Path::new(&sandbox.root).join("codex/hooks.json")).unwrap();
+    let config =
+        std::fs::read_to_string(Path::new(&sandbox.root).join("codex/config.toml")).unwrap();
+    !hooks.contains("codexnotifier") && !config.contains("codexnotifier") && hooks.contains("echo hi")
 }
 
 #[test]
@@ -139,11 +142,11 @@ fn erases_on_the_server_then_removes_everything_local() {
         "{stdout}"
     );
     assert!(stdout.contains("Erase my licence"), "{stdout}");
-    assert!(!sandbox.ccn_dir().exists());
+    assert!(!sandbox.app_dir().exists());
     assert!(settings_hooks_gone(&sandbox));
 }
 
-/// The OS language (or `CCN_LANG`) reaches the server as `Accept-Language`, mapped onto one of
+/// The OS language (or `CODEXNOTIFIER_LANG`) reaches the server as `Accept-Language`, mapped onto one of
 /// the supported tags, whatever locales/*.yml files exist.
 #[test]
 fn asks_the_server_in_the_users_language() {
@@ -169,7 +172,7 @@ fn a_401_means_already_gone_so_it_still_cleans_up_locally() {
     server.join().unwrap();
     assert!(out.status.success(), "{}", text(&out.stderr));
     assert!(text(&out.stdout).contains("already forgotten"));
-    assert!(!sandbox.ccn_dir().exists());
+    assert!(!sandbox.app_dir().exists());
 }
 
 #[test]
@@ -187,8 +190,8 @@ fn an_unreachable_server_keeps_the_local_credentials() {
         "{}",
         text(&out.stderr)
     );
-    assert!(sandbox.ccn_dir().join("credentials").exists());
-    assert!(sandbox.ccn_dir().join("config.toml").exists());
+    assert!(sandbox.app_dir().join("credentials").exists());
+    assert!(sandbox.app_dir().join("config.toml").exists());
 }
 
 #[test]
@@ -198,7 +201,7 @@ fn a_server_error_keeps_the_local_credentials() {
     let out = sandbox.run(&url, &["forget", "--yes"]);
     server.join().unwrap();
     assert!(!out.status.success());
-    assert!(sandbox.ccn_dir().join("credentials").exists());
+    assert!(sandbox.app_dir().join("credentials").exists());
 }
 
 #[test]
@@ -208,7 +211,7 @@ fn refuses_without_yes_when_there_is_no_terminal() {
     let out = sandbox.run("http://127.0.0.1:9", &["forget"]);
     assert!(!out.status.success());
     assert!(text(&out.stderr).contains("--yes"), "{}", text(&out.stderr));
-    assert!(sandbox.ccn_dir().join("credentials").exists());
+    assert!(sandbox.app_dir().join("credentials").exists());
 }
 
 fn unreachable_url() -> String {
@@ -217,11 +220,11 @@ fn unreachable_url() -> String {
     format!("http://{}", listener.local_addr().unwrap())
 }
 
-/// `CCN_HOME` may point at a folder that holds other things: only ccn's own files go.
+/// `CODEXNOTIFIER_HOME` may point at a folder that holds other things: only ccn's own files go.
 #[test]
 fn removes_only_ccns_own_files_from_a_shared_folder() {
     let sandbox = Sandbox::new("shared");
-    let dir = sandbox.ccn_dir();
+    let dir = sandbox.app_dir();
     std::fs::write(dir.join("notes.txt"), "mine").unwrap();
     std::fs::create_dir_all(dir.join("sessions")).unwrap();
     std::fs::write(dir.join("sessions/plan.txt"), "mine too").unwrap();
@@ -276,12 +279,12 @@ fn uninstall_offline_says_the_licence_slot_was_not_freed() {
             && stderr.contains("claudecodenotifier.com/licence"),
         "{stderr}"
     );
-    assert!(!sandbox.ccn_dir().exists());
+    assert!(!sandbox.app_dir().exists());
     assert!(settings_hooks_gone(&sandbox));
     // The binary is left to whatever installed it, with the command to remove it
     let stdout = text(&out.stdout);
     assert!(stdout.contains("ccn itself is still installed"), "{stdout}");
-    let exe = std::path::Path::new(env!("CARGO_BIN_EXE_ccn"));
+    let exe = std::path::Path::new(env!("CARGO_BIN_EXE_codexnotifier"));
     assert!(exe.exists());
 }
 
@@ -302,5 +305,5 @@ fn uninstall_after_the_server_forgot_the_computer_is_quiet_about_the_slot() {
         "{}",
         text(&out.stderr)
     );
-    assert!(!sandbox.ccn_dir().exists());
+    assert!(!sandbox.app_dir().exists());
 }

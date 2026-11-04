@@ -3,13 +3,13 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleIdentifier</key>
-	<string>com.touchtap.ccn.notifier</string>
+	<string>com.touchtap.codexnotifier.notifier</string>
 	<key>CFBundleName</key>
-	<string>Claude Code Notifier</string>
+	<string>Codex Notifier</string>
 	<key>CFBundleDisplayName</key>
-	<string>Claude Code Notifier</string>
+	<string>Codex Notifier</string>
 	<key>CFBundleExecutable</key>
-	<string>ccn-notifier</string>
+	<string>codexnotifier-notifier</string>
 	<key>CFBundleIconFile</key>
 	<string>AppIcon</string>
 	<key>CFBundleIconName</key>

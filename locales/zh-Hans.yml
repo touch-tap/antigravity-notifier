@@ -8,11 +8,9 @@ cli:
     about: "把这台电脑与你的手机配对。传入应用显示的配对码，或不带配对码运行，获取一个输入到应用里的配对码"
     code: "Claude Code Notifier 应用中显示的 6 位配对码"
     name: "这台电脑在手机上显示的名称（默认：主机名）"
-    replace_mac_app: "同时移除 Mac 菜单栏应用的钩子条目，避免通知发送两次"
     no_wait: "显示二维码后立即返回：手机连接后配对会自动完成"
   setup:
     about: "安装 Claude Code 的钩子和桌面通知（pair 和不带参数的 ccn 会先做这一步）"
-    replace_mac_app: "同时移除 Mac 菜单栏应用的钩子条目"
   doctor:
     about: "检查钩子、凭据、服务器以及这个终端支持的功能"
   test:
@@ -99,8 +97,7 @@ status:
 setup:
   installed_self: "已把 ccn 安装到 %{path}。"
   hooks_installed: "钩子已安装到 %{path}（使用 %{exe}）。"
-  mac_app_note: "注意: Claude Code Notifier Mac 应用的钩子也已安装，所以每个事件会发送两次。\n运行 `ccn setup --replace-mac-app` 移除它们，或退出 Mac 应用。"
-  mac_app_removed: "已移除 Mac 应用的钩子条目；从现在起由 ccn 负责通知。"
+  hooks_trusted: "已在 %{path} 中将其标记为受信任，Codex 无需进入 /hooks 即可运行。"
 
 sync:
   not_synced: "设置尚未同步: %{error}"
@@ -124,7 +121,8 @@ doctor:
   hooks_missing: "钩子: 缺少 %{names}（运行 `ccn setup`）"
   hooks_error: "钩子: %{error}"
   hooks_stale: "钩子指向另一个 ccn 二进制文件；运行 `ccn setup` 更新它们"
-  mac_app_hooks: "Mac 应用的钩子也已安装（运行 `ccn setup --replace-mac-app`）"
+  trust_ok: "信任: 每个钩子在 %{path} 中都有哈希"
+  trust_missing: "信任: 在受信任之前，Codex 会跳过 %{names}（运行 `ccn setup`，或在 Codex 中使用 /hooks）"
   presence: "在场检测: 当前已空闲 %{idle} 秒，阈值 %{threshold} 秒"
   replies: "回复: 来自手机的批准和问题回答在任何终端都可用；向空闲会话输入自由文本%{free_text}"
   replies_tmux: "可用（tmux）"
@@ -173,7 +171,7 @@ forget:
   not_registered: "这台电脑没有在服务器上注册，所以服务器上没有可抹掉的内容。"
 
 uninstall:
-  hooks_removed: "已从 %{path} 移除 ccn 的钩子。"
+  hooks_removed: "已从 %{path} 移除 ccn 的钩子，并从 %{config} 移除其信任条目。"
   slot_freed: "已释放这台电脑的许可名额。"
   unpaired_all: "已取消与每一部手机的配对。"
   removed_dir: "已移除 %{path}。"
@@ -199,7 +197,6 @@ hook:
 hooks:
   doctor_presence_none: "在场检测：此处无法检测，因此不会等待手机：手机会收到提醒，你在终端中回复（如仍要等待，运行 `ccn config set hold_without_presence on`）"
   doctor_presence_none_hold: "在场检测：此处无法检测，且 hold_without_presence 已开启，因此每个请求都会等待手机，直到手机回复或超过最长等待时间"
-  doctor_duplicate_hooks: "ccn 的钩子出现在多个设置文件中（%{paths}）：命令不同时 Claude Code 会两份都运行，而 `ccn uninstall` 只会移除用户设置中的那份。只保留在一个文件中"
 
 licence:
   already_licensed: "这台电脑已有许可（%{licence}）。"
@@ -312,19 +309,11 @@ local_files:
   remove_binary: "ccn 本身仍已安装。要移除它，请运行：%{command}"
 
 payload:
-  plan_waiting: "Claude 已制定计划，正在等你批准。"
-  plan_ready: "计划待批准"
-  # The plan-approval buttons on the phone
-  plan_accept_edits: "是，自动接受编辑"
-  plan_manual_edits: "是，手动批准编辑"
-  plan_keep_planning: "否，继续规划"
   needs_permission: "%{tool} 需要权限"
   permission_required: "需要权限"
   has_questions: "Claude 有几个问题"
   finished_prompt: "已完成：%{prompt}"
   question_header: "问题"
-  approve_plan: "批准计划"
-  pattern: "模式：%{pattern}"
   search: "搜索：%{pattern}"
 
 net:

@@ -52,17 +52,17 @@ impl Sandbox {
     fn new(name: &str, exe_rel: &str) -> Sandbox {
         let root = std::env::temp_dir().join(format!("ccn-update-{name}-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&root);
-        std::fs::create_dir_all(root.join("claude")).unwrap();
+        std::fs::create_dir_all(root.join("codex")).unwrap();
         std::fs::create_dir_all(root.join("ccn")).unwrap();
         let exe = root.join(exe_rel);
         std::fs::create_dir_all(exe.parent().unwrap()).unwrap();
-        std::fs::copy(env!("CARGO_BIN_EXE_ccn"), &exe).unwrap();
+        std::fs::copy(env!("CARGO_BIN_EXE_codexnotifier"), &exe).unwrap();
         // As `ccn setup` writes it: the canonical path (macOS puts temp dirs under /private)
         let exe = exe.canonicalize().unwrap();
         std::fs::write(root.join("ccn/config.toml"), "auto_update = true\n").unwrap();
         let hook = format!("{} hook", exe.display());
         std::fs::write(
-            root.join("claude/settings.json"),
+            root.join("codex/hooks.json"),
             format!(
                 r#"{{"hooks":{{"Stop":[{{"hooks":[{{"type":"command","command":"{hook}","timeout":700}}]}}]}}}}"#
             ),
@@ -79,19 +79,19 @@ impl Sandbox {
         Command::new(exe)
             .args(args)
             .env("HOME", &self.root)
-            .env("CCN_HOME", self.root.join("ccn"))
-            .env("CLAUDE_CONFIG_DIR", self.root.join("claude"))
-            .env("CCN_SERVER_URL", server)
-            .env("CCN_CREDENTIAL_STORE", "file")
-            .env("CCN_NOTIFY", "off")
-            .env("CCN_NO_ANALYTICS", "1")
+            .env("CODEXNOTIFIER_HOME", self.root.join("ccn"))
+            .env("CODEX_HOME", self.root.join("codex"))
+            .env("CODEXNOTIFIER_SERVER_URL", server)
+            .env("CODEXNOTIFIER_CREDENTIAL_STORE", "file")
+            .env("CODEXNOTIFIER_NOTIFY", "off")
+            .env("CODEXNOTIFIER_NO_ANALYTICS", "1")
             // The server's downloadBase is ignored (only GitHub's releases are trusted), so the
             // fake release is reached the way CI's is
-            .env("CCN_DOWNLOAD_BASE", format!("{server}/dl"))
+            .env("CODEXNOTIFIER_DOWNLOAD_BASE", format!("{server}/dl"))
             // A debug build also trusts this key, so the fake release can be signed here
-            .env("CCN_UPDATE_PUBLIC_KEY", hex(test_key(TEST_SEED).verifying_key().as_bytes()))
-            .env_remove("CCN_INSTALL_METHOD")
-            .env_remove("CCN_EPHEMERAL")
+            .env("CODEXNOTIFIER_UPDATE_PUBLIC_KEY", hex(test_key(TEST_SEED).verifying_key().as_bytes()))
+            .env_remove("CODEXNOTIFIER_INSTALL_METHOD")
+            .env_remove("CODEXNOTIFIER_EPHEMERAL")
             .stdin(Stdio::null())
             .output()
             .unwrap()
@@ -283,13 +283,13 @@ fn replaces_the_binary_with_the_verified_release() {
         .unwrap();
     assert_eq!(text(&version.stdout).trim(), "ccn 9.9.9");
 
-    // The hooks already pointed at this path, so settings.json was not rewritten
-    let settings = std::fs::read_to_string(sandbox.root.join("claude/settings.json")).unwrap();
+    // The hooks already pointed at this path, so hooks.json was not rewritten
+    let settings = std::fs::read_to_string(sandbox.root.join("codex/hooks.json")).unwrap();
     assert!(settings.contains(&format!("{} hook", sandbox.exe().display())));
     assert!(
         !sandbox
             .root
-            .join("claude/settings.json.ccn-backup")
+            .join("codex/hooks.json.codexnotifier-backup")
             .exists()
     );
 }

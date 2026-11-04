@@ -7,11 +7,9 @@ cli:
     about: "Pareie este computador com seu celular. Passe o código que o app mostra, ou rode sem código para receber um e digitar no app"
     code: "O código de 6 dígitos mostrado no app Claude Code Notifier"
     name: "Como este computador aparece no seu celular (padrão: o hostname)"
-    replace_mac_app: "Remova também os hooks do app da barra de menus do Mac, para as notificações não chegarem em dobro"
     no_wait: "Mostre o QR code e saia na hora: o pareamento termina sozinho quando o celular se conecta"
   setup:
     about: "Instale os hooks do Claude Code e as notificações do desktop (pair e ccn sem comando fazem isso primeiro)"
-    replace_mac_app: "Remova também os hooks do app da barra de menus do Mac"
   doctor:
     about: "Verifique hooks, credenciais, o servidor e o que este terminal suporta"
   test:
@@ -97,8 +95,7 @@ status:
 setup:
   installed_self: "ccn instalado em %{path}."
   hooks_installed: "Hooks instalados em %{path} (usando %{exe})."
-  mac_app_note: "Atenção: os hooks do app Claude Code Notifier para Mac também estão instalados, então cada\nevento seria enviado duas vezes. Rode `ccn setup --replace-mac-app` para removê-los, ou feche\no app do Mac."
-  mac_app_removed: "Hooks do app do Mac removidos; de agora em diante o ccn cuida das notificações."
+  hooks_trusted: "Marcados como confiáveis em %{path}, então o Codex os executa sem passar por /hooks."
 
 sync:
   not_synced: "Configurações ainda não sincronizadas: %{error}"
@@ -122,7 +119,8 @@ doctor:
   hooks_missing: "hooks: faltam %{names} (rode `ccn setup`)"
   hooks_error: "hooks: %{error}"
   hooks_stale: "os hooks apontam para outro binário do ccn; rode `ccn setup` para atualizá-los"
-  mac_app_hooks: "os hooks do app do Mac também estão instalados (rode `ccn setup --replace-mac-app`)"
+  trust_ok: "confiança: cada hook tem seu hash em %{path}"
+  trust_missing: "confiança: o Codex vai pular %{names} até serem confiáveis (rode `ccn setup`, ou /hooks no Codex)"
   presence: "presença: ocioso há %{idle}s, limite %{threshold}s"
   replies: "respostas: aprovações e respostas a perguntas pelo celular funcionam em qualquer terminal; texto livre em uma sessão ociosa %{free_text}"
   replies_tmux: "funciona (tmux)"
@@ -171,7 +169,7 @@ forget:
   not_registered: "Este computador não está registrado no servidor, então não há nada para apagar lá."
 
 uninstall:
-  hooks_removed: "Hooks do ccn removidos de %{path}."
+  hooks_removed: "Hooks do ccn removidos de %{path} e suas entradas de confiança de %{config}."
   slot_freed: "Vaga de licença deste computador liberada."
   unpaired_all: "Todos os celulares despareados."
   removed_dir: "%{path} removido."
@@ -197,7 +195,6 @@ hook:
 hooks:
   doctor_presence_none: "presença: não detectável aqui, então nada espera pelo celular: ele recebe um aviso e você responde no terminal (`ccn config set hold_without_presence on` para esperar mesmo assim)"
   doctor_presence_none_hold: "presença: não detectável aqui, e hold_without_presence está ativado, então cada pedido espera pelo celular até ele responder ou o tempo máximo passar"
-  doctor_duplicate_hooks: "Os hooks do ccn estão em mais de um arquivo de configurações (%{paths}): o Claude Code executa as duas cópias quando os comandos diferem, e `ccn uninstall` só remove as das suas configurações de usuário. Mantenha-os em um só"
 
 licence:
   already_licensed: "Este computador já está licenciado (%{licence})."
@@ -310,19 +307,11 @@ local_files:
   remove_binary: "O ccn em si continua instalado. Para removê-lo: %{command}"
 
 payload:
-  plan_waiting: "O Claude criou um plano e está esperando sua aprovação."
-  plan_ready: "Plano pronto para aprovação"
-  # The plan-approval buttons on the phone
-  plan_accept_edits: "Sim, aceitar as edições automaticamente"
-  plan_manual_edits: "Sim, aprovar cada edição manualmente"
-  plan_keep_planning: "Não, continuar planejando"
   needs_permission: "%{tool} precisa de permissão"
   permission_required: "Permissão necessária"
   has_questions: "O Claude tem perguntas"
   finished_prompt: "Concluído: %{prompt}"
   question_header: "Pergunta"
-  approve_plan: "Aprovar o plano"
-  pattern: "Padrão: %{pattern}"
   search: "Busca: %{pattern}"
 
 net:

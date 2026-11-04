@@ -1,10 +1,10 @@
-// Claude Code Notifier.app: posts ccn's desktop notifications on macOS, so they carry our name and icon
-// instead of Script Editor's. ccn runs the executable inside the bundle directly:
+// Codex Notifier.app: posts codexnotifier's desktop notifications on macOS, so they carry our name and icon
+// instead of Script Editor's. codexnotifier runs the executable inside the bundle directly:
 //
-//   ccn-notifier --title T --body B [--sound]   post one notification, exit when it is delivered
+//   codexnotifier-notifier --title T --body B [--sound]   post one notification, exit when it is delivered
 //                                               (through AppleScript until permission has been asked)
-//   ccn-notifier --request-permission           ask for permission now (ccn setup); prints granted|denied
-//   ccn-notifier --status                       prints authorized|denied|not-determined (ccn doctor)
+//   codexnotifier-notifier --request-permission           ask for permission now (codexnotifier setup); prints granted|denied
+//   codexnotifier-notifier --status                       prints authorized|denied|not-determined (codexnotifier doctor)
 //
 // Launched with no arguments (macOS does that when a notification is clicked) it just quits.
 
@@ -79,11 +79,11 @@ if args.contains("--status") {
     content.title = title
     content.body = value("--body") ?? ""
     if args.contains("--sound") { content.sound = .default }
-    // One thread per Claude Code session keeps Notification Center tidy
+    // One thread per Codex session keeps Notification Center tidy
     if let thread = value("--thread") { content.threadIdentifier = thread }
 
     // macOS only shows the permission prompt to an app opened through Launch Services, which
-    // `ccn setup` does. Until it has asked, post through AppleScript so nothing is lost; once the
+    // `codexnotifier setup` does. Until it has asked, post through AppleScript so nothing is lost; once the
     // user has turned us off, stay quiet.
     center.getNotificationSettings { settings in
         switch settings.authorizationStatus {

@@ -10,11 +10,9 @@ cli:
     about: "Ghép nối máy tính này với điện thoại của bạn. Truyền mã mà ứng dụng hiển thị, hoặc chạy không kèm mã để nhận một mã rồi nhập vào ứng dụng"
     code: "Mã 6 chữ số hiển thị trong ứng dụng Claude Code Notifier"
     name: "Tên của máy tính này trên điện thoại của bạn (mặc định: hostname)"
-    replace_mac_app: "Đồng thời gỡ các mục hook của ứng dụng thanh menu trên Mac, để thông báo không bị gửi hai lần"
     no_wait: "Hiển thị mã QR rồi thoát ngay: việc ghép nối tự hoàn tất khi điện thoại kết nối"
   setup:
     about: "Cài các hook của Claude Code và thông báo trên máy tính (pair và ccn không kèm lệnh sẽ làm việc này trước)"
-    replace_mac_app: "Đồng thời gỡ các mục hook của ứng dụng thanh menu trên Mac"
   doctor:
     about: "Kiểm tra hook, thông tin xác thực, máy chủ và những gì terminal này hỗ trợ"
   test:
@@ -100,8 +98,7 @@ status:
 setup:
   installed_self: "Đã cài ccn vào %{path}."
   hooks_installed: "Đã cài hook vào %{path} (dùng %{exe})."
-  mac_app_note: "Lưu ý: hook của ứng dụng Claude Code Notifier trên Mac cũng đang được cài, nên mỗi sự kiện\nsẽ bị gửi hai lần. Chạy `ccn setup --replace-mac-app` để gỡ chúng, hoặc thoát ứng dụng Mac."
-  mac_app_removed: "Đã gỡ các mục hook của ứng dụng Mac; từ giờ ccn đảm nhận thông báo."
+  hooks_trusted: "Đã đánh dấu tin cậy trong %{path}, nên Codex chạy chúng mà không cần vào /hooks."
 
 sync:
   not_synced: "Cài đặt chưa được đồng bộ: %{error}"
@@ -125,7 +122,8 @@ doctor:
   hooks_missing: "hook: thiếu %{names} (chạy `ccn setup`)"
   hooks_error: "hook: %{error}"
   hooks_stale: "hook đang trỏ tới một tệp ccn khác; chạy `ccn setup` để cập nhật"
-  mac_app_hooks: "hook của ứng dụng Mac cũng đang được cài (chạy `ccn setup --replace-mac-app`)"
+  trust_ok: "tin cậy: mọi hook đều có hash trong %{path}"
+  trust_missing: "tin cậy: Codex sẽ bỏ qua %{names} cho đến khi được tin cậy (chạy `ccn setup`, hoặc /hooks trong Codex)"
   presence: "hiện diện: đã rảnh %{idle}s, ngưỡng %{threshold}s"
   replies: "trả lời: phê duyệt và trả lời câu hỏi từ điện thoại hoạt động trong mọi terminal; văn bản tự do vào một phiên đang rảnh %{free_text}"
   replies_tmux: "hoạt động (tmux)"
@@ -174,7 +172,7 @@ forget:
   not_registered: "Máy tính này chưa đăng ký với máy chủ, nên không có gì để xóa ở đó."
 
 uninstall:
-  hooks_removed: "Đã gỡ các hook của ccn khỏi %{path}."
+  hooks_removed: "Đã gỡ các hook của ccn khỏi %{path} và các mục tin cậy của chúng khỏi %{config}."
   slot_freed: "Đã giải phóng chỗ của máy tính này trong giấy phép."
   unpaired_all: "Đã hủy ghép nối mọi điện thoại."
   removed_dir: "Đã xóa %{path}."
@@ -200,7 +198,6 @@ hook:
 hooks:
   doctor_presence_none: "hiện diện: không phát hiện được ở đây, nên không có gì chờ điện thoại: điện thoại nhận một thông báo và bạn trả lời trong terminal (`ccn config set hold_without_presence on` để vẫn chờ)"
   doctor_presence_none_hold: "hiện diện: không phát hiện được ở đây và hold_without_presence đang bật, nên mọi yêu cầu chờ điện thoại cho đến khi nó trả lời hoặc hết thời gian chờ tối đa"
-  doctor_duplicate_hooks: "Hook của ccn nằm trong nhiều hơn một tệp cài đặt (%{paths}): Claude Code chạy cả hai bản khi lệnh của chúng khác nhau, và `ccn uninstall` chỉ gỡ các hook trong cài đặt người dùng của bạn. Hãy chỉ giữ trong một tệp"
 
 licence:
   already_licensed: "Máy tính này đã có giấy phép (%{licence})."
@@ -313,19 +310,11 @@ local_files:
   remove_binary: "Bản thân ccn vẫn còn được cài đặt. Để gỡ nó: %{command}"
 
 payload:
-  plan_waiting: "Claude đã lập một kế hoạch và đang chờ bạn phê duyệt."
-  plan_ready: "Kế hoạch đang chờ phê duyệt"
-  # The plan-approval buttons on the phone
-  plan_accept_edits: "Có, tự động chấp nhận chỉnh sửa"
-  plan_manual_edits: "Có, duyệt từng chỉnh sửa"
-  plan_keep_planning: "Không, tiếp tục lập kế hoạch"
   needs_permission: "%{tool} cần quyền"
   permission_required: "Cần cấp quyền"
   has_questions: "Claude có vài câu hỏi"
   finished_prompt: "Đã xong: %{prompt}"
   question_header: "Câu hỏi"
-  approve_plan: "Phê duyệt kế hoạch"
-  pattern: "Mẫu: %{pattern}"
   search: "Tìm kiếm: %{pattern}"
 
 net:

@@ -1,4 +1,4 @@
-//! The server over HTTPS. Every call has a short timeout: a hook must never hang Claude Code.
+//! The server over HTTPS. Every call has a short timeout: a hook must never hang Codex.
 
 use anyhow::{Context, Result, anyhow};
 use rust_i18n::t;
@@ -20,7 +20,7 @@ pub struct Api {
 }
 
 /// The server no longer accepts this computer's credentials: its record (and every pairing) is
-/// gone, for example after 60 days without use. Only `ccn pair` fixes it, so nothing retries.
+/// gone, for example after 60 days without use. Only `codexnotifier pair` fixes it, so nothing retries.
 #[derive(Debug)]
 pub struct Rejected;
 
@@ -100,7 +100,7 @@ pub struct PairedDevice {
 pub struct CodeResponse {
     pub code: String,
     pub expires_in: u64,
-    /// claudecodenotifier.com/c/<token>: what the QR code opens on the phone
+    /// codexnotifier.com/c/<token>: what the QR code opens on the phone
     #[serde(default)]
     pub link_url: Option<String>,
 }
@@ -436,7 +436,7 @@ pub struct LicenceStatus {
     pub licence: Option<Licence>,
     #[serde(default)]
     pub computers: Vec<LicenceComputer>,
-    /// Show the upgrade line in Claude Code (the server decides; off until launch)
+    /// Show the once-a-day upgrade line in Codex (the server decides; off until launch)
     #[serde(default)]
     pub nudge: bool,
     /// What a web licence costs, for the pitch after pairing. None when the server has no offer

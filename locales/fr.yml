@@ -8,11 +8,9 @@ cli:
     about: "Jumeler cet ordinateur avec ton téléphone. Donne le code affiché par l'app, ou lance sans code pour en obtenir un à saisir dans l'app"
     code: "Le code à 6 chiffres affiché dans l'app Claude Code Notifier"
     name: "Le nom de cet ordinateur sur ton téléphone (par défaut : le nom d'hôte)"
-    replace_mac_app: "Retirer aussi les hooks de l'app de la barre des menus du Mac, pour ne pas envoyer les notifications en double"
     no_wait: "Afficher le QR code et rendre la main tout de suite : le jumelage se termine tout seul quand le téléphone se connecte"
   setup:
     about: "Installer les hooks Claude Code et les notifications de bureau (pair et ccn sans argument le font d'abord)"
-    replace_mac_app: "Retirer aussi les hooks de l'app de la barre des menus du Mac"
   doctor:
     about: "Vérifier les hooks, les identifiants, le serveur et ce que ce terminal sait faire"
   test:
@@ -98,8 +96,7 @@ status:
 setup:
   installed_self: "ccn installé dans %{path}."
   hooks_installed: "Hooks installés dans %{path} (avec %{exe})."
-  mac_app_note: "Remarque : les hooks de l'app Mac Claude Code Notifier sont aussi installés, chaque événement\nserait donc envoyé deux fois. Lance `ccn setup --replace-mac-app` pour les retirer,\nou quitte l'app Mac."
-  mac_app_removed: "Hooks de l'app Mac retirés ; désormais c'est ccn qui gère les notifications."
+  hooks_trusted: "Marqués comme fiables dans %{path}, pour que Codex les lance sans passer par /hooks."
 
 sync:
   not_synced: "Réglages pas encore synchronisés : %{error}"
@@ -123,7 +120,8 @@ doctor:
   hooks_missing: "hooks : il manque %{names} (lance `ccn setup`)"
   hooks_error: "hooks : %{error}"
   hooks_stale: "les hooks pointent vers un autre binaire ccn ; lance `ccn setup` pour les mettre à jour"
-  mac_app_hooks: "les hooks de l'app Mac sont aussi installés (lance `ccn setup --replace-mac-app`)"
+  trust_ok: "confiance : chaque hook a son empreinte dans %{path}"
+  trust_missing: "confiance : Codex ignorera %{names} tant qu'ils ne sont pas approuvés (lance `ccn setup`, ou /hooks dans Codex)"
   presence: "présence : inactif depuis %{idle}s, seuil %{threshold}s"
   replies: "réponses : les autorisations et les réponses aux questions depuis le téléphone marchent dans tout terminal ; le texte libre vers une session inactive %{free_text}"
   replies_tmux: "marche (tmux)"
@@ -172,7 +170,7 @@ forget:
   not_registered: "Cet ordinateur n'est pas enregistré auprès du serveur, il n'y a donc rien à y effacer."
 
 uninstall:
-  hooks_removed: "Hooks de ccn retirés de %{path}."
+  hooks_removed: "Hooks de ccn retirés de %{path}, et leurs entrées de confiance de %{config}."
   slot_freed: "Place de cet ordinateur sur la licence libérée."
   unpaired_all: "Tous les téléphones ont été déjumelés."
   removed_dir: "%{path} supprimé."
@@ -198,7 +196,6 @@ hook:
 hooks:
   doctor_presence_none: "présence : non détectable ici, donc rien n'attend le téléphone : il reçoit une note et vous répondez dans le terminal (`ccn config set hold_without_presence on` pour attendre quand même)"
   doctor_presence_none_hold: "présence : non détectable ici, et hold_without_presence est activé, donc chaque demande attend le téléphone jusqu'à sa réponse ou la fin du délai maximal"
-  doctor_duplicate_hooks: "Les hooks de ccn figurent dans plusieurs fichiers de réglages (%{paths}) : Claude Code exécute les deux copies si leurs commandes diffèrent, et `ccn uninstall` ne retire que celles de vos réglages utilisateur. Gardez-les dans un seul"
 
 licence:
   already_licensed: "Cet ordinateur a déjà une licence (%{licence})."
@@ -311,19 +308,11 @@ local_files:
   remove_binary: "ccn lui-même est toujours installé. Pour le supprimer : %{command}"
 
 payload:
-  plan_waiting: "Claude a préparé un plan et attend ton approbation."
-  plan_ready: "Plan prêt à approuver"
-  # The plan-approval buttons on the phone
-  plan_accept_edits: "Oui, accepter les modifications automatiquement"
-  plan_manual_edits: "Oui, approuver chaque modification"
-  plan_keep_planning: "Non, continuer à planifier"
   needs_permission: "%{tool} demande une autorisation"
   permission_required: "Autorisation requise"
   has_questions: "Claude a des questions"
   finished_prompt: "Terminé : %{prompt}"
   question_header: "Question"
-  approve_plan: "Approuver le plan"
-  pattern: "Motif : %{pattern}"
   search: "Recherche : %{pattern}"
 
 net:

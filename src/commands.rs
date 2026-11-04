@@ -18,7 +18,7 @@ pub fn identity(cfg: &Config) -> Option<Value> {
         "authToken": token,
         "name": cfg.machine_name(),
         "platform": config::platform(),
-        "clientKind": "cli",
+        "clientKind": "codex_cli",
         "clientVersion": config::VERSION,
         "capabilities": config::CAPABILITIES,
     }))
@@ -44,7 +44,7 @@ pub fn ensure_registered(cfg: &mut Config) -> Result<Api> {
         "authToken": token,
         "name": machine_name,
         "platform": config::platform(),
-        "clientKind": "cli",
+        "clientKind": "codex_cli",
         "clientVersion": config::VERSION,
         "capabilities": config::CAPABILITIES,
     }))?;
@@ -98,7 +98,6 @@ pub enum PairOutcome {
 pub fn pair(
     code: Option<String>,
     name: Option<String>,
-    replace_mac_app: bool,
     no_wait: bool,
 ) -> Result<()> {
     let mut flow = if code.is_some() {
@@ -108,7 +107,7 @@ pub fn pair(
     };
     let method = telemetry::install_method();
     telemetry::event("cli_pair_started", &[("flow", flow), ("method", method)]);
-    let result = pair_inner(code, name, replace_mac_app, no_wait, &mut flow);
+    let result = pair_inner(code, name, no_wait, &mut flow);
     match &result {
         Ok(PairOutcome::Paired) => {
             telemetry::event("cli_paired", &[("flow", flow), ("method", method)])
@@ -132,12 +131,11 @@ type PairedPhone = (String, Option<String>);
 fn pair_inner(
     code: Option<String>,
     name: Option<String>,
-    replace_mac_app: bool,
     no_wait: bool,
     flow: &mut &'static str,
 ) -> Result<PairOutcome> {
     // Hooks first: a computer that never finishes pairing still gets desktop notifications
-    ensure_setup(replace_mac_app)?;
+    ensure_setup()?;
     let mut cfg = Config::load();
     if let Some(n) = name {
         cfg.machine_name = Some(n);
@@ -166,7 +164,7 @@ fn pair_inner(
         "authToken": token,
         "name": machine_name,
         "platform": config::platform(),
-        "clientKind": "cli",
+        "clientKind": "codex_cli",
         "clientVersion": config::VERSION,
         "capabilities": config::CAPABILITIES,
     });
@@ -280,7 +278,7 @@ fn pair_inner(
         t!(
             "pair.credentials_stored",
             store = store_name(store),
-            path = config::ccn_dir().display()
+            path = config::app_dir().display()
         )
     );
     if list_phones(&mut cfg, &api).is_err() {
@@ -448,19 +446,19 @@ fn wait_for_welcome(api: &Api, notification_id: &str) {
     println!("{}", t!("pair.welcome_no_answer"));
 }
 
-/// `ccn` on its own: pair when no phone is paired with this computer yet (so `npx @touchtap/ccn` and a
+/// `codexnotifier` on its own: pair when no phone is paired with this computer yet (so `npx @touchtap/codexnotifier` and a
 /// fresh `brew install` go straight to the QR code), otherwise say where things stand.
 pub fn default_command() -> Result<()> {
-    ensure_setup(false)?;
+    ensure_setup()?;
     let mut cfg = Config::load();
     if !cfg.is_paired() {
-        return pair(None, None, false, false);
+        return pair(None, None, false);
     }
     // Registered without a phone (`ccn activate` or `ccn unlock` before pairing, or a QR code
     // nobody scanned yet): pairing is next
     let api = Api::new(&cfg);
     if matches!(list_phones(&mut cfg, &api), Ok(devices) if devices.is_empty()) {
-        return pair(None, None, false, false);
+        return pair(None, None, false);
     }
     println!(
         "{}",
@@ -481,33 +479,31 @@ pub fn default_command() -> Result<()> {
     Ok(())
 }
 
-pub fn setup(replace_mac_app: bool) -> Result<()> {
-    ensure_setup(replace_mac_app)
+pub fn setup() -> Result<()> {
+    ensure_setup()
 }
 
 /// Installs the hooks and registers desktop notifications. Idempotent, and silent when everything
 /// was already in place, so pairing and the install scripts can run it every time.
-pub fn ensure_setup(replace_mac_app: bool) -> Result<()> {
+pub fn ensure_setup() -> Result<()> {
     telemetry::remember_install_source();
     if let Some(copy) = hookcfg::install_self()? {
         println!("{}", t!("setup.installed_self", path = copy.display()));
     }
-    let report = hookcfg::install(replace_mac_app)?;
+    let report = hookcfg::install()?;
     if report.changed {
         println!(
             "{}",
             t!(
                 "setup.hooks_installed",
-                path = report.path.display(),
+                path = report.hooks_path.display(),
                 exe = report.exe.display()
             )
         );
-    }
-    if report.mac_app_hooks_found && !report.mac_app_hooks_removed {
-        println!();
-        println!("{}", t!("setup.mac_app_note"));
-    } else if report.mac_app_hooks_removed {
-        println!("{}", t!("setup.mac_app_removed"));
+        println!(
+            "{}",
+            t!("setup.hooks_trusted", path = report.config_path.display())
+        );
     }
     if let Some(line) = notify::install() {
         println!("{line}");
@@ -601,7 +597,7 @@ pub fn doctor() -> Result<()> {
                     t!(
                         "doctor.registered",
                         name = me.name,
-                        kind = me.client_kind.unwrap_or_else(|| "cli".to_string()),
+                        kind = me.client_kind.unwrap_or_else(|| "codex_cli".to_string()),
                         platform = me
                             .platform
                             .unwrap_or_else(|| config::platform().to_string()),
@@ -668,7 +664,7 @@ pub fn doctor() -> Result<()> {
                     t!(
                         "doctor.hooks_all",
                         count = status.installed.len(),
-                        path = status.path.display()
+                        path = status.hooks_path.display()
                     )
                 );
             } else {
@@ -680,24 +676,24 @@ pub fn doctor() -> Result<()> {
             if status.stale_exe {
                 println!("{no}{}", t!("doctor.hooks_stale"));
             }
-            if status.mac_app_present {
-                println!("{no}{}", t!("doctor.mac_app_hooks"));
+            if status.untrusted.is_empty() {
+                if !status.installed.is_empty() {
+                    println!(
+                        "{yes}{}",
+                        t!("doctor.trust_ok", path = config::codex_config_path().display())
+                    );
+                }
+            } else {
+                println!(
+                    "{no}{}",
+                    t!("doctor.trust_missing", names = status.untrusted.join(", "))
+                );
             }
         }
         Err(err) => println!(
             "{no}{}",
             t!("doctor.hooks_error", error = format!("{err:#}"))
         ),
-    }
-    // Doctor runs in a terminal, usually in the project, so its folder stands for the project's
-    let project = std::env::current_dir().ok();
-    let files = hookcfg::files_with_ccn_hooks(project.as_deref());
-    if files.len() > 1 {
-        let paths: Vec<String> = files.iter().map(|p| p.display().to_string()).collect();
-        println!(
-            "{no}{}",
-            t!("hooks.doctor_duplicate_hooks", paths = paths.join(", "))
-        );
     }
 
     match presence::idle_seconds() {
@@ -951,7 +947,7 @@ pub fn uninstall() -> Result<()> {
     remove_local(true)
 }
 
-/// Erases this computer from the server, then removes ccn exactly as `ccn uninstall` does. The
+/// Erases this computer from the server, then removes codexnotifier exactly as `codexnotifier uninstall` does. The
 /// server goes first: if it can't be reached the credentials stay, so the user can try again.
 pub fn forget(yes: bool) -> Result<()> {
     use std::io::{IsTerminal, Write};
@@ -995,7 +991,14 @@ pub fn forget(yes: bool) -> Result<()> {
 fn remove_local(revoke_on_server: bool) -> Result<()> {
     let cfg = Config::load();
     let path = hookcfg::uninstall()?;
-    println!("{}", t!("uninstall.hooks_removed", path = path.display()));
+    println!(
+        "{}",
+        t!(
+            "uninstall.hooks_removed",
+            path = path.display(),
+            config = config::codex_config_path().display()
+        )
+    );
     notify::uninstall();
     if revoke_on_server && cfg.is_paired() {
         let api = Api::new(&cfg);
@@ -1020,8 +1023,8 @@ fn remove_local(revoke_on_server: bool) -> Result<()> {
         }
     }
     config::delete_token();
-    // ccn's own files only: CCN_HOME may point at a folder that holds other things
-    let path = config::ccn_dir();
+    // ccn's own files only: CODEXNOTIFIER_HOME may point at a folder that holds other things
+    let path = config::app_dir();
     if config::remove_local_files() {
         println!("{}", t!("uninstall.removed_dir", path = path.display()));
     } else {

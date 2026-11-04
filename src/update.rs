@@ -9,13 +9,13 @@
 //! the background run records `update_available` instead, and `daily_check` then returns
 //! `Some({"systemMessage": "Claude Code Notifier: ccn X is available: <command>"})` once a week,
 //! for the hook to return as its output. `ccn config set auto_update off` or
-//! `CCN_NO_AUTO_UPDATE=1` turns all of this off.
+//! `CODEXNOTIFIER_NO_AUTO_UPDATE=1` turns all of this off.
 //!
 //! Where the latest version comes from: `GET {server}/api/cli/latest`, falling back to the GitHub
 //! releases API. The assets are the ones .github/workflows/release.yml publishes under the
 //! release's `downloadBase`: `ccn-<triple>.tar.gz` (Unix) or `ccn-<triple>.zip` (Windows), plus
 //! `SHA256SUMS`. That base is pinned to this repository's GitHub releases over https whatever the
-//! server says (`CCN_DOWNLOAD_BASE` overrides it for tests), because SHA256SUMS comes from the same
+//! server says (`CODEXNOTIFIER_DOWNLOAD_BASE` overrides it for tests), because SHA256SUMS comes from the same
 //! place as the archive: a base anyone else chose could vouch for its own binary. SHA256SUMS must
 //! also carry `SHA256SUMS.sig`, an ed25519 signature by a key in `RELEASE_KEYS`, made on the
 //! release Mac, so changing the files on GitHub isn't enough either. The download is
@@ -99,10 +99,10 @@ pub fn run(mode: Mode) -> Result<()> {
     }
 }
 
-/// `CCN_DOWNLOAD_BASE`: where to fetch the archive and SHA256SUMS instead of GitHub, for the
+/// `CODEXNOTIFIER_DOWNLOAD_BASE`: where to fetch the archive and SHA256SUMS instead of GitHub, for the
 /// tests and CI's local release server. The install scripts read the same variable.
 fn download_base_override() -> Option<String> {
-    std::env::var("CCN_DOWNLOAD_BASE")
+    std::env::var("CODEXNOTIFIER_DOWNLOAD_BASE")
         .ok()
         .filter(|base| !base.is_empty())
 }
@@ -255,7 +255,7 @@ fn run_inner(mode: &Mode) -> Result<i32> {
 
     // The hooks point at this same path, so this only does anything if they were somewhere else
     if hookcfg::status().map(|s| s.stale_exe).unwrap_or(false)
-        && let Err(err) = hookcfg::install(false)
+        && let Err(err) = hookcfg::install()
     {
         log(&format!("update: reinstalling the hooks failed: {err:#}"));
     }
@@ -333,7 +333,7 @@ fn next_step(cfg: &Config, now: i64) -> (bool, Option<String>) {
 }
 
 fn auto_update_enabled(cfg: &Config) -> bool {
-    let off = std::env::var("CCN_NO_AUTO_UPDATE")
+    let off = std::env::var("CODEXNOTIFIER_NO_AUTO_UPDATE")
         .map(|v| !v.is_empty() && v != "0")
         .unwrap_or(false);
     cfg.auto_update && !off
@@ -521,12 +521,12 @@ fn checksum_for(sums: &str, asset: &str) -> Option<String> {
 }
 
 /// The keys a release signature may verify against. A debug build (the tests) also accepts
-/// `CCN_UPDATE_PUBLIC_KEY`, so tests can sign with a key of their own; a release build never does,
+/// `CODEXNOTIFIER_UPDATE_PUBLIC_KEY`, so tests can sign with a key of their own; a release build never does,
 /// or the variable would let anyone who can set it vouch for their own binary.
 fn release_keys() -> Vec<String> {
     let mut keys: Vec<String> = RELEASE_KEYS.iter().map(|k| k.to_string()).collect();
     if cfg!(debug_assertions)
-        && let Ok(key) = std::env::var("CCN_UPDATE_PUBLIC_KEY")
+        && let Ok(key) = std::env::var("CODEXNOTIFIER_UPDATE_PUBLIC_KEY")
         && !key.is_empty()
     {
         keys.push(key);
@@ -753,7 +753,7 @@ struct UpdateLock(PathBuf);
 impl UpdateLock {
     /// None when another upgrader holds it.
     fn acquire() -> Result<Option<UpdateLock>> {
-        let dir = config::ccn_dir();
+        let dir = config::app_dir();
         fs::create_dir_all(&dir).with_context(|| format!("creating {}", dir.display()))?;
         Self::acquire_at(dir.join("update.lock"), STALE_LOCK)
     }

@@ -7,7 +7,7 @@
 //! Never anything about sessions, prompts or the computer's name. Each event is a name plus a few
 //! short words (the stage that failed, how ccn was installed), posted once with a short timeout
 //! and no retry: 3 s, or 1 s inside a hook, which Claude Code waits on.
-//! `CCN_NO_ANALYTICS=1` or `DO_NOT_TRACK=1` turns them off.
+//! `CODEXNOTIFIER_NO_ANALYTICS=1` or `DO_NOT_TRACK=1` turns them off.
 
 use serde_json::{Map, Value, json};
 use std::time::Duration;
@@ -20,20 +20,20 @@ fn enabled() -> bool {
             .map(|v| !v.is_empty() && v != "0")
             .unwrap_or(false)
     };
-    !set("CCN_NO_ANALYTICS") && !set("DO_NOT_TRACK")
+    !set("CODEXNOTIFIER_NO_ANALYTICS") && !set("DO_NOT_TRACK")
 }
 
-/// How this binary got here: the install script tells it, npx sets CCN_EPHEMERAL, Homebrew, npm,
+/// How this binary got here: the install script tells it, npx sets CODEXNOTIFIER_EPHEMERAL, Homebrew, npm,
 /// scoop and winget from where the binary really lives.
 pub fn install_method() -> &'static str {
-    if let Ok(method) = std::env::var("CCN_INSTALL_METHOD") {
+    if let Ok(method) = std::env::var("CODEXNOTIFIER_INSTALL_METHOD") {
         match method.as_str() {
             "script" => return "script",
             "powershell" => return "powershell",
             _ => {}
         }
     }
-    if std::env::var("CCN_EPHEMERAL").is_ok() {
+    if std::env::var("CODEXNOTIFIER_EPHEMERAL").is_ok() {
         return "npx";
     }
     // macOS reports the path ccn was started by, so brew's `/usr/local/bin/ccn` link must be
@@ -47,12 +47,12 @@ pub fn install_method() -> &'static str {
 /// The longest install source kept; install.sh and install.ps1 apply the same cap.
 const MAX_SOURCE_LEN: usize = 32;
 
-/// The install scripts' CCN_INSTALL_SOURCE. The website can tag an install line with any short
+/// The install scripts' CODEXNOTIFIER_INSTALL_SOURCE. The website can tag an install line with any short
 /// source (web, app, link, a campaign), so this keeps the same values the scripts send:
 /// lowercase letters, digits, `_` and `-`, up to 32 of them, and "other" for anything else.
 /// None when it is not set.
 pub fn install_source_from_env() -> Option<String> {
-    let value = std::env::var("CCN_INSTALL_SOURCE").ok()?;
+    let value = std::env::var("CODEXNOTIFIER_INSTALL_SOURCE").ok()?;
     clean_source(&value)
 }
 
@@ -101,6 +101,7 @@ pub fn event(name: &str, properties: &[(&str, &str)]) {
     }
     let cfg = Config::load();
     let mut props = Map::new();
+    props.insert("agent".to_string(), Value::from("codex"));
     for (key, value) in properties {
         props.insert((*key).to_string(), Value::from(*value));
     }
@@ -109,7 +110,7 @@ pub fn event(name: &str, properties: &[(&str, &str)]) {
             .entry("source".to_string())
             .or_insert(Value::from(source));
     }
-    let custom_server = std::env::var("CCN_SERVER_URL").is_ok();
+    let custom_server = std::env::var("CODEXNOTIFIER_SERVER_URL").is_ok();
     let body = json!({
         "context": {
             "platform": "cli",
@@ -183,8 +184,8 @@ mod tests {
 
     #[test]
     fn install_source_falls_back_to_the_remembered_one() {
-        // The test runner doesn't set CCN_INSTALL_SOURCE, so only the config speaks
-        if std::env::var("CCN_INSTALL_SOURCE").is_ok() {
+        // The test runner doesn't set CODEXNOTIFIER_INSTALL_SOURCE, so only the config speaks
+        if std::env::var("CODEXNOTIFIER_INSTALL_SOURCE").is_ok() {
             return;
         }
         let mut cfg = Config::default();

@@ -8,11 +8,9 @@ cli:
     about: "把這台電腦與你的手機配對。傳入 App 顯示的配對碼，或不帶配對碼執行，取得一個輸入到 App 裡的配對碼"
     code: "Claude Code Notifier App 中顯示的 6 位配對碼"
     name: "這台電腦在手機上顯示的名稱（預設：主機名稱）"
-    replace_mac_app: "同時移除 Mac 選單列 App 的鉤子項目，避免通知傳送兩次"
     no_wait: "顯示 QR 碼後立即返回：手機連線後配對會自動完成"
   setup:
     about: "安裝 Claude Code 的鉤子和桌面通知（pair 和不帶參數的 ccn 會先做這一步）"
-    replace_mac_app: "同時移除 Mac 選單列 App 的鉤子項目"
   doctor:
     about: "檢查鉤子、憑證、伺服器以及這個終端機支援的功能"
   test:
@@ -99,8 +97,7 @@ status:
 setup:
   installed_self: "已把 ccn 安裝到 %{path}。"
   hooks_installed: "鉤子已安裝到 %{path}（使用 %{exe}）。"
-  mac_app_note: "注意: Claude Code Notifier Mac App 的鉤子也已安裝，所以每個事件會傳送兩次。\n執行 `ccn setup --replace-mac-app` 移除它們，或結束 Mac App。"
-  mac_app_removed: "已移除 Mac App 的鉤子項目；從現在起由 ccn 負責通知。"
+  hooks_trusted: "已在 %{path} 中將其標記為受信任，Codex 無需進入 /hooks 即可執行。"
 
 sync:
   not_synced: "設定尚未同步: %{error}"
@@ -124,7 +121,8 @@ doctor:
   hooks_missing: "鉤子: 缺少 %{names}（執行 `ccn setup`）"
   hooks_error: "鉤子: %{error}"
   hooks_stale: "鉤子指向另一個 ccn 執行檔；執行 `ccn setup` 更新它們"
-  mac_app_hooks: "Mac App 的鉤子也已安裝（執行 `ccn setup --replace-mac-app`）"
+  trust_ok: "信任: 每個鉤子在 %{path} 中都有雜湊"
+  trust_missing: "信任: 在受信任之前，Codex 會略過 %{names}（執行 `ccn setup`，或在 Codex 中使用 /hooks）"
   presence: "在場偵測: 目前已閒置 %{idle} 秒，門檻 %{threshold} 秒"
   replies: "回覆: 來自手機的核准和問題回答在任何終端機都可用；向閒置工作階段輸入自由文字%{free_text}"
   replies_tmux: "可用（tmux）"
@@ -173,7 +171,7 @@ forget:
   not_registered: "這台電腦沒有在伺服器上註冊，所以伺服器上沒有可抹除的內容。"
 
 uninstall:
-  hooks_removed: "已從 %{path} 移除 ccn 的鉤子。"
+  hooks_removed: "已從 %{path} 移除 ccn 的鉤子，並從 %{config} 移除其信任項目。"
   slot_freed: "已釋放這台電腦的授權名額。"
   unpaired_all: "已取消與每一部手機的配對。"
   removed_dir: "已移除 %{path}。"
@@ -199,7 +197,6 @@ hook:
 hooks:
   doctor_presence_none: "在場偵測：此處無法偵測，因此不會等待手機：手機會收到提醒，你在終端機中回覆（如仍要等待，執行 `ccn config set hold_without_presence on`）"
   doctor_presence_none_hold: "在場偵測：此處無法偵測，且 hold_without_presence 已開啟，因此每個請求都會等待手機，直到手機回覆或超過最長等待時間"
-  doctor_duplicate_hooks: "ccn 的鉤子出現在多個設定檔中（%{paths}）：命令不同時 Claude Code 會兩份都執行，而 `ccn uninstall` 只會移除使用者設定中的那份。只保留在一個檔案中"
 
 licence:
   already_licensed: "這台電腦已有授權（%{licence}）。"
@@ -312,19 +309,11 @@ local_files:
   remove_binary: "ccn 本身仍已安裝。要移除它，請執行：%{command}"
 
 payload:
-  plan_waiting: "Claude 已擬定計畫，正在等你核准。"
-  plan_ready: "計畫待核准"
-  # The plan-approval buttons on the phone
-  plan_accept_edits: "是，自動接受編輯"
-  plan_manual_edits: "是，手動核准編輯"
-  plan_keep_planning: "否，繼續規劃"
   needs_permission: "%{tool} 需要權限"
   permission_required: "需要權限"
   has_questions: "Claude 有幾個問題"
   finished_prompt: "已完成：%{prompt}"
   question_header: "問題"
-  approve_plan: "核准計畫"
-  pattern: "模式：%{pattern}"
   search: "搜尋：%{pattern}"
 
 net:

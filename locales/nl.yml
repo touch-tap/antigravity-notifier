@@ -7,11 +7,9 @@ cli:
     about: "Koppel deze computer aan je telefoon. Geef de code op die de app toont, of start zonder code om er een te krijgen die je in de app typt"
     code: "De 6-cijferige code die de Claude Code Notifier-app toont"
     name: "Hoe deze computer op je telefoon heet (standaard: de hostnaam)"
-    replace_mac_app: "Verwijder ook de hook-regels van de Mac-menubalkapp, zodat meldingen niet dubbel worden verstuurd"
     no_wait: "Toon de QR-code en keer meteen terug: het koppelen rondt zichzelf af zodra de telefoon verbindt"
   setup:
     about: "Installeer de Claude Code-hooks en bureaubladmeldingen (pair en ccn zonder opdracht doen dit eerst)"
-    replace_mac_app: "Verwijder ook de hook-regels van de Mac-menubalkapp"
   doctor:
     about: "Controleer hooks, inloggegevens, de server en wat deze terminal ondersteunt"
   test:
@@ -97,8 +95,7 @@ status:
 setup:
   installed_self: "ccn geïnstalleerd in %{path}."
   hooks_installed: "Hooks geïnstalleerd in %{path} (met %{exe})."
-  mac_app_note: "Let op: de hooks van de Claude Code Notifier Mac-app zijn ook geïnstalleerd, dus elke\ngebeurtenis zou dubbel verstuurd worden. Voer `ccn setup --replace-mac-app` uit om ze te\nverwijderen, of sluit de Mac-app."
-  mac_app_removed: "Hook-regels van de Mac-app verwijderd; ccn verzorgt de meldingen vanaf nu."
+  hooks_trusted: "Als vertrouwd gemarkeerd in %{path}, zodat Codex ze uitvoert zonder langs /hooks te gaan."
 
 sync:
   not_synced: "Instellingen nog niet gesynchroniseerd: %{error}"
@@ -122,7 +119,8 @@ doctor:
   hooks_missing: "hooks: %{names} ontbreken (voer `ccn setup` uit)"
   hooks_error: "hooks: %{error}"
   hooks_stale: "de hooks wijzen naar een ander ccn-programma; voer `ccn setup` uit om ze bij te werken"
-  mac_app_hooks: "de hooks van de Mac-app zijn ook geïnstalleerd (voer `ccn setup --replace-mac-app` uit)"
+  trust_ok: "vertrouwen: elke hook heeft zijn hash in %{path}"
+  trust_missing: "vertrouwen: Codex slaat %{names} over tot ze vertrouwd zijn (voer `ccn setup` uit, of /hooks in Codex)"
   presence: "aanwezigheid: nu %{idle}s inactief, drempel %{threshold}s"
   replies: "antwoorden: goedkeuringen en antwoorden op vragen vanaf de telefoon werken in elke terminal; vrije tekst naar een inactieve sessie %{free_text}"
   replies_tmux: "werkt (tmux)"
@@ -171,7 +169,7 @@ forget:
   not_registered: "Deze computer is niet bij de server geregistreerd, dus daar valt niets te wissen."
 
 uninstall:
-  hooks_removed: "De hooks van ccn zijn uit %{path} verwijderd."
+  hooks_removed: "De hooks van ccn zijn uit %{path} verwijderd, en hun vertrouwensregels uit %{config}."
   slot_freed: "Licentieplek van deze computer vrijgemaakt."
   unpaired_all: "Alle telefoons ontkoppeld."
   removed_dir: "%{path} verwijderd."
@@ -197,7 +195,6 @@ hook:
 hooks:
   doctor_presence_none: "aanwezigheid: hier niet te bepalen, dus niets wacht op de telefoon: die krijgt een melding en je antwoordt in de terminal (`ccn config set hold_without_presence on` om toch te wachten)"
   doctor_presence_none_hold: "aanwezigheid: hier niet te bepalen en hold_without_presence staat aan, dus elk verzoek wacht op de telefoon tot die antwoordt of de maximale wachttijd voorbij is"
-  doctor_duplicate_hooks: "De hooks van ccn staan in meer dan één instellingenbestand (%{paths}): Claude Code voert beide kopieën uit als hun opdrachten verschillen, en `ccn uninstall` verwijdert alleen die in je gebruikersinstellingen. Houd ze in één bestand"
 
 licence:
   already_licensed: "Deze computer heeft al een licentie (%{licence})."
@@ -310,19 +307,11 @@ local_files:
   remove_binary: "ccn zelf is nog geïnstalleerd. Zo verwijder je het: %{command}"
 
 payload:
-  plan_waiting: "Claude heeft een plan gemaakt en wacht op je goedkeuring."
-  plan_ready: "Plan klaar voor goedkeuring"
-  # The plan-approval buttons on the phone
-  plan_accept_edits: "Ja, wijzigingen automatisch accepteren"
-  plan_manual_edits: "Ja, wijzigingen zelf goedkeuren"
-  plan_keep_planning: "Nee, verder plannen"
   needs_permission: "%{tool} vraagt toestemming"
   permission_required: "Toestemming nodig"
   has_questions: "Claude heeft vragen"
   finished_prompt: "Klaar: %{prompt}"
   question_header: "Vraag"
-  approve_plan: "Plan goedkeuren"
-  pattern: "Patroon: %{pattern}"
   search: "Zoeken: %{pattern}"
 
 net:

@@ -10,11 +10,9 @@ cli:
     about: "Bu bilgisayarı telefonunuzla eşleyin. Uygulamanın gösterdiği kodu verin ya da kod olmadan çalıştırıp uygulamaya yazacağınız bir kod alın"
     code: "Claude Code Notifier uygulamasında gösterilen 6 haneli kod"
     name: "Bu bilgisayarın telefonunuzda görünen adı (varsayılan: ana makine adı)"
-    replace_mac_app: "Bildirimler iki kez gönderilmesin diye Mac menü çubuğu uygulamasının hook girdilerini de kaldır"
     no_wait: "QR kodunu gösterip hemen çık: telefon bağlandığında eşleme kendiliğinden tamamlanır"
   setup:
     about: "Claude Code hook'larını ve masaüstü bildirimlerini kur (pair ve tek başına ccn bunu önce yapar)"
-    replace_mac_app: "Mac menü çubuğu uygulamasının hook girdilerini de kaldır"
   doctor:
     about: "Hook'ları, kimlik bilgilerini, sunucuyu ve bu terminalin neleri desteklediğini denetle"
   test:
@@ -100,8 +98,7 @@ status:
 setup:
   installed_self: "ccn %{path} konumuna kuruldu."
   hooks_installed: "Hook'lar %{path} içine kuruldu (%{exe} kullanılıyor)."
-  mac_app_note: "Not: Claude Code Notifier Mac uygulamasının hook'ları da kurulu, bu yüzden her olay iki kez\ngönderilir. Kaldırmak için `ccn setup --replace-mac-app` çalıştırın ya da Mac uygulamasından çıkın."
-  mac_app_removed: "Mac uygulamasının hook girdileri kaldırıldı; bildirimleri artık ccn yönetiyor."
+  hooks_trusted: "%{path} içinde güvenilir olarak işaretlendi, böylece Codex onları /hooks'a uğramadan çalıştırır."
 
 sync:
   not_synced: "Ayarlar henüz eşitlenmedi: %{error}"
@@ -125,7 +122,8 @@ doctor:
   hooks_missing: "hook'lar: eksik: %{names} (`ccn setup` çalıştırın)"
   hooks_error: "hook'lar: %{error}"
   hooks_stale: "hook'lar farklı bir ccn dosyasına işaret ediyor; güncellemek için `ccn setup` çalıştırın"
-  mac_app_hooks: "Mac uygulamasının hook'ları da kurulu (`ccn setup --replace-mac-app` çalıştırın)"
+  trust_ok: "güven: her hook'un hash'i %{path} içinde"
+  trust_missing: "güven: Codex, güvenilene kadar %{names} hook'larını atlayacak (`ccn setup` çalıştırın ya da Codex'te /hooks)"
   presence: "varlık: şu an %{idle} sn boşta, eşik %{threshold} sn"
   replies: "yanıtlar: telefondan onaylar ve soru yanıtları her terminalde çalışır; boşta bir oturuma serbest metin %{free_text}"
   replies_tmux: "çalışır (tmux)"
@@ -174,7 +172,7 @@ forget:
   not_registered: "Bu bilgisayar sunucuda kayıtlı değil, dolayısıyla orada silinecek bir şey yok."
 
 uninstall:
-  hooks_removed: "ccn hook'ları %{path} içinden kaldırıldı."
+  hooks_removed: "ccn hook'ları %{path} içinden, güven kayıtları da %{config} içinden kaldırıldı."
   slot_freed: "Bu bilgisayarın lisans yeri boşaltıldı."
   unpaired_all: "Tüm telefonların eşlemesi kaldırıldı."
   removed_dir: "%{path} kaldırıldı."
@@ -200,7 +198,6 @@ hook:
 hooks:
   doctor_presence_none: "varlık: burada algılanamıyor, bu yüzden hiçbir şey telefonu beklemiyor: telefona bir not gider, sen terminalde yanıtlarsın (yine de beklemek için `ccn config set hold_without_presence on`)"
   doctor_presence_none_hold: "varlık: burada algılanamıyor ve hold_without_presence açık, bu yüzden her istek telefon yanıtlayana ya da azami süre dolana kadar bekler"
-  doctor_duplicate_hooks: "ccn'in hook'ları birden fazla ayar dosyasında (%{paths}): komutları farklıysa Claude Code iki kopyayı da çalıştırır ve `ccn uninstall` yalnızca kullanıcı ayarlarındakileri kaldırır. Tek bir dosyada tut"
 
 licence:
   already_licensed: "Bu bilgisayar zaten lisanslı (%{licence})."
@@ -313,19 +310,11 @@ local_files:
   remove_binary: "ccn'in kendisi hâlâ yüklü. Kaldırmak için: %{command}"
 
 payload:
-  plan_waiting: "Claude bir plan hazırladı ve onayınızı bekliyor."
-  plan_ready: "Plan onay bekliyor"
-  # The plan-approval buttons on the phone
-  plan_accept_edits: "Evet, düzenlemeleri otomatik kabul et"
-  plan_manual_edits: "Evet, düzenlemeleri tek tek onayla"
-  plan_keep_planning: "Hayır, planlamaya devam et"
   needs_permission: "%{tool} için izin gerekiyor"
   permission_required: "İzin gerekiyor"
   has_questions: "Claude'un soruları var"
   finished_prompt: "Bitti: %{prompt}"
   question_header: "Soru"
-  approve_plan: "Planı onaylayın"
-  pattern: "Desen: %{pattern}"
   search: "Arama: %{pattern}"
 
 net:

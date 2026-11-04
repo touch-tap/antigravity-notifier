@@ -8,11 +8,9 @@ cli:
     about: "Diesen Computer mit deinem Handy koppeln. Gib den Code aus der App an, oder starte ohne Code und bekomme einen zum Eintippen in die App"
     code: "Der 6-stellige Code aus der Claude Code Notifier App"
     name: "Wie dieser Computer auf deinem Handy heißt (Standard: der Hostname)"
-    replace_mac_app: "Auch die Hook-Einträge der Mac-Menüleisten-App entfernen, damit Mitteilungen nicht doppelt gesendet werden"
     no_wait: "QR-Code anzeigen und sofort zurückkehren: die Kopplung wird von selbst abgeschlossen, sobald das Handy sich verbindet"
   setup:
     about: "Die Claude Code Hooks und Desktop-Mitteilungen installieren (pair und ccn ohne Argumente tun das zuerst)"
-    replace_mac_app: "Auch die Hook-Einträge der Mac-Menüleisten-App entfernen"
   doctor:
     about: "Hooks, Zugangsdaten, Server und die Fähigkeiten dieses Terminals prüfen"
   test:
@@ -98,8 +96,7 @@ status:
 setup:
   installed_self: "ccn installiert nach %{path}."
   hooks_installed: "Hooks installiert in %{path} (verwendet %{exe})."
-  mac_app_note: "Hinweis: die Hooks der Claude Code Notifier Mac-App sind auch installiert, deshalb würde jedes\nEreignis doppelt gesendet. Führe `ccn setup --replace-mac-app` aus, um sie zu entfernen,\noder beende die Mac-App."
-  mac_app_removed: "Hook-Einträge der Mac-App entfernt; ab jetzt übernimmt ccn die Mitteilungen."
+  hooks_trusted: "Als vertrauenswürdig markiert in %{path}, damit Codex sie ohne einen Besuch in /hooks ausführt."
 
 sync:
   not_synced: "Einstellungen noch nicht synchronisiert: %{error}"
@@ -123,7 +120,8 @@ doctor:
   hooks_missing: "Hooks: es fehlen %{names} (führe `ccn setup` aus)"
   hooks_error: "Hooks: %{error}"
   hooks_stale: "die Hooks zeigen auf eine andere ccn-Binary; führe `ccn setup` aus, um sie zu aktualisieren"
-  mac_app_hooks: "die Hooks der Mac-App sind auch installiert (führe `ccn setup --replace-mac-app` aus)"
+  trust_ok: "Vertrauen: jeder Hook hat seinen Hash in %{path}"
+  trust_missing: "Vertrauen: Codex überspringt %{names}, bis sie vertraut sind (führe `ccn setup` aus oder /hooks in Codex)"
   presence: "Anwesenheit: gerade %{idle}s untätig, Schwelle %{threshold}s"
   replies: "Antworten: Freigaben und Antworten auf Fragen vom Handy funktionieren in jedem Terminal; freier Text in eine untätige Sitzung %{free_text}"
   replies_tmux: "funktioniert (tmux)"
@@ -172,7 +170,7 @@ forget:
   not_registered: "Dieser Computer ist nicht beim Server registriert, dort gibt es also nichts zu löschen."
 
 uninstall:
-  hooks_removed: "Die Hooks von ccn aus %{path} entfernt."
+  hooks_removed: "Die Hooks von ccn aus %{path} und ihre Vertrauenseinträge aus %{config} entfernt."
   slot_freed: "Lizenzplatz dieses Computers freigegeben."
   unpaired_all: "Alle Handys entkoppelt."
   removed_dir: "%{path} entfernt."
@@ -198,7 +196,6 @@ hook:
 hooks:
   doctor_presence_none: "Anwesenheit: hier nicht erkennbar, daher wartet nichts auf das Handy: Es bekommt einen Hinweis, und du antwortest im Terminal (`ccn config set hold_without_presence on`, um trotzdem zu warten)"
   doctor_presence_none_hold: "Anwesenheit: hier nicht erkennbar, und hold_without_presence ist an, daher wartet jede Anfrage auf das Handy, bis es antwortet oder die Höchstdauer abläuft"
-  doctor_duplicate_hooks: "Die Hooks von ccn stehen in mehr als einer Einstellungsdatei (%{paths}): Claude Code führt beide Kopien aus, wenn sich ihre Befehle unterscheiden, und `ccn uninstall` entfernt nur die in deinen Benutzereinstellungen. Behalte sie in nur einer"
 
 licence:
   already_licensed: "Dieser Computer ist bereits lizenziert (%{licence})."
@@ -311,19 +308,11 @@ local_files:
   remove_binary: "ccn selbst ist noch installiert. So entfernst du es: %{command}"
 
 payload:
-  plan_waiting: "Claude hat einen Plan erstellt und wartet auf deine Freigabe."
-  plan_ready: "Plan wartet auf Freigabe"
-  # The plan-approval buttons on the phone
-  plan_accept_edits: "Ja, Änderungen automatisch annehmen"
-  plan_manual_edits: "Ja, Änderungen einzeln bestätigen"
-  plan_keep_planning: "Nein, weiter planen"
   needs_permission: "%{tool} braucht eine Freigabe"
   permission_required: "Freigabe erforderlich"
   has_questions: "Claude hat Fragen"
   finished_prompt: "Fertig: %{prompt}"
   question_header: "Frage"
-  approve_plan: "Plan freigeben"
-  pattern: "Muster: %{pattern}"
   search: "Suche: %{pattern}"
 
 net:

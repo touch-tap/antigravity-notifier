@@ -1,18 +1,18 @@
-// Embeds the macOS notifier app (scripts/build-macos-notifier.sh) in the ccn binary when
-// CCN_NOTIFIER_APP points at a built "Claude Code Notifier.app". Without it, ccn falls back to
+// Embeds the macOS notifier app (scripts/build-macos-notifier.sh) in the codexnotifier binary when
+// CODEXNOTIFIER_NOTIFIER_APP points at a built "Codex Notifier.app". Without it, codexnotifier falls back to
 // osascript notifications. Generates notifier_files.rs: (path inside the bundle, bytes, executable).
 
 use std::fmt::Write as _;
 use std::path::{Path, PathBuf};
 
 fn main() {
-    println!("cargo:rerun-if-env-changed=CCN_NOTIFIER_APP");
+    println!("cargo:rerun-if-env-changed=CODEXNOTIFIER_NOTIFIER_APP");
     // rust_i18n compiles locales/ into the binary from main.rs; without this, a new or edited
     // translation file is not picked up until something else makes main.rs rebuild
     println!("cargo:rerun-if-changed=locales");
     let mut out = String::from("pub const FILES: &[(&str, &[u8], bool)] = &[\n");
 
-    let app = std::env::var("CCN_NOTIFIER_APP")
+    let app = std::env::var("CODEXNOTIFIER_NOTIFIER_APP")
         .ok()
         .filter(|p| !p.is_empty())
         .map(PathBuf::from);
@@ -20,7 +20,7 @@ fn main() {
     if let (Some(app), true) = (app, macos) {
         let app = app
             .canonicalize()
-            .expect("CCN_NOTIFIER_APP must point at a built app bundle");
+            .expect("CODEXNOTIFIER_NOTIFIER_APP must point at a built app bundle");
         println!("cargo:rerun-if-changed={}", app.display());
         let mut files = Vec::new();
         walk(&app, &mut files);

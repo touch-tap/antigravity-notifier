@@ -1,6 +1,12 @@
-//! The hook dispatcher. Claude Code runs `ccn hook` with the event JSON on stdin; this decides
+//! The hook dispatcher. Codex runs `codexnotifier hook` with the event JSON on stdin; this decides
 //! what to do and prints a decision when it has one. It never exits non-zero: a failure here
-//! must not block Claude.
+//! must not block Codex.
+//!
+//! Codex's hook contract (codex-rs/hooks) matches Claude Code's for the events used here:
+//! `PermissionRequest` takes `{hookSpecificOutput: {decision: {behavior}}}`, `Stop` takes
+//! `{decision: "block", reason}`, `PreToolUse` takes `permissionDecision` deny with a reason.
+//! There is no Notification event, so the PermissionRequest hook also sends the informational
+//! card when the user is at the keyboard.
 
 use anyhow::{Context, Result};
 use rust_i18n::t;
@@ -59,8 +65,8 @@ fn paired_system_message(phone: &str) -> String {
     t!("hook.paired_message", phone = phone).into_owned()
 }
 
-pub fn run(plugin: bool) -> Result<()> {
-    match std::panic::catch_unwind(|| run_inner(plugin)) {
+pub fn run() -> Result<()> {
+    match std::panic::catch_unwind(run_inner) {
         Ok(Ok(Some(output))) => println!("{output}"),
         Ok(Ok(None)) => {}
         Ok(Err(err)) => log(&format!("hook error: {err:#}")),
@@ -77,33 +83,10 @@ struct Ctx {
     started: Instant,
 }
 
-/// The Claude Code plugin calls `ccn hook --plugin` for every event. It stands aside:
-/// - when a settings file Claude Code reads for this session already has ccn's hooks or the Mac
-///   app's (the user's, or the project's `.claude/settings.json` / `settings.local.json`), so no
-///   event is handled twice;
-/// - when ccn has no config file. That is before `ccn pair` (the plugin says ccn stays quiet
-///   until then; `ccn setup` puts hooks in the user's settings, which take over anyway) and after
-///   `ccn uninstall`, which deletes it: the plugin outlives an uninstall and still finds the
-///   binary, and notifications must not come back. `ccn pair` writes it again.
-fn plugin_stands_aside(input: &Value) -> bool {
-    if !config::config_path().exists() {
-        return true;
-    }
-    // Claude Code tells hooks the project's root; the event's cwd can be a folder inside it
-    let project = std::env::var_os("CLAUDE_PROJECT_DIR")
-        .filter(|dir| !dir.is_empty())
-        .map(std::path::PathBuf::from)
-        .or_else(|| Input(input).str("cwd").map(std::path::PathBuf::from));
-    crate::hookcfg::settings_has_hooks(project.as_deref())
-}
-
-fn run_inner(plugin: bool) -> Result<Option<Value>> {
+fn run_inner() -> Result<Option<Value>> {
     let mut raw = String::new();
     std::io::stdin().read_to_string(&mut raw)?;
     let input: Value = serde_json::from_str(&raw).context("hook input is not JSON")?;
-    if plugin && plugin_stands_aside(&input) {
-        return Ok(None);
-    }
     let started = Instant::now();
     let event = input["hook_event_name"].as_str().unwrap_or("").to_string();
     let session_id = Input(&input).session_id();
@@ -125,7 +108,7 @@ fn run_inner(plugin: bool) -> Result<Option<Value>> {
 
     if let Some(mut flag) = Unpaired::load() {
         // No network while unpaired, except a once-a-day check at SessionStart in case the
-        // rejection was a server mistake. `ccn pair` deletes the flag.
+        // rejection was a server mistake. `codexnotifier pair` deletes the flag.
         let recheck =
             event == "SessionStart" && config::now() - flag.checked_at > Unpaired::RECHECK_AFTER;
         if !(recheck && still_accepted(&api, &mut flag)) {
@@ -156,7 +139,7 @@ fn run_inner(plugin: bool) -> Result<Option<Value>> {
     let result = ctx.dispatch(&event);
     if ctx.api.was_rejected() {
         log(&format!(
-            "{event}: the server rejected this computer's credentials; run `ccn pair`"
+            "{event}: the server rejected this computer's credentials; run `codexnotifier pair`"
         ));
         return Ok(unpaired(&ctx.cfg, &event, &mut ctx.state, Unpaired::new()).or(update_message));
     }
@@ -209,7 +192,7 @@ fn still_accepted(api: &Api, flag: &mut Unpaired) -> bool {
 }
 
 /// What a hook does while the server rejects this computer: a desktop notification at most once a
-/// day, and a message in Claude Code at SessionStart and on the first prompt of each session.
+/// day, and a message in Codex at SessionStart and on the first prompt of each session.
 fn unpaired(
     cfg: &Config,
     event: &str,
@@ -250,7 +233,6 @@ impl Ctx {
             "UserPromptSubmit" => self.user_prompt(),
             "PreToolUse" => self.pre_tool_use(),
             "PermissionRequest" => self.permission_request(),
-            "Notification" => self.notification(),
             "Stop" => self.stop(),
             "SessionEnd" => self.session_end(),
             other => {
@@ -270,7 +252,7 @@ impl Ctx {
             .in_quiet_hours(chrono::Local::now().time())
     }
 
-    /// The user is at the terminal Claude runs in, and asked for nothing to be sent then
+    /// The user is at the terminal Codex runs in, and asked for nothing to be sent then
     fn quiet_at_terminal(&self) -> bool {
         self.cfg.settings.quiet_when_present()
             && presence::at_terminal(self.cfg.settings.presence_threshold())
@@ -327,7 +309,7 @@ impl Ctx {
 
     /// Once a day, asks whether this computer should be told about licences, and tells it when the
     /// cadence allows (`licence_nudge_allowed`). The server writes the message and picks the
-    /// variant; `CCN_NO_NUDGE=1` turns it off.
+    /// variant; `CODEXNOTIFIER_NO_NUDGE=1` turns it off.
     fn licence_nudge(&mut self, now: i64) -> Option<Value> {
         if local::no_nudge_env()
             || now - self.cfg.licence_checked_at.unwrap_or(0) < LICENCE_CHECK_EVERY
@@ -402,13 +384,15 @@ impl Ctx {
                 .turn
                 .record_tool(name, &self.input().tool_input());
         }
-        if tool_name.as_deref() != Some("AskUserQuestion") {
+        let is_question = tool_name
+            .as_deref()
+            .is_some_and(payload::is_question_tool);
+        if !is_question {
             self.send_working(config::now(), tool_name.as_deref());
         }
         self.state.save()?;
 
-        if tool_name.as_deref() == Some("AskUserQuestion") && self.cfg.settings.notify_on_question()
-        {
+        if is_question && self.cfg.settings.notify_on_question() {
             let tool_input = self.input().tool_input();
             let questions = payload::questions_from_input(&tool_input);
             if questions.is_empty() {
@@ -417,9 +401,7 @@ impl Ctx {
             let (card, key) = payload::question_card(&self.input(), &questions, false);
             let ceiling = self.cfg.settings.hold_ceiling();
             let answer = self.blocking("question", &key, card, ceiling, true)?;
-            return Ok(
-                answer.and_then(|text| respond::question_output(&text, &tool_input, &questions))
-            );
+            return Ok(answer.and_then(|text| respond::question_output(&text, &questions)));
         }
         Ok(None)
     }
@@ -436,52 +418,14 @@ impl Ctx {
         // there is no way to see the other hooks' answers from here.
         let (card, kind, key) = payload::permission_card(&self.input(), false);
         let ceiling = self.cfg.settings.hold_ceiling();
-        // When the user is present we send nothing here: Claude Code shows its prompt and the
-        // Notification hook sends the informational card.
-        let answer = self.blocking(kind, &key, card, ceiling, false)?;
+        // Codex has no Notification event, so when the user is present this sends the
+        // informational card itself (unless they are looking at this very terminal)
+        let answer = self.blocking(kind, &key, card, ceiling, true)?;
         if answer.is_some() {
             self.state.turn.record_approval();
             let _ = self.state.save();
         }
-        Ok(answer.map(|text| respond::permission_output(&text, &self.input)))
-    }
-
-    fn notification(&mut self) -> Result<Option<Value>> {
-        let kind = self
-            .input()
-            .str("notification_type")
-            .unwrap_or("")
-            .to_string();
-        if kind != "permission_prompt"
-            || !self.cfg.settings.notify_on_permission()
-            || self.quiet()
-            || self.quiet_at_terminal()
-        {
-            return Ok(None);
-        }
-        // A card for this request may already be on the phone from the PermissionRequest hook
-        if let Some(card) = &self.state.last_card {
-            let fresh = config::now() - card.sent_at < self.cfg.settings.hold_ceiling() as i64 + 60;
-            if fresh
-                && !card.settled
-                && (card.kind == "permission" || card.kind == "plan" || card.kind == "question")
-            {
-                return Ok(None);
-            }
-        }
-        let (card, kind, key) =
-            if self.state.tool_name.is_some() && self.input().tool_name().is_none() {
-                // The Notification event carries no tool; use what PreToolUse recorded
-                let mut synthetic = self.input.clone();
-                synthetic["tool_name"] =
-                    Value::String(self.state.tool_name.clone().unwrap_or_default());
-                synthetic["tool_input"] = self.state.tool_input.clone().unwrap_or(Value::Null);
-                payload::permission_card(&Input(&synthetic), false)
-            } else {
-                payload::permission_card(&self.input(), false)
-            };
-        self.send_card(kind, &key, card, false)?;
-        Ok(None)
+        Ok(answer.map(|text| respond::permission_output(&text)))
     }
 
     fn stop(&mut self) -> Result<Option<Value>> {
@@ -538,7 +482,7 @@ impl Ctx {
         self.cfg.settings.notify_on_done() && !self.quiet() && !self.quiet_at_terminal()
     }
 
-    /// A throttled "Claude is working" update for the lock-screen card. Never fails the hook.
+    /// A throttled "Codex is working" update for the lock-screen card. Never fails the hook.
     fn send_working(&mut self, now: i64, tool_name: Option<&str>) {
         if !self.live_updates_allowed() || !self.state.turn.working_due(now) {
             return;
@@ -604,7 +548,7 @@ impl Ctx {
             let _ = self.state.save();
         }
         if self.cfg.desktop_notifications {
-            let title = card["title"].as_str().unwrap_or("Claude Code");
+            let title = card["title"].as_str().unwrap_or("Codex");
             let attention = t!("hook.needs_attention");
             let body = card["promptText"]
                 .as_str()
@@ -710,7 +654,7 @@ impl Ctx {
 /// Where the time of the last failed best-effort update is kept. One file for every session,
 /// since a server that is down is down for all of them.
 fn backoff_path() -> std::path::PathBuf {
-    config::ccn_dir().join("offline_at")
+    config::app_dir().join("offline_at")
 }
 
 /// How long a best-effort update may take, given when the hook started and when the last one

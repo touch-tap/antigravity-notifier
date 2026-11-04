@@ -11,11 +11,9 @@ cli:
     about: "اربط هذا الكمبيوتر بهاتفك. أدخل الرمز الذي يعرضه التطبيق، أو شغّل الأمر بلا رمز لتحصل على رمز تكتبه في التطبيق"
     code: "الرمز المكوّن من 6 أرقام المعروض في تطبيق Claude Code Notifier"
     name: "اسم هذا الكمبيوتر كما يظهر على هاتفك (الافتراضي: اسم المضيف)"
-    replace_mac_app: "أزل أيضًا إدخالات hooks الخاصة بتطبيق شريط القوائم على Mac، كي لا تُرسل الإشعارات مرتين"
     no_wait: "اعرض رمز QR وارجع فورًا: يكتمل الربط من تلقاء نفسه عندما يتصل الهاتف"
   setup:
     about: "ثبّت hooks الخاصة بـ Claude Code وإشعارات سطح المكتب (يقوم pair وتشغيل ccn بلا أمر بهذا أولًا)"
-    replace_mac_app: "أزل أيضًا إدخالات hooks الخاصة بتطبيق شريط القوائم على Mac"
   doctor:
     about: "افحص hooks وبيانات الاعتماد والخادم وما تدعمه هذه الطرفية"
   test:
@@ -101,8 +99,7 @@ status:
 setup:
   installed_self: "ثُبّت ccn في %{path}."
   hooks_installed: "ثُبّتت hooks في %{path} (باستخدام %{exe})."
-  mac_app_note: "ملاحظة: hooks الخاصة بتطبيق Claude Code Notifier على Mac مثبتة أيضًا، لذا سيُرسل كل حدث\nمرتين. أزلها بالأمر `ccn setup --replace-mac-app`، أو أغلق تطبيق Mac."
-  mac_app_removed: "أُزيلت إدخالات hooks الخاصة بتطبيق Mac؛ ومن الآن يتولى ccn الإشعارات."
+  hooks_trusted: "ووُسمت بأنها موثوقة في %{path}، فيشغّلها Codex دون زيارة /hooks."
 
 sync:
   not_synced: "لم تُزامَن الإعدادات بعد: %{error}"
@@ -126,7 +123,8 @@ doctor:
   hooks_missing: "hooks: مفقودة %{names} (شغّل `ccn setup`)"
   hooks_error: "hooks: %{error}"
   hooks_stale: "hooks تشير إلى ملف ccn مختلف؛ لتحديثها شغّل `ccn setup`"
-  mac_app_hooks: "hooks الخاصة بتطبيق Mac مثبتة أيضًا (شغّل `ccn setup --replace-mac-app`)"
+  trust_ok: "الثقة: لكل hook بصمته في %{path}"
+  trust_missing: "الثقة: سيتخطى Codex ‏%{names} حتى تُوثَق (شغّل `ccn setup`، أو /hooks في Codex)"
   presence: "الحضور: خامل منذ %{idle} ث، الحد %{threshold} ث"
   replies: "الردود: الموافقات وإجابات الأسئلة من الهاتف تعمل في أي طرفية؛ النص الحر إلى جلسة خاملة %{free_text}"
   replies_tmux: "يعمل (tmux)"
@@ -175,7 +173,7 @@ forget:
   not_registered: "هذا الكمبيوتر غير مسجَّل لدى الخادم، فلا شيء يُمسح هناك."
 
 uninstall:
-  hooks_removed: "أُزيلت hooks الخاصة بـ ccn من %{path}."
+  hooks_removed: "أُزيلت hooks الخاصة بـ ccn من %{path} وإدخالات الثقة الخاصة بها من %{config}."
   slot_freed: "أُفرغ مكان هذا الكمبيوتر على الترخيص."
   unpaired_all: "أُلغي ربط كل الهواتف."
   removed_dir: "أُزيل %{path}."
@@ -201,7 +199,6 @@ hook:
 hooks:
   doctor_presence_none: "الحضور: لا يمكن رصده هنا، لذا لا شيء ينتظر الهاتف: يصله تنبيه وتجيب أنت في الطرفية (`ccn config set hold_without_presence on` للانتظار رغم ذلك)"
   doctor_presence_none_hold: "الحضور: لا يمكن رصده هنا، وhold_without_presence مفعّل، لذا ينتظر كل طلب الهاتف حتى يجيب أو تنقضي المدة القصوى"
-  doctor_duplicate_hooks: "خطافات ccn موجودة في أكثر من ملف إعدادات (%{paths}): يشغّل Claude Code النسختين إذا اختلفت أوامرهما، ولا يزيل `ccn uninstall` إلا ما في إعدادات المستخدم. أبقها في ملف واحد"
 
 licence:
   already_licensed: "هذا الكمبيوتر مرخّص بالفعل (%{licence})."
@@ -314,19 +311,11 @@ local_files:
   remove_binary: "ما زال ccn نفسه مثبّتًا. لإزالته: %{command}"
 
 payload:
-  plan_waiting: "أنشأ Claude خطة وينتظر موافقتك."
-  plan_ready: "الخطة جاهزة للموافقة"
-  # The plan-approval buttons on the phone
-  plan_accept_edits: "نعم، اقبل التعديلات تلقائيًا"
-  plan_manual_edits: "نعم، وافق على التعديلات يدويًا"
-  plan_keep_planning: "لا، تابع التخطيط"
   needs_permission: "%{tool} يحتاج إلى إذن"
   permission_required: "مطلوب إذن"
   has_questions: "لدى Claude أسئلة"
   finished_prompt: "انتهى: %{prompt}"
   question_header: "سؤال"
-  approve_plan: "الموافقة على الخطة"
-  pattern: "النمط: %{pattern}"
   search: "بحث: %{pattern}"
 
 net:

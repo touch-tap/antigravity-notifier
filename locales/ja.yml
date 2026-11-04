@@ -8,11 +8,9 @@ cli:
     about: "このコンピュータをスマートフォンとペアリングします。アプリに表示されたコードを渡すか、コードなしで実行してアプリに入力するコードを取得します"
     code: "Claude Code Notifier アプリに表示される6桁のコード"
     name: "スマートフォン上でのこのコンピュータの名前（デフォルト: ホスト名）"
-    replace_mac_app: "Mac メニューバーアプリのフック設定も削除し、通知が二重に送られないようにします"
     no_wait: "QR コードを表示してすぐ戻ります。スマートフォンが接続するとペアリングは自動で完了します"
   setup:
     about: "Claude Code のフックとデスクトップ通知をインストールします（pair と引数なしの ccn は最初にこれを行います）"
-    replace_mac_app: "Mac メニューバーアプリのフック設定も削除します"
   doctor:
     about: "フック、認証情報、サーバー、このターミナルの対応状況を確認します"
   test:
@@ -99,8 +97,7 @@ status:
 setup:
   installed_self: "ccn を %{path} にインストールしました。"
   hooks_installed: "フックを %{path} にインストールしました（%{exe} を使用）。"
-  mac_app_note: "注意: Claude Code Notifier Mac アプリのフックもインストールされているため、各イベントが二重に\n送られます。`ccn setup --replace-mac-app` で削除するか、Mac アプリを終了してください。"
-  mac_app_removed: "Mac アプリのフック設定を削除しました。今後は ccn が通知を扱います。"
+  hooks_trusted: "%{path} で信頼済みにしたので、Codex は /hooks を開かなくても実行します。"
 
 sync:
   not_synced: "設定はまだ同期されていません: %{error}"
@@ -124,7 +121,8 @@ doctor:
   hooks_missing: "フック: %{names} がありません（`ccn setup` を実行）"
   hooks_error: "フック: %{error}"
   hooks_stale: "フックが別の ccn バイナリを指しています。`ccn setup` で更新してください"
-  mac_app_hooks: "Mac アプリのフックもインストールされています（`ccn setup --replace-mac-app` を実行）"
+  trust_ok: "信頼: すべてのフックのハッシュが %{path} にあります"
+  trust_missing: "信頼: 信頼されるまで Codex は %{names} をスキップします（`ccn setup` を実行するか、Codex で /hooks）"
   presence: "在席検出: 現在 %{idle} 秒間操作なし、しきい値 %{threshold} 秒"
   replies: "返答: スマートフォンからの承認と質問への回答はどのターミナルでも動作します。待機中のセッションへの自由入力: %{free_text}"
   replies_tmux: "tmux で動作します"
@@ -173,7 +171,7 @@ forget:
   not_registered: "このコンピュータはサーバーに登録されていないため、サーバー側で消去するものはありません。"
 
 uninstall:
-  hooks_removed: "%{path} から ccn のフックを削除しました。"
+  hooks_removed: "%{path} から ccn のフックを、%{config} からその信頼エントリを削除しました。"
   slot_freed: "このコンピュータのライセンス枠を空けました。"
   unpaired_all: "すべてのスマートフォンのペアリングを解除しました。"
   removed_dir: "%{path} を削除しました。"
@@ -199,7 +197,6 @@ hook:
 hooks:
   doctor_presence_none: "在席検出: ここでは検出できないため、スマートフォンの応答は待ちません。スマートフォンには通知が届き、ターミナルで応答します（それでも待つには `ccn config set hold_without_presence on`）"
   doctor_presence_none_hold: "在席検出: ここでは検出できず、hold_without_presence がオンのため、各リクエストはスマートフォンが応答するか上限時間が過ぎるまで待ちます"
-  doctor_duplicate_hooks: "ccn のフックが複数の設定ファイル（%{paths}）にあります。コマンドが異なる場合、Claude Code は両方を実行し、`ccn uninstall` はユーザー設定にあるものしか削除しません。1 つのファイルだけに残してください"
 
 licence:
   already_licensed: "このコンピュータにはすでにライセンスがあります（%{licence}）。"
@@ -312,19 +309,11 @@ local_files:
   remove_binary: "ccn 本体はまだインストールされています。削除するには: %{command}"
 
 payload:
-  plan_waiting: "Claude がプランを作成し、承認を待っています。"
-  plan_ready: "プランの承認待ち"
-  # The plan-approval buttons on the phone
-  plan_accept_edits: "はい、編集を自動で承認"
-  plan_manual_edits: "はい、編集を手動で承認"
-  plan_keep_planning: "いいえ、計画を続ける"
   needs_permission: "%{tool} の許可が必要です"
   permission_required: "許可が必要です"
   has_questions: "Claude から質問があります"
   finished_prompt: "完了: %{prompt}"
   question_header: "質問"
-  approve_plan: "プランを承認"
-  pattern: "パターン: %{pattern}"
   search: "検索: %{pattern}"
 
 net:

@@ -8,11 +8,9 @@ cli:
     about: "이 컴퓨터를 휴대폰과 연결해요. 앱에 표시된 코드를 넘기거나, 코드 없이 실행해 앱에 입력할 코드를 받으세요"
     code: "Claude Code Notifier 앱에 표시된 6자리 코드"
     name: "휴대폰에 표시되는 이 컴퓨터의 이름 (기본값: 호스트 이름)"
-    replace_mac_app: "Mac 메뉴 막대 앱의 훅 항목도 제거해서 알림이 두 번 가지 않게 해요"
     no_wait: "QR 코드를 표시하고 바로 돌아와요. 휴대폰이 연결되면 알아서 완료돼요"
   setup:
     about: "Claude Code 훅과 데스크톱 알림을 설치해요 (pair와 인수 없는 ccn이 먼저 하는 일이에요)"
-    replace_mac_app: "Mac 메뉴 막대 앱의 훅 항목도 제거해요"
   doctor:
     about: "훅, 인증 정보, 서버, 이 터미널이 지원하는 기능을 점검해요"
   test:
@@ -99,8 +97,7 @@ status:
 setup:
   installed_self: "ccn을 %{path}에 설치했어요."
   hooks_installed: "훅을 %{path}에 설치했어요 (%{exe} 사용)."
-  mac_app_note: "참고: Claude Code Notifier Mac 앱의 훅도 설치되어 있어서 모든 이벤트가 두 번 전송돼요.\n`ccn setup --replace-mac-app`으로 제거하거나 Mac 앱을 종료하세요."
-  mac_app_removed: "Mac 앱의 훅 항목을 제거했어요. 이제부터 ccn이 알림을 맡아요."
+  hooks_trusted: "%{path}에 신뢰함으로 표시해서, Codex가 /hooks에 들르지 않아도 실행해요."
 
 sync:
   not_synced: "설정이 아직 동기화되지 않았어요: %{error}"
@@ -124,7 +121,8 @@ doctor:
   hooks_missing: "훅: %{names} 없음 (`ccn setup` 실행)"
   hooks_error: "훅: %{error}"
   hooks_stale: "훅이 다른 ccn 바이너리를 가리키고 있어요. `ccn setup`으로 업데이트하세요"
-  mac_app_hooks: "Mac 앱의 훅도 설치되어 있어요 (`ccn setup --replace-mac-app` 실행)"
+  trust_ok: "신뢰: 모든 훅의 해시가 %{path}에 있음"
+  trust_missing: "신뢰: 신뢰할 때까지 Codex가 %{names}을(를) 건너뜀 (`ccn setup` 실행, 또는 Codex에서 /hooks)"
   presence: "자리 감지: 현재 %{idle}초 동안 입력 없음, 기준 %{threshold}초"
   replies: "답장: 휴대폰에서 보낸 승인과 질문 답변은 어떤 터미널에서도 동작해요. 대기 중인 세션에 자유 입력: %{free_text}"
   replies_tmux: "tmux로 동작해요"
@@ -173,7 +171,7 @@ forget:
   not_registered: "이 컴퓨터는 서버에 등록되어 있지 않아서 서버에서 지울 것이 없어요."
 
 uninstall:
-  hooks_removed: "%{path}에서 ccn 훅을 제거했어요."
+  hooks_removed: "%{path}에서 ccn 훅을, %{config}에서 그 신뢰 항목을 제거했어요."
   slot_freed: "이 컴퓨터의 라이선스 자리를 비웠어요."
   unpaired_all: "모든 휴대폰의 연결을 해제했어요."
   removed_dir: "%{path}를 제거했어요."
@@ -199,7 +197,6 @@ hook:
 hooks:
   doctor_presence_none: "자리 감지: 여기서는 감지할 수 없어 휴대폰을 기다리지 않습니다. 휴대폰에는 알림이 가고 터미널에서 응답합니다(그래도 기다리려면 `ccn config set hold_without_presence on`)"
   doctor_presence_none_hold: "자리 감지: 여기서는 감지할 수 없고 hold_without_presence가 켜져 있어, 모든 요청이 휴대폰이 응답하거나 최대 대기 시간이 지날 때까지 기다립니다"
-  doctor_duplicate_hooks: "ccn의 훅이 둘 이상의 설정 파일(%{paths})에 있습니다. 명령이 다르면 Claude Code가 두 사본을 모두 실행하고, `ccn uninstall`은 사용자 설정에 있는 것만 제거합니다. 한 파일에만 두세요"
 
 licence:
   already_licensed: "이 컴퓨터에는 이미 라이선스가 있어요 (%{licence})."
@@ -312,19 +309,11 @@ local_files:
   remove_binary: "ccn 자체는 아직 설치되어 있어요. 제거하려면: %{command}"
 
 payload:
-  plan_waiting: "Claude가 계획을 세우고 승인을 기다리고 있어요."
-  plan_ready: "승인을 기다리는 계획"
-  # The plan-approval buttons on the phone
-  plan_accept_edits: "예, 편집 자동 승인"
-  plan_manual_edits: "예, 편집을 직접 승인"
-  plan_keep_planning: "아니요, 계속 계획하기"
   needs_permission: "%{tool} 권한이 필요해요"
   permission_required: "권한이 필요해요"
   has_questions: "Claude가 질문이 있어요"
   finished_prompt: "완료: %{prompt}"
   question_header: "질문"
-  approve_plan: "계획 승인"
-  pattern: "패턴: %{pattern}"
   search: "검색: %{pattern}"
 
 net:

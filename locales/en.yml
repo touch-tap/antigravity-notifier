@@ -9,11 +9,9 @@ cli:
     about: "Pair this computer with your phone. Pass the code the app shows, or run with no code to get one to type into the app"
     code: "The 6-digit code shown in the Claude Code Notifier app"
     name: "What this computer is called on your phone (default: the hostname)"
-    replace_mac_app: "Also remove the Mac menu bar app's hook entries, so notifications are not sent twice"
     no_wait: "Show the QR code and return at once: pairing completes on its own when the phone connects"
   setup:
     about: "Install the Claude Code hooks and desktop notifications (pair and bare ccn do this first)"
-    replace_mac_app: "Also remove the Mac menu bar app's hook entries"
   doctor:
     about: "Check hooks, credentials, the server and what this terminal supports"
   test:
@@ -101,8 +99,7 @@ status:
 setup:
   installed_self: "Installed ccn to %{path}."
   hooks_installed: "Hooks installed in %{path} (using %{exe})."
-  mac_app_note: "Note: the Claude Code Notifier Mac app's hooks are also installed, so each event\nwould be sent twice. Run `ccn setup --replace-mac-app` to remove them, or quit the Mac app."
-  mac_app_removed: "Removed the Mac app's hook entries; ccn handles notifications from now on."
+  hooks_trusted: "Marked them trusted in %{path}, so Codex runs them without a visit to /hooks."
 
 sync:
   not_synced: "Settings not synced yet: %{error}"
@@ -126,7 +123,8 @@ doctor:
   hooks_missing: "hooks: missing %{names} (run `ccn setup`)"
   hooks_error: "hooks: %{error}"
   hooks_stale: "hooks point at a different ccn binary; run `ccn setup` to update them"
-  mac_app_hooks: "the Mac app's hooks are also installed (run `ccn setup --replace-mac-app`)"
+  trust_ok: "trust: every hook has its hash in %{path}"
+  trust_missing: "trust: Codex will skip %{names} until trusted (run `ccn setup`, or /hooks in Codex)"
   presence: "presence: idle %{idle}s now, threshold %{threshold}s"
   replies: "replies: approvals and question answers from the phone work in any terminal; free text into an idle session %{free_text}"
   replies_tmux: "works (tmux)"
@@ -175,7 +173,7 @@ forget:
   not_registered: "This computer isn't registered with the server, so there is nothing to erase there."
 
 uninstall:
-  hooks_removed: "Removed ccn's hooks from %{path}."
+  hooks_removed: "Removed ccn's hooks from %{path} and their trust entries from %{config}."
   slot_freed: "Freed this computer's licence slot."
   unpaired_all: "Unpaired every phone."
   removed_dir: "Removed %{path}."
@@ -201,7 +199,6 @@ hook:
 hooks:
   doctor_presence_none: "presence: not detectable here, so nothing waits for the phone: it gets a note and you answer in the terminal (`ccn config set hold_without_presence on` to wait anyway)"
   doctor_presence_none_hold: "presence: not detectable here, and hold_without_presence is on, so every request waits for the phone until it answers or the hold ceiling passes"
-  doctor_duplicate_hooks: "ccn's hooks are in more than one settings file (%{paths}): Claude Code runs both copies when their commands differ, and `ccn uninstall` only removes the ones in your user settings. Keep them in one"
 
 licence:
   already_licensed: "This computer is already licensed (%{licence})."
@@ -316,12 +313,6 @@ local_files:
 # What the phone shows, and the desktop notification repeats, when Claude gives no text of its
 # own. The apps display it as sent, so it is in the computer's language.
 payload:
-  plan_waiting: "Claude has created a plan and is waiting for your approval."
-  plan_ready: "Plan ready for approval"
-  # The plan-approval buttons on the phone
-  plan_accept_edits: "Yes, auto-accept edits"
-  plan_manual_edits: "Yes, manually approve edits"
-  plan_keep_planning: "No, keep planning"
   # %{tool} is Claude Code's tool name: Bash, Edit, WebFetch...
   needs_permission: "%{tool} needs permission"
   permission_required: "Permission required"
@@ -329,10 +320,7 @@ payload:
   # %{prompt} is what the user asked Claude to do
   finished_prompt: "Finished: %{prompt}"
   question_header: "Question"
-  approve_plan: "Approve the plan"
-  # A file pattern such as src/**/*.rs
-  pattern: "Pattern: %{pattern}"
-  # A search pattern for file contents
+  # A web search query
   search: "Search: %{pattern}"
 
 # When the server can't be reached at all (no connection, DNS, timeout). The raw error follows

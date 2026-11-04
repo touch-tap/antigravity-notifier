@@ -13,9 +13,9 @@ use std::time::{Duration, Instant};
 const PROBE_TIMEOUT: Duration = Duration::from_millis(500);
 
 pub fn idle_seconds() -> Option<f64> {
-    // Test hook: CCN_PRESENCE=away|present|unknown pins the answer (unknown: as where idle time
+    // Test hook: CODEXNOTIFIER_PRESENCE=away|present|unknown pins the answer (unknown: as where idle time
     // can't be read); file:<path> reads it from a file each time
-    if let Ok(value) = std::env::var("CCN_PRESENCE") {
+    if let Ok(value) = std::env::var("CODEXNOTIFIER_PRESENCE") {
         let value = match value.strip_prefix("file:") {
             Some(path) => std::fs::read_to_string(path)
                 .unwrap_or_default()
@@ -55,7 +55,7 @@ pub fn user_present(threshold: f64) -> bool {
 
 /// Whether a blocking hook may hold Claude for the phone, given what presence detection said.
 /// Unknown presence holds only when the user asked for it (`ccn config set hold_without_presence
-/// on`, or `CCN_HOLD_WITHOUT_PRESENCE=1`): typing can't release a hold that can't see typing.
+/// on`, or `CODEXNOTIFIER_HOLD_WITHOUT_PRESENCE=1`): typing can't release a hold that can't see typing.
 pub fn hold_allowed(idle: Option<f64>, threshold: f64, hold_without_presence: bool) -> bool {
     match idle {
         Some(idle) => idle >= threshold,
@@ -97,11 +97,11 @@ fn run_bounded(program: &str, args: &[&str], timeout: Duration) -> Option<String
     }
 }
 
-/// True when the user is at the terminal Claude runs in: active within `threshold` seconds and,
+/// True when the user is at the terminal Codex runs in: active within `threshold` seconds and,
 /// on macOS, with that terminal the frontmost app. Someone typing in a browser is not at the
 /// terminal. Where the terminal can't be identified (Linux, Windows, ssh), activity alone decides.
 pub fn at_terminal(threshold: f64) -> bool {
-    if let Ok(value) = std::env::var("CCN_PRESENCE") {
+    if let Ok(value) = std::env::var("CODEXNOTIFIER_PRESENCE") {
         if value == "present-elsewhere" {
             return false;
         }
