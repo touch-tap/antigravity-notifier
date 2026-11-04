@@ -101,6 +101,8 @@ fn run_inner() -> Result<Option<Value>> {
         None
     };
     if !cfg.is_paired() {
+        // One line so the log shows Codex is calling us even before pairing
+        log(&format!("{event}: not paired yet, desktop notifications only"));
         // No credentials: desktop notifications only, and no network at all
         return Ok(local::run(&mut cfg, &event, &input, &mut state).or(update_message));
     }
