@@ -1,12 +1,12 @@
 //! Anonymous setup events: where installing, pairing, licensing and updating get stuck, so it can
 //! be fixed.
 //!
-//! Sent by the install scripts and by commands people type (`ccn pair`, `ccn activate`, the
+//! Sent by the install scripts and by commands people type (`codex-notifier pair`, `codex-notifier activate`, the
 //! pitch), by the detached background updater (`cli_updated`, `cli_update_failed`), and from one
 //! hook: SessionStart posts `cli_nudge_shown` when it shows a licence nudge, at most once a day.
 //! Never anything about sessions, prompts or the computer's name. Each event is a name plus a few
-//! short words (the stage that failed, how ccn was installed), posted once with a short timeout
-//! and no retry: 3 s, or 1 s inside a hook, which Claude Code waits on.
+//! short words (the stage that failed, how codex-notifier was installed), posted once with a short timeout
+//! and no retry: 3 s, or 1 s inside a hook, which Codex waits on.
 //! `CODEX_NOTIFIER_NO_ANALYTICS=1` or `DO_NOT_TRACK=1` turns them off.
 
 use serde_json::{Map, Value, json};
@@ -23,8 +23,8 @@ fn enabled() -> bool {
     !set("CODEX_NOTIFIER_NO_ANALYTICS") && !set("DO_NOT_TRACK")
 }
 
-/// How this binary got here: the install script tells it, npx sets CODEX_NOTIFIER_EPHEMERAL, Homebrew, npm,
-/// scoop and winget from where the binary really lives.
+/// How this binary got here: the install script tells it, npx sets CODEX_NOTIFIER_EPHEMERAL, Homebrew
+/// and npm from where the binary really lives.
 pub fn install_method() -> &'static str {
     if let Ok(method) = std::env::var("CODEX_NOTIFIER_INSTALL_METHOD") {
         match method.as_str() {
@@ -36,7 +36,7 @@ pub fn install_method() -> &'static str {
     if std::env::var("CODEX_NOTIFIER_EPHEMERAL").is_ok() {
         return "npx";
     }
-    // macOS reports the path ccn was started by, so brew's `/usr/local/bin/ccn` link must be
+    // macOS reports the path codex-notifier was started by, so brew's `/usr/local/bin/codex-notifier` link must be
     // resolved to its Cellar before the path can say anything; update.rs decides it the same way
     std::env::current_exe()
         .ok()
@@ -68,12 +68,12 @@ fn clean_source(value: &str) -> Option<String> {
 }
 
 /// Where this computer's install line was copied from: this run's environment first, then what
-/// `ccn setup` remembered. None for Homebrew, npm and npx installs, which have no install line.
+/// `codex-notifier setup` remembered. None for Homebrew, npm and npx installs, which have no install line.
 pub fn install_source(cfg: &Config) -> Option<String> {
     install_source_from_env().or_else(|| cfg.install_source.clone())
 }
 
-/// Remembers the install source on the first run that carries one, so a later `ccn pair` typed by
+/// Remembers the install source on the first run that carries one, so a later `codex-notifier pair` typed by
 /// hand still reports it. Never overwrites: the first install line is the one that brought them.
 pub fn remember_install_source() {
     if let Some(source) = install_source_from_env() {
@@ -85,7 +85,7 @@ pub fn remember_install_source() {
     }
 }
 
-/// How long an event may take. A hook holds up Claude Code while it runs, so an event sent from
+/// How long an event may take. A hook holds up Codex while it runs, so an event sent from
 /// one gets a third of the usual time: a slow server costs the user at most a second.
 fn timeout() -> Duration {
     if std::env::args().nth(1).as_deref() == Some("hook") {
@@ -136,7 +136,7 @@ pub fn event(name: &str, properties: &[(&str, &str)]) {
         .send_json(body);
 }
 
-/// A short reason for a failed pairing: the typed kind when ccn raised it itself (its message is
+/// A short reason for a failed pairing: the typed kind when codex-notifier raised it itself (its message is
 /// in the user's language), otherwise from the server's message or the transport error.
 pub fn failure_reason(err: &anyhow::Error) -> &'static str {
     use crate::commands::PairFailure;

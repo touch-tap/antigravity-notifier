@@ -53,8 +53,8 @@ pub fn user_present(threshold: f64) -> bool {
     idle_seconds().map(|idle| idle < threshold).unwrap_or(false)
 }
 
-/// Whether a blocking hook may hold Claude for the phone, given what presence detection said.
-/// Unknown presence holds only when the user asked for it (`ccn config set hold_without_presence
+/// Whether a blocking hook may hold Codex for the phone, given what presence detection said.
+/// Unknown presence holds only when the user asked for it (`codex-notifier config set hold_without_presence
 /// on`, or `CODEX_NOTIFIER_HOLD_WITHOUT_PRESENCE=1`): typing can't release a hold that can't see typing.
 pub fn hold_allowed(idle: Option<f64>, threshold: f64, hold_without_presence: bool) -> bool {
     match idle {
@@ -194,7 +194,7 @@ mod tests {
             Some("42\n")
         );
         assert_eq!(
-            super::run_bounded("ccn-no-such-program", &[], super::PROBE_TIMEOUT),
+            super::run_bounded("codex-notifier-no-such-program", &[], super::PROBE_TIMEOUT),
             None
         );
     }
@@ -232,7 +232,7 @@ fn macos() -> Option<f64> {
 }
 
 /// Linux: the desktop's idle time where there is one (X11 via xprintidle, GNOME's Mutter, KDE and
-/// others via the freedesktop ScreenSaver interface), and otherwise the terminal's: when Claude
+/// others via the freedesktop ScreenSaver interface), and otherwise the terminal's: when Codex
 /// runs over ssh, in WSL or on a console, the last keypress is the last read from its terminal.
 #[cfg(target_os = "linux")]
 fn linux() -> Option<f64> {
@@ -310,9 +310,9 @@ fn ppid_from_stat(stat: &str) -> Option<u32> {
     rest.split_whitespace().nth(1)?.parse().ok()
 }
 
-/// Seconds since the terminal Claude runs in was last read from, which is the last keypress (as
+/// Seconds since the terminal Codex runs in was last read from, which is the last keypress (as
 /// `w` reports it). The hook's own stdin is a pipe, so this walks up to the first ancestor whose
-/// stdin is a terminal: Claude Code itself, or the shell around it. The kernel updates a
+/// stdin is a terminal: Codex itself, or the shell around it. The kernel updates a
 /// terminal's read time in 8-second steps, well inside the presence threshold.
 #[cfg(target_os = "linux")]
 fn terminal_idle() -> Option<f64> {

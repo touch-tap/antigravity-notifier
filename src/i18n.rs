@@ -193,7 +193,7 @@ mod tests {
         // A locale with no file: the English text, never the raw key
         let text = rust_i18n::t!("cli.about", locale = "xx");
         assert!(
-            text.starts_with("Claude Code Notifier: get a push"),
+            text.starts_with("Codex Notifier: get a push"),
             "{text}"
         );
         let text = rust_i18n::t!(
@@ -219,7 +219,7 @@ mod tests {
         "licence.yes_no",
         "licence.no_initial",
         "test.failed",
-        // "hooks" is Claude Code's name for the feature, kept in hooks_all of the same files
+        // "hooks" is Codex's name for the feature, kept in hooks_all of the same files
         "ar:doctor.hooks_error",
         "he:doctor.hooks_error",
         "es:doctor.hooks_error",

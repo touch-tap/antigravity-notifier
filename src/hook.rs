@@ -60,9 +60,22 @@ pub fn licence_nudge_allowed(now: i64, paired_at: Option<i64>, last_shown: Optio
 }
 
 /// Shown once, when a SessionStart finds the first phone paired (the user paired from the phone
-/// after leaving `ccn pair`, or scanned the QR code later)
+/// after leaving `codex-notifier pair`, or scanned the QR code later)
 fn paired_system_message(phone: &str) -> String {
     t!("hook.paired_message", phone = phone).into_owned()
+}
+
+/// The server writes the nudge for Claude Code Notifier's `ccn` (Nov 2026: CliCopy is not yet
+/// per app), so its command and any mention of Claude are put in Codex's words here.
+/// TODO: drop once the server writes codex_cli copy itself.
+fn codex_wording(mut message: api::NudgeMessage) -> api::NudgeMessage {
+    let fix = |text: &str| text.replace("Claude Code", "Codex").replace("Claude", "Codex");
+    message.title = fix(&message.title);
+    message.body = fix(&message.body);
+    if let Some(rest) = message.command.strip_prefix("ccn ") {
+        message.command = format!("codex-notifier {rest}");
+    }
+    message
 }
 
 pub fn run() -> Result<()> {
@@ -94,7 +107,7 @@ fn run_inner() -> Result<Option<Value>> {
     let mut cfg = Config::load();
     let mut state = SessionState::load(&session_id);
     state.touch(&input);
-    // Once a day, start a detached look for a newer ccn; the hook itself never waits on it
+    // Once a day, start a detached look for a newer codex-notifier; the hook itself never waits on it
     let update_message = if event == "SessionStart" {
         crate::update::daily_check(&mut cfg)
     } else {
@@ -120,7 +133,7 @@ fn run_inner() -> Result<Option<Value>> {
     }
 
     // Registered but no phone known to be paired: one quick question at SessionStart, so a phone
-    // that paired while no `ccn pair` was watching is picked up
+    // that paired while no `codex-notifier pair` was watching is picked up
     let announce = if event == "SessionStart" && cfg.phones.unwrap_or(0) == 0 {
         check_phones(&mut cfg, &api)
     } else {
@@ -336,7 +349,7 @@ impl Ctx {
         }
         self.cfg.licence_nudge_last_at = Some(now);
         let _ = self.cfg.save();
-        let Some(message) = status.nudge_message else {
+        let Some(message) = status.nudge_message.map(codex_wording) else {
             // A server that says `nudge: true` without writing the message itself (one from
             // before Oct 2026). The line describes this computer, never anyone's store purchase.
             return Some(serde_json::json!({ "systemMessage": t!("hook.licence_message") }));
@@ -412,12 +425,12 @@ impl Ctx {
         if !self.cfg.settings.notify_on_permission() {
             return Ok(None);
         }
-        // Claude Code runs every matching PermissionRequest hook in parallel, ours alongside any
-        // other tool's (a policy hook, another notifier). The docs give no precedence between
-        // their decisions, and the request waits for the slowest hook, so while we hold, another
-        // hook's instant allow or deny waits too, up to the hold ceiling. Holding only when the
-        // user is away (and, since Nov 2026, never when presence is unknown) keeps that rare;
-        // there is no way to see the other hooks' answers from here.
+        // Another PermissionRequest hook (a policy hook, another notifier) may run alongside ours.
+        // In Claude Code they run in parallel with no precedence between their decisions, and the
+        // request waits for the slowest; Codex's ordering is not checked yet, so assume the same:
+        // while we hold, another hook's instant allow or deny waits too, up to the hold ceiling.
+        // Holding only when the user is away (and never when presence is unknown) keeps that
+        // rare; there is no way to see the other hooks' answers from here.
         let (card, kind, key) = payload::permission_card(&self.input(), false);
         let ceiling = self.cfg.settings.hold_ceiling();
         // Codex has no Notification event, so when the user is present this sends the
@@ -448,12 +461,11 @@ impl Ctx {
                 log(&format!("could not send the done update: {err:#}"));
             }
         }
-        // `stop_hook_active` is true when Claude is running on because a Stop hook blocked: here,
+        // `stop_hook_active` is true when Codex is running on because a Stop hook blocked: here,
         // a reply typed on the phone. Each new stop holds again, so a conversation from the phone
-        // can go on, but Claude Code caps a run of Stop blocks at 8 with no tool call between
-        // them (CLAUDE_CODE_STOP_HOOK_BLOCK_CAP) and then ends the turn whatever the hook says.
-        // So a 9th reply in a row with no tool use in between is shown as answered on the phone
-        // but not acted on. Rare enough not to count blocks for; a tool call resets the count.
+        // can go on. (Claude Code caps a run of Stop blocks at 8 with no tool call between them;
+        // whether Codex has a similar cap is not checked yet. If it does, a reply past the cap is
+        // shown as answered on the phone but not acted on.)
         // A stop within 5s of a done card we just sent (another Stop hook blocked right after it)
         // gets no second card.
         if stop_hook_active {
@@ -695,6 +707,21 @@ fn best_effort_post(api: &Api, update: &Value, started: Instant) -> Result<Optio
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn the_servers_ccn_nudge_reads_as_codex() {
+        let message = codex_wording(api::NudgeMessage {
+            id: "none-b".into(),
+            kind: "none".into(),
+            variant: "b".into(),
+            title: "Answer Claude from your phone, no subscription".into(),
+            body: "Approvals from Claude Code reach you.".into(),
+            command: "ccn unlock --lifetime".into(),
+        });
+        assert_eq!(message.title, "Answer Codex from your phone, no subscription");
+        assert_eq!(message.body, "Approvals from Codex reach you.");
+        assert_eq!(message.command, "codex-notifier unlock --lifetime");
+    }
 
     #[test]
     fn best_effort_updates_share_a_budget_and_back_off() {

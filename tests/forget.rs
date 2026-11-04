@@ -71,7 +71,7 @@ fn fake_server(status: u16, body: &'static str) -> (String, std::thread::JoinHan
             body.len()
         );
         stream.write_all(reply.as_bytes()).unwrap();
-        // Close gracefully: Windows resets a connection closed with unread data, and ccn then
+        // Close gracefully: Windows resets a connection closed with unread data, and codex-notifier then
         // sees "connection aborted" instead of the reply
         let _ = stream.shutdown(std::net::Shutdown::Write);
         request
@@ -220,9 +220,9 @@ fn unreachable_url() -> String {
     format!("http://{}", listener.local_addr().unwrap())
 }
 
-/// `CODEX_NOTIFIER_HOME` may point at a folder that holds other things: only ccn's own files go.
+/// `CODEX_NOTIFIER_HOME` may point at a folder that holds other things: only codex-notifier's own files go.
 #[test]
-fn removes_only_ccns_own_files_from_a_shared_folder() {
+fn removes_only_its_own_files_from_a_shared_folder() {
     let sandbox = Sandbox::new("shared");
     let dir = sandbox.app_dir();
     std::fs::write(dir.join("notes.txt"), "mine").unwrap();
@@ -276,14 +276,14 @@ fn uninstall_offline_says_the_licence_slot_was_not_freed() {
     let stderr = text(&out.stderr);
     assert!(
         stderr.contains("Couldn't free this computer's licence slot")
-            && stderr.contains("claudecodenotifier.com/licence"),
+            && stderr.contains("codexnotifier.com/licence"),
         "{stderr}"
     );
     assert!(!sandbox.app_dir().exists());
     assert!(settings_hooks_gone(&sandbox));
     // The binary is left to whatever installed it, with the command to remove it
     let stdout = text(&out.stdout);
-    assert!(stdout.contains("ccn itself is still installed"), "{stdout}");
+    assert!(stdout.contains("codex-notifier itself is still installed"), "{stdout}");
     let exe = std::path::Path::new(env!("CARGO_BIN_EXE_codex-notifier"));
     assert!(exe.exists());
 }

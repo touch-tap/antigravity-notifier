@@ -3,14 +3,14 @@
 _version: 1
 
 cli:
-  about: "Claude Code Notifier: Claude Code があなたを必要とするときスマートフォンにプッシュ通知を届け、その場で返答できます"
+  about: "Codex Notifier: Codex があなたを必要とするときスマートフォンにプッシュ通知を届け、その場で返答できます"
   pair:
     about: "このコンピュータをスマートフォンとペアリングします。アプリに表示されたコードを渡すか、コードなしで実行してアプリに入力するコードを取得します"
-    code: "Claude Code Notifier アプリに表示される6桁のコード"
+    code: "Codex Notifier アプリに表示される6桁のコード"
     name: "スマートフォン上でのこのコンピュータの名前（デフォルト: ホスト名）"
     no_wait: "QR コードを表示してすぐ戻ります。スマートフォンが接続するとペアリングは自動で完了します"
   setup:
-    about: "Claude Code のフックとデスクトップ通知をインストールします（pair と引数なしの ccn は最初にこれを行います）"
+    about: "Codex のフックとデスクトップ通知をインストールします（pair と引数なしの codex-notifier は最初にこれを行います）"
   doctor:
     about: "フック、認証情報、サーバー、このターミナルの対応状況を確認します"
   test:
@@ -21,14 +21,14 @@ cli:
   config:
     about: "このコンピュータの設定を表示または変更します（スマートフォンからも編集できます）"
     show: "有効な設定を表示します"
-    set: "設定を1つ変更します。例: `ccn config set hold_ceiling_seconds 300` や `ccn config set quiet_hours 22:00-08:00`"
+    set: "設定を1つ変更します。例: `codex-notifier config set hold_ceiling_seconds 300` や `codex-notifier config set quiet_hours 22:00-08:00`"
   sync:
     about: "サーバーから最新の設定を今すぐ取得します"
   unlock:
     about: "ブラウザでこのコンピュータのライセンスを購入します。ペアリングしたすべてのスマートフォンがロック解除されます"
     lifetime: "年額ではなく一回払いにします（年間ライセンスを買い切りに切り替える場合もキーはそのまま）"
   upgrade:
-    about: "ccn を最新リリースに更新します（1日1回バックグラウンドでも確認します）"
+    about: "codex-notifier を最新リリースに更新します（1日1回バックグラウンドでも確認します）"
     check: "新しいリリースがあるかだけを報告します。最新なら終了コード 0、更新があれば 10"
     quiet: "問題が起きたとき以外は何も表示しません"
   activate:
@@ -47,7 +47,7 @@ cli:
 
 common:
   your_phone: "スマートフォン"
-  not_paired: "このコンピュータはまだペアリングされていません。アプリに表示されたコードで `ccn pair <code>` を実行してください。"
+  not_paired: "このコンピュータはまだペアリングされていません。アプリに表示されたコードで `codex-notifier pair <code>` を実行してください。"
   store_keychain: "キーチェーン"
   store_file: "ファイル"
   # 文中の日付に使う chrono の strftime 書式。chrono は英語の月名しか知らないので数字だけの形にする。
@@ -55,47 +55,47 @@ common:
 
 pair:
   reregister: "このコンピュータの以前のペアリングは削除されているため、改めて登録します。"
-  code_not_recognised: "そのコードは認識されませんでした。6桁のコードは Claude Code Notifier アプリの「コンピュータ > コンピュータを追加」にあります。24時間ごとに変わるので、アプリに今表示されている行をコピーしてください。"
+  code_not_recognised: "そのコードは認識されませんでした。6桁のコードは Codex Notifier アプリの「コンピュータ > コンピュータを追加」にあります。24時間ごとに変わるので、アプリに今表示されている行をコピーしてください。"
   offer_qr: "代わりにここに QR コードを表示するには Enter を押してください（スマートフォンで読み取ります）。やめるには Ctrl+C。"
-  options_without_terminal: "アプリに今表示されているコードで `ccn pair <code>` をもう一度実行するか、`ccn pair` を実行してここに QR コードを表示し、スマートフォンで読み取ってください。"
+  options_without_terminal: "アプリに今表示されているコードで `codex-notifier pair <code>` をもう一度実行するか、`codex-notifier pair` を実行してここに QR コードを表示し、スマートフォンで読み取ってください。"
   scan: "  スマートフォンのカメラでこれを読み取ると接続できます。アプリがまだない場合は\n  App Store か Google Play が開きます。インストールしてから、もう一度読み取ってください。"
-  or_type_code: "  または Claude Code Notifier アプリにこのコードを入力:  %{code}"
-  enter_code: "  Claude Code Notifier アプリにこのコードを入力:  %{code}"
+  or_type_code: "  または Codex Notifier アプリにこのコードを入力:  %{code}"
+  enter_code: "  Codex Notifier アプリにこのコードを入力:  %{code}"
   hooks_already_installed: "  フックはインストール済みなので、このコンピュータではすでにデスクトップ通知が届きます。"
   code_lasts: "  ペアリングはいつでも構いません。このコードは %{duration} 有効です。"
   completes_on_its_own: "  スマートフォンが接続すると、ペアリングは自動で完了します。"
   waiting: "  スマートフォンを待っています...（Ctrl+C を押しても大丈夫です。スマートフォンが接続すればペアリングは自動で完了します）"
-  code_expired: "スマートフォンが使う前にコードの期限が切れました。`ccn pair` をもう一度実行してください。"
-  code_is_six_digits: "コードは Claude Code Notifier アプリに表示される6桁の数字です"
+  code_expired: "スマートフォンが使う前にコードの期限が切れました。`codex-notifier pair` をもう一度実行してください。"
+  code_is_six_digits: "コードは Codex Notifier アプリに表示される6桁の数字です"
   credentials_stored: "認証情報を%{store}に保存しました（%{path}）。"
   test_sent: "スマートフォンにテスト通知を送りました。"
   test_failed: "テスト通知をまだ送れません: %{error}"
-  done: "完了です。いつも通り `claude` を起動してください。Claude が終了したり、あなたを必要としたときに\nプッシュ通知が届き、スマートフォンから承認・拒否・返答ができます。`ccn doctor` で全体を確認できます。"
+  done: "完了です。いつも通り `codex` を起動してください。Codex が終了したり、あなたを必要としたときに\nプッシュ通知が届き、スマートフォンから承認・拒否・返答ができます。`codex-notifier doctor` で全体を確認できます。"
   paired_with: "%{name}（%{platform}）とペアリングしました。"
   hours_one: "1時間"
   hours_other: "%{count}時間"
   minutes_one: "1分"
   minutes_other: "%{count}分"
   pitch: "スマートフォンのアプリにサブスクリプションの案内が表示されます。アプリストアを通さず、ここからすべてをロック解除することもできます:"
-  pitch_annual: "  ccn unlock             年額 %{price}"
-  pitch_lifetime: "  ccn unlock --lifetime  %{price} の一回払い"
+  pitch_annual: "  codex-notifier unlock             年額 %{price}"
+  pitch_lifetime: "  codex-notifier unlock --lifetime  %{price} の一回払い"
   pitch_covers: "コンピュータ %{computers} 台と、それらにペアリングしたすべてのスマートフォンが対象です。%{days} 日間の返金保証。"
   welcome_no_terminal: "テスト通知をスマートフォンに送りました。そこから返答してみてください。"
   welcome: "テスト通知をスマートフォンに送りました。そこから返答してみてください..."
   welcome_skip: "（Enter でスキップ）"
-  welcome_answered: "✓ スマートフォンから「%{answer}」と返答がありました。Claude にもこのように返答します。"
+  welcome_answered: "✓ スマートフォンから「%{answer}」と返答がありました。Codex にもこのように返答します。"
   welcome_no_answer: "まだ返答がありません。通知はスマートフォンに1時間残ります。"
 
 status:
-  set_up: "ccn %{version} はこのコンピュータに「%{name}」として設定されています。"
+  set_up: "codex-notifier %{version} はこのコンピュータに「%{name}」として設定されています。"
   licence: "ライセンス: %{line}"
-  hint_doctor: "  ccn doctor     フック、認証情報、サーバーを確認"
-  hint_test: "  ccn test       スマートフォンにテスト通知を送る"
-  hint_pair: "  ccn pair       別のスマートフォンをペアリング"
-  hint_help: "  ccn --help     その他すべて"
+  hint_doctor: "  codex-notifier doctor     フック、認証情報、サーバーを確認"
+  hint_test: "  codex-notifier test       スマートフォンにテスト通知を送る"
+  hint_pair: "  codex-notifier pair       別のスマートフォンをペアリング"
+  hint_help: "  codex-notifier --help     その他すべて"
 
 setup:
-  installed_self: "ccn を %{path} にインストールしました。"
+  installed_self: "codex-notifier を %{path} にインストールしました。"
   hooks_installed: "フックを %{path} にインストールしました（%{exe} を使用）。"
   hooks_trusted: "%{path} で信頼済みにしたので、Codex は /hooks を開かなくても実行します。"
 
@@ -104,25 +104,25 @@ sync:
   synced: "設定を同期しました。"
 
 doctor:
-  header: "ccn %{version}（%{platform}）"
+  header: "codex-notifier %{version}（%{platform}）"
   config: "設定ファイル: %{path}"
   credentials_present: "認証情報: あり（%{store}）"
-  credentials_missing: "認証情報: なし。`ccn pair <code>` を実行してください"
+  credentials_missing: "認証情報: なし。`codex-notifier pair <code>` を実行してください"
   server_reachable: "サーバー: %{url} に接続できます"
   server_error: "サーバー: %{error}"
   registered: "「%{name}」として登録済み（%{kind} %{platform}）、機能: %{capabilities}"
-  not_paired_any_more: "ペアリング: 解除されています。`ccn pair` を実行してください"
+  not_paired_any_more: "ペアリング: 解除されています。`codex-notifier pair` を実行してください"
   registration_error: "登録: %{error}"
   licence: "ライセンス: %{line}"
-  phones_none: "スマートフォン: まだペアリングされていないため、通知はこのデスクトップに残ります（`ccn pair` を実行）"
+  phones_none: "スマートフォン: まだペアリングされていないため、通知はこのデスクトップに残ります（`codex-notifier pair` を実行）"
   phones: "スマートフォン: %{names}"
   phones_error: "スマートフォン: %{error}"
   hooks_all: "フック: %{count} 件すべて %{path} にインストール済み"
-  hooks_missing: "フック: %{names} がありません（`ccn setup` を実行）"
+  hooks_missing: "フック: %{names} がありません（`codex-notifier setup` を実行）"
   hooks_error: "フック: %{error}"
-  hooks_stale: "フックが別の ccn バイナリを指しています。`ccn setup` で更新してください"
+  hooks_stale: "フックが別の codex-notifier バイナリを指しています。`codex-notifier setup` で更新してください"
   trust_ok: "信頼: すべてのフックのハッシュが %{path} にあります"
-  trust_missing: "信頼: 信頼されるまで Codex は %{names} をスキップします（`ccn setup` を実行するか、Codex で /hooks）"
+  trust_missing: "信頼: 信頼されるまで Codex は %{names} をスキップします（`codex-notifier setup` を実行するか、Codex で /hooks）"
   presence: "在席検出: 現在 %{idle} 秒間操作なし、しきい値 %{threshold} 秒"
   replies: "返答: スマートフォンからの承認と質問への回答はどのターミナルでも動作します。待機中のセッションへの自由入力: %{free_text}"
   replies_tmux: "tmux で動作します"
@@ -131,12 +131,12 @@ doctor:
   log: "ログ: %{path}"
 
 test:
-  none_paired: "ペアリング済みのスマートフォンがありません。`ccn pair <code>` を実行してください。"
+  none_paired: "ペアリング済みのスマートフォンがありません。`codex-notifier pair <code>` を実行してください。"
   sent: "%{name}（%{platform}）にテスト通知を送りました。"
   failed: "%{name}: %{error}"
 
 devices:
-  none: "ペアリング済みのスマートフォンがありません。アプリに表示されたコードで `ccn pair <code>` を実行してください。"
+  none: "ペアリング済みのスマートフォンがありません。アプリに表示されたコードで `codex-notifier pair <code>` を実行してください。"
   # %{name} は 24 桁、%{platform} は 8 桁に揃えてから埋められる
   row: "%{name} %{platform} %{since} にペアリング%{off}"
   notifications_off: "  （通知オフ）"
@@ -159,85 +159,85 @@ settings:
   unknown: "'%{key}' という設定はありません。設定項目: notify_on_done, notify_on_permission, notify_on_question, sound, quiet_when_present, quiet_hours, hold_ceiling_seconds, presence_threshold_seconds, stop_hold_seconds, reminder_interval_seconds"
 
 forget:
-  needs_yes: "ccn forget には確認が必要です。ターミナルで実行するか、--yes を付けてください"
-  warning: "この操作は、このコンピュータとそのペアリングを Claude Code Notifier のサーバーから消去し、\n`ccn uninstall` と同じように Claude Code から ccn を取り除き、ここにある認証情報とファイルを削除します。\nこのコンピュータとペアリングしていたスマートフォンからは、このコンピュータが消えます。\nウェブサイトで購入したライセンスは解約されません。claudecodenotifier.com/licence の\n「Erase my licence」から行ってください。"
+  needs_yes: "codex-notifier forget には確認が必要です。ターミナルで実行するか、--yes を付けてください"
+  warning: "この操作は、このコンピュータとそのペアリングを Codex Notifier のサーバーから消去し、\n`codex-notifier uninstall` と同じように Codex から codex-notifier を取り除き、ここにある認証情報とファイルを削除します。\nこのコンピュータとペアリングしていたスマートフォンからは、このコンピュータが消えます。\nウェブサイトで購入したライセンスは解約されません。codexnotifier.com/licence の\n「Erase my licence」から行ってください。"
   # ユーザーが入力する確認の言葉。`yes` も常に受け付けられる
   yes_word: "はい"
   prompt: "\n続けるには %{yes} と入力してください: "
   nothing_erased: "何も消去されませんでした。"
   erased: "このコンピュータとそのペアリングをサーバーから消去しました。"
   already_forgotten: "サーバーはすでにこのコンピュータを忘れていました。"
-  nothing_removed: "%{error}。このコンピュータからは何も削除されていないので、`ccn forget` をもう一度実行できます"
+  nothing_removed: "%{error}。このコンピュータからは何も削除されていないので、`codex-notifier forget` をもう一度実行できます"
   not_registered: "このコンピュータはサーバーに登録されていないため、サーバー側で消去するものはありません。"
 
 uninstall:
-  hooks_removed: "%{path} から ccn のフックを、%{config} からその信頼エントリを削除しました。"
+  hooks_removed: "%{path} から codex-notifier のフックを、%{config} からその信頼エントリを削除しました。"
   slot_freed: "このコンピュータのライセンス枠を空けました。"
   unpaired_all: "すべてのスマートフォンのペアリングを解除しました。"
   removed_dir: "%{path} を削除しました。"
 
 local:
-  finished_title: "Claude が終了しました"
-  finished_body: "Claude が終了し、あなたを待っています。"
-  permission_title: "Claude が許可を求めています"
-  question_title: "Claude からの質問があります"
-  first_nudge: "スマートフォンでも受け取る: ccn pair"
-  milestone_nudge: "これで10件目の通知です。スマートフォンでも受け取り、ロック画面から承認するには ccn pair を実行してください"
-  pair_message: "Claude Code Notifier: デスクトップ通知が届いています。スマートフォンでも受け取り、そこから承認や返答をするには、ターミナルで `ccn pair` を実行してください。"
+  finished_title: "Codex が終了しました"
+  finished_body: "Codex が終了し、あなたを待っています。"
+  permission_title: "Codex が許可を求めています"
+  question_title: "Codex からの質問があります"
+  first_nudge: "スマートフォンでも受け取る: codex-notifier pair"
+  milestone_nudge: "これで10件目の通知です。スマートフォンでも受け取り、ロック画面から承認するには codex-notifier pair を実行してください"
+  pair_message: "Codex Notifier: デスクトップ通知が届いています。スマートフォンでも受け取り、そこから承認や返答をするには、ターミナルで `codex-notifier pair` を実行してください。"
 
 hook:
-  licence_message: "Claude Code Notifier: このコンピュータではスマートフォン通知がロック解除されていません。ロック解除するには: ccn unlock"
-  unpaired_message: "Claude Code Notifier: このコンピュータのペアリングが解除されているため、スマートフォンに通知が届きません。再接続するにはターミナルで `ccn pair` を実行してください。"
-  unpaired_notification: "このコンピュータのペアリングが解除されています。再接続するにはターミナルで `ccn pair` を実行してください。"
-  paired_message: "Claude Code Notifier: %{phone} とペアリングしました。通知はこれからスマートフォンに届きます。"
+  licence_message: "Codex Notifier: このコンピュータではスマートフォン通知がロック解除されていません。ロック解除するには: codex-notifier unlock"
+  unpaired_message: "Codex Notifier: このコンピュータのペアリングが解除されているため、スマートフォンに通知が届きません。再接続するにはターミナルで `codex-notifier pair` を実行してください。"
+  unpaired_notification: "このコンピュータのペアリングが解除されています。再接続するにはターミナルで `codex-notifier pair` を実行してください。"
+  paired_message: "Codex Notifier: %{phone} とペアリングしました。通知はこれからスマートフォンに届きます。"
   # タイトル、本文、コマンドはサーバーがユーザーの言語で書く。ここではつなげるだけ
-  nudge_message: "Claude Code Notifier: %{title} %{body} %{command}"
+  nudge_message: "Codex Notifier: %{title} %{body} %{command}"
   needs_attention: "確認が必要です"
 
 hooks:
-  doctor_presence_none: "在席検出: ここでは検出できないため、スマートフォンの応答は待ちません。スマートフォンには通知が届き、ターミナルで応答します（それでも待つには `ccn config set hold_without_presence on`）"
+  doctor_presence_none: "在席検出: ここでは検出できないため、スマートフォンの応答は待ちません。スマートフォンには通知が届き、ターミナルで応答します（それでも待つには `codex-notifier config set hold_without_presence on`）"
   doctor_presence_none_hold: "在席検出: ここでは検出できず、hold_without_presence がオンのため、各リクエストはスマートフォンが応答するか上限時間が過ぎるまで待ちます"
 
 licence:
   already_licensed: "このコンピュータにはすでにライセンスがあります（%{licence}）。"
-  switch_to_lifetime: "同じキーのまま買い切りライセンスに切り替えるには: ccn unlock --lifetime"
+  switch_to_lifetime: "同じキーのまま買い切りライセンスに切り替えるには: codex-notifier unlock --lifetime"
   checkout_open: "  ブラウザで決済ページを開きました。代わりにスマートフォンで支払うには、これを読み取ってください:"
   checkout_link: "  このリンクを開いて支払うか、スマートフォンで読み取ってください:"
   waiting_payment: "  支払いを待っています...（Ctrl+C で中止できます。どちらの場合もキーはメールで届きます）"
   upgraded: "✓ 買い切りライセンスに切り替えました。キーもコンピュータもそのままで、年間更新は解約されました。"
   licensed: "✓ このコンピュータにライセンスが適用されました（%{licence}）。"
-  key: "  キー: %{key}（メールでも送付）。あと2台まで使えます: ccn activate %{key}"
+  key: "  キー: %{key}（メールでも送付）。あと2台まで使えます: codex-notifier activate %{key}"
   phones_unlocked: "  このコンピュータにペアリングしたすべてのスマートフォンがロック解除されました。"
-  activate_with_key: "  メールで届いたキーで `ccn activate <key>` を実行すると、このコンピュータで使えます。"
-  no_payment: "15分経っても支払いが確認できません。支払い済みの場合、キーはメールに届いています: ccn activate <key>"
+  activate_with_key: "  メールで届いたキーで `codex-notifier activate <key>` を実行すると、このコンピュータで使えます。"
+  no_payment: "15分経っても支払いが確認できません。支払い済みの場合、キーはメールに届いています: codex-notifier activate <key>"
   replace_stale: "「%{name}」は1週間以上確認されていません。これはこのコンピュータですか？置き換えますか？"
   yes_no: " [Y/n] "
   # この文字（または n）で始まる答えは「いいえ」
   no_initial: "い"
   slots_full: "このライセンスはすでに %{count} 台のコンピュータで使われています:"
-  free_one: "そのコンピュータで `ccn deactivate` を実行して枠を空けるか、ここから置き換えてください:"
-  replace_example: "  ccn activate %{key} --replace \"%{name}\""
+  free_one: "そのコンピュータで `codex-notifier deactivate` を実行して枠を空けるか、ここから置き換えてください:"
+  replace_example: "  codex-notifier activate %{key} --replace \"%{name}\""
   old_laptop: "古いノートPC"
   no_free_slot: "空いているコンピュータ枠がありません"
   computers_on_licence: "このライセンスのコンピュータ:"
   activated: "✓ ライセンスを適用しました（%{licence}）。3台中 %{count} 台を使用中です。"
-  pair_to_unlock: "  `ccn pair` でスマートフォンをペアリングすると、すぐにロック解除されます。"
+  pair_to_unlock: "  `codex-notifier pair` でスマートフォンをペアリングすると、すぐにロック解除されます。"
   none: "このコンピュータにはライセンスがありません。"
   freed: "枠を空けました。このライセンスは現在 3台中 %{count} 台を使用中です。"
-  none_buy: "このコンピュータにライセンスがありません。購入するには: ccn unlock"
+  none_buy: "このコンピュータにライセンスがありません。購入するには: codex-notifier unlock"
   none_short: "このコンピュータにライセンスがありません。"
-  buy_options: "  購入する:           ccn unlock（年間）または ccn unlock --lifetime"
-  have_key: "  キーをお持ちの場合: ccn activate <key>"
+  buy_options: "  購入する:           codex-notifier unlock（年間）または codex-notifier unlock --lifetime"
+  have_key: "  キーをお持ちの場合: codex-notifier activate <key>"
   show_licence: "ライセンス:   %{licence}"
   show_key: "キー:         CCN-…-%{last4}"
   show_unlocks: "ロック解除:   %{value}"
   unlocks_yes: "はい。このコンピュータにペアリングしたすべてのスマートフォン"
   unlocks_no: "いいえ"
   show_computers: "コンピュータ: 3台中 %{count} 台"
-  switch_lifetime_keep_key: "キーはそのまま買い切りに切り替える: ccn unlock --lifetime"
+  switch_lifetime_keep_key: "キーはそのまま買い切りに切り替える: codex-notifier unlock --lifetime"
   status_licensed: "%{licence}、コンピュータ 3台中 %{count} 台"
-  status_unlicensed: "%{licence}: ccn unlock"
-  status_none: "なし: ccn unlock"
+  status_unlicensed: "%{licence}: codex-notifier unlock"
+  status_none: "なし: codex-notifier unlock"
   describe_refunded: "返金済み"
   describe_lifetime: "買い切り"
   describe_renews: "年間、%{date} に更新"
@@ -253,36 +253,36 @@ licence:
   computer_row: "  %{name} %{seen}%{current}"
 
 update:
-  latest: "ccn %{version} は最新です。"
-  available_check: "ccn %{version} が利用できます（現在は %{current}）。"
+  latest: "codex-notifier %{version} は最新です。"
+  available_check: "codex-notifier %{version} が利用できます（現在は %{current}）。"
   update_with: "  更新: %{command}"
-  available_run: "ccn %{version} が利用できます: %{command}"
+  available_run: "codex-notifier %{version} が利用できます: %{command}"
   nothing_to_update: "更新するものがありません: %{path} はインストールされていません%{npx}"
-  npx_note: "（npx は毎回最新の ccn を実行します）"
+  npx_note: "（npx は毎回最新の codex-notifier を実行します）"
   no_release_build: "%{os}-%{arch} 向けのリリースビルドがありません"
-  no_build_named: "ccn %{version} に %{asset} というビルドはありません"
+  no_build_named: "codex-notifier %{version} に %{asset} というビルドはありません"
   no_checksum: "SHA256SUMS に %{asset} の項目がありません"
   checksum_mismatch: "%{asset} のチェックサムが一致しません。何も変更していません"
-  archive_empty: "アーカイブに ccn が入っていません"
-  zip_empty: "zip に ccn.exe が入っていません"
-  did_not_run: "ダウンロードした ccn が起動しなかったため、インストール済みのものを残しました"
-  updated: "ccn を %{from} → %{to} に更新しました。"
-  available_message: "Claude Code Notifier: ccn %{version} が利用できます: %{command}"
+  archive_empty: "アーカイブに codex-notifier が入っていません"
+  zip_empty: "zip に codex-notifier.exe が入っていません"
+  did_not_run: "ダウンロードした codex-notifier が起動しなかったため、インストール済みのものを残しました"
+  updated: "codex-notifier を %{from} → %{to} に更新しました。"
+  available_message: "Codex Notifier: codex-notifier %{version} が利用できます: %{command}"
 
 notify:
-  registered_windows: "Windows の通知に「Claude Code Notifier」を登録しました。"
+  registered_windows: "Windows の通知に「Codex Notifier」を登録しました。"
   icon_installed: "通知アイコンを %{path} にインストールしました。"
   doctor_applescript: "AppleScript（このビルドには通知アプリがありません）"
   doctor_allowed: "「%{app}」に許可されています"
   doctor_denied: "オフになっています: システム設定 > 通知 > %{app}"
-  doctor_not_allowed: "まだ許可されていません。`ccn setup` を実行してください"
+  doctor_not_allowed: "まだ許可されていません。`codex-notifier setup` を実行してください"
   mac_denied: "「%{app}」のデスクトップ通知はオフになっています。システム設定 > 通知 でオンにしてください。"
   mac_asking: "「%{app}」からの通知を許可するよう macOS に求めています..."
   mac_allowed: "「%{app}」のデスクトップ通知が許可されました。"
   mac_not_allowed: "デスクトップ通知が許可されていません。システム設定 > 通知 > %{app} でオンにしてください。"
 
 api:
-  rejected: "このコンピュータのペアリングは解除されています（サーバーが認識しません）。再接続するには `ccn pair` を実行してください"
+  rejected: "このコンピュータのペアリングは解除されています（サーバーが認識しません）。再接続するには `codex-notifier pair` を実行してください"
   server_returned: "サーバーが %{status} を返しました"
   # サーバーが拒否したときに行っていた操作。サーバー自身のメッセージがコロンの後に続く
   registering: "このコンピュータの登録"
@@ -300,24 +300,24 @@ api:
 
 # A second upgrader found the first one still running
 update_lock:
-  busy: "別の ccn のアップグレードがすでに実行中です。数分後にもう一度お試しください"
+  busy: "別の codex-notifier のアップグレードがすでに実行中です。数分後にもう一度お試しください"
 
 local_files:
-  config_unreadable: "%{path} を読み込めません（%{error}）。そのため ccn は上書きしません。ファイルを修正するか、削除してから `ccn pair` をもう一度実行してください。"
-  slot_not_freed: "このコンピュータのライセンス枠を空けられませんでした（%{error}）。ライセンスがある場合は、claudecodenotifier.com/licence でキーを使って枠を空けてください。"
-  kept_dir: "%{path} から ccn のファイルを削除しました。フォルダにはほかのファイルもあるため、フォルダ自体は残しています。"
-  remove_binary: "ccn 本体はまだインストールされています。削除するには: %{command}"
+  config_unreadable: "%{path} を読み込めません（%{error}）。そのため codex-notifier は上書きしません。ファイルを修正するか、削除してから `codex-notifier pair` をもう一度実行してください。"
+  slot_not_freed: "このコンピュータのライセンス枠を空けられませんでした（%{error}）。ライセンスがある場合は、codexnotifier.com/licence でキーを使って枠を空けてください。"
+  kept_dir: "%{path} から codex-notifier のファイルを削除しました。フォルダにはほかのファイルもあるため、フォルダ自体は残しています。"
+  remove_binary: "codex-notifier 本体はまだインストールされています。削除するには: %{command}"
 
 payload:
   needs_permission: "%{tool} の許可が必要です"
   permission_required: "許可が必要です"
-  has_questions: "Claude から質問があります"
+  has_questions: "Codex から質問があります"
   finished_prompt: "完了: %{prompt}"
   question_header: "質問"
   search: "検索: %{pattern}"
 
 net:
-  unreachable: "Claude Code Notifier のサーバーに接続できませんでした。インターネット接続を確認して、もう一度お試しください。"
+  unreachable: "Codex Notifier のサーバーに接続できませんでした。インターネット接続を確認して、もう一度お試しください。"
   doctor_unreachable: "サーバー: %{url} に接続できません。インターネット接続、プロキシ、ファイアウォールを確認してください"
 
 clap:
@@ -327,10 +327,10 @@ clap:
   options: "オプション:"
   help: "ヘルプを表示"
   version: "バージョンを表示"
-  help_command: "ccn またはそのコマンドのヘルプを表示"
+  help_command: "codex-notifier またはそのコマンドのヘルプを表示"
   help_command_arg: "ヘルプを表示するコマンド"
-  error_hint: "`ccn --help` でコマンドとオプションの一覧を確認できます。"
+  error_hint: "`codex-notifier --help` でコマンドとオプションの一覧を確認できます。"
 
-# `ccn upgrade` refused a release whose SHA256SUMS isn't signed by TouchTap
+# `codex-notifier upgrade` refused a release whose SHA256SUMS isn't signed by TouchTap
 update_signature:
-  invalid: "リリースの署名を確認できなかったため、何も変更していません。しばらくしてからもう一度試すか、claudecodenotifier.com/cli から再インストールしてください"
+  invalid: "リリースの署名を確認できなかったため、何も変更していません。しばらくしてからもう一度試すか、codexnotifier.com/cli から再インストールしてください"

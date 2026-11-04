@@ -2,14 +2,14 @@
 _version: 1
 
 cli:
-  about: "Claude Code Notifier: receba um push no celular quando o Claude Code precisar de você e responda de lá"
+  about: "Codex Notifier: receba um push no celular quando o Codex precisar de você e responda de lá"
   pair:
     about: "Pareie este computador com seu celular. Passe o código que o app mostra, ou rode sem código para receber um e digitar no app"
-    code: "O código de 6 dígitos mostrado no app Claude Code Notifier"
+    code: "O código de 6 dígitos mostrado no app Codex Notifier"
     name: "Como este computador aparece no seu celular (padrão: o hostname)"
     no_wait: "Mostre o QR code e saia na hora: o pareamento termina sozinho quando o celular se conecta"
   setup:
-    about: "Instale os hooks do Claude Code e as notificações do desktop (pair e ccn sem comando fazem isso primeiro)"
+    about: "Instale os hooks do Codex e as notificações do desktop (pair e codex-notifier sem comando fazem isso primeiro)"
   doctor:
     about: "Verifique hooks, credenciais, o servidor e o que este terminal suporta"
   test:
@@ -20,14 +20,14 @@ cli:
   config:
     about: "Mostre ou altere as configurações deste computador (também editáveis pelo celular)"
     show: "Imprima as configurações em vigor"
-    set: "Defina uma configuração, ex. `ccn config set hold_ceiling_seconds 300` ou `ccn config set quiet_hours 22:00-08:00`"
+    set: "Defina uma configuração, ex. `codex-notifier config set hold_ceiling_seconds 300` ou `codex-notifier config set quiet_hours 22:00-08:00`"
   sync:
     about: "Baixe agora as configurações mais recentes do servidor"
   unlock:
     about: "Compre no navegador uma licença para este computador: desbloqueia todos os celulares pareados com ele"
     lifetime: "Pague uma vez em vez de por ano (ou passe uma licença anual para vitalícia, mantendo a chave)"
   upgrade:
-    about: "Atualize o ccn para a versão mais recente (também verificado uma vez por dia em segundo plano)"
+    about: "Atualize o codex-notifier para a versão mais recente (também verificado uma vez por dia em segundo plano)"
     check: "Só diga se há uma versão mais nova: sai com 0 quando está atualizado, 10 quando há uma disponível"
     quiet: "Não imprima nada, a não ser que algo dê errado"
   activate:
@@ -46,54 +46,54 @@ cli:
 
 common:
   your_phone: "seu celular"
-  not_paired: "este computador ainda não está pareado. Rode `ccn pair <code>` com o código do app."
+  not_paired: "este computador ainda não está pareado. Rode `codex-notifier pair <code>` com o código do app."
   store_keychain: "chaveiro"
   store_file: "arquivo"
   date_format: "%d/%m/%Y"
 
 pair:
   reregister: "O pareamento antigo deste computador foi removido, então ele será registrado de novo."
-  code_not_recognised: "Esse código não foi reconhecido. O código de 6 dígitos está no app Claude Code Notifier em Computadores > Adicionar computador; ele muda a cada 24 horas, então copie a linha que o app mostra agora."
+  code_not_recognised: "Esse código não foi reconhecido. O código de 6 dígitos está no app Codex Notifier em Computadores > Adicionar computador; ele muda a cada 24 horas, então copie a linha que o app mostra agora."
   offer_qr: "Pressione Enter para mostrar um QR code aqui em vez disso (escaneie com o celular), ou Ctrl+C."
-  options_without_terminal: "Rode `ccn pair <code>` de novo com o código que o app mostra agora, ou rode `ccn pair` para mostrar um QR code aqui e escanear com o celular."
+  options_without_terminal: "Rode `codex-notifier pair <code>` de novo com o código que o app mostra agora, ou rode `codex-notifier pair` para mostrar um QR code aqui e escanear com o celular."
   scan: "  Escaneie isto com a câmera do celular para conectá-lo. Se ainda não tem o app, isto\n  leva à App Store ou ao Google Play: instale e escaneie de novo."
-  or_type_code: "  Ou digite este código no app Claude Code Notifier:  %{code}"
-  enter_code: "  Digite este código no app Claude Code Notifier:  %{code}"
+  or_type_code: "  Ou digite este código no app Codex Notifier:  %{code}"
+  enter_code: "  Digite este código no app Codex Notifier:  %{code}"
   hooks_already_installed: "  Os hooks estão instalados, então você já recebe notificações do desktop neste computador."
   code_lasts: "  Pareie quando quiser: este código vale por %{duration}."
   completes_on_its_own: "  O pareamento termina sozinho quando o celular se conecta."
   waiting: "  Esperando o seu celular... (Ctrl+C não tem problema: o pareamento termina sozinho quando o celular se conecta)"
-  code_expired: "o código expirou antes de um celular usá-lo. Rode `ccn pair` de novo."
-  code_is_six_digits: "o código são os 6 dígitos mostrados no app Claude Code Notifier"
+  code_expired: "o código expirou antes de um celular usá-lo. Rode `codex-notifier pair` de novo."
+  code_is_six_digits: "o código são os 6 dígitos mostrados no app Codex Notifier"
   credentials_stored: "Credenciais guardadas no %{store} (%{path})."
   test_sent: "Notificação de teste enviada ao seu celular."
   test_failed: "Ainda não deu para enviar uma notificação de teste: %{error}"
-  done: "Pronto. Inicie o `claude` como sempre: você recebe um push quando o Claude termina ou precisa\nde você, e pode aprovar, negar ou responder pelo celular. `ccn doctor` verifica tudo."
+  done: "Pronto. Inicie o `codex` como sempre: você recebe um push quando o Codex termina ou precisa\nde você, e pode aprovar, negar ou responder pelo celular. `codex-notifier doctor` verifica tudo."
   paired_with: "Pareado com %{name} (%{platform})."
   hours_one: "1 hora"
   hours_other: "%{count} horas"
   minutes_one: "1 minuto"
   minutes_other: "%{count} minutos"
   pitch: "Seu celular vai oferecer uma assinatura no app. Você também pode desbloquear tudo daqui, fora das lojas de apps:"
-  pitch_annual: "  ccn unlock             %{price} por ano"
-  pitch_lifetime: "  ccn unlock --lifetime  %{price} uma vez só"
+  pitch_annual: "  codex-notifier unlock             %{price} por ano"
+  pitch_lifetime: "  codex-notifier unlock --lifetime  %{price} uma vez só"
   pitch_covers: "Cobre %{computers} computadores e todos os celulares pareados com eles. %{days} dias de garantia de reembolso."
   welcome_no_terminal: "Uma notificação de teste está a caminho do seu celular: tente responder por lá."
   welcome: "Uma notificação de teste está a caminho do seu celular. Tente responder por lá..."
   welcome_skip: "(pressione Enter para pular)"
-  welcome_answered: "✓ Seu celular respondeu \"%{answer}\". É assim que você vai responder ao Claude."
+  welcome_answered: "✓ Seu celular respondeu \"%{answer}\". É assim que você vai responder ao Codex."
   welcome_no_answer: "Sem resposta ainda. A notificação fica no celular por uma hora."
 
 status:
-  set_up: "ccn %{version} está configurado neste computador como \"%{name}\"."
+  set_up: "codex-notifier %{version} está configurado neste computador como \"%{name}\"."
   licence: "Licença: %{line}"
-  hint_doctor: "  ccn doctor     verifica hooks, credenciais e o servidor"
-  hint_test: "  ccn test       envia uma notificação de teste ao celular"
-  hint_pair: "  ccn pair       pareia outro celular"
-  hint_help: "  ccn --help     tudo o mais"
+  hint_doctor: "  codex-notifier doctor     verifica hooks, credenciais e o servidor"
+  hint_test: "  codex-notifier test       envia uma notificação de teste ao celular"
+  hint_pair: "  codex-notifier pair       pareia outro celular"
+  hint_help: "  codex-notifier --help     tudo o mais"
 
 setup:
-  installed_self: "ccn instalado em %{path}."
+  installed_self: "codex-notifier instalado em %{path}."
   hooks_installed: "Hooks instalados em %{path} (usando %{exe})."
   hooks_trusted: "Marcados como confiáveis em %{path}, então o Codex os executa sem passar por /hooks."
 
@@ -102,25 +102,25 @@ sync:
   synced: "Configurações sincronizadas."
 
 doctor:
-  header: "ccn %{version} em %{platform}"
+  header: "codex-notifier %{version} em %{platform}"
   config: "configuração: %{path}"
   credentials_present: "credenciais: presentes (%{store})"
-  credentials_missing: "credenciais: ausentes: rode `ccn pair <code>`"
+  credentials_missing: "credenciais: ausentes: rode `codex-notifier pair <code>`"
   server_reachable: "servidor: %{url} acessível"
   server_error: "servidor: %{error}"
   registered: "registrado como \"%{name}\" (%{kind} %{platform}), recursos: %{capabilities}"
-  not_paired_any_more: "pareamento: não está mais pareado: rode `ccn pair`"
+  not_paired_any_more: "pareamento: não está mais pareado: rode `codex-notifier pair`"
   registration_error: "registro: %{error}"
   licence: "licença: %{line}"
-  phones_none: "celulares: nenhum pareado ainda, então as notificações ficam neste desktop (rode `ccn pair`)"
+  phones_none: "celulares: nenhum pareado ainda, então as notificações ficam neste desktop (rode `codex-notifier pair`)"
   phones: "celulares: %{names}"
   phones_error: "celulares: %{error}"
   hooks_all: "hooks: todos os %{count} instalados em %{path}"
-  hooks_missing: "hooks: faltam %{names} (rode `ccn setup`)"
+  hooks_missing: "hooks: faltam %{names} (rode `codex-notifier setup`)"
   hooks_error: "hooks: %{error}"
-  hooks_stale: "os hooks apontam para outro binário do ccn; rode `ccn setup` para atualizá-los"
+  hooks_stale: "os hooks apontam para outro binário do codex-notifier; rode `codex-notifier setup` para atualizá-los"
   trust_ok: "confiança: cada hook tem seu hash em %{path}"
-  trust_missing: "confiança: o Codex vai pular %{names} até serem confiáveis (rode `ccn setup`, ou /hooks no Codex)"
+  trust_missing: "confiança: o Codex vai pular %{names} até serem confiáveis (rode `codex-notifier setup`, ou /hooks no Codex)"
   presence: "presença: ocioso há %{idle}s, limite %{threshold}s"
   replies: "respostas: aprovações e respostas a perguntas pelo celular funcionam em qualquer terminal; texto livre em uma sessão ociosa %{free_text}"
   replies_tmux: "funciona (tmux)"
@@ -129,12 +129,12 @@ doctor:
   log: "log: %{path}"
 
 test:
-  none_paired: "nenhum celular está pareado. Rode `ccn pair <code>`."
+  none_paired: "nenhum celular está pareado. Rode `codex-notifier pair <code>`."
   sent: "Notificação de teste enviada a %{name} (%{platform})."
   failed: "%{name}: %{error}"
 
 devices:
-  none: "Nenhum celular pareado. Rode `ccn pair <code>` com o código do app."
+  none: "Nenhum celular pareado. Rode `codex-notifier pair <code>` com o código do app."
   # %{name} é preenchido até 24 colunas e %{platform} até 8 antes de serem inseridos
   row: "%{name} %{platform} pareado %{since}%{off}"
   notifications_off: "  (notificações desligadas)"
@@ -157,85 +157,85 @@ settings:
   unknown: "configuração desconhecida '%{key}'. Configurações: notify_on_done, notify_on_permission, notify_on_question, sound, quiet_when_present, quiet_hours, hold_ceiling_seconds, presence_threshold_seconds, stop_hold_seconds, reminder_interval_seconds"
 
 forget:
-  needs_yes: "ccn forget precisa de um sim seu: rode em um terminal, ou adicione --yes"
-  warning: "Isto apaga este computador e seus pareamentos do servidor do Claude Code Notifier, depois\nremove o ccn do Claude Code e exclui suas credenciais e arquivos aqui, como faz `ccn uninstall`.\nOs celulares pareados com este computador vão vê-lo desaparecer.\nUma licença comprada no site não é cancelada: faça isso em claudecodenotifier.com/licence\ncom \"Apagar minha licença\"."
+  needs_yes: "codex-notifier forget precisa de um sim seu: rode em um terminal, ou adicione --yes"
+  warning: "Isto apaga este computador e seus pareamentos do servidor do Codex Notifier, depois\nremove o codex-notifier do Codex e exclui suas credenciais e arquivos aqui, como faz `codex-notifier uninstall`.\nOs celulares pareados com este computador vão vê-lo desaparecer.\nUma licença comprada no site não é cancelada: faça isso em codexnotifier.com/licence\ncom \"Apagar minha licença\"."
   # A palavra que o usuário precisa digitar; `yes` também é sempre aceito
   yes_word: "sim"
   prompt: "\nDigite %{yes} para continuar: "
   nothing_erased: "Nada foi apagado."
   erased: "Este computador e seus pareamentos foram apagados do servidor."
   already_forgotten: "O servidor já havia esquecido este computador."
-  nothing_removed: "%{error}. Nada foi removido deste computador, então você pode rodar `ccn forget` de novo"
+  nothing_removed: "%{error}. Nada foi removido deste computador, então você pode rodar `codex-notifier forget` de novo"
   not_registered: "Este computador não está registrado no servidor, então não há nada para apagar lá."
 
 uninstall:
-  hooks_removed: "Hooks do ccn removidos de %{path} e suas entradas de confiança de %{config}."
+  hooks_removed: "Hooks do codex-notifier removidos de %{path} e suas entradas de confiança de %{config}."
   slot_freed: "Vaga de licença deste computador liberada."
   unpaired_all: "Todos os celulares despareados."
   removed_dir: "%{path} removido."
 
 local:
-  finished_title: "O Claude terminou"
-  finished_body: "O Claude terminou e está esperando por você."
-  permission_title: "O Claude precisa de permissão"
-  question_title: "O Claude tem uma pergunta"
-  first_nudge: "Receba no celular: ccn pair"
-  milestone_nudge: "Já são 10 notificações. Receba no celular, com aprovação pela tela de bloqueio: rode ccn pair"
-  pair_message: "Claude Code Notifier: você recebe notificações no desktop. Para recebê-las também no celular, e aprovar ou responder de lá, rode `ccn pair` em um terminal."
+  finished_title: "O Codex terminou"
+  finished_body: "O Codex terminou e está esperando por você."
+  permission_title: "O Codex precisa de permissão"
+  question_title: "O Codex tem uma pergunta"
+  first_nudge: "Receba no celular: codex-notifier pair"
+  milestone_nudge: "Já são 10 notificações. Receba no celular, com aprovação pela tela de bloqueio: rode codex-notifier pair"
+  pair_message: "Codex Notifier: você recebe notificações no desktop. Para recebê-las também no celular, e aprovar ou responder de lá, rode `codex-notifier pair` em um terminal."
 
 hook:
-  licence_message: "Claude Code Notifier: as notificações no celular não estão desbloqueadas para este computador. Desbloqueie: ccn unlock"
-  unpaired_message: "Claude Code Notifier: este computador não está mais pareado, então o celular não vai receber notificações. Rode `ccn pair` em um terminal para reconectar."
-  unpaired_notification: "Este computador não está mais pareado. Rode `ccn pair` em um terminal para reconectar."
-  paired_message: "Claude Code Notifier: pareado com %{phone}. As notificações agora vão para o celular."
+  licence_message: "Codex Notifier: as notificações no celular não estão desbloqueadas para este computador. Desbloqueie: codex-notifier unlock"
+  unpaired_message: "Codex Notifier: este computador não está mais pareado, então o celular não vai receber notificações. Rode `codex-notifier pair` em um terminal para reconectar."
+  unpaired_notification: "Este computador não está mais pareado. Rode `codex-notifier pair` em um terminal para reconectar."
+  paired_message: "Codex Notifier: pareado com %{phone}. As notificações agora vão para o celular."
   # O servidor escreve título, corpo e comando no idioma do usuário; isto só os junta
-  nudge_message: "Claude Code Notifier: %{title} %{body} %{command}"
+  nudge_message: "Codex Notifier: %{title} %{body} %{command}"
   needs_attention: "Precisa da sua atenção"
 
 hooks:
-  doctor_presence_none: "presença: não detectável aqui, então nada espera pelo celular: ele recebe um aviso e você responde no terminal (`ccn config set hold_without_presence on` para esperar mesmo assim)"
+  doctor_presence_none: "presença: não detectável aqui, então nada espera pelo celular: ele recebe um aviso e você responde no terminal (`codex-notifier config set hold_without_presence on` para esperar mesmo assim)"
   doctor_presence_none_hold: "presença: não detectável aqui, e hold_without_presence está ativado, então cada pedido espera pelo celular até ele responder ou o tempo máximo passar"
 
 licence:
   already_licensed: "Este computador já está licenciado (%{licence})."
-  switch_to_lifetime: "Para passar a uma licença vitalícia, mantendo a mesma chave: ccn unlock --lifetime"
+  switch_to_lifetime: "Para passar a uma licença vitalícia, mantendo a mesma chave: codex-notifier unlock --lifetime"
   checkout_open: "  O checkout está aberto no navegador. Para pagar pelo celular, escaneie isto:"
   checkout_link: "  Abra este link para pagar, ou escaneie com o celular:"
   waiting_payment: "  Esperando o pagamento... (Ctrl+C para parar; a chave vai por e-mail de qualquer jeito)"
   upgraded: "✓ Passou para licença vitalícia. Mesma chave, mesmos computadores; a renovação anual foi cancelada."
   licensed: "✓ Este computador está licenciado (%{licence})."
-  key: "  Chave: %{key} (também por e-mail). Use em até 2 outros computadores: ccn activate %{key}"
+  key: "  Chave: %{key} (também por e-mail). Use em até 2 outros computadores: codex-notifier activate %{key}"
   phones_unlocked: "  Todos os celulares pareados com este computador estão desbloqueados."
-  activate_with_key: "  Rode `ccn activate <key>` com a chave do e-mail para usá-la neste computador."
-  no_payment: "Ainda sem pagamento após 15 minutos. Se você pagou, a chave está no seu e-mail: ccn activate <key>"
+  activate_with_key: "  Rode `codex-notifier activate <key>` com a chave do e-mail para usá-la neste computador."
+  no_payment: "Ainda sem pagamento após 15 minutos. Se você pagou, a chave está no seu e-mail: codex-notifier activate <key>"
   replace_stale: "\"%{name}\" não é visto há mais de uma semana. É este computador? Substituir?"
   yes_no: " [S/n] "
   # Uma resposta que começa com esta letra (ou n) significa não
   no_initial: "n"
   slots_full: "Esta licença já está em %{count} computadores:"
-  free_one: "Libere um com `ccn deactivate` naquele computador, ou substitua-o daqui:"
-  replace_example: "  ccn activate %{key} --replace \"%{name}\""
+  free_one: "Libere um com `codex-notifier deactivate` naquele computador, ou substitua-o daqui:"
+  replace_example: "  codex-notifier activate %{key} --replace \"%{name}\""
   old_laptop: "Notebook antigo"
   no_free_slot: "nenhuma vaga de computador livre"
   computers_on_licence: "Computadores nesta licença:"
   activated: "✓ Licenciado (%{licence}). %{count} de 3 computadores em uso."
-  pair_to_unlock: "  Pareie um celular com `ccn pair` e ele é desbloqueado na hora."
+  pair_to_unlock: "  Pareie um celular com `codex-notifier pair` e ele é desbloqueado na hora."
   none: "Este computador não tem licença."
   freed: "Liberado. Esta licença agora tem %{count} de 3 computadores em uso."
-  none_buy: "Sem licença neste computador. Compre uma: ccn unlock"
+  none_buy: "Sem licença neste computador. Compre uma: codex-notifier unlock"
   none_short: "Sem licença neste computador."
-  buy_options: "  Compre uma:        ccn unlock (anual) ou ccn unlock --lifetime"
-  have_key: "  Já tem uma chave:  ccn activate <key>"
+  buy_options: "  Compre uma:        codex-notifier unlock (anual) ou codex-notifier unlock --lifetime"
+  have_key: "  Já tem uma chave:  codex-notifier activate <key>"
   show_licence: "Licença:      %{licence}"
   show_key: "Chave:        CCN-…-%{last4}"
   show_unlocks: "Desbloqueia:  %{value}"
   unlocks_yes: "sim, todos os celulares pareados com este computador"
   unlocks_no: "não"
   show_computers: "Computadores: %{count} de 3"
-  switch_lifetime_keep_key: "Passar para vitalícia, mantendo a chave: ccn unlock --lifetime"
+  switch_lifetime_keep_key: "Passar para vitalícia, mantendo a chave: codex-notifier unlock --lifetime"
   status_licensed: "%{licence}, %{count} de 3 computadores"
-  status_unlicensed: "%{licence}: ccn unlock"
-  status_none: "nenhuma: ccn unlock"
+  status_unlicensed: "%{licence}: codex-notifier unlock"
+  status_none: "nenhuma: codex-notifier unlock"
   describe_refunded: "reembolsada"
   describe_lifetime: "vitalícia"
   describe_renews: "anual, renova em %{date}"
@@ -251,36 +251,36 @@ licence:
   computer_row: "  %{name} %{seen}%{current}"
 
 update:
-  latest: "ccn %{version} é a versão mais recente."
-  available_check: "ccn %{version} está disponível (você tem %{current})."
+  latest: "codex-notifier %{version} é a versão mais recente."
+  available_check: "codex-notifier %{version} está disponível (você tem %{current})."
   update_with: "  Atualize: %{command}"
-  available_run: "ccn %{version} está disponível: %{command}"
+  available_run: "codex-notifier %{version} está disponível: %{command}"
   nothing_to_update: "nada a atualizar: %{path} não está instalado%{npx}"
-  npx_note: " (o npx roda o ccn mais recente a cada vez)"
+  npx_note: " (o npx roda o codex-notifier mais recente a cada vez)"
   no_release_build: "não há build de release para %{os}-%{arch}"
-  no_build_named: "ccn %{version} não tem um build chamado %{asset}"
+  no_build_named: "codex-notifier %{version} não tem um build chamado %{asset}"
   no_checksum: "SHA256SUMS não tem entrada para %{asset}"
   checksum_mismatch: "checksum não confere para %{asset}: nada foi alterado"
-  archive_empty: "o arquivo compactado não tem ccn dentro"
-  zip_empty: "o zip não tem ccn.exe dentro"
-  did_not_run: "o ccn baixado não rodou, então o instalado foi mantido"
-  updated: "ccn atualizado %{from} → %{to}."
-  available_message: "Claude Code Notifier: ccn %{version} está disponível: %{command}"
+  archive_empty: "o arquivo compactado não tem codex-notifier dentro"
+  zip_empty: "o zip não tem codex-notifier.exe dentro"
+  did_not_run: "o codex-notifier baixado não rodou, então o instalado foi mantido"
+  updated: "codex-notifier atualizado %{from} → %{to}."
+  available_message: "Codex Notifier: codex-notifier %{version} está disponível: %{command}"
 
 notify:
-  registered_windows: "\"Claude Code Notifier\" registrado para notificações do Windows."
+  registered_windows: "\"Codex Notifier\" registrado para notificações do Windows."
   icon_installed: "Ícone de notificação instalado em %{path}."
   doctor_applescript: "AppleScript (este build não tem app notificador)"
   doctor_allowed: "permitidas para \"%{app}\""
   doctor_denied: "desligadas: Ajustes do Sistema > Notificações > %{app}"
-  doctor_not_allowed: "ainda não permitidas: rode `ccn setup`"
+  doctor_not_allowed: "ainda não permitidas: rode `codex-notifier setup`"
   mac_denied: "As notificações do desktop estão desligadas para \"%{app}\". Ligue em Ajustes do Sistema > Notificações."
   mac_asking: "Pedindo ao macOS para permitir notificações de \"%{app}\"..."
   mac_allowed: "As notificações do desktop estão permitidas para \"%{app}\"."
   mac_not_allowed: "As notificações do desktop não estão permitidas. Ligue em Ajustes do Sistema > Notificações > %{app}."
 
 api:
-  rejected: "este computador não está mais pareado (o servidor não o reconhece mais). Rode `ccn pair` para reconectar"
+  rejected: "este computador não está mais pareado (o servidor não o reconhece mais). Rode `codex-notifier pair` para reconectar"
   server_returned: "o servidor retornou %{status}"
   # O que estava sendo feito quando o servidor recusou; a mensagem do próprio servidor vem depois de dois-pontos
   registering: "registro deste computador"
@@ -298,24 +298,24 @@ api:
 
 # A second upgrader found the first one still running
 update_lock:
-  busy: "outra atualização do ccn já está em andamento. Tente novamente em alguns minutos"
+  busy: "outra atualização do codex-notifier já está em andamento. Tente novamente em alguns minutos"
 
 local_files:
-  config_unreadable: "Não dá para ler %{path} (%{error}), então o ccn não vai sobrescrevê-lo. Corrija o arquivo, ou apague-o e rode `ccn pair` de novo."
-  slot_not_freed: "Não foi possível liberar a vaga de licença deste computador (%{error}). Se ele tiver licença, libere a vaga em claudecodenotifier.com/licence com a sua chave."
-  kept_dir: "Os arquivos do ccn foram removidos de %{path}. A pasta tem outros arquivos também, então ela foi mantida."
-  remove_binary: "O ccn em si continua instalado. Para removê-lo: %{command}"
+  config_unreadable: "Não dá para ler %{path} (%{error}), então o codex-notifier não vai sobrescrevê-lo. Corrija o arquivo, ou apague-o e rode `codex-notifier pair` de novo."
+  slot_not_freed: "Não foi possível liberar a vaga de licença deste computador (%{error}). Se ele tiver licença, libere a vaga em codexnotifier.com/licence com a sua chave."
+  kept_dir: "Os arquivos do codex-notifier foram removidos de %{path}. A pasta tem outros arquivos também, então ela foi mantida."
+  remove_binary: "O codex-notifier em si continua instalado. Para removê-lo: %{command}"
 
 payload:
   needs_permission: "%{tool} precisa de permissão"
   permission_required: "Permissão necessária"
-  has_questions: "O Claude tem perguntas"
+  has_questions: "O Codex tem perguntas"
   finished_prompt: "Concluído: %{prompt}"
   question_header: "Pergunta"
   search: "Busca: %{pattern}"
 
 net:
-  unreachable: "Não foi possível acessar o servidor do Claude Code Notifier. Verifique sua conexão com a internet e tente de novo."
+  unreachable: "Não foi possível acessar o servidor do Codex Notifier. Verifique sua conexão com a internet e tente de novo."
   doctor_unreachable: "servidor: não foi possível acessar %{url}. Verifique sua conexão com a internet, o proxy ou o firewall"
 
 clap:
@@ -325,10 +325,10 @@ clap:
   options: "Opções:"
   help: "Mostrar a ajuda"
   version: "Mostrar a versão"
-  help_command: "Mostrar a ajuda do ccn ou de um dos comandos dele"
+  help_command: "Mostrar a ajuda do codex-notifier ou de um dos comandos dele"
   help_command_arg: "O comando cuja ajuda será mostrada"
-  error_hint: "Execute `ccn --help` para ver os comandos e as opções."
+  error_hint: "Execute `codex-notifier --help` para ver os comandos e as opções."
 
-# `ccn upgrade` refused a release whose SHA256SUMS isn't signed by TouchTap
+# `codex-notifier upgrade` refused a release whose SHA256SUMS isn't signed by TouchTap
 update_signature:
-  invalid: "a assinatura da versão não é válida, então nada foi alterado. Tente mais tarde ou reinstale em claudecodenotifier.com/cli"
+  invalid: "a assinatura da versão não é válida, então nada foi alterado. Tente mais tarde ou reinstale em codexnotifier.com/cli"

@@ -29,8 +29,8 @@ fn new_id() -> String {
 }
 
 /// This computer's API client, registering it with the server first when it has no credentials yet.
-/// A licence needs a registered computer, not a paired phone, so `ccn unlock` and `ccn activate`
-/// work before (or without) `ccn pair`.
+/// A licence needs a registered computer, not a paired phone, so `codex-notifier unlock` and `codex-notifier activate`
+/// work before (or without) `codex-notifier pair`.
 pub fn ensure_registered(cfg: &mut Config) -> Result<Api> {
     if cfg.is_paired() {
         return Ok(Api::new(cfg));
@@ -87,7 +87,7 @@ pub fn store_name(store: &str) -> String {
     }
 }
 
-/// Why `ccn pair` returned without an error.
+/// Why `codex-notifier pair` returned without an error.
 pub enum PairOutcome {
     /// A phone paired
     Paired,
@@ -268,7 +268,7 @@ fn pair_inner(
     cfg.client_id = Some(client_id);
     cfg.machine_name = Some(machine_name);
     cfg.registered_at = Some(config::now());
-    // `ccn pair` has told the user itself, so the hooks needn't
+    // `codex-notifier pair` has told the user itself, so the hooks needn't
     cfg.paired_message_shown = true;
     cfg.save()?;
     let store = config::store_token(&cfg, &token)?;
@@ -454,7 +454,7 @@ pub fn default_command() -> Result<()> {
     if !cfg.is_paired() {
         return pair(None, None, false);
     }
-    // Registered without a phone (`ccn activate` or `ccn unlock` before pairing, or a QR code
+    // Registered without a phone (`codex-notifier activate` or `codex-notifier unlock` before pairing, or a QR code
     // nobody scanned yet): pairing is next
     let api = Api::new(&cfg);
     if matches!(list_phones(&mut cfg, &api), Ok(devices) if devices.is_empty()) {
@@ -1023,7 +1023,7 @@ fn remove_local(revoke_on_server: bool) -> Result<()> {
         }
     }
     config::delete_token();
-    // ccn's own files only: CODEX_NOTIFIER_HOME may point at a folder that holds other things
+    // codex-notifier's own files only: CODEX_NOTIFIER_HOME may point at a folder that holds other things
     let path = config::app_dir();
     if config::remove_local_files() {
         println!("{}", t!("uninstall.removed_dir", path = path.display()));
@@ -1037,26 +1037,14 @@ fn remove_local(revoke_on_server: bool) -> Result<()> {
     Ok(())
 }
 
-/// The command that removes the ccn binary, for the way it was installed. Uninstall leaves the
-/// binary to its owner: Homebrew, npm, scoop and winget would otherwise still list it.
+/// The command that removes the codex-notifier binary, for the way it was installed. Uninstall leaves the
+/// binary to its owner: Homebrew and npm would otherwise still list it.
 fn binary_removal_command() -> Option<String> {
-    let running = std::env::current_exe().ok()?;
-    let lower = running
-        .to_string_lossy()
-        .replace('\\', "/")
-        .to_ascii_lowercase();
-    let method = if lower.contains("/scoop/apps/ccn/") {
-        "scoop"
-    } else if lower.contains("/winget/packages/") {
-        "winget"
-    } else {
-        telemetry::install_method()
-    };
-    Some(match method {
-        "homebrew" => "brew uninstall touch-tap/tap/ccn".to_string(),
-        "npm" => "npm uninstall -g @touchtap/ccn".to_string(),
-        "scoop" => "scoop uninstall ccn".to_string(),
-        "winget" => "winget uninstall TouchTap.ccn".to_string(),
+    // Scoop and winget have no codex-notifier package yet (ccn's manifests were not carried over),
+    // so those installs fall through to removing the file
+    Some(match telemetry::install_method() {
+        "homebrew" => "brew uninstall touch-tap/tap/codex-notifier".to_string(),
+        "npm" => "npm uninstall -g @touchtap/codex-notifier".to_string(),
         // The install scripts, npx (whose copy went into the user's bin directory) and anything
         // else: the file the hooks ran
         _ => {
@@ -1100,11 +1088,11 @@ mod tests {
     fn pair_failures_read_as_before() {
         assert_eq!(
             format!("{:#}", anyhow::anyhow!(PairFailure::MalformedCode)),
-            "the code is the 6 digits shown in the Claude Code Notifier app"
+            "the code is the 6 digits shown in the Codex Notifier app"
         );
         assert_eq!(
             format!("{:#}", anyhow::anyhow!(PairFailure::CodeTimeout)),
-            "the code expired before a phone claimed it. Run `ccn pair` again."
+            "the code expired before a phone claimed it. Run `codex-notifier pair` again."
         );
     }
 }

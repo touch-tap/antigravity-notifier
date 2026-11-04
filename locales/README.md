@@ -1,7 +1,7 @@
-# Translating ccn
+# Translating codex-notifier
 
-`ccn` is the Claude Code Notifier command for the terminal. Everything a person reads from it
-(terminal output, desktop notifications, the one-line messages it hands to Claude Code, `--help`
+`codex-notifier` is the Codex Notifier command for the terminal. Everything a person reads from it
+(terminal output, desktop notifications, the one-line messages it hands to Codex, `--help`
 descriptions) lives in one YAML file per language in this folder. `en.yml` is the source; a
 translation is a copy of it with the values changed and the keys left alone. No Rust changes are
 needed: the files are compiled into the binary, and a missing file or key falls back to English.
@@ -17,12 +17,12 @@ pt-BR.yml  ru.yml  tr.yml  vi.yml  zh-Hans.yml  zh-Hant.yml
 
 These are the same 17 as the phone apps and the website. The binary maps the OS locale onto one of
 them (`pt_PT` → `pt-BR`, `zh-TW`/`zh-HK` → `zh-Hant`, everything else Chinese → `zh-Hans`,
-`iw` → `he`); `CCN_LANG=de` overrides the OS.
+`iw` → `he`); `CODEX_NOTIFIER_LANG=de` overrides the OS.
 
 Keep the file's shape: `_version: 1` at the top, then the same nested keys as `en.yml`, in the
 same order, so a diff against English is readable. Comments (`# ...`) are notes for you; copy or
 drop them as you like. Every value is double-quoted. Inside the quotes, `\"` is a quote and `\n`
-is a line break; leading spaces (`"  ccn unlock ..."`) are deliberate indentation and must stay.
+is a line break; leading spaces (`"  codex-notifier unlock ..."`) are deliberate indentation and must stay.
 
 A new or edited file is picked up by the next `cargo build` (build.rs watches this folder).
 
@@ -53,33 +53,32 @@ for all of those in your language, even if it would ideally have more forms. Oth
 
 Do not translate:
 
-- Command lines and command names: `ccn pair`, `ccn pair <code>`, `ccn setup --replace-mac-app`,
-  `ccn unlock --lifetime`, `ccn activate <key>`, `ccn doctor`, `ccn config set pair_nudges off`,
-  `claude`, `npx @touchtap/ccn`. The `<code>` and `<key>` placeholders inside them may be
+- Command lines and command names: `codex-notifier pair`, `codex-notifier pair <code>`, `codex-notifier setup`,
+  `codex-notifier unlock --lifetime`, `codex-notifier activate <key>`, `codex-notifier doctor`, `codex-notifier config set pair_nudges off`,
+  `codex`, `npx @touchtap/codex-notifier`. The `<code>` and `<key>` placeholders inside them may be
   translated if your language's readers would expect it, but keep the angle brackets.
 - Setting keys and their values: `notify_on_done`, `quiet_hours`, `hold_ceiling_seconds`,
   `credential_store`, `auto_update`, `pair_nudges`, `keychain`, `file`, `on`, `off`, `HH:MM`.
   They are what the user types back.
-- File and product names: `settings.json`, `SHA256SUMS`, `ccn.log`, `config.toml`, `tmux`,
+- File and product names: `SHA256SUMS`, `codex-notifier.log`, `config.toml`, `tmux`,
   `AppleScript`, `npx`, `Homebrew`, App Store, Google Play, `Ctrl+C`, `Enter`.
-- Product names: "Claude Code Notifier", "Claude Code", "Claude". The Mac app is "the Claude Code
-  Notifier Mac app"; the phone app is "the Claude Code Notifier app".
-- URLs and paths: `claudecodenotifier.com/licence`, `%{path}`, `%{url}`.
-- Key formats: `CCN-…-%{last4}`.
+- Product names: "Codex Notifier", "Codex". The phone app is "the Codex Notifier app".
+- URLs and paths: `codexnotifier.com/licence`, `%{path}`, `%{url}`.
+- Key formats: `CCN-…-%{last4}` (the server issues every licence key with the CCN- prefix).
 - The `ok ` / `!! ` markers are added by the program, not in the YAML.
 
 Translate "System Settings > Notifications" the way Apple writes it in your language, and
 "Computers > Add a computer" the way the phone app shows it (see the app's own strings; this is
 the Settings tab's "Computers" screen and its "Add a computer" button).
 
-`forget.yes_word` is the word the user types to confirm `ccn forget` (English `yes` is always
+`forget.yes_word` is the word the user types to confirm `codex-notifier forget` (English `yes` is always
 accepted too); `forget.prompt` shows it through `%{yes}`. `licence.no_initial` is the first letter
 of your word for "no", for the `[Y/n]` prompt in `licence.yes_no`; `n` always means no as well.
 
 ## Register and voice
 
 Match the phone apps, the website and the push copy for your language (PushCopy strings in the
-iOS and Android apps), so a person who installs ccn from the app hears the same voice:
+iOS and Android apps), so a person who installs codex-notifier from the app hears the same voice:
 
 - fr: `tu`, not `vous`
 - de: `du`
@@ -93,9 +92,9 @@ iOS and Android apps), so a person who installs ccn from the app hears the same 
 - pt-BR: `você`
 - it, nl, pl, ru, vi, zh: the informal-but-polite register of good developer tools
 
-Imperatives are instructions to the reader ("Run `ccn pair` in a terminal"), not commands at
+Imperatives are instructions to the reader ("Run `codex-notifier pair` in a terminal"), not commands at
 them; keep them short. "Phone" means the paired iPhone or Android phone; "this computer" means the
-one `ccn` is running on. "Pair" is the product's word for connecting a phone (the apps use it
+one `codex-notifier` is running on. "Pair" is the product's word for connecting a phone (the apps use it
 too), "unlock" for buying a licence; use the same words the app uses on screen.
 
 ## Length
@@ -105,14 +104,14 @@ too), "unlock" for buying a licence; use the same words the app uses on screen.
   macOS and Windows cut notifications to two or three lines. `local.first_nudge` is appended to
   the end of another message, so keep it very short (English: 33 characters).
 - Phone cards (`payload.*`): shown on the phone's lock screen and in the app, and repeated in the
-  desktop notification, when Claude gave no text of its own. Keep them as short as English. The
+  desktop notification, when Codex gave no text of its own. Keep them as short as English. The
   phone shows them exactly as sent, in this computer's language.
 - `systemMessage` lines (`local.pair_message`, `hook.*_message`, `update.available_message`): one
-  line that Claude Code shows in the terminal; aim for the English length, never more than about
-  220 characters. They start with "Claude Code Notifier:" so the reader knows who is talking: keep
+  line that Codex shows in the terminal; aim for the English length, never more than about
+  220 characters. They start with "Codex Notifier:" so the reader knows who is talking: keep
   that prefix.
 - `--help` descriptions (`cli.*`): one line each, no full stop at the end (clap prints them in a
-  table). `cli.about` is the first line of `ccn --help`.
+  table). `cli.about` is the first line of `codex-notifier --help`.
 - Column layouts (`status.hint_*`, `licence.buy_options`, `licence.have_key`, `pair.pitch_*`):
   the command and the explanation are separated by spaces so they line up; keep the spaces and
   change only the words after them.
@@ -123,9 +122,9 @@ too), "unlock" for buying a licence; use the same words the app uses on screen.
 
 ```sh
 cargo test                      # keys and placeholders match English
-cargo build && CCN_LANG=de ./target/debug/ccn --help
-CCN_LANG=de ./target/debug/ccn licence
-CCN_LANG=de ./target/debug/ccn config set sound maybe    # an error message
+cargo build && CODEX_NOTIFIER_LANG=de ./target/debug/codex-notifier --help
+CODEX_NOTIFIER_LANG=de ./target/debug/codex-notifier licence
+CODEX_NOTIFIER_LANG=de ./target/debug/codex-notifier config set sound maybe    # an error message
 ```
 
 If a value looks right in the file but English shows up, the key is misspelt or the file is named

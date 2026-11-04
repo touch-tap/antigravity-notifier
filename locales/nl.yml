@@ -2,14 +2,14 @@
 _version: 1
 
 cli:
-  about: "Claude Code Notifier: krijg een push op je telefoon wanneer Claude Code je nodig heeft, en antwoord van daar"
+  about: "Codex Notifier: krijg een push op je telefoon wanneer Codex je nodig heeft, en antwoord van daar"
   pair:
     about: "Koppel deze computer aan je telefoon. Geef de code op die de app toont, of start zonder code om er een te krijgen die je in de app typt"
-    code: "De 6-cijferige code die de Claude Code Notifier-app toont"
+    code: "De 6-cijferige code die de Codex Notifier-app toont"
     name: "Hoe deze computer op je telefoon heet (standaard: de hostnaam)"
     no_wait: "Toon de QR-code en keer meteen terug: het koppelen rondt zichzelf af zodra de telefoon verbindt"
   setup:
-    about: "Installeer de Claude Code-hooks en bureaubladmeldingen (pair en ccn zonder opdracht doen dit eerst)"
+    about: "Installeer de Codex-hooks en bureaubladmeldingen (pair en codex-notifier zonder opdracht doen dit eerst)"
   doctor:
     about: "Controleer hooks, inloggegevens, de server en wat deze terminal ondersteunt"
   test:
@@ -20,14 +20,14 @@ cli:
   config:
     about: "Toon of wijzig de instellingen van deze computer (ook aan te passen vanaf de telefoon)"
     show: "Druk de geldende instellingen af"
-    set: "Stel één instelling in, bijv. `ccn config set hold_ceiling_seconds 300` of `ccn config set quiet_hours 22:00-08:00`"
+    set: "Stel één instelling in, bijv. `codex-notifier config set hold_ceiling_seconds 300` of `codex-notifier config set quiet_hours 22:00-08:00`"
   sync:
     about: "Haal nu de nieuwste instellingen van de server"
   unlock:
     about: "Koop in de browser een licentie voor deze computer: ontgrendelt elke telefoon die eraan gekoppeld is"
     lifetime: "Betaal eenmalig in plaats van jaarlijks (of zet een jaarlicentie om naar levenslang, met dezelfde sleutel)"
   upgrade:
-    about: "Werk ccn bij naar de nieuwste versie (wordt ook eens per dag op de achtergrond gecontroleerd)"
+    about: "Werk codex-notifier bij naar de nieuwste versie (wordt ook eens per dag op de achtergrond gecontroleerd)"
     check: "Zeg alleen of er een nieuwere versie is: exit 0 als je bij bent, 10 als er een beschikbaar is"
     quiet: "Druk niets af tenzij er iets misging"
   activate:
@@ -41,59 +41,59 @@ cli:
   uninstall:
     about: "Verwijder de hooks, inloggegevens, koppelingen en lokale gegevens"
   forget:
-    about: "Wis deze computer en zijn koppelingen van de server, en verwijder ccn daarna"
+    about: "Wis deze computer en zijn koppelingen van de server, en verwijder codex-notifier daarna"
     yes: "Niet om bevestiging vragen"
 
 common:
   your_phone: "je telefoon"
-  not_paired: "deze computer is nog niet gekoppeld. Voer `ccn pair <code>` uit met de code uit de app."
+  not_paired: "deze computer is nog niet gekoppeld. Voer `codex-notifier pair <code>` uit met de code uit de app."
   store_keychain: "sleutelhanger"
   store_file: "bestand"
   date_format: "%d-%m-%Y"
 
 pair:
   reregister: "De oude koppeling van deze computer is verwijderd, dus hij wordt opnieuw geregistreerd."
-  code_not_recognised: "Die code is niet herkend. De 6-cijferige code staat in de Claude Code Notifier-app onder Computers > Voeg computer toe; hij verandert elke 24 uur, dus kopieer de regel die de app nu toont."
+  code_not_recognised: "Die code is niet herkend. De 6-cijferige code staat in de Codex Notifier-app onder Computers > Voeg computer toe; hij verandert elke 24 uur, dus kopieer de regel die de app nu toont."
   offer_qr: "Druk op Enter om hier in plaats daarvan een QR-code te tonen (scan die met je telefoon), of Ctrl+C."
-  options_without_terminal: "Voer `ccn pair <code>` opnieuw uit met de code die de app nu toont, of voer `ccn pair` uit om hier een QR-code te tonen en scan die met je telefoon."
+  options_without_terminal: "Voer `codex-notifier pair <code>` opnieuw uit met de code die de app nu toont, of voer `codex-notifier pair` uit om hier een QR-code te tonen en scan die met je telefoon."
   scan: "  Scan dit met de camera van je telefoon om hem te koppelen. Heb je de app nog niet,\n  dan brengt het je naar de App Store of Google Play: installeer, en scan opnieuw."
-  or_type_code: "  Of typ deze code in de Claude Code Notifier-app:  %{code}"
-  enter_code: "  Voer deze code in de Claude Code Notifier-app in:  %{code}"
+  or_type_code: "  Of typ deze code in de Codex Notifier-app:  %{code}"
+  enter_code: "  Voer deze code in de Codex Notifier-app in:  %{code}"
   hooks_already_installed: "  De hooks zijn geïnstalleerd, dus je krijgt al bureaubladmeldingen op deze computer."
   code_lasts: "  Koppel wanneer je wilt: deze code blijft %{duration} geldig."
   completes_on_its_own: "  Het koppelen rondt zichzelf af zodra de telefoon verbindt."
   waiting: "  Wachten op je telefoon... (Ctrl+C kan geen kwaad: het koppelen rondt zichzelf af zodra de telefoon verbindt)"
-  code_expired: "de code is verlopen voordat een telefoon hem gebruikte. Voer `ccn pair` opnieuw uit."
-  code_is_six_digits: "de code bestaat uit de 6 cijfers die de Claude Code Notifier-app toont"
+  code_expired: "de code is verlopen voordat een telefoon hem gebruikte. Voer `codex-notifier pair` opnieuw uit."
+  code_is_six_digits: "de code bestaat uit de 6 cijfers die de Codex Notifier-app toont"
   credentials_stored: "Inloggegevens opgeslagen in de %{store} (%{path})."
   test_sent: "Testmelding naar je telefoon gestuurd."
   test_failed: "Kon nog geen testmelding sturen: %{error}"
-  done: "Klaar. Start `claude` zoals altijd: je krijgt een push wanneer Claude klaar is of je nodig heeft,\nen je kunt goedkeuren, weigeren of antwoorden vanaf je telefoon. `ccn doctor` controleert alles."
+  done: "Klaar. Start `codex` zoals altijd: je krijgt een push wanneer Codex klaar is of je nodig heeft,\nen je kunt goedkeuren, weigeren of antwoorden vanaf je telefoon. `codex-notifier doctor` controleert alles."
   paired_with: "Gekoppeld aan %{name} (%{platform})."
   hours_one: "1 uur"
   hours_other: "%{count} uur"
   minutes_one: "1 minuut"
   minutes_other: "%{count} minuten"
   pitch: "Je telefoon biedt in de app een abonnement aan. Je kunt ook alles van hieruit ontgrendelen, buiten de appstores om:"
-  pitch_annual: "  ccn unlock             %{price} per jaar"
-  pitch_lifetime: "  ccn unlock --lifetime  %{price} eenmalig"
+  pitch_annual: "  codex-notifier unlock             %{price} per jaar"
+  pitch_lifetime: "  codex-notifier unlock --lifetime  %{price} eenmalig"
   pitch_covers: "Dekt %{computers} computers en elke telefoon die eraan gekoppeld is. %{days} dagen niet-goed-geld-terug."
   welcome_no_terminal: "Er is een testmelding onderweg naar je telefoon: probeer hem daar te beantwoorden."
   welcome: "Er is een testmelding onderweg naar je telefoon. Probeer hem daar te beantwoorden..."
   welcome_skip: "(druk op Enter om over te slaan)"
-  welcome_answered: "✓ Je telefoon antwoordde \"%{answer}\". Zo ga je Claude antwoorden."
+  welcome_answered: "✓ Je telefoon antwoordde \"%{answer}\". Zo ga je Codex antwoorden."
   welcome_no_answer: "Nog geen antwoord. De melding blijft een uur op je telefoon staan."
 
 status:
-  set_up: "ccn %{version} is op deze computer ingesteld als \"%{name}\"."
+  set_up: "codex-notifier %{version} is op deze computer ingesteld als \"%{name}\"."
   licence: "Licentie: %{line}"
-  hint_doctor: "  ccn doctor     controleer hooks, inloggegevens en de server"
-  hint_test: "  ccn test       stuur een testmelding naar je telefoon"
-  hint_pair: "  ccn pair       koppel nog een telefoon"
-  hint_help: "  ccn --help     alles verder"
+  hint_doctor: "  codex-notifier doctor     controleer hooks, inloggegevens en de server"
+  hint_test: "  codex-notifier test       stuur een testmelding naar je telefoon"
+  hint_pair: "  codex-notifier pair       koppel nog een telefoon"
+  hint_help: "  codex-notifier --help     alles verder"
 
 setup:
-  installed_self: "ccn geïnstalleerd in %{path}."
+  installed_self: "codex-notifier geïnstalleerd in %{path}."
   hooks_installed: "Hooks geïnstalleerd in %{path} (met %{exe})."
   hooks_trusted: "Als vertrouwd gemarkeerd in %{path}, zodat Codex ze uitvoert zonder langs /hooks te gaan."
 
@@ -102,25 +102,25 @@ sync:
   synced: "Instellingen gesynchroniseerd."
 
 doctor:
-  header: "ccn %{version} op %{platform}"
+  header: "codex-notifier %{version} op %{platform}"
   config: "configuratie: %{path}"
   credentials_present: "inloggegevens: aanwezig (%{store})"
-  credentials_missing: "inloggegevens: ontbreken: voer `ccn pair <code>` uit"
+  credentials_missing: "inloggegevens: ontbreken: voer `codex-notifier pair <code>` uit"
   server_reachable: "server: %{url} bereikbaar"
   server_error: "server: %{error}"
   registered: "geregistreerd als \"%{name}\" (%{kind} %{platform}), mogelijkheden: %{capabilities}"
-  not_paired_any_more: "koppeling: niet meer gekoppeld: voer `ccn pair` uit"
+  not_paired_any_more: "koppeling: niet meer gekoppeld: voer `codex-notifier pair` uit"
   registration_error: "registratie: %{error}"
   licence: "licentie: %{line}"
-  phones_none: "telefoons: nog geen gekoppeld, dus meldingen blijven op dit bureaublad (voer `ccn pair` uit)"
+  phones_none: "telefoons: nog geen gekoppeld, dus meldingen blijven op dit bureaublad (voer `codex-notifier pair` uit)"
   phones: "telefoons: %{names}"
   phones_error: "telefoons: %{error}"
   hooks_all: "hooks: alle %{count} geïnstalleerd in %{path}"
-  hooks_missing: "hooks: %{names} ontbreken (voer `ccn setup` uit)"
+  hooks_missing: "hooks: %{names} ontbreken (voer `codex-notifier setup` uit)"
   hooks_error: "hooks: %{error}"
-  hooks_stale: "de hooks wijzen naar een ander ccn-programma; voer `ccn setup` uit om ze bij te werken"
+  hooks_stale: "de hooks wijzen naar een ander codex-notifier-programma; voer `codex-notifier setup` uit om ze bij te werken"
   trust_ok: "vertrouwen: elke hook heeft zijn hash in %{path}"
-  trust_missing: "vertrouwen: Codex slaat %{names} over tot ze vertrouwd zijn (voer `ccn setup` uit, of /hooks in Codex)"
+  trust_missing: "vertrouwen: Codex slaat %{names} over tot ze vertrouwd zijn (voer `codex-notifier setup` uit, of /hooks in Codex)"
   presence: "aanwezigheid: nu %{idle}s inactief, drempel %{threshold}s"
   replies: "antwoorden: goedkeuringen en antwoorden op vragen vanaf de telefoon werken in elke terminal; vrije tekst naar een inactieve sessie %{free_text}"
   replies_tmux: "werkt (tmux)"
@@ -129,12 +129,12 @@ doctor:
   log: "log: %{path}"
 
 test:
-  none_paired: "er zijn geen telefoons gekoppeld. Voer `ccn pair <code>` uit."
+  none_paired: "er zijn geen telefoons gekoppeld. Voer `codex-notifier pair <code>` uit."
   sent: "Testmelding gestuurd naar %{name} (%{platform})."
   failed: "%{name}: %{error}"
 
 devices:
-  none: "Geen telefoons gekoppeld. Voer `ccn pair <code>` uit met de code uit de app."
+  none: "Geen telefoons gekoppeld. Voer `codex-notifier pair <code>` uit met de code uit de app."
   # %{name} wordt tot 24 kolommen aangevuld en %{platform} tot 8 voordat ze worden ingevuld
   row: "%{name} %{platform} gekoppeld %{since}%{off}"
   notifications_off: "  (meldingen uit)"
@@ -157,85 +157,85 @@ settings:
   unknown: "onbekende instelling '%{key}'. Instellingen: notify_on_done, notify_on_permission, notify_on_question, sound, quiet_when_present, quiet_hours, hold_ceiling_seconds, presence_threshold_seconds, stop_hold_seconds, reminder_interval_seconds"
 
 forget:
-  needs_yes: "ccn forget heeft een ja van je nodig: voer het uit in een terminal, of voeg --yes toe"
-  warning: "Dit wist deze computer en zijn koppelingen van de Claude Code Notifier-server, verwijdert\ndaarna ccn uit Claude Code en wist hier zijn inloggegevens en bestanden, zoals `ccn uninstall`\ndoet. Telefoons die aan deze computer gekoppeld zijn, zien hem verdwijnen.\nEen licentie die op de website is gekocht wordt niet opgezegd: doe dat op\nclaudecodenotifier.com/licence met \"Wis mijn licentie\"."
+  needs_yes: "codex-notifier forget heeft een ja van je nodig: voer het uit in een terminal, of voeg --yes toe"
+  warning: "Dit wist deze computer en zijn koppelingen van de Codex Notifier-server, verwijdert\ndaarna codex-notifier uit Codex en wist hier zijn inloggegevens en bestanden, zoals `codex-notifier uninstall`\ndoet. Telefoons die aan deze computer gekoppeld zijn, zien hem verdwijnen.\nEen licentie die op de website is gekocht wordt niet opgezegd: doe dat op\ncodexnotifier.com/licence met \"Wis mijn licentie\"."
   # Het woord dat de gebruiker moet typen; `yes` wordt altijd ook geaccepteerd
   yes_word: "ja"
   prompt: "\nTyp %{yes} om door te gaan: "
   nothing_erased: "Er is niets gewist."
   erased: "Deze computer en zijn koppelingen zijn van de server gewist."
   already_forgotten: "De server was deze computer al vergeten."
-  nothing_removed: "%{error}. Er is niets van deze computer verwijderd, dus je kunt `ccn forget` opnieuw uitvoeren"
+  nothing_removed: "%{error}. Er is niets van deze computer verwijderd, dus je kunt `codex-notifier forget` opnieuw uitvoeren"
   not_registered: "Deze computer is niet bij de server geregistreerd, dus daar valt niets te wissen."
 
 uninstall:
-  hooks_removed: "De hooks van ccn zijn uit %{path} verwijderd, en hun vertrouwensregels uit %{config}."
+  hooks_removed: "De hooks van codex-notifier zijn uit %{path} verwijderd, en hun vertrouwensregels uit %{config}."
   slot_freed: "Licentieplek van deze computer vrijgemaakt."
   unpaired_all: "Alle telefoons ontkoppeld."
   removed_dir: "%{path} verwijderd."
 
 local:
-  finished_title: "Claude is klaar"
-  finished_body: "Claude is klaar en wacht op je."
-  permission_title: "Claude vraagt toestemming"
-  question_title: "Claude heeft een vraag"
-  first_nudge: "Ook op je telefoon: ccn pair"
-  milestone_nudge: "Al 10 meldingen. Krijg ze op je telefoon, met goedkeuren vanaf het vergrendelscherm: voer ccn pair uit"
-  pair_message: "Claude Code Notifier: je krijgt bureaubladmeldingen. Wil je ze ook op je telefoon, en van daar goedkeuren of antwoorden, voer dan `ccn pair` uit in een terminal."
+  finished_title: "Codex is klaar"
+  finished_body: "Codex is klaar en wacht op je."
+  permission_title: "Codex vraagt toestemming"
+  question_title: "Codex heeft een vraag"
+  first_nudge: "Ook op je telefoon: codex-notifier pair"
+  milestone_nudge: "Al 10 meldingen. Krijg ze op je telefoon, met goedkeuren vanaf het vergrendelscherm: voer codex-notifier pair uit"
+  pair_message: "Codex Notifier: je krijgt bureaubladmeldingen. Wil je ze ook op je telefoon, en van daar goedkeuren of antwoorden, voer dan `codex-notifier pair` uit in een terminal."
 
 hook:
-  licence_message: "Claude Code Notifier: telefoonmeldingen zijn voor deze computer niet ontgrendeld. Ontgrendel ze: ccn unlock"
-  unpaired_message: "Claude Code Notifier: deze computer is niet meer gekoppeld, dus je telefoon krijgt geen meldingen. Voer `ccn pair` uit in een terminal om opnieuw te verbinden."
-  unpaired_notification: "Deze computer is niet meer gekoppeld. Voer `ccn pair` uit in een terminal om opnieuw te verbinden."
-  paired_message: "Claude Code Notifier: gekoppeld aan %{phone}. Meldingen gaan nu naar je telefoon."
+  licence_message: "Codex Notifier: telefoonmeldingen zijn voor deze computer niet ontgrendeld. Ontgrendel ze: codex-notifier unlock"
+  unpaired_message: "Codex Notifier: deze computer is niet meer gekoppeld, dus je telefoon krijgt geen meldingen. Voer `codex-notifier pair` uit in een terminal om opnieuw te verbinden."
+  unpaired_notification: "Deze computer is niet meer gekoppeld. Voer `codex-notifier pair` uit in een terminal om opnieuw te verbinden."
+  paired_message: "Codex Notifier: gekoppeld aan %{phone}. Meldingen gaan nu naar je telefoon."
   # De server schrijft titel, tekst en opdracht in de taal van de gebruiker; dit voegt ze alleen samen
-  nudge_message: "Claude Code Notifier: %{title} %{body} %{command}"
+  nudge_message: "Codex Notifier: %{title} %{body} %{command}"
   needs_attention: "Heeft je aandacht nodig"
 
 hooks:
-  doctor_presence_none: "aanwezigheid: hier niet te bepalen, dus niets wacht op de telefoon: die krijgt een melding en je antwoordt in de terminal (`ccn config set hold_without_presence on` om toch te wachten)"
+  doctor_presence_none: "aanwezigheid: hier niet te bepalen, dus niets wacht op de telefoon: die krijgt een melding en je antwoordt in de terminal (`codex-notifier config set hold_without_presence on` om toch te wachten)"
   doctor_presence_none_hold: "aanwezigheid: hier niet te bepalen en hold_without_presence staat aan, dus elk verzoek wacht op de telefoon tot die antwoordt of de maximale wachttijd voorbij is"
 
 licence:
   already_licensed: "Deze computer heeft al een licentie (%{licence})."
-  switch_to_lifetime: "Overstappen op een levenslange licentie, met dezelfde sleutel: ccn unlock --lifetime"
+  switch_to_lifetime: "Overstappen op een levenslange licentie, met dezelfde sleutel: codex-notifier unlock --lifetime"
   checkout_open: "  De kassa is geopend in je browser. Wil je liever op je telefoon betalen, scan dan dit:"
   checkout_link: "  Open deze link om te betalen, of scan hem met je telefoon:"
   waiting_payment: "  Wachten op de betaling... (Ctrl+C om te stoppen; de sleutel wordt je hoe dan ook gemaild)"
   upgraded: "✓ Omgezet naar een levenslange licentie. Dezelfde sleutel, dezelfde computers; de jaarlijkse verlenging is opgezegd."
   licensed: "✓ Deze computer heeft een licentie (%{licence})."
-  key: "  Sleutel: %{key} (ook gemaild). Te gebruiken op nog 2 computers: ccn activate %{key}"
+  key: "  Sleutel: %{key} (ook gemaild). Te gebruiken op nog 2 computers: codex-notifier activate %{key}"
   phones_unlocked: "  Elke telefoon die aan deze computer gekoppeld is, is ontgrendeld."
-  activate_with_key: "  Voer `ccn activate <key>` uit met de gemailde sleutel om hem op deze computer te gebruiken."
-  no_payment: "Na 15 minuten nog geen betaling. Heb je betaald, dan staat de sleutel in je e-mail: ccn activate <key>"
+  activate_with_key: "  Voer `codex-notifier activate <key>` uit met de gemailde sleutel om hem op deze computer te gebruiken."
+  no_payment: "Na 15 minuten nog geen betaling. Heb je betaald, dan staat de sleutel in je e-mail: codex-notifier activate <key>"
   replace_stale: "\"%{name}\" is al meer dan een week niet gezien. Is dat deze computer? Vervangen?"
   yes_no: " [J/n] "
   # Een antwoord dat met deze letter (of n) begint, betekent nee
   no_initial: "n"
   slots_full: "Deze licentie staat al op %{count} computers:"
-  free_one: "Maak er een vrij met `ccn deactivate` op die computer, of vervang hem van hieruit:"
-  replace_example: "  ccn activate %{key} --replace \"%{name}\""
+  free_one: "Maak er een vrij met `codex-notifier deactivate` op die computer, of vervang hem van hieruit:"
+  replace_example: "  codex-notifier activate %{key} --replace \"%{name}\""
   old_laptop: "Oude laptop"
   no_free_slot: "geen vrije computerplek"
   computers_on_licence: "Computers op deze licentie:"
   activated: "✓ Licentie actief (%{licence}). %{count} van 3 computers in gebruik."
-  pair_to_unlock: "  Koppel een telefoon met `ccn pair` en hij is meteen ontgrendeld."
+  pair_to_unlock: "  Koppel een telefoon met `codex-notifier pair` en hij is meteen ontgrendeld."
   none: "Deze computer heeft geen licentie."
   freed: "Vrijgemaakt. Deze licentie heeft nu %{count} van 3 computers in gebruik."
-  none_buy: "Geen licentie op deze computer. Koop er een: ccn unlock"
+  none_buy: "Geen licentie op deze computer. Koop er een: codex-notifier unlock"
   none_short: "Geen licentie op deze computer."
-  buy_options: "  Koop er een:          ccn unlock (jaarlijks) of ccn unlock --lifetime"
-  have_key: "  Heb je al een sleutel: ccn activate <key>"
+  buy_options: "  Koop er een:          codex-notifier unlock (jaarlijks) of codex-notifier unlock --lifetime"
+  have_key: "  Heb je al een sleutel: codex-notifier activate <key>"
   show_licence: "Licentie:    %{licence}"
   show_key: "Sleutel:     CCN-…-%{last4}"
   show_unlocks: "Ontgrendelt: %{value}"
   unlocks_yes: "ja, elke telefoon die aan deze computer gekoppeld is"
   unlocks_no: "nee"
   show_computers: "Computers:   %{count} van 3"
-  switch_lifetime_keep_key: "Overstappen op levenslang, met dezelfde sleutel: ccn unlock --lifetime"
+  switch_lifetime_keep_key: "Overstappen op levenslang, met dezelfde sleutel: codex-notifier unlock --lifetime"
   status_licensed: "%{licence}, %{count} van 3 computers"
-  status_unlicensed: "%{licence}: ccn unlock"
-  status_none: "geen: ccn unlock"
+  status_unlicensed: "%{licence}: codex-notifier unlock"
+  status_none: "geen: codex-notifier unlock"
   describe_refunded: "terugbetaald"
   describe_lifetime: "levenslang"
   describe_renews: "jaarlijks, verlengt op %{date}"
@@ -251,36 +251,36 @@ licence:
   computer_row: "  %{name} %{seen}%{current}"
 
 update:
-  latest: "ccn %{version} is de nieuwste."
-  available_check: "ccn %{version} is beschikbaar (je hebt %{current})."
+  latest: "codex-notifier %{version} is de nieuwste."
+  available_check: "codex-notifier %{version} is beschikbaar (je hebt %{current})."
   update_with: "  Bijwerken: %{command}"
-  available_run: "ccn %{version} is beschikbaar: %{command}"
+  available_run: "codex-notifier %{version} is beschikbaar: %{command}"
   nothing_to_update: "niets om bij te werken: %{path} is niet geïnstalleerd%{npx}"
-  npx_note: " (npx draait elke keer de nieuwste ccn)"
+  npx_note: " (npx draait elke keer de nieuwste codex-notifier)"
   no_release_build: "geen release-build voor %{os}-%{arch}"
-  no_build_named: "ccn %{version} heeft geen build met de naam %{asset}"
+  no_build_named: "codex-notifier %{version} heeft geen build met de naam %{asset}"
   no_checksum: "SHA256SUMS heeft geen regel voor %{asset}"
   checksum_mismatch: "checksum klopt niet voor %{asset}: er is niets gewijzigd"
-  archive_empty: "het archief bevat geen ccn"
-  zip_empty: "de zip bevat geen ccn.exe"
-  did_not_run: "de gedownloade ccn startte niet, dus de geïnstalleerde versie is behouden"
-  updated: "ccn bijgewerkt %{from} → %{to}."
-  available_message: "Claude Code Notifier: ccn %{version} is beschikbaar: %{command}"
+  archive_empty: "het archief bevat geen codex-notifier"
+  zip_empty: "de zip bevat geen codex-notifier.exe"
+  did_not_run: "de gedownloade codex-notifier startte niet, dus de geïnstalleerde versie is behouden"
+  updated: "codex-notifier bijgewerkt %{from} → %{to}."
+  available_message: "Codex Notifier: codex-notifier %{version} is beschikbaar: %{command}"
 
 notify:
-  registered_windows: "\"Claude Code Notifier\" geregistreerd voor Windows-meldingen."
+  registered_windows: "\"Codex Notifier\" geregistreerd voor Windows-meldingen."
   icon_installed: "Meldingspictogram geïnstalleerd in %{path}."
   doctor_applescript: "AppleScript (deze build heeft geen meldingsapp)"
   doctor_allowed: "toegestaan voor \"%{app}\""
   doctor_denied: "uitgeschakeld: Systeeminstellingen > Meldingen > %{app}"
-  doctor_not_allowed: "nog niet toegestaan: voer `ccn setup` uit"
+  doctor_not_allowed: "nog niet toegestaan: voer `codex-notifier setup` uit"
   mac_denied: "Bureaubladmeldingen staan uit voor \"%{app}\". Zet ze aan in Systeeminstellingen > Meldingen."
   mac_asking: "macOS vragen om meldingen van \"%{app}\" toe te staan..."
   mac_allowed: "Bureaubladmeldingen zijn toegestaan voor \"%{app}\"."
   mac_not_allowed: "Bureaubladmeldingen zijn niet toegestaan. Zet ze aan in Systeeminstellingen > Meldingen > %{app}."
 
 api:
-  rejected: "deze computer is niet meer gekoppeld (de server herkent hem niet meer). Voer `ccn pair` uit om opnieuw te verbinden"
+  rejected: "deze computer is niet meer gekoppeld (de server herkent hem niet meer). Voer `codex-notifier pair` uit om opnieuw te verbinden"
   server_returned: "server gaf %{status} terug"
   # Wat er werd gedaan toen de server nee zei; de eigen melding van de server volgt na een dubbele punt
   registering: "registreren van deze computer"
@@ -298,24 +298,24 @@ api:
 
 # A second upgrader found the first one still running
 update_lock:
-  busy: "er loopt al een andere ccn-upgrade. Probeer het over een paar minuten opnieuw"
+  busy: "er loopt al een andere codex-notifier-upgrade. Probeer het over een paar minuten opnieuw"
 
 local_files:
-  config_unreadable: "%{path} kan niet worden gelezen (%{error}), dus ccn overschrijft het niet. Herstel het bestand, of verwijder het en voer `ccn pair` opnieuw uit."
-  slot_not_freed: "De licentieplek van deze computer kon niet worden vrijgemaakt (%{error}). Als hij een licentie heeft, maak de plek dan vrij op claudecodenotifier.com/licence met je sleutel."
-  kept_dir: "De bestanden van ccn zijn uit %{path} verwijderd. De map bevat ook andere bestanden en is daarom blijven staan."
-  remove_binary: "ccn zelf is nog geïnstalleerd. Zo verwijder je het: %{command}"
+  config_unreadable: "%{path} kan niet worden gelezen (%{error}), dus codex-notifier overschrijft het niet. Herstel het bestand, of verwijder het en voer `codex-notifier pair` opnieuw uit."
+  slot_not_freed: "De licentieplek van deze computer kon niet worden vrijgemaakt (%{error}). Als hij een licentie heeft, maak de plek dan vrij op codexnotifier.com/licence met je sleutel."
+  kept_dir: "De bestanden van codex-notifier zijn uit %{path} verwijderd. De map bevat ook andere bestanden en is daarom blijven staan."
+  remove_binary: "codex-notifier zelf is nog geïnstalleerd. Zo verwijder je het: %{command}"
 
 payload:
   needs_permission: "%{tool} vraagt toestemming"
   permission_required: "Toestemming nodig"
-  has_questions: "Claude heeft vragen"
+  has_questions: "Codex heeft vragen"
   finished_prompt: "Klaar: %{prompt}"
   question_header: "Vraag"
   search: "Zoeken: %{pattern}"
 
 net:
-  unreachable: "De server van Claude Code Notifier is niet bereikbaar. Controleer je internetverbinding en probeer het opnieuw."
+  unreachable: "De server van Codex Notifier is niet bereikbaar. Controleer je internetverbinding en probeer het opnieuw."
   doctor_unreachable: "server: %{url} niet bereikbaar. Controleer je internetverbinding, proxy of firewall"
 
 clap:
@@ -325,10 +325,10 @@ clap:
   options: "Opties:"
   help: "Help tonen"
   version: "Versie tonen"
-  help_command: "Help tonen voor ccn of een van zijn opdrachten"
+  help_command: "Help tonen voor codex-notifier of een van zijn opdrachten"
   help_command_arg: "De opdracht waarvoor je de help wilt zien"
-  error_hint: "Voer `ccn --help` uit om de opdrachten en opties te zien."
+  error_hint: "Voer `codex-notifier --help` uit om de opdrachten en opties te zien."
 
-# `ccn upgrade` refused a release whose SHA256SUMS isn't signed by TouchTap
+# `codex-notifier upgrade` refused a release whose SHA256SUMS isn't signed by TouchTap
 update_signature:
-  invalid: "de handtekening van de release klopt niet, dus er is niets gewijzigd. Probeer het later opnieuw of installeer opnieuw via claudecodenotifier.com/cli"
+  invalid: "de handtekening van de release klopt niet, dus er is niets gewijzigd. Probeer het later opnieuw of installeer opnieuw via codexnotifier.com/cli"

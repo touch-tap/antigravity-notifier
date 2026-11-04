@@ -104,7 +104,7 @@ pub fn show(title: &str, body: &str, sound: bool) {
     }
 }
 
-/// What `ccn setup` adds for desktop notifications: the icon, and on Windows the app identity
+/// What `codex-notifier setup` adds for desktop notifications: the icon, and on Windows the app identity
 /// toasts are shown under. Returns a line to print when it did something, and None when it was
 /// all in place already, so a repeated setup is quiet.
 pub fn install() -> Option<String> {

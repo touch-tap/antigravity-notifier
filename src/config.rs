@@ -299,7 +299,7 @@ pub struct Config {
     pub registered_at: Option<i64>,
     /// When a SessionStart hook last asked the server about this computer's licence (once a day)
     pub licence_checked_at: Option<i64>,
-    /// When the licence nudge was last shown in Claude Code (its cadence is in hook.rs)
+    /// When the licence nudge was last shown in Codex (its cadence is in hook.rs)
     pub licence_nudge_last_at: Option<i64>,
     /// How many phones are paired, as of the last `pairings` call that succeeded. None until the
     /// server has been asked; Some(0) is local mode (desktop notifications only).
@@ -307,29 +307,29 @@ pub struct Config {
     /// When the first phone paired with this computer
     pub paired_at: Option<i64>,
     /// Where the install line came from (web, app, link or direct), set by the install scripts'
-    /// CODEX_NOTIFIER_INSTALL_SOURCE the first time `ccn setup` runs, and sent with the anonymous setup events
+    /// CODEX_NOTIFIER_INSTALL_SOURCE the first time `codex-notifier setup` runs, and sent with the anonymous setup events
     pub install_source: Option<String>,
-    /// Claude Code has shown "paired with <phone>" once
+    /// Codex has shown "paired with <phone>" once
     pub paired_message_shown: bool,
     /// Desktop notifications shown while no phone was paired
     pub local_notifications: u64,
-    /// When the "run ccn pair" message was last shown in Claude Code
+    /// When the "run codex-notifier pair" message was last shown in Codex
     pub pair_nudge_last_at: Option<i64>,
     /// The 10th local notification has asked for the message at the next SessionStart or prompt
     pub pair_nudge_due: bool,
-    /// Whether to suggest pairing at all (`ccn config set pair_nudges off`; default on)
+    /// Whether to suggest pairing at all (`codex-notifier config set pair_nudges off`; default on)
     pub pair_nudges: bool,
-    /// Look for a newer ccn once a day from the SessionStart hook and install it when ccn owns its
-    /// own binary (`ccn config set auto_update off`, or `CODEX_NOTIFIER_NO_AUTO_UPDATE=1`, turns it off)
+    /// Look for a newer codex-notifier once a day from the SessionStart hook and install it when codex-notifier owns its
+    /// own binary (`codex-notifier config set auto_update off`, or `CODEX_NOTIFIER_NO_AUTO_UPDATE=1`, turns it off)
     pub auto_update: bool,
-    /// When the daily check last started a background `ccn upgrade`
+    /// When the daily check last started a background `codex-notifier upgrade`
     pub update_checked_at: Option<i64>,
-    /// A newer version the background check found but could not install (Homebrew, npm, scoop,
-    /// winget own the binary); the SessionStart hook mentions it once a week
+    /// A newer version the background check found but could not install (Homebrew or npm
+    /// owns the binary); the SessionStart hook mentions it once a week
     pub update_available: Option<String>,
-    /// When `update_available` was last mentioned in Claude Code
+    /// When `update_available` was last mentioned in Codex
     pub update_announced_at: Option<i64>,
-    /// Hold Claude for the phone even where presence can't be detected (`ccn config set
+    /// Hold Codex for the phone even where presence can't be detected (`codex-notifier config set
     /// hold_without_presence on`; default off, since typing can't then release the hold)
     pub hold_without_presence: bool,
     /// The file as this process read it, to save only the fields it changed (see `save`)
@@ -384,10 +384,10 @@ enum ConfigFile {
     Unreadable(String),
 }
 
-/// Reads the config file. Hooks run concurrently and every write is atomic, but an older ccn
+/// Reads the config file. Hooks run concurrently and every write is atomic, but an older codex-notifier
 /// (mid-upgrade) or an editor may still truncate and rewrite it in place, so a file that is
 /// empty or doesn't parse is read again a few times before it counts as damaged. One that stays
-/// empty is treated as missing: ccn never writes an empty config.
+/// empty is treated as missing: codex-notifier never writes an empty config.
 fn read_config_file(path: &Path) -> ConfigFile {
     let mut problem = String::new();
     for attempt in 0..4 {
@@ -453,7 +453,7 @@ fn lock_config(path: &Path) -> Option<fs::File> {
 /// Puts onto `on_disk` the top-level keys this process changed since it read the file (`was` to
 /// `now`), and leaves every other key as the file has it now. Two hooks that loaded the same file
 /// and changed different fields then both keep their change, and a hook that loaded before
-/// `ccn pair` doesn't wipe the `client_id` pairing wrote. `skip` keys are never written.
+/// `codex-notifier pair` doesn't wipe the `client_id` pairing wrote. `skip` keys are never written.
 fn merge_changes(on_disk: &mut toml::Table, was: &toml::Table, now: &toml::Table, skip: &[&str]) {
     for (key, value) in now {
         if !skip.contains(&key.as_str()) && was.get(key) != Some(value) {
@@ -772,13 +772,13 @@ fn delete_with_security_tool() -> bool {
     false
 }
 
-/// What ccn writes in its directory, by name. Uninstall deletes these and nothing else, since
+/// What codex-notifier writes in its directory, by name. Uninstall deletes these and nothing else, since
 /// `CODEX_NOTIFIER_HOME` may point at a folder that holds other things.
 const OWN_FILES: &[&str] = &[
     "config.toml",
     "config.lock",
     "credentials",
-    "ccn.log",
+    "codex-notifier.log",
     "unpaired.json",
     "icon.png",
     // hook.rs: when a best-effort update last failed, so other hooks skip the network for a while
@@ -787,7 +787,7 @@ const OWN_FILES: &[&str] = &[
     "update.lock",
 ];
 
-/// Deletes ccn's own files from its directory (the list above, the session files, the macOS
+/// Deletes codex-notifier's own files from its directory (the list above, the session files, the macOS
 /// notifier app and any temp file a crash left), then the directory if that leaves it empty.
 /// Returns whether the directory itself went.
 pub fn remove_local_files() -> bool {
@@ -818,8 +818,8 @@ pub fn remove_local_files() -> bool {
 // Writing files safely
 // ============================================
 
-/// Creates `dir` and any missing parents. On Unix they are made 0700: the ccn directory holds
-/// the token, prompts and tool inputs. The default ccn directory, if an older version made it
+/// Creates `dir` and any missing parents. On Unix they are made 0700: the codex-notifier directory holds
+/// the token, prompts and tool inputs. The default codex-notifier directory, if an older version made it
 /// 0755, is tightened too; a directory chosen with `CODEX_NOTIFIER_HOME` is left as the user made it.
 pub fn ensure_dir(dir: &Path) -> std::io::Result<()> {
     #[cfg(unix)]
@@ -847,7 +847,7 @@ pub fn ensure_dir(dir: &Path) -> std::io::Result<()> {
     }
 }
 
-/// Replaces `path` with `contents` all at once. Hooks run concurrently (several Claude sessions,
+/// Replaces `path` with `contents` all at once. Hooks run concurrently (several Codex sessions,
 /// parallel hooks in one), and `fs::write` truncates first, so a reader could see an empty or
 /// half-written file. This writes a uniquely named temp file beside it (0600 on Unix from the
 /// start) and renames it over the target, which readers see as either the old file or the new.
@@ -927,7 +927,7 @@ pub const LOCALES: &[&str] = &[
 ];
 
 /// The language to ask the server for, mapped onto `LOCALES`: `CODEX_NOTIFIER_LANG`, else the POSIX locale
-/// variables, else the first of the OS's preferred languages that ccn speaks, else English.
+/// variables, else the first of the OS's preferred languages that codex-notifier speaks, else English.
 pub fn locale() -> String {
     let env = |key: &str| std::env::var(key).ok();
     let posix = [env("LC_ALL"), env("LC_MESSAGES"), env("LANG")];
@@ -937,10 +937,10 @@ pub fn locale() -> String {
 
 /// `locale` without the environment, so it can be tested. sys-locale reads CFLocale on macOS and
 /// ignores LANG there, so the POSIX variables are checked first everywhere (LC_ALL, then
-/// LC_MESSAGES, then LANG, as gettext does); "C", "POSIX" and empty say nothing. A language ccn
+/// LC_MESSAGES, then LANG, as gettext does); "C", "POSIX" and empty say nothing. A language codex-notifier
 /// doesn't speak falls through to the next choice: with macOS preferences [sv, de], German.
-fn pick_locale(ccn_lang: Option<&str>, posix: &[Option<String>], os: &[String]) -> &'static str {
-    if let Some(lang) = ccn_lang.filter(|v| !v.trim().is_empty()) {
+fn pick_locale(lang_env: Option<&str>, posix: &[Option<String>], os: &[String]) -> &'static str {
+    if let Some(lang) = lang_env.filter(|v| !v.trim().is_empty()) {
         return normalise_locale(lang);
     }
     let said_something = |v: &&String| {
@@ -961,7 +961,7 @@ pub fn normalise_locale(raw: &str) -> &'static str {
     supported_locale(raw).unwrap_or("en")
 }
 
-/// Maps a BCP 47 or POSIX locale tag onto one of `LOCALES`, or None for a language ccn lacks.
+/// Maps a BCP 47 or POSIX locale tag onto one of `LOCALES`, or None for a language codex-notifier lacks.
 fn supported_locale(raw: &str) -> Option<&'static str> {
     // en_GB.UTF-8 → en-GB; drop the encoding and modifier
     let tag = raw.split(['.', '@']).next().unwrap_or("").replace('_', "-");
@@ -1004,10 +1004,10 @@ mod locale_tests {
     }
 
     #[test]
-    fn ccn_lang_wins_over_everything() {
+    fn the_lang_variable_wins_over_everything() {
         let env = posix(Some("fr_FR.UTF-8"), None, Some("de_DE.UTF-8"));
         assert_eq!(pick_locale(Some("ja"), &env, &os(&["ko"])), "ja");
-        // Even a language ccn lacks: the user asked for it by name
+        // Even a language codex-notifier lacks: the user asked for it by name
         assert_eq!(pick_locale(Some("sv"), &env, &os(&["ko"])), "en");
         // Blank is unset
         assert_eq!(pick_locale(Some(" "), &env, &os(&["ko"])), "fr");
@@ -1058,7 +1058,7 @@ mod locale_tests {
         );
         assert_eq!(pick_locale(None, &none, &os(&["sv", "fi"])), "en");
         assert_eq!(pick_locale(None, &none, &os(&[])), "en");
-        // A POSIX language ccn lacks falls through to the OS preferences too
+        // A POSIX language codex-notifier lacks falls through to the OS preferences too
         assert_eq!(
             pick_locale(
                 None,
@@ -1117,7 +1117,7 @@ mod write_tests {
     }
 
     fn temp_dir(name: &str) -> PathBuf {
-        let dir = std::env::temp_dir().join(format!("ccn-write-{name}-{}", std::process::id()));
+        let dir = std::env::temp_dir().join(format!("codex-notifier-write-{name}-{}", std::process::id()));
         let _ = fs::remove_dir_all(&dir);
         dir
     }

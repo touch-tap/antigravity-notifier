@@ -1,5 +1,5 @@
-//! `ccn upgrade` end to end: the real binary, copied into a temp bin directory, against a fake
-//! server that serves `/api/cli/latest`, a release archive holding a tiny script called `ccn`,
+//! `codex-notifier upgrade` end to end: the real binary, copied into a temp bin directory, against a fake
+//! server that serves `/api/cli/latest`, a release archive holding a tiny script called `codex-notifier`,
 //! and its SHA256SUMS.
 
 #![cfg(unix)] // the release archive is a tar.gz of a shell script; Windows gets a zip of an exe
@@ -13,8 +13,8 @@ use std::sync::{Arc, Mutex};
 
 const VERSION: &str = env!("CARGO_PKG_VERSION");
 const NEW_VERSION: &str = "9.9.9";
-const SCRIPT: &str = "#!/bin/sh\necho \"ccn 9.9.9\"\n";
-/// The key the fake releases are signed with, and one ccn doesn't trust
+const SCRIPT: &str = "#!/bin/sh\necho \"codex-notifier 9.9.9\"\n";
+/// The key the fake releases are signed with, and one codex-notifier doesn't trust
 const TEST_SEED: [u8; 32] = [7; 32];
 const OTHER_SEED: [u8; 32] = [9; 32];
 
@@ -37,8 +37,8 @@ enum Sig {
 fn asset_name() -> String {
     let arch = std::env::consts::ARCH;
     match std::env::consts::OS {
-        "macos" => format!("ccn-{arch}-apple-darwin.tar.gz"),
-        _ => format!("ccn-{arch}-unknown-linux-musl.tar.gz"),
+        "macos" => format!("codex-notifier-{arch}-apple-darwin.tar.gz"),
+        _ => format!("codex-notifier-{arch}-unknown-linux-musl.tar.gz"),
     }
 }
 
@@ -47,19 +47,19 @@ struct Sandbox {
 }
 
 impl Sandbox {
-    /// A home with ccn's config, Claude's settings (hooks pointing at the sandbox binary) and a
-    /// copy of the real ccn at `bin/ccn`, or at `exe_rel` when given.
+    /// A home with codex-notifier's config, Codex's settings (hooks pointing at the sandbox binary) and a
+    /// copy of the real codex-notifier at `bin/codex-notifier`, or at `exe_rel` when given.
     fn new(name: &str, exe_rel: &str) -> Sandbox {
-        let root = std::env::temp_dir().join(format!("ccn-update-{name}-{}", std::process::id()));
+        let root = std::env::temp_dir().join(format!("codex-notifier-update-{name}-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&root);
         std::fs::create_dir_all(root.join("codex")).unwrap();
-        std::fs::create_dir_all(root.join("ccn")).unwrap();
+        std::fs::create_dir_all(root.join("codex-notifier")).unwrap();
         let exe = root.join(exe_rel);
         std::fs::create_dir_all(exe.parent().unwrap()).unwrap();
         std::fs::copy(env!("CARGO_BIN_EXE_codex-notifier"), &exe).unwrap();
-        // As `ccn setup` writes it: the canonical path (macOS puts temp dirs under /private)
+        // As `codex-notifier setup` writes it: the canonical path (macOS puts temp dirs under /private)
         let exe = exe.canonicalize().unwrap();
-        std::fs::write(root.join("ccn/config.toml"), "auto_update = true\n").unwrap();
+        std::fs::write(root.join("codex-notifier/config.toml"), "auto_update = true\n").unwrap();
         let hook = format!("{} hook", exe.display());
         std::fs::write(
             root.join("codex/hooks.json"),
@@ -72,14 +72,14 @@ impl Sandbox {
     }
 
     fn exe(&self) -> PathBuf {
-        self.root.join("bin/ccn").canonicalize().unwrap()
+        self.root.join("bin/codex-notifier").canonicalize().unwrap()
     }
 
     fn run_exe(&self, exe: &PathBuf, server: &str, args: &[&str]) -> Output {
         Command::new(exe)
             .args(args)
             .env("HOME", &self.root)
-            .env("CODEX_NOTIFIER_HOME", self.root.join("ccn"))
+            .env("CODEX_NOTIFIER_HOME", self.root.join("codex-notifier"))
             .env("CODEX_HOME", self.root.join("codex"))
             .env("CODEX_NOTIFIER_SERVER_URL", server)
             .env("CODEX_NOTIFIER_CREDENTIAL_STORE", "file")
@@ -102,7 +102,7 @@ impl Sandbox {
     }
 
     fn config(&self) -> String {
-        std::fs::read_to_string(self.root.join("ccn/config.toml")).unwrap()
+        std::fs::read_to_string(self.root.join("codex-notifier/config.toml")).unwrap()
     }
 }
 
@@ -116,14 +116,14 @@ impl Drop for Sandbox {
 fn release(dir: &Path, correct_checksum: bool) -> (Vec<u8>, String) {
     let stage = dir.join("stage");
     std::fs::create_dir_all(&stage).unwrap();
-    std::fs::write(stage.join("ccn"), SCRIPT).unwrap();
+    std::fs::write(stage.join("codex-notifier"), SCRIPT).unwrap();
     let archive = dir.join(asset_name());
     let status = Command::new("tar")
         .arg("czf")
         .arg(&archive)
         .arg("-C")
         .arg(&stage)
-        .arg("ccn")
+        .arg("codex-notifier")
         .status()
         .unwrap();
     assert!(status.success(), "tar failed");
@@ -245,7 +245,7 @@ fn text(bytes: &[u8]) -> String {
 
 #[test]
 fn replaces_the_binary_with_the_verified_release() {
-    let sandbox = Sandbox::new("ok", "bin/ccn");
+    let sandbox = Sandbox::new("ok", "bin/codex-notifier");
     let original = std::fs::read(sandbox.exe()).unwrap();
     let (url, requested) = release_server(&sandbox.root, NEW_VERSION, true);
 
@@ -253,7 +253,7 @@ fn replaces_the_binary_with_the_verified_release() {
     assert!(out.status.success(), "{}", text(&out.stderr));
     assert_eq!(
         text(&out.stdout).trim(),
-        format!("Updated ccn {VERSION} → {NEW_VERSION}.")
+        format!("Updated codex-notifier {VERSION} → {NEW_VERSION}.")
     );
 
     let requested = requested.lock().unwrap().clone();
@@ -267,12 +267,12 @@ fn replaces_the_binary_with_the_verified_release() {
         ]
     );
 
-    // The release's ccn is now the installed one, the old binary is gone, nothing is left beside it
+    // The release's codex-notifier is now the installed one, the old binary is gone, nothing is left beside it
     let installed = std::fs::read(sandbox.exe()).unwrap();
     assert_eq!(text(&installed), SCRIPT);
     assert_ne!(installed, original);
-    assert!(!sandbox.root.join("bin/ccn.new").exists());
-    assert!(!sandbox.root.join("bin/ccn.old").exists());
+    assert!(!sandbox.root.join("bin/codex-notifier.new").exists());
+    assert!(!sandbox.root.join("bin/codex-notifier.old").exists());
     assert_eq!(
         std::fs::read_dir(sandbox.root.join("bin")).unwrap().count(),
         1
@@ -281,7 +281,7 @@ fn replaces_the_binary_with_the_verified_release() {
         .arg("--version")
         .output()
         .unwrap();
-    assert_eq!(text(&version.stdout).trim(), "ccn 9.9.9");
+    assert_eq!(text(&version.stdout).trim(), "codex-notifier 9.9.9");
 
     // The hooks already pointed at this path, so hooks.json was not rewritten
     let settings = std::fs::read_to_string(sandbox.root.join("codex/hooks.json")).unwrap();
@@ -296,7 +296,7 @@ fn replaces_the_binary_with_the_verified_release() {
 
 #[test]
 fn a_bad_checksum_leaves_the_original_untouched() {
-    let sandbox = Sandbox::new("badsum", "bin/ccn");
+    let sandbox = Sandbox::new("badsum", "bin/codex-notifier");
     let original = std::fs::read(sandbox.exe()).unwrap();
     let (url, _) = release_server(&sandbox.root, NEW_VERSION, false);
 
@@ -308,14 +308,14 @@ fn a_bad_checksum_leaves_the_original_untouched() {
         text(&out.stderr)
     );
     assert_eq!(std::fs::read(sandbox.exe()).unwrap(), original);
-    assert!(!sandbox.root.join("bin/ccn.new").exists());
+    assert!(!sandbox.root.join("bin/codex-notifier.new").exists());
     let still_runs = sandbox.run(&url, &["--version"]);
-    assert_eq!(text(&still_runs.stdout).trim(), format!("ccn {VERSION}"));
+    assert_eq!(text(&still_runs.stdout).trim(), format!("codex-notifier {VERSION}"));
 }
 
 #[test]
 fn says_so_when_already_the_latest() {
-    let sandbox = Sandbox::new("latest", "bin/ccn");
+    let sandbox = Sandbox::new("latest", "bin/codex-notifier");
     let original = std::fs::read(sandbox.exe()).unwrap();
     let (url, requested) = release_server(&sandbox.root, VERSION, true);
 
@@ -323,7 +323,7 @@ fn says_so_when_already_the_latest() {
     assert!(out.status.success(), "{}", text(&out.stderr));
     assert_eq!(
         text(&out.stdout).trim(),
-        format!("ccn {VERSION} is the latest.")
+        format!("codex-notifier {VERSION} is the latest.")
     );
     assert_eq!(std::fs::read(sandbox.exe()).unwrap(), original);
     assert_eq!(requested.lock().unwrap().len(), 1, "nothing was downloaded");
@@ -335,7 +335,7 @@ fn says_so_when_already_the_latest() {
 
 #[test]
 fn check_only_reports_and_exits_10_when_newer() {
-    let sandbox = Sandbox::new("check", "bin/ccn");
+    let sandbox = Sandbox::new("check", "bin/codex-notifier");
     let original = std::fs::read(sandbox.exe()).unwrap();
     let (url, requested) = release_server(&sandbox.root, NEW_VERSION, true);
 
@@ -344,11 +344,11 @@ fn check_only_reports_and_exits_10_when_newer() {
     let stdout = text(&out.stdout);
     assert!(
         stdout.contains(&format!(
-            "ccn {NEW_VERSION} is available (you have {VERSION})"
+            "codex-notifier {NEW_VERSION} is available (you have {VERSION})"
         )),
         "{stdout}"
     );
-    assert!(stdout.contains("Update: ccn upgrade"), "{stdout}");
+    assert!(stdout.contains("Update: codex-notifier upgrade"), "{stdout}");
     assert_eq!(std::fs::read(sandbox.exe()).unwrap(), original);
     assert_eq!(requested.lock().unwrap().len(), 1, "nothing was downloaded");
 
@@ -359,8 +359,8 @@ fn check_only_reports_and_exits_10_when_newer() {
 
 #[test]
 fn a_homebrew_install_is_told_to_brew_upgrade_and_the_background_run_records_it() {
-    let sandbox = Sandbox::new("brew", "homebrew/Cellar/ccn/0.1.0/bin/ccn");
-    let exe = sandbox.root.join("homebrew/Cellar/ccn/0.1.0/bin/ccn");
+    let sandbox = Sandbox::new("brew", "homebrew/Cellar/codex-notifier/0.1.0/bin/codex-notifier");
+    let exe = sandbox.root.join("homebrew/Cellar/codex-notifier/0.1.0/bin/codex-notifier");
     let original = std::fs::read(&exe).unwrap();
     let (url, requested) = release_server(&sandbox.root, NEW_VERSION, true);
 
@@ -368,7 +368,7 @@ fn a_homebrew_install_is_told_to_brew_upgrade_and_the_background_run_records_it(
     assert!(out.status.success(), "{}", text(&out.stderr));
     assert_eq!(
         text(&out.stdout).trim(),
-        format!("ccn {NEW_VERSION} is available: brew upgrade touch-tap/tap/ccn")
+        format!("codex-notifier {NEW_VERSION} is available: brew upgrade touch-tap/tap/codex-notifier")
     );
     assert_eq!(std::fs::read(&exe).unwrap(), original);
     assert!(!sandbox.config().contains("update_available"));
@@ -399,7 +399,7 @@ fn a_homebrew_install_is_told_to_brew_upgrade_and_the_background_run_records_it(
 
 #[test]
 fn auto_update_is_a_local_setting() {
-    let sandbox = Sandbox::new("setting", "bin/ccn");
+    let sandbox = Sandbox::new("setting", "bin/codex-notifier");
     let out = sandbox.run(
         "http://127.0.0.1:9",
         &["config", "set", "auto_update", "off"],
@@ -419,11 +419,11 @@ fn auto_update_is_a_local_setting() {
 fn an_intel_mac_homebrew_link_is_left_to_brew() {
     // As Homebrew lays it out under /usr/local: the binary in the Cellar, a relative symlink in
     // bin, and hooks and the shell running the link. Nothing in the link's path says Homebrew.
-    let sandbox = Sandbox::new("brewlink", "usr/local/Cellar/ccn/0.1.0/bin/ccn");
-    let cellar = sandbox.root.join("usr/local/Cellar/ccn/0.1.0/bin/ccn");
-    let link = sandbox.root.join("usr/local/bin/ccn");
+    let sandbox = Sandbox::new("brewlink", "usr/local/Cellar/codex-notifier/0.1.0/bin/codex-notifier");
+    let cellar = sandbox.root.join("usr/local/Cellar/codex-notifier/0.1.0/bin/codex-notifier");
+    let link = sandbox.root.join("usr/local/bin/codex-notifier");
     std::fs::create_dir_all(link.parent().unwrap()).unwrap();
-    std::os::unix::fs::symlink("../Cellar/ccn/0.1.0/bin/ccn", &link).unwrap();
+    std::os::unix::fs::symlink("../Cellar/codex-notifier/0.1.0/bin/codex-notifier", &link).unwrap();
     let original = std::fs::read(&cellar).unwrap();
     let (url, _) = release_server(&sandbox.root, NEW_VERSION, true);
 
@@ -431,7 +431,7 @@ fn an_intel_mac_homebrew_link_is_left_to_brew() {
     assert!(out.status.success(), "{}", text(&out.stderr));
     assert_eq!(
         text(&out.stdout).trim(),
-        format!("ccn {NEW_VERSION} is available: brew upgrade touch-tap/tap/ccn")
+        format!("codex-notifier {NEW_VERSION} is available: brew upgrade touch-tap/tap/codex-notifier")
     );
 
     let out = sandbox.run_exe(&link, &url, &["upgrade", "--quiet", "--background"]);
@@ -455,11 +455,11 @@ fn an_intel_mac_homebrew_link_is_left_to_brew() {
 
 #[test]
 fn a_second_upgrader_leaves_the_binary_to_the_first() {
-    let sandbox = Sandbox::new("locked", "bin/ccn");
+    let sandbox = Sandbox::new("locked", "bin/codex-notifier");
     let original = std::fs::read(sandbox.exe()).unwrap();
     let (url, requested) = release_server(&sandbox.root, NEW_VERSION, true);
     // Another upgrader, started a moment ago, holds the lock
-    let lock = sandbox.root.join("ccn/update.lock");
+    let lock = sandbox.root.join("codex-notifier/update.lock");
     std::fs::write(&lock, "1\n").unwrap();
 
     let out = sandbox.run(&url, &["upgrade"]);
@@ -493,7 +493,7 @@ fn a_second_upgrader_leaves_the_binary_to_the_first() {
 #[test]
 fn refuses_a_release_signed_by_another_key_or_not_at_all() {
     for sig in [Sig::WrongKey, Sig::Missing] {
-        let sandbox = Sandbox::new("unsigned", "bin/ccn");
+        let sandbox = Sandbox::new("unsigned", "bin/codex-notifier");
         let original = std::fs::read(sandbox.exe()).unwrap();
         let (url, requested) = release_server_signed(&sandbox.root, NEW_VERSION, true, sig);
 

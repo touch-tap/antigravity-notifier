@@ -40,7 +40,7 @@ pub fn is_rejected(err: &anyhow::Error) -> bool {
 /// middleware answers 401 UNAUTHORIZED for an unknown token; its 403s (FORBIDDEN, NOT_SUPPORTED)
 /// are about a request, not the credentials. A 403 from in front of the server, such as a
 /// Cloudflare WAF or bot challenge (an HTML page), must not mark the computer unpaired: that
-/// would stop every hook until `ccn pair`. So a 403 counts only with the server's own JSON
+/// would stop every hook until `codex-notifier pair`. So a 403 counts only with the server's own JSON
 /// UNAUTHORIZED code, in case it ever answers that way.
 fn credentials_rejected(status: u16, body: &str) -> bool {
     match status {
@@ -467,7 +467,7 @@ pub struct NudgeMessage {
     pub variant: String,
     pub title: String,
     pub body: String,
-    /// What to run, e.g. `ccn unlock --lifetime`
+    /// What to run, e.g. `codex-notifier unlock --lifetime`
     pub command: String,
 }
 
@@ -675,7 +675,7 @@ mod tests {
             .context("sending the event")
             .unwrap_err();
         assert!(is_rejected(&err));
-        assert!(format!("{err:#}").contains("Run `ccn pair`"));
+        assert!(format!("{err:#}").contains("Run `codex-notifier pair`"));
         assert!(!is_rejected(&anyhow!("server returned 500")));
     }
 }

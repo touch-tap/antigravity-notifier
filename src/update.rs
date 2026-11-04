@@ -1,19 +1,19 @@
-//! `ccn upgrade`: replaces this binary with the latest release, or says how to update when a
-//! package manager owns it (Homebrew, npm, scoop, winget). Also the once-a-day check behind it.
+//! `codex-notifier upgrade`: replaces this binary with the latest release, or says how to update when a
+//! package manager owns it (Homebrew, npm). Also the once-a-day check behind it.
 //!
 //! Wiring for the SessionStart hook (hook.rs): call `update::daily_check(&mut self.cfg)` once per
 //! SessionStart, after the config is loaded. It returns within ~100 ms and never touches the
 //! network itself. `None` means nothing to say. At most once a day it saves `update_checked_at`
-//! and spawns `ccn upgrade --quiet --background`, fully detached from the hook and the terminal,
-//! which installs a newer release in place when ccn owns its binary. When something else owns it
+//! and spawns `codex-notifier upgrade --quiet --background`, fully detached from the hook and the terminal,
+//! which installs a newer release in place when codex-notifier owns its binary. When something else owns it
 //! the background run records `update_available` instead, and `daily_check` then returns
-//! `Some({"systemMessage": "Claude Code Notifier: ccn X is available: <command>"})` once a week,
-//! for the hook to return as its output. `ccn config set auto_update off` or
+//! `Some({"systemMessage": "Codex Notifier: codex-notifier X is available: <command>"})` once a week,
+//! for the hook to return as its output. `codex-notifier config set auto_update off` or
 //! `CODEX_NOTIFIER_NO_AUTO_UPDATE=1` turns all of this off.
 //!
 //! Where the latest version comes from: `GET {server}/api/cli/latest`, falling back to the GitHub
 //! releases API. The assets are the ones .github/workflows/release.yml publishes under the
-//! release's `downloadBase`: `ccn-<triple>.tar.gz` (Unix) or `ccn-<triple>.zip` (Windows), plus
+//! release's `downloadBase`: `codex-notifier-<triple>.tar.gz` (Unix) or `codex-notifier-<triple>.zip` (Windows), plus
 //! `SHA256SUMS`. That base is pinned to this repository's GitHub releases over https whatever the
 //! server says (`CODEX_NOTIFIER_DOWNLOAD_BASE` overrides it for tests), because SHA256SUMS comes from the same
 //! place as the archive: a base anyone else chose could vouch for its own binary. SHA256SUMS must
@@ -38,12 +38,12 @@ use crate::{hookcfg, telemetry};
 
 /// How often the SessionStart hook starts a background check.
 const CHECK_EVERY: i64 = 24 * 60 * 60;
-/// How often Claude Code is told about a version a package manager has to install.
+/// How often Codex is told about a version a package manager has to install.
 const ANNOUNCE_EVERY: i64 = 7 * 24 * 60 * 60;
-/// `ccn upgrade --check` exits with this when a newer release exists.
+/// `codex-notifier upgrade --check` exits with this when a newer release exists.
 const EXIT_UPDATE_AVAILABLE: i32 = 10;
-const GITHUB_LATEST: &str = "https://api.github.com/repos/touch-tap/ccn/releases/latest";
-const RELEASES_BASE: &str = "https://github.com/touch-tap/ccn/releases/download";
+const GITHUB_LATEST: &str = "https://api.github.com/repos/touch-tap/codex-notifier/releases/latest";
+const RELEASES_BASE: &str = "https://github.com/touch-tap/codex-notifier/releases/download";
 /// Release archives are about 2 MB; anything near this is not one of ours.
 const MAX_DOWNLOAD: u64 = 64 * 1024 * 1024;
 /// An update lock older than this was left by an upgrader that died: two 120 s downloads and the
@@ -63,7 +63,7 @@ pub struct Mode {
     pub check: bool,
     /// Print nothing on success
     pub quiet: bool,
-    /// Started by `daily_check`: never prints, logs to ccn.log, records what it cannot install
+    /// Started by `daily_check`: never prints, logs to codex-notifier.log, records what it cannot install
     pub background: bool,
 }
 
@@ -74,7 +74,7 @@ struct Latest {
     assets: Option<Vec<String>>,
 }
 
-/// What `ccn upgrade` can do for an installed binary.
+/// What `codex-notifier upgrade` can do for an installed binary.
 #[derive(Debug, PartialEq)]
 pub enum Action {
     /// Download the release and swap it in at this path
@@ -155,7 +155,7 @@ fn run_inner(mode: &Mode) -> Result<i32> {
                 cfg.update_available = Some(latest.version.clone());
                 let _ = cfg.save();
                 log(&format!(
-                    "ccn {} is available, installed with {method}: {command}",
+                    "codex-notifier {} is available, installed with {method}: {command}",
                     latest.version
                 ));
             } else {
@@ -191,7 +191,7 @@ fn run_inner(mode: &Mode) -> Result<i32> {
     // Two SessionStarts a moment apart can each start an upgrader: only one downloads and swaps
     let Some(_lock) = UpdateLock::acquire().map_err(|e| failed("install", e))? else {
         if mode.background {
-            log("update: another ccn upgrade is already running");
+            log("update: another codex-notifier upgrade is already running");
             return Ok(0);
         }
         bail!("{}", t!("update_lock.busy"));
@@ -285,11 +285,11 @@ fn failed(stage: &str, err: anyhow::Error) -> anyhow::Error {
 fn update_command(action: &Action) -> &'static str {
     match action {
         Action::Run(command) => command,
-        Action::Replace(_) => "ccn upgrade",
+        Action::Replace(_) => "codex-notifier upgrade",
     }
 }
 
-/// `ccn config set auto_update on|off`, kept here so commands.rs needs no change.
+/// `codex-notifier config set auto_update on|off`, kept here so commands.rs needs no change.
 pub fn set_auto_update(value: &str) -> Result<()> {
     let on = match value.to_ascii_lowercase().as_str() {
         "true" | "on" | "yes" | "1" => true,
@@ -307,7 +307,7 @@ pub fn set_auto_update(value: &str) -> Result<()> {
     Ok(())
 }
 
-/// On Windows a running ccn.exe is renamed to ccn.old.exe by an update, and can only be deleted
+/// On Windows a running codex-notifier.exe is renamed to codex-notifier.old.exe by an update, and can only be deleted
 /// once it has exited: every start tries. Nothing to do elsewhere.
 pub fn remove_leftovers() {
     #[cfg(windows)]
@@ -339,7 +339,7 @@ fn auto_update_enabled(cfg: &Config) -> bool {
     cfg.auto_update && !off
 }
 
-/// Once a day, starts `ccn upgrade --quiet --background` detached from the hook, and once a week
+/// Once a day, starts `codex-notifier upgrade --quiet --background` detached from the hook, and once a week
 /// returns a `systemMessage` for a newer version that a package manager has to install. Returns
 /// within ~100 ms: it never waits for the network. Called from the SessionStart hook.
 pub fn daily_check(cfg: &mut Config) -> Option<Value> {
@@ -366,8 +366,8 @@ pub fn daily_check(cfg: &mut Config) -> Option<Value> {
     }))
 }
 
-/// Runs this same binary as `ccn upgrade --quiet --background`, with no terminal, no standard
-/// streams and its own session, so neither Claude Code nor the shell waits for it or stops it.
+/// Runs this same binary as `codex-notifier upgrade --quiet --background`, with no terminal, no standard
+/// streams and its own session, so neither Codex nor the shell waits for it or stops it.
 fn spawn_background() {
     let Ok(exe) = std::env::current_exe() else {
         return;
@@ -404,18 +404,17 @@ fn spawn_background() {
 // Where the binary came from, and what that allows
 // ============================================
 
-/// "homebrew", "npm", "scoop", "winget" from the binary's path; otherwise what the install
+/// "homebrew" or "npm" from the binary's path; otherwise what the install
 /// scripts and npx told telemetry ("script", "powershell", "npx") or "other".
 ///
 /// Decided from the resolved path: `hookcfg::exe_path` maps a Cellar binary back to brew's link,
-/// and on an Intel Mac that link is `/usr/local/bin/ccn`, which says nothing about Homebrew. Taken
+/// and on an Intel Mac that link is `/usr/local/bin/codex-notifier`, which says nothing about Homebrew. Taken
 /// at face value, the daily upgrade would replace brew's symlink with a file of its own.
 fn detect_method(exe: &Path) -> &'static str {
     method_from_path_resolved(exe).unwrap_or_else(telemetry::install_method)
 }
 
-/// The method from where `exe` really is (following brew's and winget's links, scoop's `current`
-/// junction), falling back to the path as given when it cannot be resolved.
+/// The method from where `exe` really is (following brew's links), falling back to the path as given when it cannot be resolved.
 pub(crate) fn method_from_path_resolved(exe: &Path) -> Option<&'static str> {
     exe.canonicalize()
         .ok()
@@ -425,14 +424,9 @@ pub(crate) fn method_from_path_resolved(exe: &Path) -> Option<&'static str> {
 
 fn method_from_path(exe: &Path) -> Option<&'static str> {
     let path = exe.to_string_lossy().replace('\\', "/");
-    let lower = path.to_ascii_lowercase();
-    // `/Cellar/ccn/` under any prefix: /opt/homebrew, /usr/local, ~/.linuxbrew or a custom one
-    if path.contains("/Cellar/ccn/") || path.contains("/homebrew/") || path.contains("linuxbrew") {
+    // `/Cellar/codex-notifier/` under any prefix: /opt/homebrew, /usr/local, ~/.linuxbrew or a custom one
+    if path.contains("/Cellar/codex-notifier/") || path.contains("/homebrew/") || path.contains("linuxbrew") {
         Some("homebrew")
-    } else if lower.contains("/scoop/apps/ccn/") {
-        Some("scoop")
-    } else if lower.contains("/winget/packages/") || lower.contains("/winget/links/") {
-        Some("winget")
     } else if path.contains("node_modules") {
         Some("npm")
     } else {
@@ -443,10 +437,8 @@ fn method_from_path(exe: &Path) -> Option<&'static str> {
 /// What to do for a binary installed by `method` at `exe`.
 pub fn action_for(method: &str, exe: &Path) -> Action {
     match method {
-        "homebrew" => Action::Run("brew upgrade touch-tap/tap/ccn"),
-        "npm" => Action::Run("npm install -g @touchtap/ccn@latest"),
-        "scoop" => Action::Run("scoop update ccn"),
-        "winget" => Action::Run("winget upgrade TouchTap.ccn"),
+        "homebrew" => Action::Run("brew upgrade touch-tap/tap/codex-notifier"),
+        "npm" => Action::Run("npm install -g @touchtap/codex-notifier@latest"),
         _ => Action::Replace(exe.to_path_buf()),
     }
 }
@@ -499,9 +491,9 @@ fn asset_name(os: &str, arch: &str) -> Option<String> {
         return None;
     }
     Some(match os {
-        "macos" => format!("ccn-{arch}-apple-darwin.tar.gz"),
-        "linux" => format!("ccn-{arch}-unknown-linux-musl.tar.gz"),
-        "windows" => format!("ccn-{arch}-pc-windows-msvc.zip"),
+        "macos" => format!("codex-notifier-{arch}-apple-darwin.tar.gz"),
+        "linux" => format!("codex-notifier-{arch}-unknown-linux-musl.tar.gz"),
+        "windows" => format!("codex-notifier-{arch}-pc-windows-msvc.zip"),
         _ => return None,
     })
 }
@@ -585,7 +577,7 @@ fn agent_with(timeout: Duration, https_only: bool) -> ureq::Agent {
         .timeout_global(Some(timeout))
         .https_only(https_only)
         .http_status_as_error(false)
-        .user_agent(format!("ccn/{VERSION}"))
+        .user_agent(format!("codex-notifier/{VERSION}"))
         .build()
         .new_agent()
 }
@@ -705,7 +697,7 @@ fn asset_list(list: &Value, name: impl Fn(&Value) -> Option<&str>) -> Option<Vec
 // Unpacking and installing
 // ============================================
 
-/// The `ccn` (or `ccn.exe`) inside a release archive.
+/// The `codex-notifier` (or `codex-notifier.exe`) inside a release archive.
 #[cfg(unix)]
 fn extract_binary(archive: &[u8]) -> Result<Vec<u8>> {
     use std::io::Read;
@@ -716,11 +708,11 @@ fn extract_binary(archive: &[u8]) -> Result<Vec<u8>> {
         let is_ccn = entry
             .path()
             .ok()
-            .and_then(|p| p.file_name().map(|n| n == "ccn"))
+            .and_then(|p| p.file_name().map(|n| n == "codex-notifier"))
             .unwrap_or(false);
         if is_ccn && entry.header().entry_type().is_file() {
             let mut bytes = Vec::with_capacity(entry.size() as usize);
-            entry.read_to_end(&mut bytes).context("unpacking ccn")?;
+            entry.read_to_end(&mut bytes).context("unpacking codex-notifier")?;
             return Ok(bytes);
         }
     }
@@ -736,17 +728,17 @@ fn extract_binary(archive: &[u8]) -> Result<Vec<u8>> {
         .find(|n| {
             Path::new(n)
                 .file_name()
-                .map(|f| f.eq_ignore_ascii_case("ccn.exe"))
+                .map(|f| f.eq_ignore_ascii_case("codex-notifier.exe"))
                 .unwrap_or(false)
         })
         .with_context(|| t!("update.zip_empty").into_owned())?;
-    let mut file = zip.by_name(&name).context("unpacking ccn.exe")?;
+    let mut file = zip.by_name(&name).context("unpacking codex-notifier.exe")?;
     let mut bytes = Vec::with_capacity(file.size() as usize);
-    file.read_to_end(&mut bytes).context("unpacking ccn.exe")?;
+    file.read_to_end(&mut bytes).context("unpacking codex-notifier.exe")?;
     Ok(bytes)
 }
 
-/// `update.lock` in ccn's folder, made with create_new so exactly one upgrader holds it; removed
+/// `update.lock` in codex-notifier's folder, made with create_new so exactly one upgrader holds it; removed
 /// when dropped. A lock older than STALE_LOCK is taken over.
 struct UpdateLock(PathBuf);
 
@@ -815,7 +807,7 @@ fn install_binary(bytes: &[u8], target: &Path) -> Result<()> {
     let name = target
         .file_name()
         .map(|n| n.to_string_lossy().to_string())
-        .unwrap_or_else(|| "ccn".to_string());
+        .unwrap_or_else(|| "codex-notifier".to_string());
     let tmp = dir.join(format!("{name}.{}.new", std::process::id()));
     let result = write_and_swap(bytes, &tmp, target);
     if result.is_err() {
@@ -915,7 +907,7 @@ mod signature_tests {
         let key = SigningKey::from_bytes(&[1; 32]);
         let other = SigningKey::from_bytes(&[2; 32]);
         let keys = vec![hex(key.verifying_key().as_bytes())];
-        let sums = b"abc  ccn-x86_64-unknown-linux-gnu.tar.gz\n";
+        let sums = b"abc  codex-notifier-x86_64-unknown-linux-gnu.tar.gz\n";
         let good = format!("{}\n", hex(&key.sign(sums).to_bytes()));
         assert!(signature_valid(sums, good.as_bytes(), &keys));
         // Another key, other contents, and things that aren't signatures
@@ -964,27 +956,27 @@ mod tests {
     fn asset_names_match_the_release_workflow() {
         assert_eq!(
             asset_name("macos", "aarch64").unwrap(),
-            "ccn-aarch64-apple-darwin.tar.gz"
+            "codex-notifier-aarch64-apple-darwin.tar.gz"
         );
         assert_eq!(
             asset_name("macos", "x86_64").unwrap(),
-            "ccn-x86_64-apple-darwin.tar.gz"
+            "codex-notifier-x86_64-apple-darwin.tar.gz"
         );
         assert_eq!(
             asset_name("linux", "x86_64").unwrap(),
-            "ccn-x86_64-unknown-linux-musl.tar.gz"
+            "codex-notifier-x86_64-unknown-linux-musl.tar.gz"
         );
         assert_eq!(
             asset_name("linux", "aarch64").unwrap(),
-            "ccn-aarch64-unknown-linux-musl.tar.gz"
+            "codex-notifier-aarch64-unknown-linux-musl.tar.gz"
         );
         assert_eq!(
             asset_name("windows", "x86_64").unwrap(),
-            "ccn-x86_64-pc-windows-msvc.zip"
+            "codex-notifier-x86_64-pc-windows-msvc.zip"
         );
         assert_eq!(
             asset_name("windows", "aarch64").unwrap(),
-            "ccn-aarch64-pc-windows-msvc.zip"
+            "codex-notifier-aarch64-pc-windows-msvc.zip"
         );
         assert_eq!(asset_name("linux", "riscv64"), None);
         assert_eq!(asset_name("freebsd", "x86_64"), None);
@@ -994,26 +986,26 @@ mod tests {
     #[test]
     fn sha256sums_lines_are_looked_up_by_name() {
         let sums = "\
-0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef  ccn-aarch64-apple-darwin.tar.gz
-ABCDEF0123456789abcdef0123456789abcdef0123456789abcdef0123456789 *ccn-x86_64-pc-windows-msvc.zip
-deadbeef  ccn-x86_64-apple-darwin.tar.gz
+0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef  codex-notifier-aarch64-apple-darwin.tar.gz
+ABCDEF0123456789abcdef0123456789abcdef0123456789abcdef0123456789 *codex-notifier-x86_64-pc-windows-msvc.zip
+deadbeef  codex-notifier-x86_64-apple-darwin.tar.gz
 ";
         assert_eq!(
-            checksum_for(sums, "ccn-aarch64-apple-darwin.tar.gz").as_deref(),
+            checksum_for(sums, "codex-notifier-aarch64-apple-darwin.tar.gz").as_deref(),
             Some("0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef")
         );
         assert_eq!(
-            checksum_for(sums, "ccn-x86_64-pc-windows-msvc.zip").as_deref(),
+            checksum_for(sums, "codex-notifier-x86_64-pc-windows-msvc.zip").as_deref(),
             Some("abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789"),
             "the binary-mode star is dropped and the hash lowercased"
         );
         assert_eq!(
-            checksum_for(sums, "ccn-x86_64-apple-darwin.tar.gz"),
+            checksum_for(sums, "codex-notifier-x86_64-apple-darwin.tar.gz"),
             None,
             "a short hash is not a sha256"
         );
         assert_eq!(
-            checksum_for(sums, "ccn-aarch64-unknown-linux-musl.tar.gz"),
+            checksum_for(sums, "codex-notifier-aarch64-unknown-linux-musl.tar.gz"),
             None
         );
         assert_eq!(
@@ -1026,60 +1018,40 @@ deadbeef  ccn-x86_64-apple-darwin.tar.gz
     fn install_methods_map_to_actions() {
         let p = |s: &str| PathBuf::from(s);
         assert_eq!(
-            method_from_path(&p("/opt/homebrew/Cellar/ccn/0.2.0/bin/ccn")),
+            method_from_path(&p("/opt/homebrew/Cellar/codex-notifier/0.2.0/bin/codex-notifier")),
             Some("homebrew")
         );
         assert_eq!(
-            method_from_path(&p("/home/linuxbrew/.linuxbrew/bin/ccn")),
+            method_from_path(&p("/home/linuxbrew/.linuxbrew/bin/codex-notifier")),
             Some("homebrew")
         );
         assert_eq!(
             method_from_path(&p(
-                "/usr/local/lib/node_modules/@touchtap/ccn-darwin-arm64/bin/ccn"
+                "/usr/local/lib/node_modules/@touchtap/codex-notifier-darwin-arm64/bin/codex-notifier"
             )),
             Some("npm")
         );
         assert_eq!(
-            method_from_path(&p(r"C:\Users\jack\scoop\apps\ccn\current\ccn.exe")),
-            Some("scoop")
-        );
-        assert_eq!(
-            method_from_path(&p(
-                r"C:\Users\jack\AppData\Local\Microsoft\WinGet\Packages\TouchTap.ccn_x\ccn.exe"
-            )),
-            Some("winget")
-        );
-        assert_eq!(
-            method_from_path(&p("/usr/local/Cellar/ccn/0.2.0/bin/ccn")),
+            method_from_path(&p("/usr/local/Cellar/codex-notifier/0.2.0/bin/codex-notifier")),
             Some("homebrew"),
             "an Intel Mac's prefix has no `homebrew` in it"
         );
+        assert_eq!(method_from_path(&p("/Users/jack/.local/bin/codex-notifier")), None);
         assert_eq!(
-            method_from_path(&p(
-                r"C:\Users\jack\AppData\Local\Microsoft\WinGet\Links\ccn.exe"
-            )),
-            Some("winget")
-        );
-        assert_eq!(method_from_path(&p("/Users/jack/.local/bin/ccn")), None);
-        assert_eq!(
-            method_from_path(&p(r"C:\Users\jack\AppData\Local\Programs\ccn\ccn.exe")),
+            method_from_path(&p(r"C:\Users\jack\AppData\Local\Programs\codex-notifier\codex-notifier.exe")),
             None
         );
 
-        let exe = p("/Users/jack/.local/bin/ccn");
+        let exe = p("/Users/jack/.local/bin/codex-notifier");
         assert_eq!(
             action_for("homebrew", &exe),
-            Action::Run("brew upgrade touch-tap/tap/ccn")
+            Action::Run("brew upgrade touch-tap/tap/codex-notifier")
         );
         assert_eq!(
             action_for("npm", &exe),
-            Action::Run("npm install -g @touchtap/ccn@latest")
+            Action::Run("npm install -g @touchtap/codex-notifier@latest")
         );
-        assert_eq!(action_for("scoop", &exe), Action::Run("scoop update ccn"));
-        assert_eq!(
-            action_for("winget", &exe),
-            Action::Run("winget upgrade TouchTap.ccn")
-        );
+        // Scoop and winget have no codex-notifier package (yet), so nothing detects them
         for method in ["script", "powershell", "npx", "other"] {
             assert_eq!(action_for(method, &exe), Action::Replace(exe.clone()));
         }
@@ -1089,49 +1061,49 @@ deadbeef  ccn-x86_64-apple-darwin.tar.gz
     fn the_server_and_github_replies_both_give_a_download_base() {
         let server = json!({
             "version": "0.3.0", "tag": "v0.3.0", "publishedAt": 1761800000,
-            "downloadBase": "https://github.com/touch-tap/ccn/releases/download/v0.3.0",
-            "assets": ["ccn-aarch64-apple-darwin.tar.gz", "SHA256SUMS"]
+            "downloadBase": "https://github.com/touch-tap/codex-notifier/releases/download/v0.3.0",
+            "assets": ["codex-notifier-aarch64-apple-darwin.tar.gz", "SHA256SUMS"]
         });
         let latest = latest_from_server(&server).unwrap();
         assert_eq!(latest.version, "0.3.0");
         assert_eq!(
             latest.download_base,
-            "https://github.com/touch-tap/ccn/releases/download/v0.3.0"
+            "https://github.com/touch-tap/codex-notifier/releases/download/v0.3.0"
         );
         assert_eq!(latest.assets.unwrap().len(), 2);
 
         let bare = latest_from_server(&json!({ "version": "0.4.0" })).unwrap();
         assert_eq!(
             bare.download_base,
-            "https://github.com/touch-tap/ccn/releases/download/v0.4.0"
+            "https://github.com/touch-tap/codex-notifier/releases/download/v0.4.0"
         );
         assert!(bare.assets.is_none());
 
         let github = json!({
             "tag_name": "v0.3.1",
-            "assets": [{ "name": "ccn-x86_64-pc-windows-msvc.zip" }, { "name": "SHA256SUMS" }]
+            "assets": [{ "name": "codex-notifier-x86_64-pc-windows-msvc.zip" }, { "name": "SHA256SUMS" }]
         });
         let latest = latest_from_github(&github).unwrap();
         assert_eq!(latest.version, "0.3.1");
         assert_eq!(
             latest.download_base,
-            "https://github.com/touch-tap/ccn/releases/download/v0.3.1"
+            "https://github.com/touch-tap/codex-notifier/releases/download/v0.3.1"
         );
         assert_eq!(
             latest.assets.unwrap(),
-            vec!["ccn-x86_64-pc-windows-msvc.zip", "SHA256SUMS"]
+            vec!["codex-notifier-x86_64-pc-windows-msvc.zip", "SHA256SUMS"]
         );
         assert!(latest_from_server(&json!({})).is_err());
     }
 
     #[test]
     fn the_download_base_is_always_this_repositorys_releases() {
-        let pinned = "https://github.com/touch-tap/ccn/releases/download/v0.4.0";
+        let pinned = "https://github.com/touch-tap/codex-notifier/releases/download/v0.4.0";
         for hostile in [
-            "http://github.com/touch-tap/ccn/releases/download/v0.4.0",
-            "https://evil.example/ccn/v0.4.0",
-            "https://github.com/someone-else/ccn/releases/download/v0.4.0",
-            "https://github.com/touch-tap/ccn/releases/download/v0.4.0/../../../x",
+            "http://github.com/touch-tap/codex-notifier/releases/download/v0.4.0",
+            "https://evil.example/codex-notifier/v0.4.0",
+            "https://github.com/someone-else/codex-notifier/releases/download/v0.4.0",
+            "https://github.com/touch-tap/codex-notifier/releases/download/v0.4.0/../../../x",
         ] {
             let latest = latest_from_server(&json!({
                 "version": "0.4.0", "tag": "v0.4.0", "downloadBase": hostile
@@ -1159,7 +1131,7 @@ deadbeef  ccn-x86_64-apple-darwin.tar.gz
         }
         assert_eq!(
             pinned_base("v0.4.0-beta.1").as_deref(),
-            Some("https://github.com/touch-tap/ccn/releases/download/v0.4.0-beta.1")
+            Some("https://github.com/touch-tap/codex-notifier/releases/download/v0.4.0-beta.1")
         );
     }
 
@@ -1205,7 +1177,7 @@ deadbeef  ccn-x86_64-apple-darwin.tar.gz
 
     #[test]
     fn only_one_upgrader_holds_the_lock_and_a_stale_one_is_taken_over() {
-        let dir = std::env::temp_dir().join(format!("ccn-update-lock-{}", std::process::id()));
+        let dir = std::env::temp_dir().join(format!("codex-notifier-update-lock-{}", std::process::id()));
         let _ = fs::remove_dir_all(&dir);
         fs::create_dir_all(&dir).unwrap();
         let path = dir.join("update.lock");
@@ -1240,7 +1212,7 @@ deadbeef  ccn-x86_64-apple-darwin.tar.gz
     #[cfg(unix)]
     fn a_new_binary_that_hangs_does_not_count_as_running() {
         use std::os::unix::fs::PermissionsExt;
-        let dir = std::env::temp_dir().join(format!("ccn-update-probe-{}", std::process::id()));
+        let dir = std::env::temp_dir().join(format!("codex-notifier-update-probe-{}", std::process::id()));
         let _ = fs::remove_dir_all(&dir);
         fs::create_dir_all(&dir).unwrap();
         let script = |name: &str, body: &str| {
@@ -1249,10 +1221,10 @@ deadbeef  ccn-x86_64-apple-darwin.tar.gz
             fs::set_permissions(&path, fs::Permissions::from_mode(0o755)).unwrap();
             path
         };
-        let ok = script("ok", "echo ccn 9.9.9");
+        let ok = script("ok", "echo codex-notifier 9.9.9");
         let hangs = script("hangs", "exec sleep 30");
         let silent = script("silent", "exit 0");
-        let fails = script("fails", "echo ccn; exit 1");
+        let fails = script("fails", "echo codex-notifier; exit 1");
 
         assert!(runs_within(&ok, Duration::from_secs(5)));
         let started = std::time::Instant::now();
@@ -1279,7 +1251,7 @@ deadbeef  ccn-x86_64-apple-darwin.tar.gz
             header.set_mode(0o755);
             header.set_cksum();
             builder
-                .append_data(&mut header, "ccn", &b"hello"[..])
+                .append_data(&mut header, "codex-notifier", &b"hello"[..])
                 .unwrap();
             builder.finish().unwrap();
         }

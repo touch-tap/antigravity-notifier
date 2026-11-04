@@ -1,4 +1,4 @@
-//! Signs a release's SHA256SUMS, so `ccn upgrade` can tell the release came from TouchTap and not
+//! Signs a release's SHA256SUMS, so `codex-notifier upgrade` can tell the release came from TouchTap and not
 //! just from wherever the files were downloaded. Run on the release Mac by scripts/release.sh; the
 //! private key never leaves that Mac's keychain (see RELEASING.md, "The update signing key").
 //!

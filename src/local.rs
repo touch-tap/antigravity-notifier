@@ -1,5 +1,5 @@
 //! Local mode: no phone is paired with this computer, so the hooks show desktop notifications,
-//! never touch the network and never hold Claude. A counter and a few nudges suggest pairing.
+//! never touch the network and never hold Codex. A counter and a few nudges suggest pairing.
 //!
 //! The text here is what the user sees; each piece is one key in locales/<lang>.yml.
 
@@ -38,12 +38,12 @@ pub fn first_nudge_line() -> String {
 pub fn milestone_nudge() -> String {
     t!("local.milestone_nudge").into_owned()
 }
-/// Shown in Claude Code after the 10th, then every week at SessionStart
+/// Shown in Codex after the 10th, then every week at SessionStart
 pub fn pair_system_message() -> String {
     t!("local.pair_message").into_owned()
 }
 
-/// `ccn config set pair_nudges off`, or `CODEX_NOTIFIER_NO_NUDGE=1`, keeps every suggestion to pair quiet.
+/// `codex-notifier config set pair_nudges off`, or `CODEX_NOTIFIER_NO_NUDGE=1`, keeps every suggestion to pair quiet.
 pub fn nudges_enabled(cfg: &Config) -> bool {
     cfg.pair_nudges && !no_nudge_env()
 }
@@ -60,7 +60,7 @@ pub enum Milestone {
     None,
     /// Append `first_nudge_line` to the body
     First,
-    /// Show `milestone_nudge` as well, and ask Claude Code to show `pair_system_message`
+    /// Show `milestone_nudge` as well, and ask Codex to show `pair_system_message`
     Tenth,
 }
 
@@ -93,7 +93,7 @@ pub fn body_with_nudge(body: &str) -> String {
     )
 }
 
-/// The hook's work while no phone is paired. Returns a `systemMessage` for Claude Code or None.
+/// The hook's work while no phone is paired. Returns a `systemMessage` for Codex or None.
 pub fn run(
     cfg: &mut Config,
     event: &str,
@@ -264,6 +264,6 @@ mod tests {
             body_with_nudge("done"),
             format!("done\n{}", first_nudge_line())
         );
-        assert_eq!(first_nudge_line(), "Get these on your phone: ccn pair");
+        assert_eq!(first_nudge_line(), "Get these on your phone: codex-notifier pair");
     }
 }

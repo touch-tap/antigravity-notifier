@@ -9,7 +9,7 @@ use crate::config;
 const MAX_BYTES: u64 = 1024 * 1024;
 
 pub fn log(message: &str) {
-    // Unit tests run without CODEX_NOTIFIER_HOME: they must not write to the real ccn directory
+    // Unit tests run without CODEX_NOTIFIER_HOME: they must not write to the real codex-notifier directory
     if cfg!(test) && std::env::var_os("CODEX_NOTIFIER_HOME").is_none() {
         return;
     }
@@ -24,7 +24,7 @@ pub fn log(message: &str) {
     }
     let mut options = OpenOptions::new();
     options.create(true).append(true);
-    // The log names projects and errors: this user's only, like the rest of the ccn directory
+    // The log names projects and errors: this user's only, like the rest of the codex-notifier directory
     #[cfg(unix)]
     {
         use std::os::unix::fs::OpenOptionsExt;

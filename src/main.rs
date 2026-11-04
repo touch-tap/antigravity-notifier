@@ -33,7 +33,7 @@ rust_i18n::i18n!("locales", fallback = "en");
 // translations of its own, so `localise` swaps its headings, -h/-V and `help` for translated ones;
 // only parse errors keep clap's English message, with a translated hint underneath.
 #[derive(Parser)]
-#[command(name = "ccn", version, about = t!("cli.about").to_string())]
+#[command(name = "codex-notifier", version, about = t!("cli.about").to_string())]
 struct Cli {
     // With no command: pair this computer if it isn't yet, otherwise show its status
     #[command(subcommand)]
@@ -80,7 +80,7 @@ enum Command {
         check: bool,
         #[arg(long, help = t!("cli.upgrade.quiet").to_string())]
         quiet: bool,
-        // Started by the daily check: never prints, logs to ccn.log instead
+        // Started by the daily check: never prints, logs to codex-notifier.log instead
         #[arg(long, hide = true)]
         background: bool,
     },
@@ -176,9 +176,9 @@ fn main() {
         Command::Licence => licence::show(),
         Command::Uninstall => commands::uninstall(),
         Command::Forget { yes } => commands::forget(yes),
-        // `ccn help pair` is `ccn pair --help`, which prints and exits
+        // `codex-notifier help pair` is `codex-notifier pair --help`, which prints and exits
         Command::Help { command } => {
-            let args = ["ccn".to_string()]
+            let args = ["codex-notifier".to_string()]
                 .into_iter()
                 .chain(command)
                 .chain(["--help".to_string()]);
@@ -265,10 +265,10 @@ fn localise(cmd: clap::Command, top: bool) -> clap::Command {
 /// so first; the raw chain ("POST /api/...: io: Connection refused") follows as the detail.
 fn report(err: &anyhow::Error) {
     if is_network_error(err) {
-        eprintln!("ccn: {}", t!("net.unreachable"));
-        eprintln!("     {err:#}");
+        eprintln!("codex-notifier: {}", t!("net.unreachable"));
+        eprintln!("                {err:#}");
     } else {
-        eprintln!("ccn: {err:#}");
+        eprintln!("codex-notifier: {err:#}");
     }
 }
 

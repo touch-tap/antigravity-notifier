@@ -5,14 +5,14 @@
 _version: 1
 
 cli:
-  about: "Claude Code Notifier: Claude Code size ihtiyaç duyduğunda telefonunuza bildirim alın ve oradan yanıtlayın"
+  about: "Codex Notifier: Codex size ihtiyaç duyduğunda telefonunuza bildirim alın ve oradan yanıtlayın"
   pair:
     about: "Bu bilgisayarı telefonunuzla eşleyin. Uygulamanın gösterdiği kodu verin ya da kod olmadan çalıştırıp uygulamaya yazacağınız bir kod alın"
-    code: "Claude Code Notifier uygulamasında gösterilen 6 haneli kod"
+    code: "Codex Notifier uygulamasında gösterilen 6 haneli kod"
     name: "Bu bilgisayarın telefonunuzda görünen adı (varsayılan: ana makine adı)"
     no_wait: "QR kodunu gösterip hemen çık: telefon bağlandığında eşleme kendiliğinden tamamlanır"
   setup:
-    about: "Claude Code hook'larını ve masaüstü bildirimlerini kur (pair ve tek başına ccn bunu önce yapar)"
+    about: "Codex hook'larını ve masaüstü bildirimlerini kur (pair ve tek başına codex-notifier bunu önce yapar)"
   doctor:
     about: "Hook'ları, kimlik bilgilerini, sunucuyu ve bu terminalin neleri desteklediğini denetle"
   test:
@@ -23,14 +23,14 @@ cli:
   config:
     about: "Bu bilgisayarın ayarlarını göster veya değiştir (telefondan da düzenlenebilir)"
     show: "Geçerli ayarları yazdır"
-    set: "Tek bir ayarı değiştir, örn. `ccn config set hold_ceiling_seconds 300` veya `ccn config set quiet_hours 22:00-08:00`"
+    set: "Tek bir ayarı değiştir, örn. `codex-notifier config set hold_ceiling_seconds 300` veya `codex-notifier config set quiet_hours 22:00-08:00`"
   sync:
     about: "En güncel ayarları sunucudan şimdi çek"
   unlock:
     about: "Bu bilgisayar için tarayıcıda bir lisans satın al: onunla eşlenen her telefonun kilidini açar"
     lifetime: "Yıllık yerine tek seferlik öde (ya da yıllık lisansı anahtarı koruyarak ömür boyuna çevir)"
   upgrade:
-    about: "ccn'i en son sürüme güncelle (arka planda günde bir kez de denetlenir)"
+    about: "codex-notifier'ı en son sürüme güncelle (arka planda günde bir kez de denetlenir)"
     check: "Yalnızca daha yeni bir sürüm var mı söyle: güncelse 0, yeni sürüm varsa 10 koduyla çık"
     quiet: "Bir şey ters gitmedikçe hiçbir şey yazdırma"
   activate:
@@ -49,54 +49,54 @@ cli:
 
 common:
   your_phone: "telefonunuz"
-  not_paired: "bu bilgisayar henüz eşlenmedi. Uygulamadaki kodla `ccn pair <kod>` komutunu çalıştırın."
+  not_paired: "bu bilgisayar henüz eşlenmedi. Uygulamadaki kodla `codex-notifier pair <kod>` komutunu çalıştırın."
   store_keychain: "anahtar zinciri"
   store_file: "dosya"
   date_format: "%d.%m.%Y"
 
 pair:
   reregister: "Bu bilgisayarın eski eşlemesi kaldırıldı, bu yüzden yeniden kaydedilecek."
-  code_not_recognised: "Bu kod tanınmadı. 6 haneli kod, Claude Code Notifier uygulamasında Bilgisayarlar > Bilgisayar ekle altında; her 24 saatte değişir, bu yüzden uygulamanın şu an gösterdiği satırı kopyalayın."
+  code_not_recognised: "Bu kod tanınmadı. 6 haneli kod, Codex Notifier uygulamasında Bilgisayarlar > Bilgisayar ekle altında; her 24 saatte değişir, bu yüzden uygulamanın şu an gösterdiği satırı kopyalayın."
   offer_qr: "Bunun yerine burada bir QR kodu göstermek için Enter'a basın (telefonunuzla tarayın) ya da Ctrl+C."
-  options_without_terminal: "Uygulamanın şu an gösterdiği kodla `ccn pair <kod>` komutunu yeniden çalıştırın ya da burada bir QR kodu gösterip telefonunuzla taramak için `ccn pair` çalıştırın."
+  options_without_terminal: "Uygulamanın şu an gösterdiği kodla `codex-notifier pair <kod>` komutunu yeniden çalıştırın ya da burada bir QR kodu gösterip telefonunuzla taramak için `codex-notifier pair` çalıştırın."
   scan: "  Telefonunuzu bağlamak için bunu kamerasıyla tarayın. Uygulama henüz yoksa sizi\n  App Store'a veya Google Play'e götürür: kurun, sonra yeniden tarayın."
-  or_type_code: "  Ya da bu kodu Claude Code Notifier uygulamasına yazın:  %{code}"
-  enter_code: "  Bu kodu Claude Code Notifier uygulamasına girin:  %{code}"
+  or_type_code: "  Ya da bu kodu Codex Notifier uygulamasına yazın:  %{code}"
+  enter_code: "  Bu kodu Codex Notifier uygulamasına girin:  %{code}"
   hooks_already_installed: "  Hook'lar kurulu, yani bu bilgisayarda masaüstü bildirimlerini zaten alıyorsunuz."
   code_lasts: "  İstediğiniz zaman eşleyin: bu kod %{duration} geçerli."
   completes_on_its_own: "  Telefon bağlandığında eşleme kendiliğinden tamamlanır."
   waiting: "  Telefonunuz bekleniyor... (Ctrl+C güvenlidir: telefon bağlandığında eşleme kendiliğinden tamamlanır)"
-  code_expired: "bir telefon kullanmadan kodun süresi doldu. `ccn pair` komutunu yeniden çalıştırın."
-  code_is_six_digits: "kod, Claude Code Notifier uygulamasında gösterilen 6 hanedir"
+  code_expired: "bir telefon kullanmadan kodun süresi doldu. `codex-notifier pair` komutunu yeniden çalıştırın."
+  code_is_six_digits: "kod, Codex Notifier uygulamasında gösterilen 6 hanedir"
   credentials_stored: "Kimlik bilgileri %{store} içinde saklandı (%{path})."
   test_sent: "Telefonunuza bir deneme bildirimi gönderildi."
   test_failed: "Deneme bildirimi henüz gönderilemedi: %{error}"
-  done: "Tamam. `claude` komutunu her zamanki gibi başlatın: Claude bitirdiğinde ya da size ihtiyaç\nduyduğunda bildirim alır, telefondan onaylar, reddeder veya yanıtlarsınız. `ccn doctor` her şeyi denetler."
+  done: "Tamam. `codex` komutunu her zamanki gibi başlatın: Codex bitirdiğinde ya da size ihtiyaç\nduyduğunda bildirim alır, telefondan onaylar, reddeder veya yanıtlarsınız. `codex-notifier doctor` her şeyi denetler."
   paired_with: "%{name} (%{platform}) ile eşlendi."
   hours_one: "1 saat"
   hours_other: "%{count} saat"
   minutes_one: "1 dakika"
   minutes_other: "%{count} dakika"
   pitch: "Telefonunuz uygulamada bir abonelik önerecek. Her şeyin kilidini uygulama mağazalarının dışında, buradan da açabilirsiniz:"
-  pitch_annual: "  ccn unlock             yılda %{price}"
-  pitch_lifetime: "  ccn unlock --lifetime  tek seferlik %{price}"
+  pitch_annual: "  codex-notifier unlock             yılda %{price}"
+  pitch_lifetime: "  codex-notifier unlock --lifetime  tek seferlik %{price}"
   pitch_covers: "%{computers} bilgisayarı ve onlarla eşlenen her telefonu kapsar. %{days} gün para iade garantisi."
   welcome_no_terminal: "Telefonunuza bir deneme bildirimi yolda: oradan yanıtlamayı deneyin."
   welcome: "Telefonunuza bir deneme bildirimi yolda. Oradan yanıtlamayı deneyin..."
   welcome_skip: "(geçmek için Enter'a basın)"
-  welcome_answered: "✓ Telefonunuz \"%{answer}\" yanıtını verdi. Claude'a böyle yanıt vereceksiniz."
+  welcome_answered: "✓ Telefonunuz \"%{answer}\" yanıtını verdi. Codex'e böyle yanıt vereceksiniz."
   welcome_no_answer: "Henüz yanıt yok. Bildirim telefonunuzda bir saat kalır."
 
 status:
-  set_up: "ccn %{version} bu bilgisayarda \"%{name}\" adıyla kurulu."
+  set_up: "codex-notifier %{version} bu bilgisayarda \"%{name}\" adıyla kurulu."
   licence: "Lisans: %{line}"
-  hint_doctor: "  ccn doctor     hook'ları, kimlik bilgilerini ve sunucuyu denetle"
-  hint_test: "  ccn test       telefonunuza bir deneme bildirimi gönder"
-  hint_pair: "  ccn pair       başka bir telefon eşle"
-  hint_help: "  ccn --help     geri kalan her şey"
+  hint_doctor: "  codex-notifier doctor     hook'ları, kimlik bilgilerini ve sunucuyu denetle"
+  hint_test: "  codex-notifier test       telefonunuza bir deneme bildirimi gönder"
+  hint_pair: "  codex-notifier pair       başka bir telefon eşle"
+  hint_help: "  codex-notifier --help     geri kalan her şey"
 
 setup:
-  installed_self: "ccn %{path} konumuna kuruldu."
+  installed_self: "codex-notifier %{path} konumuna kuruldu."
   hooks_installed: "Hook'lar %{path} içine kuruldu (%{exe} kullanılıyor)."
   hooks_trusted: "%{path} içinde güvenilir olarak işaretlendi, böylece Codex onları /hooks'a uğramadan çalıştırır."
 
@@ -105,25 +105,25 @@ sync:
   synced: "Ayarlar eşitlendi."
 
 doctor:
-  header: "ccn %{version}, %{platform} üzerinde"
+  header: "codex-notifier %{version}, %{platform} üzerinde"
   config: "yapılandırma: %{path}"
   credentials_present: "kimlik bilgileri: var (%{store})"
-  credentials_missing: "kimlik bilgileri: yok: `ccn pair <kod>` çalıştırın"
+  credentials_missing: "kimlik bilgileri: yok: `codex-notifier pair <kod>` çalıştırın"
   server_reachable: "sunucu: %{url} erişilebilir"
   server_error: "sunucu: %{error}"
   registered: "\"%{name}\" (%{kind} %{platform}) olarak kayıtlı, yetenekler: %{capabilities}"
-  not_paired_any_more: "eşleme: artık eşlenmiş değil: `ccn pair` çalıştırın"
+  not_paired_any_more: "eşleme: artık eşlenmiş değil: `codex-notifier pair` çalıştırın"
   registration_error: "kayıt: %{error}"
   licence: "lisans: %{line}"
-  phones_none: "telefonlar: henüz eşlenen yok, bu yüzden bildirimler bu masaüstünde kalıyor (`ccn pair` çalıştırın)"
+  phones_none: "telefonlar: henüz eşlenen yok, bu yüzden bildirimler bu masaüstünde kalıyor (`codex-notifier pair` çalıştırın)"
   phones: "telefonlar: %{names}"
   phones_error: "telefonlar: %{error}"
   hooks_all: "hook'lar: %{count} tanesinin hepsi %{path} içinde kurulu"
-  hooks_missing: "hook'lar: eksik: %{names} (`ccn setup` çalıştırın)"
+  hooks_missing: "hook'lar: eksik: %{names} (`codex-notifier setup` çalıştırın)"
   hooks_error: "hook'lar: %{error}"
-  hooks_stale: "hook'lar farklı bir ccn dosyasına işaret ediyor; güncellemek için `ccn setup` çalıştırın"
+  hooks_stale: "hook'lar farklı bir codex-notifier dosyasına işaret ediyor; güncellemek için `codex-notifier setup` çalıştırın"
   trust_ok: "güven: her hook'un hash'i %{path} içinde"
-  trust_missing: "güven: Codex, güvenilene kadar %{names} hook'larını atlayacak (`ccn setup` çalıştırın ya da Codex'te /hooks)"
+  trust_missing: "güven: Codex, güvenilene kadar %{names} hook'larını atlayacak (`codex-notifier setup` çalıştırın ya da Codex'te /hooks)"
   presence: "varlık: şu an %{idle} sn boşta, eşik %{threshold} sn"
   replies: "yanıtlar: telefondan onaylar ve soru yanıtları her terminalde çalışır; boşta bir oturuma serbest metin %{free_text}"
   replies_tmux: "çalışır (tmux)"
@@ -132,12 +132,12 @@ doctor:
   log: "günlük: %{path}"
 
 test:
-  none_paired: "eşlenmiş telefon yok. `ccn pair <kod>` çalıştırın."
+  none_paired: "eşlenmiş telefon yok. `codex-notifier pair <kod>` çalıştırın."
   sent: "%{name} (%{platform}) adresine bir deneme bildirimi gönderildi."
   failed: "%{name}: %{error}"
 
 devices:
-  none: "Eşlenmiş telefon yok. Uygulamadaki kodla `ccn pair <kod>` çalıştırın."
+  none: "Eşlenmiş telefon yok. Uygulamadaki kodla `codex-notifier pair <kod>` çalıştırın."
   # %{name} is padded to 24 columns and %{platform} to 8 before they are filled in
   row: "%{name} %{platform} eşlendi: %{since}%{off}"
   notifications_off: "  (bildirimler kapalı)"
@@ -160,85 +160,85 @@ settings:
   unknown: "bilinmeyen ayar '%{key}'. Ayarlar: notify_on_done, notify_on_permission, notify_on_question, sound, quiet_when_present, quiet_hours, hold_ceiling_seconds, presence_threshold_seconds, stop_hold_seconds, reminder_interval_seconds"
 
 forget:
-  needs_yes: "ccn forget sizden bir onay bekler: bir terminalde çalıştırın ya da --yes ekleyin"
-  warning: "Bu, bu bilgisayarı ve eşlemelerini Claude Code Notifier sunucusundan siler, sonra `ccn uninstall`\ngibi ccn'i Claude Code'dan kaldırır ve buradaki kimlik bilgilerini ve dosyalarını siler.\nBu bilgisayarla eşlenen telefonlar onun kaybolduğunu görür.\nWeb sitesinden satın alınan bir lisans iptal edilmez: bunu claudecodenotifier.com/licence\nadresinde \"Lisansımı sil\" ile yapın."
+  needs_yes: "codex-notifier forget sizden bir onay bekler: bir terminalde çalıştırın ya da --yes ekleyin"
+  warning: "Bu, bu bilgisayarı ve eşlemelerini Codex Notifier sunucusundan siler, sonra `codex-notifier uninstall`\ngibi codex-notifier'ı Codex'ten kaldırır ve buradaki kimlik bilgilerini ve dosyalarını siler.\nBu bilgisayarla eşlenen telefonlar onun kaybolduğunu görür.\nWeb sitesinden satın alınan bir lisans iptal edilmez: bunu codexnotifier.com/licence\nadresinde \"Lisansımı sil\" ile yapın."
   # The word the user must type; `yes` is always accepted as well
   yes_word: "evet"
   prompt: "\nDevam etmek için %{yes} yazın: "
   nothing_erased: "Hiçbir şey silinmedi."
   erased: "Bu bilgisayar ve eşlemeleri sunucudan silindi."
   already_forgotten: "Sunucu bu bilgisayarı zaten unutmuştu."
-  nothing_removed: "%{error}. Bu bilgisayardan hiçbir şey kaldırılmadı, `ccn forget` komutunu yeniden çalıştırabilirsiniz"
+  nothing_removed: "%{error}. Bu bilgisayardan hiçbir şey kaldırılmadı, `codex-notifier forget` komutunu yeniden çalıştırabilirsiniz"
   not_registered: "Bu bilgisayar sunucuda kayıtlı değil, dolayısıyla orada silinecek bir şey yok."
 
 uninstall:
-  hooks_removed: "ccn hook'ları %{path} içinden, güven kayıtları da %{config} içinden kaldırıldı."
+  hooks_removed: "codex-notifier hook'ları %{path} içinden, güven kayıtları da %{config} içinden kaldırıldı."
   slot_freed: "Bu bilgisayarın lisans yeri boşaltıldı."
   unpaired_all: "Tüm telefonların eşlemesi kaldırıldı."
   removed_dir: "%{path} kaldırıldı."
 
 local:
-  finished_title: "Claude bitirdi"
-  finished_body: "Claude bitirdi ve sizi bekliyor."
-  permission_title: "Claude izin istiyor"
-  question_title: "Claude'un bir sorusu var"
-  first_nudge: "Telefonunuzda da: ccn pair"
-  milestone_nudge: "Şimdiye kadar 10 bildirim. Bunları kilit ekranından onaylarla telefonunuzda alın: ccn pair"
-  pair_message: "Claude Code Notifier: masaüstü bildirimleri alıyorsunuz. Telefonunuzda da almak ve oradan onaylamak ya da yanıtlamak için bir terminalde `ccn pair` çalıştırın."
+  finished_title: "Codex bitirdi"
+  finished_body: "Codex bitirdi ve sizi bekliyor."
+  permission_title: "Codex izin istiyor"
+  question_title: "Codex'in bir sorusu var"
+  first_nudge: "Telefonunuzda da: codex-notifier pair"
+  milestone_nudge: "Şimdiye kadar 10 bildirim. Bunları kilit ekranından onaylarla telefonunuzda alın: codex-notifier pair"
+  pair_message: "Codex Notifier: masaüstü bildirimleri alıyorsunuz. Telefonunuzda da almak ve oradan onaylamak ya da yanıtlamak için bir terminalde `codex-notifier pair` çalıştırın."
 
 hook:
-  licence_message: "Claude Code Notifier: bu bilgisayar için telefon bildirimlerinin kilidi açık değil. Açmak için: ccn unlock"
-  unpaired_message: "Claude Code Notifier: bu bilgisayar artık eşlenmiş değil, bu yüzden telefonunuz bildirim almayacak. Yeniden bağlamak için bir terminalde `ccn pair` çalıştırın."
-  unpaired_notification: "Bu bilgisayar artık eşlenmiş değil. Yeniden bağlamak için bir terminalde `ccn pair` çalıştırın."
-  paired_message: "Claude Code Notifier: %{phone} ile eşlendi. Bildirimler artık telefonunuza gidiyor."
+  licence_message: "Codex Notifier: bu bilgisayar için telefon bildirimlerinin kilidi açık değil. Açmak için: codex-notifier unlock"
+  unpaired_message: "Codex Notifier: bu bilgisayar artık eşlenmiş değil, bu yüzden telefonunuz bildirim almayacak. Yeniden bağlamak için bir terminalde `codex-notifier pair` çalıştırın."
+  unpaired_notification: "Bu bilgisayar artık eşlenmiş değil. Yeniden bağlamak için bir terminalde `codex-notifier pair` çalıştırın."
+  paired_message: "Codex Notifier: %{phone} ile eşlendi. Bildirimler artık telefonunuza gidiyor."
   # The server writes title, body and command in the user's language; this only joins them
-  nudge_message: "Claude Code Notifier: %{title} %{body} %{command}"
+  nudge_message: "Codex Notifier: %{title} %{body} %{command}"
   needs_attention: "İlginizi bekliyor"
 
 hooks:
-  doctor_presence_none: "varlık: burada algılanamıyor, bu yüzden hiçbir şey telefonu beklemiyor: telefona bir not gider, sen terminalde yanıtlarsın (yine de beklemek için `ccn config set hold_without_presence on`)"
+  doctor_presence_none: "varlık: burada algılanamıyor, bu yüzden hiçbir şey telefonu beklemiyor: telefona bir not gider, sen terminalde yanıtlarsın (yine de beklemek için `codex-notifier config set hold_without_presence on`)"
   doctor_presence_none_hold: "varlık: burada algılanamıyor ve hold_without_presence açık, bu yüzden her istek telefon yanıtlayana ya da azami süre dolana kadar bekler"
 
 licence:
   already_licensed: "Bu bilgisayar zaten lisanslı (%{licence})."
-  switch_to_lifetime: "Aynı anahtarı koruyarak ömür boyu lisansa geçmek için: ccn unlock --lifetime"
+  switch_to_lifetime: "Aynı anahtarı koruyarak ömür boyu lisansa geçmek için: codex-notifier unlock --lifetime"
   checkout_open: "  Ödeme sayfası tarayıcınızda açık. Bunun yerine telefonunuzdan ödemek için bunu tarayın:"
   checkout_link: "  Ödemek için bu bağlantıyı açın ya da telefonunuzla tarayın:"
   waiting_payment: "  Ödeme bekleniyor... (durdurmak için Ctrl+C; anahtar her durumda size e-postayla gelir)"
   upgraded: "✓ Ömür boyu lisansa geçildi. Aynı anahtar, aynı bilgisayarlar; yıllık yenileme iptal edildi."
   licensed: "✓ Bu bilgisayar lisanslı (%{licence})."
-  key: "  Anahtar: %{key} (e-postayla da gönderildi). En fazla 2 bilgisayarda daha kullanın: ccn activate %{key}"
+  key: "  Anahtar: %{key} (e-postayla da gönderildi). En fazla 2 bilgisayarda daha kullanın: codex-notifier activate %{key}"
   phones_unlocked: "  Bu bilgisayarla eşlenen her telefonun kilidi açık."
-  activate_with_key: "  Bu bilgisayarda kullanmak için e-postayla gelen anahtarla `ccn activate <anahtar>` çalıştırın."
-  no_payment: "15 dakika sonra hâlâ ödeme yok. Ödediyseniz anahtar e-postanızda: ccn activate <anahtar>"
+  activate_with_key: "  Bu bilgisayarda kullanmak için e-postayla gelen anahtarla `codex-notifier activate <anahtar>` çalıştırın."
+  no_payment: "15 dakika sonra hâlâ ödeme yok. Ödediyseniz anahtar e-postanızda: codex-notifier activate <anahtar>"
   replace_stale: "\"%{name}\" bir haftadan uzun süredir görülmedi. Bu bilgisayar o mu? Değiştirilsin mi?"
   yes_no: " [E/h] "
   # An answer starting with this letter (or n) means no
   no_initial: "h"
   slots_full: "Bu lisans zaten %{count} bilgisayarda kullanılıyor:"
-  free_one: "O bilgisayarda `ccn deactivate` ile birini boşaltın ya da buradan değiştirin:"
-  replace_example: "  ccn activate %{key} --replace \"%{name}\""
+  free_one: "O bilgisayarda `codex-notifier deactivate` ile birini boşaltın ya da buradan değiştirin:"
+  replace_example: "  codex-notifier activate %{key} --replace \"%{name}\""
   old_laptop: "Eski dizüstü"
   no_free_slot: "boş bilgisayar yeri yok"
   computers_on_licence: "Bu lisanstaki bilgisayarlar:"
   activated: "✓ Lisanslı (%{licence}). 3 bilgisayarın %{count} tanesi kullanımda."
-  pair_to_unlock: "  `ccn pair` ile bir telefon eşleyin, kilidi hemen açılır."
+  pair_to_unlock: "  `codex-notifier pair` ile bir telefon eşleyin, kilidi hemen açılır."
   none: "Bu bilgisayarın lisansı yok."
   freed: "Boşaltıldı. Bu lisansta artık 3 bilgisayarın %{count} tanesi kullanımda."
-  none_buy: "Bu bilgisayarda lisans yok. Satın almak için: ccn unlock"
+  none_buy: "Bu bilgisayarda lisans yok. Satın almak için: codex-notifier unlock"
   none_short: "Bu bilgisayarda lisans yok."
-  buy_options: "  Satın alın:         ccn unlock (yıllık) veya ccn unlock --lifetime"
-  have_key: "  Anahtarınız var mı: ccn activate <anahtar>"
+  buy_options: "  Satın alın:         codex-notifier unlock (yıllık) veya codex-notifier unlock --lifetime"
+  have_key: "  Anahtarınız var mı: codex-notifier activate <anahtar>"
   show_licence: "Lisans:        %{licence}"
   show_key: "Anahtar:       CCN-…-%{last4}"
   show_unlocks: "Kilidi açar:   %{value}"
   unlocks_yes: "evet, bu bilgisayarla eşlenen her telefonun"
   unlocks_no: "hayır"
   show_computers: "Bilgisayarlar: %{count} / 3"
-  switch_lifetime_keep_key: "Anahtarı koruyarak ömür boyuna geçmek için: ccn unlock --lifetime"
+  switch_lifetime_keep_key: "Anahtarı koruyarak ömür boyuna geçmek için: codex-notifier unlock --lifetime"
   status_licensed: "%{licence}, 3 bilgisayarın %{count} tanesi"
-  status_unlicensed: "%{licence}: ccn unlock"
-  status_none: "yok: ccn unlock"
+  status_unlicensed: "%{licence}: codex-notifier unlock"
+  status_none: "yok: codex-notifier unlock"
   describe_refunded: "iade edildi"
   describe_lifetime: "ömür boyu"
   describe_renews: "yıllık, %{date} tarihinde yenilenir"
@@ -254,36 +254,36 @@ licence:
   computer_row: "  %{name} %{seen}%{current}"
 
 update:
-  latest: "ccn %{version} en son sürüm."
-  available_check: "ccn %{version} çıktı (sizdeki %{current})."
+  latest: "codex-notifier %{version} en son sürüm."
+  available_check: "codex-notifier %{version} çıktı (sizdeki %{current})."
   update_with: "  Güncellemek için: %{command}"
-  available_run: "ccn %{version} çıktı: %{command}"
+  available_run: "codex-notifier %{version} çıktı: %{command}"
   nothing_to_update: "güncellenecek bir şey yok: %{path} kurulu değil%{npx}"
-  npx_note: " (npx her seferinde en son ccn'i çalıştırır)"
+  npx_note: " (npx her seferinde en son codex-notifier'ı çalıştırır)"
   no_release_build: "%{os}-%{arch} için yayın derlemesi yok"
-  no_build_named: "ccn %{version} sürümünde %{asset} adlı derleme yok"
+  no_build_named: "codex-notifier %{version} sürümünde %{asset} adlı derleme yok"
   no_checksum: "SHA256SUMS içinde %{asset} için kayıt yok"
   checksum_mismatch: "%{asset} için sağlama toplamı uyuşmuyor: hiçbir şey değiştirilmedi"
-  archive_empty: "arşivin içinde ccn yok"
-  zip_empty: "zip dosyasının içinde ccn.exe yok"
-  did_not_run: "indirilen ccn çalışmadı, bu yüzden kurulu olan korundu"
-  updated: "ccn güncellendi: %{from} → %{to}."
-  available_message: "Claude Code Notifier: ccn %{version} çıktı: %{command}"
+  archive_empty: "arşivin içinde codex-notifier yok"
+  zip_empty: "zip dosyasının içinde codex-notifier.exe yok"
+  did_not_run: "indirilen codex-notifier çalışmadı, bu yüzden kurulu olan korundu"
+  updated: "codex-notifier güncellendi: %{from} → %{to}."
+  available_message: "Codex Notifier: codex-notifier %{version} çıktı: %{command}"
 
 notify:
-  registered_windows: "\"Claude Code Notifier\" Windows bildirimleri için kaydedildi."
+  registered_windows: "\"Codex Notifier\" Windows bildirimleri için kaydedildi."
   icon_installed: "Bildirim simgesi %{path} konumuna kuruldu."
   doctor_applescript: "AppleScript (bu derlemede bildirim uygulaması yok)"
   doctor_allowed: "\"%{app}\" için izin verildi"
   doctor_denied: "kapalı: Sistem Ayarları > Bildirimler > %{app}"
-  doctor_not_allowed: "henüz izin verilmedi: `ccn setup` çalıştırın"
+  doctor_not_allowed: "henüz izin verilmedi: `codex-notifier setup` çalıştırın"
   mac_denied: "\"%{app}\" için masaüstü bildirimleri kapalı. Sistem Ayarları > Bildirimler'den açın."
   mac_asking: "macOS'tan \"%{app}\" bildirimlerine izin vermesi isteniyor..."
   mac_allowed: "\"%{app}\" için masaüstü bildirimlerine izin verildi."
   mac_not_allowed: "Masaüstü bildirimlerine izin verilmedi. Sistem Ayarları > Bildirimler > %{app} altından açın."
 
 api:
-  rejected: "bu bilgisayar artık eşlenmiş değil (sunucu onu artık tanımıyor). Yeniden bağlamak için `ccn pair` çalıştırın"
+  rejected: "bu bilgisayar artık eşlenmiş değil (sunucu onu artık tanımıyor). Yeniden bağlamak için `codex-notifier pair` çalıştırın"
   server_returned: "sunucu %{status} döndürdü"
   # What was being done when the server said no; the server's own message follows a colon
   registering: "bu bilgisayar kaydedilirken"
@@ -301,24 +301,24 @@ api:
 
 # A second upgrader found the first one still running
 update_lock:
-  busy: "başka bir ccn yükseltmesi zaten çalışıyor. Birkaç dakika sonra yeniden deneyin"
+  busy: "başka bir codex-notifier yükseltmesi zaten çalışıyor. Birkaç dakika sonra yeniden deneyin"
 
 local_files:
-  config_unreadable: "%{path} okunamıyor (%{error}), bu yüzden ccn üzerine yazmayacak. Dosyayı düzeltin ya da silip `ccn pair` komutunu yeniden çalıştırın."
-  slot_not_freed: "Bu bilgisayarın lisans yeri boşaltılamadı (%{error}). Lisansı varsa, anahtarınızla claudecodenotifier.com/licence adresinden yeri boşaltın."
-  kept_dir: "ccn dosyaları %{path} konumundan kaldırıldı. Klasörde başka dosyalar da olduğu için klasör yerinde bırakıldı."
-  remove_binary: "ccn'in kendisi hâlâ yüklü. Kaldırmak için: %{command}"
+  config_unreadable: "%{path} okunamıyor (%{error}), bu yüzden codex-notifier üzerine yazmayacak. Dosyayı düzeltin ya da silip `codex-notifier pair` komutunu yeniden çalıştırın."
+  slot_not_freed: "Bu bilgisayarın lisans yeri boşaltılamadı (%{error}). Lisansı varsa, anahtarınızla codexnotifier.com/licence adresinden yeri boşaltın."
+  kept_dir: "codex-notifier dosyaları %{path} konumundan kaldırıldı. Klasörde başka dosyalar da olduğu için klasör yerinde bırakıldı."
+  remove_binary: "codex-notifier'ın kendisi hâlâ yüklü. Kaldırmak için: %{command}"
 
 payload:
   needs_permission: "%{tool} için izin gerekiyor"
   permission_required: "İzin gerekiyor"
-  has_questions: "Claude'un soruları var"
+  has_questions: "Codex'in soruları var"
   finished_prompt: "Bitti: %{prompt}"
   question_header: "Soru"
   search: "Arama: %{pattern}"
 
 net:
-  unreachable: "Claude Code Notifier sunucusuna ulaşılamadı. İnternet bağlantınızı kontrol edip tekrar deneyin."
+  unreachable: "Codex Notifier sunucusuna ulaşılamadı. İnternet bağlantınızı kontrol edip tekrar deneyin."
   doctor_unreachable: "sunucu: %{url} adresine ulaşılamıyor. İnternet bağlantınızı, proxy'yi veya güvenlik duvarını kontrol edin"
 
 clap:
@@ -328,10 +328,10 @@ clap:
   options: "Seçenekler:"
   help: "Yardımı göster"
   version: "Sürümü göster"
-  help_command: "ccn'nin veya komutlarından birinin yardımını göster"
+  help_command: "codex-notifier'ın veya komutlarından birinin yardımını göster"
   help_command_arg: "Yardımı gösterilecek komut"
-  error_hint: "Komutları ve seçenekleri görmek için `ccn --help` çalıştırın."
+  error_hint: "Komutları ve seçenekleri görmek için `codex-notifier --help` çalıştırın."
 
-# `ccn upgrade` refused a release whose SHA256SUMS isn't signed by TouchTap
+# `codex-notifier upgrade` refused a release whose SHA256SUMS isn't signed by TouchTap
 update_signature:
-  invalid: "sürümün imzası doğrulanamadı, bu yüzden hiçbir şey değiştirilmedi. Daha sonra yeniden dene veya claudecodenotifier.com/cli adresinden yeniden yükle"
+  invalid: "sürümün imzası doğrulanamadı, bu yüzden hiçbir şey değiştirilmedi. Daha sonra yeniden dene veya codexnotifier.com/cli adresinden yeniden yükle"
