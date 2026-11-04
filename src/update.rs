@@ -434,7 +434,10 @@ pub(crate) fn method_from_path_resolved(exe: &Path) -> Option<&'static str> {
 fn method_from_path(exe: &Path) -> Option<&'static str> {
     let path = exe.to_string_lossy().replace('\\', "/");
     // `/Cellar/codex-notifier/` under any prefix: /opt/homebrew, /usr/local, ~/.linuxbrew or a custom one
-    if path.contains("/Cellar/codex-notifier/") || path.contains("/homebrew/") || path.contains("linuxbrew") {
+    if path.contains("/Cellar/codex-notifier/")
+        || path.contains("/homebrew/")
+        || path.contains("linuxbrew")
+    {
         Some("homebrew")
     } else if path.contains("node_modules") {
         Some("npm")
@@ -735,7 +738,9 @@ fn extract_binary(archive: &[u8]) -> Result<Vec<u8>> {
             .unwrap_or(false);
         if is_ccn && entry.header().entry_type().is_file() {
             let mut bytes = Vec::with_capacity(entry.size() as usize);
-            entry.read_to_end(&mut bytes).context("unpacking codex-notifier")?;
+            entry
+                .read_to_end(&mut bytes)
+                .context("unpacking codex-notifier")?;
             return Ok(bytes);
         }
     }
@@ -757,7 +762,8 @@ fn extract_binary(archive: &[u8]) -> Result<Vec<u8>> {
         .with_context(|| t!("update.zip_empty").into_owned())?;
     let mut file = zip.by_name(&name).context("unpacking codex-notifier.exe")?;
     let mut bytes = Vec::with_capacity(file.size() as usize);
-    file.read_to_end(&mut bytes).context("unpacking codex-notifier.exe")?;
+    file.read_to_end(&mut bytes)
+        .context("unpacking codex-notifier.exe")?;
     Ok(bytes)
 }
 
@@ -1041,7 +1047,9 @@ deadbeef  codex-notifier-x86_64-apple-darwin.tar.gz
     fn install_methods_map_to_actions() {
         let p = |s: &str| PathBuf::from(s);
         assert_eq!(
-            method_from_path(&p("/opt/homebrew/Cellar/codex-notifier/0.2.0/bin/codex-notifier")),
+            method_from_path(&p(
+                "/opt/homebrew/Cellar/codex-notifier/0.2.0/bin/codex-notifier"
+            )),
             Some("homebrew")
         );
         assert_eq!(
@@ -1055,13 +1063,20 @@ deadbeef  codex-notifier-x86_64-apple-darwin.tar.gz
             Some("npm")
         );
         assert_eq!(
-            method_from_path(&p("/usr/local/Cellar/codex-notifier/0.2.0/bin/codex-notifier")),
+            method_from_path(&p(
+                "/usr/local/Cellar/codex-notifier/0.2.0/bin/codex-notifier"
+            )),
             Some("homebrew"),
             "an Intel Mac's prefix has no `homebrew` in it"
         );
-        assert_eq!(method_from_path(&p("/Users/jack/.local/bin/codex-notifier")), None);
         assert_eq!(
-            method_from_path(&p(r"C:\Users\jack\AppData\Local\Programs\codex-notifier\codex-notifier.exe")),
+            method_from_path(&p("/Users/jack/.local/bin/codex-notifier")),
+            None
+        );
+        assert_eq!(
+            method_from_path(&p(
+                r"C:\Users\jack\AppData\Local\Programs\codex-notifier\codex-notifier.exe"
+            )),
             None
         );
 
@@ -1204,7 +1219,8 @@ deadbeef  codex-notifier-x86_64-apple-darwin.tar.gz
 
     #[test]
     fn only_one_upgrader_holds_the_lock_and_a_stale_one_is_taken_over() {
-        let dir = std::env::temp_dir().join(format!("codex-notifier-update-lock-{}", std::process::id()));
+        let dir =
+            std::env::temp_dir().join(format!("codex-notifier-update-lock-{}", std::process::id()));
         let _ = fs::remove_dir_all(&dir);
         fs::create_dir_all(&dir).unwrap();
         let path = dir.join("update.lock");
@@ -1239,7 +1255,10 @@ deadbeef  codex-notifier-x86_64-apple-darwin.tar.gz
     #[cfg(unix)]
     fn a_new_binary_that_hangs_does_not_count_as_running() {
         use std::os::unix::fs::PermissionsExt;
-        let dir = std::env::temp_dir().join(format!("codex-notifier-update-probe-{}", std::process::id()));
+        let dir = std::env::temp_dir().join(format!(
+            "codex-notifier-update-probe-{}",
+            std::process::id()
+        ));
         let _ = fs::remove_dir_all(&dir);
         fs::create_dir_all(&dir).unwrap();
         let script = |name: &str, body: &str| {

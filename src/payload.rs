@@ -342,7 +342,10 @@ mod tests {
             tool_summary("apply_patch", &json!({ "patch": patch })).as_deref(),
             Some("Edit src/main.rs and 1 more")
         );
-        assert_eq!(patch_files(&json!({ "input": patch })), vec!["src/main.rs", "README.md"]);
+        assert_eq!(
+            patch_files(&json!({ "input": patch })),
+            vec!["src/main.rs", "README.md"]
+        );
     }
 
     #[test]
@@ -358,13 +361,21 @@ mod tests {
         assert_eq!(qs[0]["options"].as_array().unwrap().len(), 2);
         assert_eq!(qs[0]["freeText"], false);
         assert_eq!(qs[1]["freeText"], true);
-        let (card, key) = question_card(&Input(&json!({ "session_id": "s", "cwd": "/tmp/p" })), &qs, true);
+        let (card, key) = question_card(
+            &Input(&json!({ "session_id": "s", "cwd": "/tmp/p" })),
+            &qs,
+            true,
+        );
         assert_eq!(card["promptType"], "user_question");
         assert_eq!(card["questions"].as_array().unwrap().len(), 1);
         assert_eq!(key, "request_user_input:Which one?");
         assert_eq!(card["title"], "Codex - p");
 
-        let (card, _) = question_card(&Input(&json!({ "session_id": "s", "cwd": "/tmp/p" })), &qs[1..], true);
+        let (card, _) = question_card(
+            &Input(&json!({ "session_id": "s", "cwd": "/tmp/p" })),
+            &qs[1..],
+            true,
+        );
         assert_eq!(card["promptType"], "freeform");
         assert_eq!(card["promptText"], "What is it called?");
     }

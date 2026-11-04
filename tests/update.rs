@@ -50,7 +50,10 @@ impl Sandbox {
     /// A home with codex-notifier's config, Codex's settings (hooks pointing at the sandbox binary) and a
     /// copy of the real codex-notifier at `bin/codex-notifier`, or at `exe_rel` when given.
     fn new(name: &str, exe_rel: &str) -> Sandbox {
-        let root = std::env::temp_dir().join(format!("codex-notifier-update-{name}-{}", std::process::id()));
+        let root = std::env::temp_dir().join(format!(
+            "codex-notifier-update-{name}-{}",
+            std::process::id()
+        ));
         let _ = std::fs::remove_dir_all(&root);
         std::fs::create_dir_all(root.join("codex")).unwrap();
         std::fs::create_dir_all(root.join("codex-notifier")).unwrap();
@@ -59,7 +62,11 @@ impl Sandbox {
         std::fs::copy(env!("CARGO_BIN_EXE_codex-notifier"), &exe).unwrap();
         // As `codex-notifier setup` writes it: the canonical path (macOS puts temp dirs under /private)
         let exe = exe.canonicalize().unwrap();
-        std::fs::write(root.join("codex-notifier/config.toml"), "auto_update = true\n").unwrap();
+        std::fs::write(
+            root.join("codex-notifier/config.toml"),
+            "auto_update = true\n",
+        )
+        .unwrap();
         let hook = format!("{} hook", exe.display());
         std::fs::write(
             root.join("codex/hooks.json"),
@@ -89,7 +96,10 @@ impl Sandbox {
             // fake release is reached the way CI's is
             .env("CODEX_NOTIFIER_DOWNLOAD_BASE", format!("{server}/dl"))
             // A debug build also trusts this key, so the fake release can be signed here
-            .env("CODEX_NOTIFIER_UPDATE_PUBLIC_KEY", hex(test_key(TEST_SEED).verifying_key().as_bytes()))
+            .env(
+                "CODEX_NOTIFIER_UPDATE_PUBLIC_KEY",
+                hex(test_key(TEST_SEED).verifying_key().as_bytes()),
+            )
             .env_remove("CODEX_NOTIFIER_INSTALL_METHOD")
             .env_remove("CODEX_NOTIFIER_EPHEMERAL")
             .stdin(Stdio::null())
@@ -310,7 +320,10 @@ fn a_bad_checksum_leaves_the_original_untouched() {
     assert_eq!(std::fs::read(sandbox.exe()).unwrap(), original);
     assert!(!sandbox.root.join("bin/codex-notifier.new").exists());
     let still_runs = sandbox.run(&url, &["--version"]);
-    assert_eq!(text(&still_runs.stdout).trim(), format!("codex-notifier {VERSION}"));
+    assert_eq!(
+        text(&still_runs.stdout).trim(),
+        format!("codex-notifier {VERSION}")
+    );
 }
 
 #[test]
@@ -348,7 +361,10 @@ fn check_only_reports_and_exits_10_when_newer() {
         )),
         "{stdout}"
     );
-    assert!(stdout.contains("Update: codex-notifier upgrade"), "{stdout}");
+    assert!(
+        stdout.contains("Update: codex-notifier upgrade"),
+        "{stdout}"
+    );
     assert_eq!(std::fs::read(sandbox.exe()).unwrap(), original);
     assert_eq!(requested.lock().unwrap().len(), 1, "nothing was downloaded");
 
@@ -359,8 +375,13 @@ fn check_only_reports_and_exits_10_when_newer() {
 
 #[test]
 fn a_homebrew_install_is_told_to_brew_upgrade_and_the_background_run_records_it() {
-    let sandbox = Sandbox::new("brew", "homebrew/Cellar/codex-notifier/0.1.0/bin/codex-notifier");
-    let exe = sandbox.root.join("homebrew/Cellar/codex-notifier/0.1.0/bin/codex-notifier");
+    let sandbox = Sandbox::new(
+        "brew",
+        "homebrew/Cellar/codex-notifier/0.1.0/bin/codex-notifier",
+    );
+    let exe = sandbox
+        .root
+        .join("homebrew/Cellar/codex-notifier/0.1.0/bin/codex-notifier");
     let original = std::fs::read(&exe).unwrap();
     let (url, requested) = release_server(&sandbox.root, NEW_VERSION, true);
 
@@ -368,7 +389,9 @@ fn a_homebrew_install_is_told_to_brew_upgrade_and_the_background_run_records_it(
     assert!(out.status.success(), "{}", text(&out.stderr));
     assert_eq!(
         text(&out.stdout).trim(),
-        format!("codex-notifier {NEW_VERSION} is available: brew upgrade touch-tap/tap/codex-notifier")
+        format!(
+            "codex-notifier {NEW_VERSION} is available: brew upgrade touch-tap/tap/codex-notifier"
+        )
     );
     assert_eq!(std::fs::read(&exe).unwrap(), original);
     assert!(!sandbox.config().contains("update_available"));
@@ -419,8 +442,13 @@ fn auto_update_is_a_local_setting() {
 fn an_intel_mac_homebrew_link_is_left_to_brew() {
     // As Homebrew lays it out under /usr/local: the binary in the Cellar, a relative symlink in
     // bin, and hooks and the shell running the link. Nothing in the link's path says Homebrew.
-    let sandbox = Sandbox::new("brewlink", "usr/local/Cellar/codex-notifier/0.1.0/bin/codex-notifier");
-    let cellar = sandbox.root.join("usr/local/Cellar/codex-notifier/0.1.0/bin/codex-notifier");
+    let sandbox = Sandbox::new(
+        "brewlink",
+        "usr/local/Cellar/codex-notifier/0.1.0/bin/codex-notifier",
+    );
+    let cellar = sandbox
+        .root
+        .join("usr/local/Cellar/codex-notifier/0.1.0/bin/codex-notifier");
     let link = sandbox.root.join("usr/local/bin/codex-notifier");
     std::fs::create_dir_all(link.parent().unwrap()).unwrap();
     std::os::unix::fs::symlink("../Cellar/codex-notifier/0.1.0/bin/codex-notifier", &link).unwrap();
@@ -431,7 +459,9 @@ fn an_intel_mac_homebrew_link_is_left_to_brew() {
     assert!(out.status.success(), "{}", text(&out.stderr));
     assert_eq!(
         text(&out.stdout).trim(),
-        format!("codex-notifier {NEW_VERSION} is available: brew upgrade touch-tap/tap/codex-notifier")
+        format!(
+            "codex-notifier {NEW_VERSION} is available: brew upgrade touch-tap/tap/codex-notifier"
+        )
     );
 
     let out = sandbox.run_exe(&link, &url, &["upgrade", "--quiet", "--background"]);

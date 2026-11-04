@@ -38,10 +38,10 @@ pub fn platform() -> &'static str {
 
 /// Where codex-notifier keeps its config, sessions, credentials file and log. `$CODEX_NOTIFIER_HOME` overrides.
 pub fn app_dir() -> PathBuf {
-    if let Ok(dir) = std::env::var("CODEX_NOTIFIER_HOME") {
-        if !dir.is_empty() {
-            return PathBuf::from(dir);
-        }
+    if let Ok(dir) = std::env::var("CODEX_NOTIFIER_HOME")
+        && !dir.is_empty()
+    {
+        return PathBuf::from(dir);
     }
     #[cfg(windows)]
     {
@@ -51,10 +51,10 @@ pub fn app_dir() -> PathBuf {
             }
         }
     }
-    if let Ok(xdg) = std::env::var("XDG_CONFIG_HOME") {
-        if !xdg.is_empty() {
-            return PathBuf::from(xdg).join("codex-notifier");
-        }
+    if let Ok(xdg) = std::env::var("XDG_CONFIG_HOME")
+        && !xdg.is_empty()
+    {
+        return PathBuf::from(xdg).join("codex-notifier");
     }
     home_dir().join(".config").join("codex-notifier")
 }
@@ -481,10 +481,10 @@ fn effective_server_url(saved: &str) -> String {
 impl Config {
     pub fn load() -> Config {
         let mut cfg = Config::load_from(&config_path());
-        if let Ok(url) = std::env::var("CODEX_NOTIFIER_SERVER_URL") {
-            if !url.is_empty() {
-                cfg.server_url = url;
-            }
+        if let Ok(url) = std::env::var("CODEX_NOTIFIER_SERVER_URL")
+            && !url.is_empty()
+        {
+            cfg.server_url = url;
         }
         cfg.server_url = effective_server_url(&cfg.server_url);
         cfg
@@ -586,7 +586,8 @@ impl Config {
     /// `hold_without_presence`, or `CODEX_NOTIFIER_HOLD_WITHOUT_PRESENCE=1` for this process
     pub fn hold_without_presence(&self) -> bool {
         self.hold_without_presence
-            || std::env::var("CODEX_NOTIFIER_HOLD_WITHOUT_PRESENCE").is_ok_and(|v| !v.is_empty() && v != "0")
+            || std::env::var("CODEX_NOTIFIER_HOLD_WITHOUT_PRESENCE")
+                .is_ok_and(|v| !v.is_empty() && v != "0")
     }
 
     pub fn machine_name(&self) -> String {
@@ -688,14 +689,12 @@ pub fn credential_store(cfg: &Config) -> &'static str {
 
 pub fn load_token(cfg: &Config) -> Option<String> {
     let keychain = credential_store(cfg) == "keychain";
-    if keychain {
-        if let Ok(entry) = keyring::Entry::new(KEYRING_SERVICE, KEYRING_USER) {
-            // Empty is what delete_token leaves when it may not delete
-            if let Ok(token) = entry.get_password().map(|t| t.trim().to_string()) {
-                if !token.is_empty() {
-                    return Some(token);
-                }
-            }
+    if keychain && let Ok(entry) = keyring::Entry::new(KEYRING_SERVICE, KEYRING_USER) {
+        // Empty is what delete_token leaves when it may not delete
+        if let Ok(token) = entry.get_password().map(|t| t.trim().to_string())
+            && !token.is_empty()
+        {
+            return Some(token);
         }
     }
     let token = fs::read_to_string(credentials_path())
@@ -704,27 +703,24 @@ pub fn load_token(cfg: &Config) -> Option<String> {
         .filter(|s| !s.is_empty())?;
     // A token from before the keychain became the default moves there the first time it is read.
     // If the keychain refuses (locked, no keyring), the file stays and keeps working.
-    if keychain {
-        if let Ok(entry) = keyring::Entry::new(KEYRING_SERVICE, KEYRING_USER) {
-            if entry.set_password(&token).is_ok()
-                && entry.get_password().ok().as_deref() == Some(token.as_str())
-            {
-                let _ = fs::remove_file(credentials_path());
-            }
-        }
+    if keychain
+        && let Ok(entry) = keyring::Entry::new(KEYRING_SERVICE, KEYRING_USER)
+        && entry.set_password(&token).is_ok()
+        && entry.get_password().ok().as_deref() == Some(token.as_str())
+    {
+        let _ = fs::remove_file(credentials_path());
     }
     Some(token)
 }
 
 /// Stores the token and returns where it went.
 pub fn store_token(cfg: &Config, token: &str) -> Result<&'static str> {
-    if credential_store(cfg) == "keychain" {
-        if let Ok(entry) = keyring::Entry::new(KEYRING_SERVICE, KEYRING_USER) {
-            if entry.set_password(token).is_ok() {
-                let _ = fs::remove_file(credentials_path());
-                return Ok("keychain");
-            }
-        }
+    if credential_store(cfg) == "keychain"
+        && let Ok(entry) = keyring::Entry::new(KEYRING_SERVICE, KEYRING_USER)
+        && entry.set_password(token).is_ok()
+    {
+        let _ = fs::remove_file(credentials_path());
+        return Ok("keychain");
     }
     let path = credentials_path();
     // Created 0600 (never briefly world-readable) and swapped in whole
@@ -832,12 +828,12 @@ pub fn ensure_dir(dir: &Path) -> std::io::Result<()> {
                 .create(dir);
         }
         let default_dir = std::env::var("CODEX_NOTIFIER_HOME").map_or(true, |v| v.is_empty());
-        if default_dir && dir == app_dir() {
-            if let Ok(meta) = fs::metadata(dir) {
-                if meta.permissions().mode() & 0o077 != 0 {
-                    let _ = fs::set_permissions(dir, fs::Permissions::from_mode(0o700));
-                }
-            }
+        if default_dir
+            && dir == app_dir()
+            && let Ok(meta) = fs::metadata(dir)
+            && meta.permissions().mode() & 0o077 != 0
+        {
+            let _ = fs::set_permissions(dir, fs::Permissions::from_mode(0o700));
         }
         Ok(())
     }
@@ -1116,7 +1112,10 @@ mod write_tests {
     }
 
     fn temp_dir(name: &str) -> PathBuf {
-        let dir = std::env::temp_dir().join(format!("codex-notifier-write-{name}-{}", std::process::id()));
+        let dir = std::env::temp_dir().join(format!(
+            "codex-notifier-write-{name}-{}",
+            std::process::id()
+        ));
         let _ = fs::remove_dir_all(&dir);
         dir
     }

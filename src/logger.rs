@@ -17,10 +17,10 @@ pub fn log(message: &str) {
     if let Some(parent) = path.parent() {
         let _ = config::ensure_dir(parent);
     }
-    if let Ok(meta) = fs::metadata(&path) {
-        if meta.len() > MAX_BYTES {
-            let _ = fs::remove_file(&path);
-        }
+    if let Ok(meta) = fs::metadata(&path)
+        && meta.len() > MAX_BYTES
+    {
+        let _ = fs::remove_file(&path);
     }
     let mut options = OpenOptions::new();
     options.create(true).append(true);

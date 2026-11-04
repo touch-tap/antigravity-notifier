@@ -69,7 +69,10 @@ fn paired_system_message(phone: &str) -> String {
 /// per app), so its command and any mention of Claude are put in Codex's words here.
 /// TODO: drop once the server writes codex_cli copy itself.
 fn codex_wording(mut message: api::NudgeMessage) -> api::NudgeMessage {
-    let fix = |text: &str| text.replace("Claude Code", "Codex").replace("Claude", "Codex");
+    let fix = |text: &str| {
+        text.replace("Claude Code", "Codex")
+            .replace("Claude", "Codex")
+    };
     message.title = fix(&message.title);
     message.body = fix(&message.body);
     if let Some(rest) = message.command.strip_prefix("ccn ") {
@@ -115,7 +118,9 @@ fn run_inner() -> Result<Option<Value>> {
     };
     if !cfg.is_paired() {
         // One line so the log shows Codex is calling us even before pairing
-        log(&format!("{event}: not paired yet, desktop notifications only"));
+        log(&format!(
+            "{event}: not paired yet, desktop notifications only"
+        ));
         // No credentials: desktop notifications only, and no network at all
         return Ok(local::run(&mut cfg, &event, &input, &mut state).or(update_message));
     }
@@ -308,15 +313,16 @@ impl Ctx {
                 Err(err) => log(&format!("settings sync skipped: {err:#}")),
             }
         }
-        if register_due && accepted {
-            if let Some(identity) = crate::commands::identity(&self.cfg) {
-                match self.api.register(&identity) {
-                    Ok(()) => {
-                        self.cfg.registered_at = Some(now);
-                        let _ = self.cfg.save();
-                    }
-                    Err(err) => log(&format!("re-registration skipped: {err:#}")),
+        if register_due
+            && accepted
+            && let Some(identity) = crate::commands::identity(&self.cfg)
+        {
+            match self.api.register(&identity) {
+                Ok(()) => {
+                    self.cfg.registered_at = Some(now);
+                    let _ = self.cfg.save();
                 }
+                Err(err) => log(&format!("re-registration skipped: {err:#}")),
             }
         }
         Ok(self.licence_nudge(now))
@@ -399,9 +405,7 @@ impl Ctx {
                 .turn
                 .record_tool(name, &self.input().tool_input());
         }
-        let is_question = tool_name
-            .as_deref()
-            .is_some_and(payload::is_question_tool);
+        let is_question = tool_name.as_deref().is_some_and(payload::is_question_tool);
         if !is_question {
             self.send_working(config::now(), tool_name.as_deref());
         }
@@ -468,12 +472,12 @@ impl Ctx {
         // shown as answered on the phone but not acted on.)
         // A stop within 5s of a done card we just sent (another Stop hook blocked right after it)
         // gets no second card.
-        if stop_hook_active {
-            if let Some(card) = &self.state.last_card {
-                if card.kind == "done" && config::now() - card.sent_at < 5 {
-                    return Ok(None);
-                }
-            }
+        if stop_hook_active
+            && let Some(card) = &self.state.last_card
+            && card.kind == "done"
+            && config::now() - card.sent_at < 5
+        {
+            return Ok(None);
         }
         self.settle_last_card();
         let card = payload::done_card(&self.input(), &self.state, false);
@@ -718,7 +722,10 @@ mod tests {
             body: "Approvals from Claude Code reach you.".into(),
             command: "ccn unlock --lifetime".into(),
         });
-        assert_eq!(message.title, "Answer Codex from your phone, no subscription");
+        assert_eq!(
+            message.title,
+            "Answer Codex from your phone, no subscription"
+        );
         assert_eq!(message.body, "Approvals from Codex reach you.");
         assert_eq!(message.command, "codex-notifier unlock --lifetime");
     }

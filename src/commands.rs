@@ -95,11 +95,7 @@ pub enum PairOutcome {
     CodeShown,
 }
 
-pub fn pair(
-    code: Option<String>,
-    name: Option<String>,
-    no_wait: bool,
-) -> Result<()> {
+pub fn pair(code: Option<String>, name: Option<String>, no_wait: bool) -> Result<()> {
     let mut flow = if code.is_some() {
         "phone_code"
     } else {
@@ -680,7 +676,10 @@ pub fn doctor() -> Result<()> {
                 if !status.installed.is_empty() {
                     println!(
                         "{yes}{}",
-                        t!("doctor.trust_ok", path = config::codex_config_path().display())
+                        t!(
+                            "doctor.trust_ok",
+                            path = config::codex_config_path().display()
+                        )
                     );
                 }
             } else {

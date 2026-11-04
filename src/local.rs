@@ -264,6 +264,9 @@ mod tests {
             body_with_nudge("done"),
             format!("done\n{}", first_nudge_line())
         );
-        assert_eq!(first_nudge_line(), "Get these on your phone: codex-notifier pair");
+        assert_eq!(
+            first_nudge_line(),
+            "Get these on your phone: codex-notifier pair"
+        );
     }
 }

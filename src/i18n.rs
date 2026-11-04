@@ -192,10 +192,7 @@ mod tests {
     fn an_unknown_locale_falls_back_to_english() {
         // A locale with no file: the English text, never the raw key
         let text = rust_i18n::t!("cli.about", locale = "xx");
-        assert!(
-            text.starts_with("Codex Notifier: get a push"),
-            "{text}"
-        );
+        assert!(text.starts_with("Codex Notifier: get a push"), "{text}");
         let text = rust_i18n::t!(
             "pair.paired_with",
             locale = "xx",

@@ -13,7 +13,10 @@ struct Sandbox {
 
 impl Sandbox {
     fn new(name: &str) -> Sandbox {
-        let root = std::env::temp_dir().join(format!("codex-notifier-forget-{name}-{}", std::process::id()));
+        let root = std::env::temp_dir().join(format!(
+            "codex-notifier-forget-{name}-{}",
+            std::process::id()
+        ));
         let _ = std::fs::remove_dir_all(&root);
         std::fs::create_dir_all(root.join("codex")).unwrap();
         std::fs::create_dir_all(root.join("codex-notifier")).unwrap();
@@ -111,11 +114,12 @@ fn text(bytes: &[u8]) -> String {
 }
 
 fn settings_hooks_gone(sandbox: &Sandbox) -> bool {
-    let hooks =
-        std::fs::read_to_string(Path::new(&sandbox.root).join("codex/hooks.json")).unwrap();
+    let hooks = std::fs::read_to_string(Path::new(&sandbox.root).join("codex/hooks.json")).unwrap();
     let config =
         std::fs::read_to_string(Path::new(&sandbox.root).join("codex/config.toml")).unwrap();
-    !hooks.contains("codex-notifier") && !config.contains("codex-notifier") && hooks.contains("echo hi")
+    !hooks.contains("codex-notifier")
+        && !config.contains("codex-notifier")
+        && hooks.contains("echo hi")
 }
 
 #[test]
@@ -283,7 +287,10 @@ fn uninstall_offline_says_the_licence_slot_was_not_freed() {
     assert!(settings_hooks_gone(&sandbox));
     // The binary is left to whatever installed it, with the command to remove it
     let stdout = text(&out.stdout);
-    assert!(stdout.contains("codex-notifier itself is still installed"), "{stdout}");
+    assert!(
+        stdout.contains("codex-notifier itself is still installed"),
+        "{stdout}"
+    );
     let exe = std::path::Path::new(env!("CARGO_BIN_EXE_codex-notifier"));
     assert!(exe.exists());
 }

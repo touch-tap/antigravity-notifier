@@ -58,7 +58,7 @@ impl Turn {
             return;
         }
         for path in payload::patch_files(input) {
-            if !self.files.iter().any(|f| *f == path) {
+            if !self.files.contains(&path) {
                 self.files.push(path);
             }
         }
@@ -174,7 +174,10 @@ mod tests {
     fn counts_distinct_files_and_patch_lines() {
         let mut turn = Turn::begin(0);
         turn.record_tool("apply_patch", &json!({ "patch": PATCH }));
-        turn.record_tool("apply_patch", &json!({ "patch": "*** Begin Patch\n*** Update File: a.ts\n-q\n+r\n*** End Patch" }));
+        turn.record_tool(
+            "apply_patch",
+            &json!({ "patch": "*** Begin Patch\n*** Update File: a.ts\n-q\n+r\n*** End Patch" }),
+        );
         turn.record_tool("Bash", &json!({ "command": "cat c.ts" }));
         assert_eq!(turn.files, vec!["a.ts", "b.ts"]);
         assert_eq!((turn.added, turn.removed), (5, 2));

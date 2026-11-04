@@ -84,18 +84,16 @@ fn exe_name() -> &'static str {
 
 /// Where the install scripts and `install_self` put the binary.
 pub fn user_bin_dir() -> PathBuf {
-    if let Ok(dir) = std::env::var("CODEX_NOTIFIER_INSTALL_DIR") {
-        if !dir.is_empty() {
-            return PathBuf::from(dir);
-        }
+    if let Ok(dir) = std::env::var("CODEX_NOTIFIER_INSTALL_DIR")
+        && !dir.is_empty()
+    {
+        return PathBuf::from(dir);
     }
     #[cfg(windows)]
     {
         if let Ok(local) = std::env::var("LOCALAPPDATA") {
             if !local.is_empty() {
-                return PathBuf::from(local)
-                    .join("Programs")
-                    .join("codex-notifier");
+                return PathBuf::from(local).join("Programs").join("codex-notifier");
             }
         }
     }
@@ -228,7 +226,8 @@ fn our_entries(hooks_path: &Path, hooks: &serde_json::Map<String, Value>) -> Vec
                 if !is_ours(entry) {
                     continue;
                 }
-                let timeout = normalised_timeout(label, entry.get("timeout").and_then(|t| t.as_u64()));
+                let timeout =
+                    normalised_timeout(label, entry.get("timeout").and_then(|t| t.as_u64()));
                 out.push((
                     state_key(hooks_path, label, gi, hi),
                     trust_hash(label, matcher, command_of(entry), timeout),
@@ -260,8 +259,8 @@ fn load_hooks(path: &Path) -> Result<Value> {
     if text.trim().is_empty() {
         return Ok(json!({ "hooks": {} }));
     }
-    let mut root: Value =
-        serde_json::from_str(&text).with_context(|| format!("{} is not valid JSON", path.display()))?;
+    let mut root: Value = serde_json::from_str(&text)
+        .with_context(|| format!("{} is not valid JSON", path.display()))?;
     if !root.is_object() {
         anyhow::bail!("{} is not a JSON object", path.display());
     }
@@ -520,9 +519,12 @@ fn ours_in_file(hooks_path: &Path) -> Vec<String> {
     load_hooks(hooks_path)
         .ok()
         .and_then(|root| {
-            root["hooks"]
-                .as_object()
-                .map(|h| our_entries(hooks_path, h).into_iter().map(|(k, _)| k).collect())
+            root["hooks"].as_object().map(|h| {
+                our_entries(hooks_path, h)
+                    .into_iter()
+                    .map(|(k, _)| k)
+                    .collect()
+            })
         })
         .unwrap_or_default()
 }
@@ -578,18 +580,42 @@ mod tests {
     fn trust_hash_is_stable_and_sorted() {
         let a = trust_hash("stop", None, "/usr/local/bin/codex-notifier hook", 700);
         assert!(a.starts_with("sha256:") && a.len() == 7 + 64);
-        assert_eq!(a, trust_hash("stop", None, "/usr/local/bin/codex-notifier hook", 700));
-        assert_ne!(a, trust_hash("stop", Some("Bash"), "/usr/local/bin/codex-notifier hook", 700));
-        assert_ne!(a, trust_hash("stop", None, "/usr/local/bin/codex-notifier hook", 600));
+        assert_eq!(
+            a,
+            trust_hash("stop", None, "/usr/local/bin/codex-notifier hook", 700)
+        );
+        assert_ne!(
+            a,
+            trust_hash(
+                "stop",
+                Some("Bash"),
+                "/usr/local/bin/codex-notifier hook",
+                700
+            )
+        );
+        assert_ne!(
+            a,
+            trust_hash("stop", None, "/usr/local/bin/codex-notifier hook", 600)
+        );
     }
 
     #[test]
     fn recognises_our_entries() {
-        assert!(is_ours(&json!({ "type": "command", "command": "/opt/homebrew/bin/codex-notifier hook" })));
-        assert!(is_ours(&json!({ "type": "command", "command": "'/Users/me/my bin/codex-notifier' hook" })));
-        assert!(is_ours(&json!({ "type": "command", "command": "\"C:\\Users\\me\\codex-notifier.exe\" hook" })));
-        assert!(!is_ours(&json!({ "type": "command", "command": "ccn hook" })));
-        assert!(!is_ours(&json!({ "type": "command", "command": "codex-notifier doctor" })));
+        assert!(is_ours(
+            &json!({ "type": "command", "command": "/opt/homebrew/bin/codex-notifier hook" })
+        ));
+        assert!(is_ours(
+            &json!({ "type": "command", "command": "'/Users/me/my bin/codex-notifier' hook" })
+        ));
+        assert!(is_ours(
+            &json!({ "type": "command", "command": "\"C:\\Users\\me\\codex-notifier.exe\" hook" })
+        ));
+        assert!(!is_ours(
+            &json!({ "type": "command", "command": "ccn hook" })
+        ));
+        assert!(!is_ours(
+            &json!({ "type": "command", "command": "codex-notifier doctor" })
+        ));
     }
 
     #[test]
@@ -618,15 +644,25 @@ mod tests {
         let entries = our_entries(&hooks_path, hooks);
         assert_eq!(entries.len(), EVENTS.len());
         // Our Stop entry sits after the user's own group
-        let stop = entries.iter().find(|(k, _)| k.ends_with(":stop:1:0")).unwrap();
-        assert!(entries.iter().any(|(k, _)| k.ends_with(":session_start:0:0")));
+        let stop = entries
+            .iter()
+            .find(|(k, _)| k.ends_with(":stop:1:0"))
+            .unwrap();
+        assert!(
+            entries
+                .iter()
+                .any(|(k, _)| k.ends_with(":session_start:0:0"))
+        );
         save_hooks(&hooks_path, &root_json).unwrap();
         write_trust(&config_path, &hooks_path, &before, &entries).unwrap();
 
         let text = fs::read_to_string(&config_path).unwrap();
         assert!(text.starts_with("model = \"gpt-5.4\"\n"), "{text}");
         assert!(text.contains("[hooks.state.\"other\"]"));
-        assert!(text.contains(&format!(":stop:1:0\"]\ntrusted_hash = \"{}\"", stop.1)), "{text}");
+        assert!(
+            text.contains(&format!(":stop:1:0\"]\ntrusted_hash = \"{}\"", stop.1)),
+            "{text}"
+        );
         assert_eq!(read_trust(&config_path).len(), EVENTS.len() + 1);
         let saved = fs::read_to_string(&hooks_path).unwrap();
         assert!(saved.contains("\"description\": \"mine\""));
@@ -660,13 +696,25 @@ mod tests {
         fs::write(&config_path, "model = \"gpt-5.4\"\n").unwrap();
         let hooks_path = root.join("hooks.json");
         let key = state_key(&hooks_path, "stop", 0, 0);
-        write_trust(&config_path, &hooks_path, &[], &[(key.clone(), "sha256:abc".into())]).unwrap();
+        write_trust(
+            &config_path,
+            &hooks_path,
+            &[],
+            &[(key.clone(), "sha256:abc".into())],
+        )
+        .unwrap();
         let text = fs::read_to_string(&config_path).unwrap();
         assert!(text.starts_with("model = \"gpt-5.4\"\n"), "{text}");
         assert!(!text.contains("\n[hooks]\n"), "no empty header: {text}");
-        assert_eq!(read_trust(&config_path).get(&key).map(String::as_str), Some("sha256:abc"));
+        assert_eq!(
+            read_trust(&config_path).get(&key).map(String::as_str),
+            Some("sha256:abc")
+        );
         write_trust(&config_path, &hooks_path, &[key], &[]).unwrap();
-        assert_eq!(fs::read_to_string(&config_path).unwrap(), "model = \"gpt-5.4\"\n");
+        assert_eq!(
+            fs::read_to_string(&config_path).unwrap(),
+            "model = \"gpt-5.4\"\n"
+        );
         fs::remove_dir_all(root).ok();
     }
 }

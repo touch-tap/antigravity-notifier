@@ -90,12 +90,11 @@ fn map_answer(raw: &str, question: &Value) -> Option<String> {
             Some(text.to_string())
         };
     }
-    if let Ok(n) = raw.trim().parse::<usize>() {
-        if n >= 1 {
-            if let Some(label) = labels.get(n - 1) {
-                return Some(label.to_string());
-            }
-        }
+    if let Ok(n) = raw.trim().parse::<usize>()
+        && n >= 1
+        && let Some(label) = labels.get(n - 1)
+    {
+        return Some(label.to_string());
     }
     if let Some(label) = labels.iter().find(|l| l.eq_ignore_ascii_case(raw.trim())) {
         return Some(label.to_string());
@@ -137,9 +136,12 @@ mod tests {
 
     #[test]
     fn maps_a_numbered_multi_answer_into_a_deny_reason() {
-        let out = question_output("[[MULTI_ANSWER]][\"2\",\"OTHER:1:Pinloop\"]", &questions()).unwrap();
+        let out =
+            question_output("[[MULTI_ANSWER]][\"2\",\"OTHER:1:Pinloop\"]", &questions()).unwrap();
         assert_eq!(out["hookSpecificOutput"]["permissionDecision"], "deny");
-        let reason = out["hookSpecificOutput"]["permissionDecisionReason"].as_str().unwrap();
+        let reason = out["hookSpecificOutput"]["permissionDecisionReason"]
+            .as_str()
+            .unwrap();
         assert!(reason.contains("- Which framework?: Vue"), "{reason}");
         assert!(reason.contains("- What is it called?: Pinloop"), "{reason}");
     }
@@ -147,17 +149,36 @@ mod tests {
     #[test]
     fn maps_a_single_label_or_free_text() {
         let out = question_output("vue", &questions()).unwrap();
-        assert!(out["hookSpecificOutput"]["permissionDecisionReason"].as_str().unwrap().contains(": Vue"));
+        assert!(
+            out["hookSpecificOutput"]["permissionDecisionReason"]
+                .as_str()
+                .unwrap()
+                .contains(": Vue")
+        );
         let out = question_output("Svelte please", &questions()[1..]).unwrap();
-        assert!(out["hookSpecificOutput"]["permissionDecisionReason"].as_str().unwrap().contains("called?: Svelte please"));
+        assert!(
+            out["hookSpecificOutput"]["permissionDecisionReason"]
+                .as_str()
+                .unwrap()
+                .contains("called?: Svelte please")
+        );
         assert!(question_output("   ", &questions()).is_none());
     }
 
     #[test]
     fn permission_values() {
-        assert_eq!(permission_output("y")["hookSpecificOutput"]["decision"]["behavior"], "allow");
-        assert_eq!(permission_output("a")["hookSpecificOutput"]["decision"]["behavior"], "allow");
-        assert_eq!(permission_output("n")["hookSpecificOutput"]["decision"]["behavior"], "deny");
+        assert_eq!(
+            permission_output("y")["hookSpecificOutput"]["decision"]["behavior"],
+            "allow"
+        );
+        assert_eq!(
+            permission_output("a")["hookSpecificOutput"]["decision"]["behavior"],
+            "allow"
+        );
+        assert_eq!(
+            permission_output("n")["hookSpecificOutput"]["decision"]["behavior"],
+            "deny"
+        );
         assert_eq!(
             permission_output("use pnpm instead")["hookSpecificOutput"]["decision"]["message"],
             "From the phone: use pnpm instead"
@@ -167,6 +188,9 @@ mod tests {
     #[test]
     fn stop_block() {
         assert!(stop_output("ok").is_none());
-        assert_eq!(stop_output("now write tests").unwrap()["reason"], "now write tests");
+        assert_eq!(
+            stop_output("now write tests").unwrap()["reason"],
+            "now write tests"
+        );
     }
 }

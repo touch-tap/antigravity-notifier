@@ -101,10 +101,10 @@ fn run_bounded(program: &str, args: &[&str], timeout: Duration) -> Option<String
 /// on macOS, with that terminal the frontmost app. Someone typing in a browser is not at the
 /// terminal. Where the terminal can't be identified (Linux, Windows, ssh), activity alone decides.
 pub fn at_terminal(threshold: f64) -> bool {
-    if let Ok(value) = std::env::var("CODEX_NOTIFIER_PRESENCE") {
-        if value == "present-elsewhere" {
-            return false;
-        }
+    if let Ok(value) = std::env::var("CODEX_NOTIFIER_PRESENCE")
+        && value == "present-elsewhere"
+    {
+        return false;
     }
     user_present(threshold) && terminal_frontmost().unwrap_or(true)
 }
@@ -150,67 +150,6 @@ fn front_bundle_id(text: &str) -> Option<String> {
         }
     }
     None
-}
-
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn reads_lsappinfo() {
-        let out =
-            "[ NULL ]  ASN:0x0-0x1fb1fb: (in front) \n    bundleID=\"dev.warp.Warp-Stable\"\n";
-        assert_eq!(
-            super::front_bundle_id(out).as_deref(),
-            Some("dev.warp.Warp-Stable")
-        );
-        assert_eq!(
-            super::front_bundle_id("\"CFBundleIdentifier\"=\"com.apple.Terminal\"").as_deref(),
-            Some("com.apple.Terminal")
-        );
-        assert_eq!(super::front_bundle_id("nothing"), None);
-    }
-
-    #[test]
-    fn unknown_presence_holds_only_when_asked() {
-        use super::hold_allowed;
-        // Known: away holds, present does not, whatever the opt-in says
-        assert!(hold_allowed(Some(120.0), 30.0, false));
-        assert!(!hold_allowed(Some(3.0), 30.0, true));
-        // Unknown: never by default
-        assert!(!hold_allowed(None, 30.0, false));
-        assert!(hold_allowed(None, 30.0, true));
-    }
-
-    #[test]
-    #[cfg(unix)]
-    fn a_probe_that_hangs_is_cut_short() {
-        let start = std::time::Instant::now();
-        assert_eq!(
-            super::run_bounded("sleep", &["5"], std::time::Duration::from_millis(200)),
-            None
-        );
-        assert!(start.elapsed() < std::time::Duration::from_secs(2));
-        assert_eq!(
-            super::run_bounded("echo", &["42"], super::PROBE_TIMEOUT).as_deref(),
-            Some("42\n")
-        );
-        assert_eq!(
-            super::run_bounded("codex-notifier-no-such-program", &[], super::PROBE_TIMEOUT),
-            None
-        );
-    }
-
-    #[test]
-    fn reads_stat_and_dbus_replies() {
-        // A command name may hold spaces and parentheses; the parent pid follows the last ')'
-        assert_eq!(
-            super::ppid_from_stat("1234 (node (x) y) S 987 1234 1234 34816"),
-            Some(987)
-        );
-        assert_eq!(super::ppid_from_stat("garbage"), None);
-        assert_eq!(super::millis_from_reply("(uint64 4521,)\n"), Some(4521));
-        assert_eq!(super::millis_from_reply("4521\n"), Some(4521));
-        assert_eq!(super::millis_from_reply("Error: no such method"), None);
-    }
 }
 
 #[cfg(target_os = "macos")]
@@ -308,6 +247,67 @@ fn millis_from_reply(text: &str) -> Option<u64> {
 fn ppid_from_stat(stat: &str) -> Option<u32> {
     let rest = &stat[stat.rfind(')')? + 1..];
     rest.split_whitespace().nth(1)?.parse().ok()
+}
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn reads_lsappinfo() {
+        let out =
+            "[ NULL ]  ASN:0x0-0x1fb1fb: (in front) \n    bundleID=\"dev.warp.Warp-Stable\"\n";
+        assert_eq!(
+            super::front_bundle_id(out).as_deref(),
+            Some("dev.warp.Warp-Stable")
+        );
+        assert_eq!(
+            super::front_bundle_id("\"CFBundleIdentifier\"=\"com.apple.Terminal\"").as_deref(),
+            Some("com.apple.Terminal")
+        );
+        assert_eq!(super::front_bundle_id("nothing"), None);
+    }
+
+    #[test]
+    fn unknown_presence_holds_only_when_asked() {
+        use super::hold_allowed;
+        // Known: away holds, present does not, whatever the opt-in says
+        assert!(hold_allowed(Some(120.0), 30.0, false));
+        assert!(!hold_allowed(Some(3.0), 30.0, true));
+        // Unknown: never by default
+        assert!(!hold_allowed(None, 30.0, false));
+        assert!(hold_allowed(None, 30.0, true));
+    }
+
+    #[test]
+    #[cfg(unix)]
+    fn a_probe_that_hangs_is_cut_short() {
+        let start = std::time::Instant::now();
+        assert_eq!(
+            super::run_bounded("sleep", &["5"], std::time::Duration::from_millis(200)),
+            None
+        );
+        assert!(start.elapsed() < std::time::Duration::from_secs(2));
+        assert_eq!(
+            super::run_bounded("echo", &["42"], super::PROBE_TIMEOUT).as_deref(),
+            Some("42\n")
+        );
+        assert_eq!(
+            super::run_bounded("codex-notifier-no-such-program", &[], super::PROBE_TIMEOUT),
+            None
+        );
+    }
+
+    #[test]
+    fn reads_stat_and_dbus_replies() {
+        // A command name may hold spaces and parentheses; the parent pid follows the last ')'
+        assert_eq!(
+            super::ppid_from_stat("1234 (node (x) y) S 987 1234 1234 34816"),
+            Some(987)
+        );
+        assert_eq!(super::ppid_from_stat("garbage"), None);
+        assert_eq!(super::millis_from_reply("(uint64 4521,)\n"), Some(4521));
+        assert_eq!(super::millis_from_reply("4521\n"), Some(4521));
+        assert_eq!(super::millis_from_reply("Error: no such method"), None);
+    }
 }
 
 /// Seconds since the terminal Codex runs in was last read from, which is the last keypress (as

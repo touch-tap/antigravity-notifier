@@ -55,8 +55,11 @@ fn main() {
             key.verifying_key()
                 .verify_strict(&data, &signature)
                 .expect("the signature doesn't verify");
-            std::fs::write(format!("{path}.sig"), format!("{}\n", hex(&signature.to_bytes())))
-                .expect("writing the signature");
+            std::fs::write(
+                format!("{path}.sig"),
+                format!("{}\n", hex(&signature.to_bytes())),
+            )
+            .expect("writing the signature");
         }
         Some("public") => println!("{}", hex(key_from_env().verifying_key().as_bytes())),
         _ => {
