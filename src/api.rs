@@ -20,7 +20,7 @@ pub struct Api {
 }
 
 /// The server no longer accepts this computer's credentials: its record (and every pairing) is
-/// gone, for example after 60 days without use. Only `codexnotifier pair` fixes it, so nothing retries.
+/// gone, for example after 60 days without use. Only `codex-notifier pair` fixes it, so nothing retries.
 #[derive(Debug)]
 pub struct Rejected;
 

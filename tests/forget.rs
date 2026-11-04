@@ -1,4 +1,4 @@
-//! `codexnotifier forget` end to end: the real binary against a one-request fake server, in a temp home.
+//! `codex-notifier forget` end to end: the real binary against a one-request fake server, in a temp home.
 
 use std::io::{Read, Write};
 use std::net::TcpListener;
@@ -7,22 +7,22 @@ use std::process::{Command, Output, Stdio};
 
 struct Sandbox {
     root: PathBuf,
-    /// What `CODEXNOTIFIER_LANG` says; English unless a test is about the language
+    /// What `CODEX_NOTIFIER_LANG` says; English unless a test is about the language
     lang: &'static str,
 }
 
 impl Sandbox {
     fn new(name: &str) -> Sandbox {
-        let root = std::env::temp_dir().join(format!("codexnotifier-forget-{name}-{}", std::process::id()));
+        let root = std::env::temp_dir().join(format!("codex-notifier-forget-{name}-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&root);
         std::fs::create_dir_all(root.join("codex")).unwrap();
-        std::fs::create_dir_all(root.join("codexnotifier")).unwrap();
+        std::fs::create_dir_all(root.join("codex-notifier")).unwrap();
         std::fs::write(
-            root.join("codexnotifier/config.toml"),
+            root.join("codex-notifier/config.toml"),
             "client_id = \"test-computer\"\n",
         )
         .unwrap();
-        std::fs::write(root.join("codexnotifier/credentials"), "test-token\n").unwrap();
+        std::fs::write(root.join("codex-notifier/credentials"), "test-token\n").unwrap();
         std::fs::write(root.join("codex/config.toml"), "model = \"gpt-5.4\"\n").unwrap();
         std::fs::write(
             root.join("codex/hooks.json"),
@@ -33,20 +33,20 @@ impl Sandbox {
     }
 
     fn app_dir(&self) -> PathBuf {
-        self.root.join("codexnotifier")
+        self.root.join("codex-notifier")
     }
 
     fn run(&self, server: &str, args: &[&str]) -> Output {
-        Command::new(env!("CARGO_BIN_EXE_codexnotifier"))
+        Command::new(env!("CARGO_BIN_EXE_codex-notifier"))
             .args(args)
             .env("HOME", &self.root)
-            .env("CODEXNOTIFIER_HOME", self.app_dir())
+            .env("CODEX_NOTIFIER_HOME", self.app_dir())
             .env("CODEX_HOME", self.root.join("codex"))
-            .env("CODEXNOTIFIER_SERVER_URL", server)
-            .env("CODEXNOTIFIER_CREDENTIAL_STORE", "file")
-            .env("CODEXNOTIFIER_NOTIFY", "off")
-            .env("CODEXNOTIFIER_NO_ANALYTICS", "1")
-            .env("CODEXNOTIFIER_LANG", self.lang)
+            .env("CODEX_NOTIFIER_SERVER_URL", server)
+            .env("CODEX_NOTIFIER_CREDENTIAL_STORE", "file")
+            .env("CODEX_NOTIFIER_NOTIFY", "off")
+            .env("CODEX_NOTIFIER_NO_ANALYTICS", "1")
+            .env("CODEX_NOTIFIER_LANG", self.lang)
             .stdin(Stdio::null())
             .output()
             .unwrap()
@@ -115,7 +115,7 @@ fn settings_hooks_gone(sandbox: &Sandbox) -> bool {
         std::fs::read_to_string(Path::new(&sandbox.root).join("codex/hooks.json")).unwrap();
     let config =
         std::fs::read_to_string(Path::new(&sandbox.root).join("codex/config.toml")).unwrap();
-    !hooks.contains("codexnotifier") && !config.contains("codexnotifier") && hooks.contains("echo hi")
+    !hooks.contains("codex-notifier") && !config.contains("codex-notifier") && hooks.contains("echo hi")
 }
 
 #[test]
@@ -146,7 +146,7 @@ fn erases_on_the_server_then_removes_everything_local() {
     assert!(settings_hooks_gone(&sandbox));
 }
 
-/// The OS language (or `CODEXNOTIFIER_LANG`) reaches the server as `Accept-Language`, mapped onto one of
+/// The OS language (or `CODEX_NOTIFIER_LANG`) reaches the server as `Accept-Language`, mapped onto one of
 /// the supported tags, whatever locales/*.yml files exist.
 #[test]
 fn asks_the_server_in_the_users_language() {
@@ -220,7 +220,7 @@ fn unreachable_url() -> String {
     format!("http://{}", listener.local_addr().unwrap())
 }
 
-/// `CODEXNOTIFIER_HOME` may point at a folder that holds other things: only ccn's own files go.
+/// `CODEX_NOTIFIER_HOME` may point at a folder that holds other things: only ccn's own files go.
 #[test]
 fn removes_only_ccns_own_files_from_a_shared_folder() {
     let sandbox = Sandbox::new("shared");
@@ -284,7 +284,7 @@ fn uninstall_offline_says_the_licence_slot_was_not_freed() {
     // The binary is left to whatever installed it, with the command to remove it
     let stdout = text(&out.stdout);
     assert!(stdout.contains("ccn itself is still installed"), "{stdout}");
-    let exe = std::path::Path::new(env!("CARGO_BIN_EXE_codexnotifier"));
+    let exe = std::path::Path::new(env!("CARGO_BIN_EXE_codex-notifier"));
     assert!(exe.exists());
 }
 

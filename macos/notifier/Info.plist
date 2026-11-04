@@ -9,7 +9,7 @@
 	<key>CFBundleDisplayName</key>
 	<string>Codex Notifier</string>
 	<key>CFBundleExecutable</key>
-	<string>codexnotifier-notifier</string>
+	<string>codex-notifier-notifier</string>
 	<key>CFBundleIconFile</key>
 	<string>AppIcon</string>
 	<key>CFBundleIconName</key>

@@ -36,9 +36,9 @@ pub fn platform() -> &'static str {
     }
 }
 
-/// Where codexnotifier keeps its config, sessions, credentials file and log. `$CODEXNOTIFIER_HOME` overrides.
+/// Where codex-notifier keeps its config, sessions, credentials file and log. `$CODEX_NOTIFIER_HOME` overrides.
 pub fn app_dir() -> PathBuf {
-    if let Ok(dir) = std::env::var("CODEXNOTIFIER_HOME") {
+    if let Ok(dir) = std::env::var("CODEX_NOTIFIER_HOME") {
         if !dir.is_empty() {
             return PathBuf::from(dir);
         }
@@ -47,16 +47,16 @@ pub fn app_dir() -> PathBuf {
     {
         if let Ok(appdata) = std::env::var("APPDATA") {
             if !appdata.is_empty() {
-                return PathBuf::from(appdata).join("codexnotifier");
+                return PathBuf::from(appdata).join("codex-notifier");
             }
         }
     }
     if let Ok(xdg) = std::env::var("XDG_CONFIG_HOME") {
         if !xdg.is_empty() {
-            return PathBuf::from(xdg).join("codexnotifier");
+            return PathBuf::from(xdg).join("codex-notifier");
         }
     }
-    home_dir().join(".config").join("codexnotifier")
+    home_dir().join(".config").join("codex-notifier")
 }
 
 pub fn home_dir() -> PathBuf {
@@ -74,7 +74,7 @@ pub fn sessions_dir() -> PathBuf {
 }
 
 pub fn log_path() -> PathBuf {
-    app_dir().join("codexnotifier.log")
+    app_dir().join("codex-notifier.log")
 }
 
 pub fn credentials_path() -> PathBuf {
@@ -286,7 +286,7 @@ pub struct Config {
     pub machine_name: Option<String>,
     /// Show a desktop notification as well as pushing to the phone.
     pub desktop_notifications: bool,
-    /// "keychain" or "file". Unless chosen with `codexnotifier config set credential_store`, the token goes in
+    /// "keychain" or "file". Unless chosen with `codex-notifier config set credential_store`, the token goes in
     /// the system keychain on macOS (a signed binary, so upgrades don't prompt) and Windows, and in
     /// a 0600 file on Linux, where a keyring is often missing or locked on servers.
     pub credential_store: String,
@@ -307,7 +307,7 @@ pub struct Config {
     /// When the first phone paired with this computer
     pub paired_at: Option<i64>,
     /// Where the install line came from (web, app, link or direct), set by the install scripts'
-    /// CODEXNOTIFIER_INSTALL_SOURCE the first time `ccn setup` runs, and sent with the anonymous setup events
+    /// CODEX_NOTIFIER_INSTALL_SOURCE the first time `ccn setup` runs, and sent with the anonymous setup events
     pub install_source: Option<String>,
     /// Claude Code has shown "paired with <phone>" once
     pub paired_message_shown: bool,
@@ -320,7 +320,7 @@ pub struct Config {
     /// Whether to suggest pairing at all (`ccn config set pair_nudges off`; default on)
     pub pair_nudges: bool,
     /// Look for a newer ccn once a day from the SessionStart hook and install it when ccn owns its
-    /// own binary (`ccn config set auto_update off`, or `CODEXNOTIFIER_NO_AUTO_UPDATE=1`, turns it off)
+    /// own binary (`ccn config set auto_update off`, or `CODEX_NOTIFIER_NO_AUTO_UPDATE=1`, turns it off)
     pub auto_update: bool,
     /// When the daily check last started a background `ccn upgrade`
     pub update_checked_at: Option<i64>,
@@ -481,7 +481,7 @@ fn effective_server_url(saved: &str) -> String {
 impl Config {
     pub fn load() -> Config {
         let mut cfg = Config::load_from(&config_path());
-        if let Ok(url) = std::env::var("CODEXNOTIFIER_SERVER_URL") {
+        if let Ok(url) = std::env::var("CODEX_NOTIFIER_SERVER_URL") {
             if !url.is_empty() {
                 cfg.server_url = url;
             }
@@ -519,7 +519,7 @@ impl Config {
     /// would replace a `client_id` it may still hold with nothing, silently unpairing the computer.
     pub fn save(&self) -> Result<()> {
         // An override from the environment is not persisted
-        let env_url = std::env::var("CODEXNOTIFIER_SERVER_URL").is_ok_and(|v| !v.is_empty());
+        let env_url = std::env::var("CODEX_NOTIFIER_SERVER_URL").is_ok_and(|v| !v.is_empty());
         let skip: &[&str] = if env_url { &["server_url"] } else { &[] };
         self.save_to(&config_path(), skip)
     }
@@ -583,10 +583,10 @@ impl Config {
         }
     }
 
-    /// `hold_without_presence`, or `CODEXNOTIFIER_HOLD_WITHOUT_PRESENCE=1` for this process
+    /// `hold_without_presence`, or `CODEX_NOTIFIER_HOLD_WITHOUT_PRESENCE=1` for this process
     pub fn hold_without_presence(&self) -> bool {
         self.hold_without_presence
-            || std::env::var("CODEXNOTIFIER_HOLD_WITHOUT_PRESENCE").is_ok_and(|v| !v.is_empty() && v != "0")
+            || std::env::var("CODEX_NOTIFIER_HOLD_WITHOUT_PRESENCE").is_ok_and(|v| !v.is_empty() && v != "0")
     }
 
     pub fn machine_name(&self) -> String {
@@ -619,7 +619,7 @@ pub fn default_machine_name() -> String {
 // ============================================
 
 /// Present while the server rejects this computer's credentials. Hooks then skip the network,
-/// so they stay instant until `codexnotifier pair` deletes it.
+/// so they stay instant until `codex-notifier pair` deletes it.
 #[derive(Serialize, Deserialize, Clone, Debug, Default)]
 #[serde(default)]
 pub struct Unpaired {
@@ -673,7 +673,7 @@ pub fn credential_store(cfg: &Config) -> &'static str {
             "file"
         };
     }
-    if std::env::var("CODEXNOTIFIER_CREDENTIAL_STORE")
+    if std::env::var("CODEX_NOTIFIER_CREDENTIAL_STORE")
         .map(|v| v == "file")
         .unwrap_or(false)
     {
@@ -734,8 +734,8 @@ pub fn store_token(cfg: &Config, token: &str) -> Result<&'static str> {
 }
 
 pub fn delete_token() {
-    // CODEXNOTIFIER_CREDENTIAL_STORE=file is what the tests set: they must not touch the real keychain
-    let file_only = std::env::var("CODEXNOTIFIER_CREDENTIAL_STORE").is_ok_and(|v| v == "file");
+    // CODEX_NOTIFIER_CREDENTIAL_STORE=file is what the tests set: they must not touch the real keychain
+    let file_only = std::env::var("CODEX_NOTIFIER_CREDENTIAL_STORE").is_ok_and(|v| v == "file");
     if let (false, Ok(entry)) = (
         file_only,
         keyring::Entry::new(KEYRING_SERVICE, KEYRING_USER),
@@ -773,7 +773,7 @@ fn delete_with_security_tool() -> bool {
 }
 
 /// What ccn writes in its directory, by name. Uninstall deletes these and nothing else, since
-/// `CODEXNOTIFIER_HOME` may point at a folder that holds other things.
+/// `CODEX_NOTIFIER_HOME` may point at a folder that holds other things.
 const OWN_FILES: &[&str] = &[
     "config.toml",
     "config.lock",
@@ -820,7 +820,7 @@ pub fn remove_local_files() -> bool {
 
 /// Creates `dir` and any missing parents. On Unix they are made 0700: the ccn directory holds
 /// the token, prompts and tool inputs. The default ccn directory, if an older version made it
-/// 0755, is tightened too; a directory chosen with `CODEXNOTIFIER_HOME` is left as the user made it.
+/// 0755, is tightened too; a directory chosen with `CODEX_NOTIFIER_HOME` is left as the user made it.
 pub fn ensure_dir(dir: &Path) -> std::io::Result<()> {
     #[cfg(unix)]
     {
@@ -831,7 +831,7 @@ pub fn ensure_dir(dir: &Path) -> std::io::Result<()> {
                 .mode(0o700)
                 .create(dir);
         }
-        let default_dir = std::env::var("CODEXNOTIFIER_HOME").map_or(true, |v| v.is_empty());
+        let default_dir = std::env::var("CODEX_NOTIFIER_HOME").map_or(true, |v| v.is_empty());
         if default_dir && dir == app_dir() {
             if let Ok(meta) = fs::metadata(dir) {
                 if meta.permissions().mode() & 0o077 != 0 {
@@ -926,13 +926,13 @@ pub const LOCALES: &[&str] = &[
     "zh-Hans", "zh-Hant",
 ];
 
-/// The language to ask the server for, mapped onto `LOCALES`: `CODEXNOTIFIER_LANG`, else the POSIX locale
+/// The language to ask the server for, mapped onto `LOCALES`: `CODEX_NOTIFIER_LANG`, else the POSIX locale
 /// variables, else the first of the OS's preferred languages that ccn speaks, else English.
 pub fn locale() -> String {
     let env = |key: &str| std::env::var(key).ok();
     let posix = [env("LC_ALL"), env("LC_MESSAGES"), env("LANG")];
     let os = sys_locale::get_locales().collect::<Vec<_>>();
-    pick_locale(env("CODEXNOTIFIER_LANG").as_deref(), &posix, &os).to_string()
+    pick_locale(env("CODEX_NOTIFIER_LANG").as_deref(), &posix, &os).to_string()
 }
 
 /// `locale` without the environment, so it can be tested. sys-locale reads CFLocale on macOS and
@@ -1261,7 +1261,7 @@ mod write_tests {
         )
         .unwrap();
         let mut cfg = Config::load_from(&path);
-        // As Config::load does with CODEXNOTIFIER_SERVER_URL
+        // As Config::load does with CODEX_NOTIFIER_SERVER_URL
         cfg.server_url = "http://127.0.0.1:1".into();
         cfg.pair_nudges = false;
         cfg.save_to(&path, &["server_url"]).unwrap();

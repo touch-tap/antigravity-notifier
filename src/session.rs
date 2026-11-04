@@ -116,7 +116,7 @@ impl SessionState {
 
 /// Deletes every session file (and any temp file a crash left), then the sessions directory if
 /// that leaves it empty. Only files that look like ccn's: uninstall must not empty a `sessions`
-/// folder of someone else's when `CODEXNOTIFIER_HOME` points somewhere shared.
+/// folder of someone else's when `CODEX_NOTIFIER_HOME` points somewhere shared.
 pub fn remove_all() {
     let dir = config::sessions_dir();
     let Ok(entries) = fs::read_dir(&dir) else {

@@ -1,5 +1,5 @@
 [package]
-name = "codexnotifier"
+name = "codex-notifier"
 version = "0.1.0"
 description = "Codex Notifier for the terminal: a push on your phone when OpenAI Codex finishes or needs you, and answers from there"
 edition = "2024"

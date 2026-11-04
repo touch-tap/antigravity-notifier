@@ -43,13 +43,13 @@ pub fn pair_system_message() -> String {
     t!("local.pair_message").into_owned()
 }
 
-/// `ccn config set pair_nudges off`, or `CODEXNOTIFIER_NO_NUDGE=1`, keeps every suggestion to pair quiet.
+/// `ccn config set pair_nudges off`, or `CODEX_NOTIFIER_NO_NUDGE=1`, keeps every suggestion to pair quiet.
 pub fn nudges_enabled(cfg: &Config) -> bool {
     cfg.pair_nudges && !no_nudge_env()
 }
 
 pub fn no_nudge_env() -> bool {
-    std::env::var("CODEXNOTIFIER_NO_NUDGE")
+    std::env::var("CODEX_NOTIFIER_NO_NUDGE")
         .map(|v| !v.is_empty() && v != "0")
         .unwrap_or(false)
 }

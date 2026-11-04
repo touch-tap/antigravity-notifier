@@ -1,4 +1,4 @@
-//! The hook dispatcher. Codex runs `codexnotifier hook` with the event JSON on stdin; this decides
+//! The hook dispatcher. Codex runs `codex-notifier hook` with the event JSON on stdin; this decides
 //! what to do and prints a decision when it has one. It never exits non-zero: a failure here
 //! must not block Codex.
 //!
@@ -110,7 +110,7 @@ fn run_inner() -> Result<Option<Value>> {
 
     if let Some(mut flag) = Unpaired::load() {
         // No network while unpaired, except a once-a-day check at SessionStart in case the
-        // rejection was a server mistake. `codexnotifier pair` deletes the flag.
+        // rejection was a server mistake. `codex-notifier pair` deletes the flag.
         let recheck =
             event == "SessionStart" && config::now() - flag.checked_at > Unpaired::RECHECK_AFTER;
         if !(recheck && still_accepted(&api, &mut flag)) {
@@ -141,7 +141,7 @@ fn run_inner() -> Result<Option<Value>> {
     let result = ctx.dispatch(&event);
     if ctx.api.was_rejected() {
         log(&format!(
-            "{event}: the server rejected this computer's credentials; run `codexnotifier pair`"
+            "{event}: the server rejected this computer's credentials; run `codex-notifier pair`"
         ));
         return Ok(unpaired(&ctx.cfg, &event, &mut ctx.state, Unpaired::new()).or(update_message));
     }
@@ -311,7 +311,7 @@ impl Ctx {
 
     /// Once a day, asks whether this computer should be told about licences, and tells it when the
     /// cadence allows (`licence_nudge_allowed`). The server writes the message and picks the
-    /// variant; `CODEXNOTIFIER_NO_NUDGE=1` turns it off.
+    /// variant; `CODEX_NOTIFIER_NO_NUDGE=1` turns it off.
     fn licence_nudge(&mut self, now: i64) -> Option<Value> {
         if local::no_nudge_env()
             || now - self.cfg.licence_checked_at.unwrap_or(0) < LICENCE_CHECK_EVERY

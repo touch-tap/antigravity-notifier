@@ -446,7 +446,7 @@ fn wait_for_welcome(api: &Api, notification_id: &str) {
     println!("{}", t!("pair.welcome_no_answer"));
 }
 
-/// `codexnotifier` on its own: pair when no phone is paired with this computer yet (so `npx @touchtap/codexnotifier` and a
+/// `codex-notifier` on its own: pair when no phone is paired with this computer yet (so `npx @touchtap/codex-notifier` and a
 /// fresh `brew install` go straight to the QR code), otherwise say where things stand.
 pub fn default_command() -> Result<()> {
     ensure_setup()?;
@@ -947,7 +947,7 @@ pub fn uninstall() -> Result<()> {
     remove_local(true)
 }
 
-/// Erases this computer from the server, then removes codexnotifier exactly as `codexnotifier uninstall` does. The
+/// Erases this computer from the server, then removes codex-notifier exactly as `codex-notifier uninstall` does. The
 /// server goes first: if it can't be reached the credentials stay, so the user can try again.
 pub fn forget(yes: bool) -> Result<()> {
     use std::io::{IsTerminal, Write};
@@ -1023,7 +1023,7 @@ fn remove_local(revoke_on_server: bool) -> Result<()> {
         }
     }
     config::delete_token();
-    // ccn's own files only: CODEXNOTIFIER_HOME may point at a folder that holds other things
+    // ccn's own files only: CODEX_NOTIFIER_HOME may point at a folder that holds other things
     let path = config::app_dir();
     if config::remove_local_files() {
         println!("{}", t!("uninstall.removed_dir", path = path.display()));

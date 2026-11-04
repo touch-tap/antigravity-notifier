@@ -5,21 +5,21 @@ use rust_i18n::t;
 #[cfg(not(windows))]
 use std::process::{Command, Stdio};
 
-/// The AppUserModelID `codexnotifier setup` registers on Windows, so toasts say "Codex Notifier".
+/// The AppUserModelID `codex-notifier setup` registers on Windows, so toasts say "Codex Notifier".
 #[cfg_attr(not(windows), allow(dead_code))]
 pub const APP_ID: &str = "TouchTap.codexnotifier";
-/// Windows PowerShell's AUMID: always registered, so toasts still show before `codexnotifier setup` has run.
+/// Windows PowerShell's AUMID: always registered, so toasts still show before `codex-notifier setup` has run.
 #[cfg_attr(not(windows), allow(dead_code))]
 pub const FALLBACK_APP_ID: &str =
     r"{1AC14E77-02E7-4E5D-B744-2EB1AE5198B7}\WindowsPowerShell\v1.0\powershell.exe";
 pub const APP_NAME: &str = "Codex Notifier";
 
-/// The app icon, written to disk by `codexnotifier setup` for the notification servers to read. macOS takes
+/// The app icon, written to disk by `codex-notifier setup` for the notification servers to read. macOS takes
 /// the icon of the app that posts (the bundled notifier app), so the binary there goes without it.
 #[cfg(not(target_os = "macos"))]
 const ICON: &[u8] = include_bytes!("../assets/icon.png");
 
-/// Where `codexnotifier setup` puts the icon: the hicolor theme on Linux, codexnotifier's own folder on Windows.
+/// Where `codex-notifier setup` puts the icon: the hicolor theme on Linux, codex-notifier's own folder on Windows.
 #[cfg(not(target_os = "macos"))]
 fn icon_path() -> std::path::PathBuf {
     #[cfg(windows)]
@@ -37,7 +37,7 @@ fn icon_path() -> std::path::PathBuf {
             .join("hicolor")
             .join("256x256")
             .join("apps")
-            .join("codexnotifier.png")
+            .join("codex-notifier.png")
     }
 }
 
@@ -53,9 +53,9 @@ fn write_icon() -> Option<(std::path::PathBuf, bool)> {
     Some((path, true))
 }
 
-/// `CODEXNOTIFIER_NOTIFY=off` silences desktop notifications (for tests).
+/// `CODEX_NOTIFIER_NOTIFY=off` silences desktop notifications (for tests).
 fn disabled() -> bool {
-    std::env::var("CODEXNOTIFIER_NOTIFY").is_ok_and(|v| v.eq_ignore_ascii_case("off") || v == "0")
+    std::env::var("CODEX_NOTIFIER_NOTIFY").is_ok_and(|v| v.eq_ignore_ascii_case("off") || v == "0")
 }
 
 pub fn show(title: &str, body: &str, sound: bool) {
@@ -135,7 +135,7 @@ pub fn install() -> Option<String> {
     }
 }
 
-/// A line for `codexnotifier doctor` about desktop notifications: (all good, text).
+/// A line for `codex-notifier doctor` about desktop notifications: (all good, text).
 pub fn doctor_line() -> Option<(bool, String)> {
     #[cfg(target_os = "macos")]
     {
@@ -207,7 +207,7 @@ fn osa_string(s: &str) -> String {
 
 #[cfg(target_os = "macos")]
 mod mac {
-    //! "Codex Notifier.app" (macos/notifier), embedded at build time and written to codexnotifier's
+    //! "Codex Notifier.app" (macos/notifier), embedded at build time and written to codex-notifier's
     //! folder, so notifications carry our name and icon instead of Script Editor's. It is rewritten
     //! whenever its Info.plist differs from the embedded one, which carries the version.
 
@@ -222,7 +222,7 @@ mod mac {
     }
 
     fn exe() -> PathBuf {
-        app_path().join("Contents/MacOS/codexnotifier-notifier")
+        app_path().join("Contents/MacOS/codex-notifier-notifier")
     }
 
     /// Makes sure the current app is on disk. False when this build has none, or writing failed.
@@ -326,7 +326,7 @@ mod mac {
 #[cfg(windows)]
 mod win {
     //! WinRT toasts in-process: no PowerShell child (slow to start, often blocked or flagged by
-    //! endpoint security). An unpackaged app needs a registered AppUserModelID; `codexnotifier setup`
+    //! endpoint security). An unpackaged app needs a registered AppUserModelID; `codex-notifier setup`
     //! registers ours under HKCU\Software\Classes\AppUserModelId, which Windows 10 1809 and later
     //! honour without a Start-menu shortcut. Until then the toast borrows PowerShell's.
 

@@ -1,4 +1,4 @@
-//! Installs, removes and inspects codexnotifier's entries in Codex's hooks file
+//! Installs, removes and inspects codex-notifier's entries in Codex's hooks file
 //! (`$CODEX_HOME/hooks.json`), and records each entry's trust hash in `config.toml` so Codex runs
 //! them straight away instead of waiting for a visit to `/hooks`. Everything else in both files is
 //! left exactly as it was.
@@ -48,18 +48,18 @@ pub struct Status {
 
 /// The path the hooks call. It has to survive upgrades: a Homebrew Cellar path is versioned, so
 /// it maps to the prefix's bin link, and a binary run from npx's cache (the npm wrapper sets
-/// `CODEXNOTIFIER_EPHEMERAL=1`) is replaced by the copy `install_self` puts in the user's bin directory.
+/// `CODEX_NOTIFIER_EPHEMERAL=1`) is replaced by the copy `install_self` puts in the user's bin directory.
 pub fn exe_path() -> Result<PathBuf> {
     if ephemeral() {
         return Ok(user_bin_dir().join(exe_name()));
     }
-    let exe = undeleted(std::env::current_exe().context("finding the codexnotifier executable")?);
+    let exe = undeleted(std::env::current_exe().context("finding the codex-notifier executable")?);
     let exe = exe.canonicalize().unwrap_or(exe);
     Ok(homebrew_bin(&exe).unwrap_or(exe))
 }
 
-/// Linux reports a binary that has been replaced while running (as `codexnotifier upgrade` does to
-/// itself) as `/path/codexnotifier (deleted)`. The new binary is at the original path, so that is
+/// Linux reports a binary that has been replaced while running (as `codex-notifier upgrade` does to
+/// itself) as `/path/codex-notifier (deleted)`. The new binary is at the original path, so that is
 /// the one to use.
 fn undeleted(exe: PathBuf) -> PathBuf {
     match exe.to_str().and_then(|s| s.strip_suffix(" (deleted)")) {
@@ -69,22 +69,22 @@ fn undeleted(exe: PathBuf) -> PathBuf {
 }
 
 fn ephemeral() -> bool {
-    std::env::var("CODEXNOTIFIER_EPHEMERAL")
+    std::env::var("CODEX_NOTIFIER_EPHEMERAL")
         .map(|v| v == "1")
         .unwrap_or(false)
 }
 
 fn exe_name() -> &'static str {
     if cfg!(windows) {
-        "codexnotifier.exe"
+        "codex-notifier.exe"
     } else {
-        "codexnotifier"
+        "codex-notifier"
     }
 }
 
 /// Where the install scripts and `install_self` put the binary.
 pub fn user_bin_dir() -> PathBuf {
-    if let Ok(dir) = std::env::var("CODEXNOTIFIER_INSTALL_DIR") {
+    if let Ok(dir) = std::env::var("CODEX_NOTIFIER_INSTALL_DIR") {
         if !dir.is_empty() {
             return PathBuf::from(dir);
         }
@@ -95,17 +95,17 @@ pub fn user_bin_dir() -> PathBuf {
             if !local.is_empty() {
                 return PathBuf::from(local)
                     .join("Programs")
-                    .join("codexnotifier");
+                    .join("codex-notifier");
             }
         }
     }
     config::home_dir().join(".local").join("bin")
 }
 
-/// `/opt/homebrew/Cellar/codexnotifier/0.1.0/bin/codexnotifier` → `/opt/homebrew/bin/codexnotifier`, when that link exists.
+/// `/opt/homebrew/Cellar/codex-notifier/0.1.0/bin/codex-notifier` → `/opt/homebrew/bin/codex-notifier`, when that link exists.
 fn homebrew_bin(exe: &Path) -> Option<PathBuf> {
     let s = exe.to_str()?;
-    let (prefix, rest) = s.split_once("/Cellar/codexnotifier/")?;
+    let (prefix, rest) = s.split_once("/Cellar/codex-notifier/")?;
     let name = rest.rsplit('/').next()?;
     let link = Path::new(prefix).join("bin").join(name);
     link.exists().then_some(link)
@@ -117,7 +117,7 @@ pub fn install_self() -> Result<Option<PathBuf>> {
     if !ephemeral() {
         return Ok(None);
     }
-    let from = std::env::current_exe().context("finding the codexnotifier executable")?;
+    let from = std::env::current_exe().context("finding the codex-notifier executable")?;
     let dir = user_bin_dir();
     fs::create_dir_all(&dir).with_context(|| format!("creating {}", dir.display()))?;
     let to = dir.join(exe_name());
@@ -129,7 +129,7 @@ pub fn install_self() -> Result<Option<PathBuf>> {
     }
     let tmp = dir.join(format!("{}.new", exe_name()));
     fs::copy(&from, &tmp)
-        .with_context(|| format!("copying codexnotifier to {}", dir.display()))?;
+        .with_context(|| format!("copying codex-notifier to {}", dir.display()))?;
     #[cfg(unix)]
     {
         use std::os::unix::fs::PermissionsExt;
@@ -179,7 +179,7 @@ pub fn is_ours(entry: &Value) -> bool {
         .trim_matches('"');
     // Both separators: a Windows path in a file read on another platform still counts
     let base = exe.rsplit(['/', '\\']).next().unwrap_or(exe);
-    base == "codexnotifier" || base == "codexnotifier.exe"
+    base == "codex-notifier" || base == "codex-notifier.exe"
 }
 
 // ============================================
@@ -276,7 +276,7 @@ fn save_hooks(path: &Path, root: &Value) -> Result<()> {
         fs::create_dir_all(parent)?;
     }
     if path.exists() {
-        let backup = path.with_extension("json.codexnotifier-backup");
+        let backup = path.with_extension("json.codex-notifier-backup");
         if !backup.exists() {
             let _ = fs::copy(path, &backup);
         }
@@ -561,35 +561,35 @@ mod tests {
     #[cfg(unix)] // Homebrew paths are Unix paths
     fn homebrew_cellar_maps_to_the_bin_link() {
         let root = std::env::temp_dir().join(format!("cxn-brew-{}", std::process::id()));
-        let cellar = root.join("Cellar/codexnotifier/0.1.0/bin");
+        let cellar = root.join("Cellar/codex-notifier/0.1.0/bin");
         fs::create_dir_all(&cellar).unwrap();
         fs::create_dir_all(root.join("bin")).unwrap();
-        fs::write(cellar.join("codexnotifier"), "").unwrap();
-        fs::write(root.join("bin/codexnotifier"), "").unwrap();
+        fs::write(cellar.join("codex-notifier"), "").unwrap();
+        fs::write(root.join("bin/codex-notifier"), "").unwrap();
         assert_eq!(
-            homebrew_bin(&cellar.join("codexnotifier")),
-            Some(root.join("bin/codexnotifier"))
+            homebrew_bin(&cellar.join("codex-notifier")),
+            Some(root.join("bin/codex-notifier"))
         );
-        assert_eq!(homebrew_bin(&root.join("elsewhere/codexnotifier")), None);
+        assert_eq!(homebrew_bin(&root.join("elsewhere/codex-notifier")), None);
         fs::remove_dir_all(root).ok();
     }
 
     #[test]
     fn trust_hash_is_stable_and_sorted() {
-        let a = trust_hash("stop", None, "/usr/local/bin/codexnotifier hook", 700);
+        let a = trust_hash("stop", None, "/usr/local/bin/codex-notifier hook", 700);
         assert!(a.starts_with("sha256:") && a.len() == 7 + 64);
-        assert_eq!(a, trust_hash("stop", None, "/usr/local/bin/codexnotifier hook", 700));
-        assert_ne!(a, trust_hash("stop", Some("Bash"), "/usr/local/bin/codexnotifier hook", 700));
-        assert_ne!(a, trust_hash("stop", None, "/usr/local/bin/codexnotifier hook", 600));
+        assert_eq!(a, trust_hash("stop", None, "/usr/local/bin/codex-notifier hook", 700));
+        assert_ne!(a, trust_hash("stop", Some("Bash"), "/usr/local/bin/codex-notifier hook", 700));
+        assert_ne!(a, trust_hash("stop", None, "/usr/local/bin/codex-notifier hook", 600));
     }
 
     #[test]
     fn recognises_our_entries() {
-        assert!(is_ours(&json!({ "type": "command", "command": "/opt/homebrew/bin/codexnotifier hook" })));
-        assert!(is_ours(&json!({ "type": "command", "command": "'/Users/me/my bin/codexnotifier' hook" })));
-        assert!(is_ours(&json!({ "type": "command", "command": "\"C:\\Users\\me\\codexnotifier.exe\" hook" })));
+        assert!(is_ours(&json!({ "type": "command", "command": "/opt/homebrew/bin/codex-notifier hook" })));
+        assert!(is_ours(&json!({ "type": "command", "command": "'/Users/me/my bin/codex-notifier' hook" })));
+        assert!(is_ours(&json!({ "type": "command", "command": "\"C:\\Users\\me\\codex-notifier.exe\" hook" })));
         assert!(!is_ours(&json!({ "type": "command", "command": "ccn hook" })));
-        assert!(!is_ours(&json!({ "type": "command", "command": "codexnotifier doctor" })));
+        assert!(!is_ours(&json!({ "type": "command", "command": "codex-notifier doctor" })));
     }
 
     #[test]
@@ -608,7 +608,7 @@ mod tests {
             "model = \"gpt-5.4\"\n\n[hooks.state.\"other\"]\ntrusted_hash = \"sha256:x\"\n";
         fs::write(&config_path, original_config).unwrap();
 
-        let exe = Path::new("/usr/local/bin/codexnotifier");
+        let exe = Path::new("/usr/local/bin/codex-notifier");
         let before = ours_in_file(&hooks_path);
         assert!(before.is_empty());
         let mut root_json = load_hooks(&hooks_path).unwrap();

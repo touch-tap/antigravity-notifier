@@ -4,9 +4,9 @@
 //!
 //!   cargo run --release --example release-sign -- keygen
 //!       prints a new private key (hex) and its public key (hex) on two lines
-//!   CODEXNOTIFIER_RELEASE_SIGNING_KEY=<hex> cargo run --release --example release-sign -- sign SHA256SUMS
+//!   CODEX_NOTIFIER_RELEASE_SIGNING_KEY=<hex> cargo run --release --example release-sign -- sign SHA256SUMS
 //!       writes SHA256SUMS.sig: the ed25519 signature of the file, as 128 hex characters
-//!   CODEXNOTIFIER_RELEASE_SIGNING_KEY=<hex> cargo run --release --example release-sign -- public
+//!   CODEX_NOTIFIER_RELEASE_SIGNING_KEY=<hex> cargo run --release --example release-sign -- public
 //!       prints the public key, to compare with RELEASE_KEYS in src/update.rs
 
 use ed25519_dalek::{Signer, SigningKey};
@@ -27,8 +27,8 @@ fn unhex32(text: &str) -> [u8; 32] {
 }
 
 fn key_from_env() -> SigningKey {
-    let text = std::env::var("CODEXNOTIFIER_RELEASE_SIGNING_KEY")
-        .expect("set CODEXNOTIFIER_RELEASE_SIGNING_KEY to the private key (hex)");
+    let text = std::env::var("CODEX_NOTIFIER_RELEASE_SIGNING_KEY")
+        .expect("set CODEX_NOTIFIER_RELEASE_SIGNING_KEY to the private key (hex)");
     SigningKey::from_bytes(&unhex32(&text))
 }
 

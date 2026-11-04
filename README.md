@@ -1,11 +1,11 @@
-# codexnotifier — Codex Notifier for the terminal
+# codex-notifier — Codex Notifier for the terminal
 
 Get a push on your phone when OpenAI Codex finishes or needs you, and approve, deny or answer
 from there. Works on macOS, Linux and Windows, in any terminal, with no app running in the
 background.
 
-`codexnotifier` is one small binary that Codex calls through its lifecycle hooks. It runs for a
-few milliseconds when something happens and exits. Install it once with `codexnotifier pair`;
+`codex-notifier` is one small binary that Codex calls through its lifecycle hooks. It runs for a
+few milliseconds when something happens and exits. Install it once with `codex-notifier pair`;
 after that every `codex` session is covered, however you start it.
 
 **Status: proof of concept (30 Oct 2026).** It pairs with the existing Claude Code Notifier phone
@@ -17,12 +17,12 @@ installer writes. No release, website, store listing or brand exists yet. See
 
 ```sh
 cargo build --release
-./target/release/codexnotifier pair 482913     # the code the phone app shows
-./target/release/codexnotifier                 # or show a QR code here
+./target/release/codex-notifier pair 482913     # the code the phone app shows
+./target/release/codex-notifier                 # or show a QR code here
 ```
 
-`codexnotifier` on its own pairs a computer that isn't paired yet. Once paired, the phone gets a
-test notification it can answer, and `codexnotifier` shows the answer.
+`codex-notifier` on its own pairs a computer that isn't paired yet. Once paired, the phone gets a
+test notification it can answer, and `codex-notifier` shows the answer.
 
 ## What you get
 
@@ -42,9 +42,9 @@ answer, up to a ceiling you choose, and releases the moment you touch the keyboa
 
 ## How it hooks into Codex
 
-`codexnotifier setup` (which `pair` runs) adds six entries to `$CODEX_HOME/hooks.json`
+`codex-notifier setup` (which `pair` runs) adds six entries to `$CODEX_HOME/hooks.json`
 (`~/.codex/hooks.json`): `SessionStart`, `UserPromptSubmit`, `PreToolUse`, `PermissionRequest`,
-`Stop` and `SessionEnd`, each `codexnotifier hook`. Everything else in the file is left as it was
+`Stop` and `SessionEnd`, each `codex-notifier hook`. Everything else in the file is left as it was
 and a one-time backup is kept beside it.
 
 Codex ignores a hook until it is trusted. Trust is a SHA-256 of the hook's normalised definition,
@@ -52,7 +52,7 @@ stored in `config.toml` as `[hooks.state."<hooks.json path>:<event>:<group>:<han
 trusted_hash`. `setup` computes the same hash Codex does (`hook_hash` in
 codex-rs/hooks/src/engine/discovery.rs: event name, matcher and the handler with its timeout, as
 TOML, then JSON with sorted keys) and writes it, so the hooks run on the next session with no
-visit to `/hooks`. `codexnotifier doctor` reports when a hash is missing or stale, and
+visit to `/hooks`. `codex-notifier doctor` reports when a hash is missing or stale, and
 `uninstall` removes exactly the entries it added.
 
 Codex has no Notification event, so when you are at the keyboard the `PermissionRequest` hook
@@ -62,17 +62,17 @@ marked secret (`isSecret`) never go to the phone.
 ## Commands
 
 ```
-codexnotifier                     pair if this computer isn't paired yet, otherwise show its status
-codexnotifier pair [CODE]         pair with a phone (installs the hooks); without a code, shows a QR code
-codexnotifier doctor              check hooks, trust, credentials, server, presence detection
-codexnotifier test                send a test notification
-codexnotifier devices             list paired phones; codexnotifier devices revoke <name>
-codexnotifier config show         effective settings (also editable from the phone)
-codexnotifier config set KEY VAL  e.g. hold_ceiling_seconds 300, quiet_hours 22:00-08:00, stop_hold_seconds 0
-codexnotifier sync                pull settings from the server now
-codexnotifier setup               reinstall the hooks and their trust hashes (after moving the binary)
-codexnotifier uninstall           remove hooks, trust entries, pairings, credentials and local state
-codexnotifier forget [--yes]      erase this computer and its pairings from the server, then uninstall
+codex-notifier                     pair if this computer isn't paired yet, otherwise show its status
+codex-notifier pair [CODE]         pair with a phone (installs the hooks); without a code, shows a QR code
+codex-notifier doctor              check hooks, trust, credentials, server, presence detection
+codex-notifier test                send a test notification
+codex-notifier devices             list paired phones; codex-notifier devices revoke <name>
+codex-notifier config show         effective settings (also editable from the phone)
+codex-notifier config set KEY VAL  e.g. hold_ceiling_seconds 300, quiet_hours 22:00-08:00, stop_hold_seconds 0
+codex-notifier sync                pull settings from the server now
+codex-notifier setup               reinstall the hooks and their trust hashes (after moving the binary)
+codex-notifier uninstall           remove hooks, trust entries, pairings, credentials and local state
+codex-notifier forget [--yes]      erase this computer and its pairings from the server, then uninstall
 ```
 
 Settings: `notify_on_done`, `notify_on_permission`, `notify_on_question`, `quiet_hours`,
@@ -82,8 +82,8 @@ the local-only `desktop_notifications` and `credential_store` (`keychain` or `fi
 
 ## Files
 
-- `~/.config/codexnotifier/` (`%APPDATA%\codexnotifier\` on Windows, or `$CODEXNOTIFIER_HOME`):
-  `config.toml`, `sessions/`, `codexnotifier.log`
+- `~/.config/codex-notifier/` (`%APPDATA%\codex-notifier\` on Windows, or `$CODEX_NOTIFIER_HOME`):
+  `config.toml`, `sessions/`, `codex-notifier.log`
 - The computer's token: the macOS keychain or Windows Credential Manager (item
   `com.touchtap.codexnotifier`), or `credentials` in the folder above (mode 0600) on Linux, or
   wherever `credential_store` says.
@@ -91,10 +91,10 @@ the local-only `desktop_notifications` and `credential_store` (`keychain` or `fi
 
 ## Setup analytics
 
-`codexnotifier pair` sends a few anonymous events (pairing started, paired or failed with a short
+`codex-notifier pair` sends a few anonymous events (pairing started, paired or failed with a short
 reason; how it was installed; the OS and processor; `agent: codex`). The hooks send none, and
 nothing about your sessions, prompts or computer name is included. Set
-`CODEXNOTIFIER_NO_ANALYTICS=1` or `DO_NOT_TRACK=1` to turn them off.
+`CODEX_NOTIFIER_NO_ANALYTICS=1` or `DO_NOT_TRACK=1` to turn them off.
 
 ## Development
 
@@ -104,14 +104,14 @@ cargo build && cargo test
 scripts/e2e-local.sh
 # one hook by hand
 echo '{"hook_event_name":"Stop","session_id":"s1","cwd":"/tmp","last_assistant_message":"done"}' \
-  | CODEXNOTIFIER_PRESENCE=away ./target/debug/codexnotifier hook
+  | CODEX_NOTIFIER_PRESENCE=away ./target/debug/codex-notifier hook
 ```
 
-`CODEXNOTIFIER_SERVER_URL`, `CODEXNOTIFIER_HOME`, `CODEX_HOME` (Codex's own folder, which the
-hooks go in), `CODEXNOTIFIER_PRESENCE=away|present|file:<path>`, `CODEXNOTIFIER_NOTIFY=off` and
-`CODEXNOTIFIER_CREDENTIAL_STORE=file` are the test knobs. To try it against a real Codex without
+`CODEX_NOTIFIER_SERVER_URL`, `CODEX_NOTIFIER_HOME`, `CODEX_HOME` (Codex's own folder, which the
+hooks go in), `CODEX_NOTIFIER_PRESENCE=away|present|file:<path>`, `CODEX_NOTIFIER_NOTIFY=off` and
+`CODEX_NOTIFIER_CREDENTIAL_STORE=file` are the test knobs. To try it against a real Codex without
 touching your own `~/.codex`, point `CODEX_HOME` at an empty folder, run `codex login` there,
-then `codexnotifier pair` with the same `CODEX_HOME`.
+then `codex-notifier pair` with the same `CODEX_HOME`.
 
 Started from [ccn](https://github.com/touch-tap/ccn), the Claude Code engine, on 30 Oct 2026; the
 two share the server and the phone apps and nothing else. Server:
@@ -120,6 +120,6 @@ two share the server and the phone apps and nothing else. Server:
 
 ## Licence
 
-codexnotifier is source-available under the [PolyForm Shield License 1.0.0](LICENSE.md). You can
+codex-notifier is source-available under the [PolyForm Shield License 1.0.0](LICENSE.md). You can
 use it, change it and share it, including at work, as long as you keep the copyright notice and
 don't use it to build a product that competes with Codex Notifier.

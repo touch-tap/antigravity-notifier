@@ -56,7 +56,7 @@ impl Sandbox {
         std::fs::create_dir_all(root.join("ccn")).unwrap();
         let exe = root.join(exe_rel);
         std::fs::create_dir_all(exe.parent().unwrap()).unwrap();
-        std::fs::copy(env!("CARGO_BIN_EXE_codexnotifier"), &exe).unwrap();
+        std::fs::copy(env!("CARGO_BIN_EXE_codex-notifier"), &exe).unwrap();
         // As `ccn setup` writes it: the canonical path (macOS puts temp dirs under /private)
         let exe = exe.canonicalize().unwrap();
         std::fs::write(root.join("ccn/config.toml"), "auto_update = true\n").unwrap();
@@ -79,19 +79,19 @@ impl Sandbox {
         Command::new(exe)
             .args(args)
             .env("HOME", &self.root)
-            .env("CODEXNOTIFIER_HOME", self.root.join("ccn"))
+            .env("CODEX_NOTIFIER_HOME", self.root.join("ccn"))
             .env("CODEX_HOME", self.root.join("codex"))
-            .env("CODEXNOTIFIER_SERVER_URL", server)
-            .env("CODEXNOTIFIER_CREDENTIAL_STORE", "file")
-            .env("CODEXNOTIFIER_NOTIFY", "off")
-            .env("CODEXNOTIFIER_NO_ANALYTICS", "1")
+            .env("CODEX_NOTIFIER_SERVER_URL", server)
+            .env("CODEX_NOTIFIER_CREDENTIAL_STORE", "file")
+            .env("CODEX_NOTIFIER_NOTIFY", "off")
+            .env("CODEX_NOTIFIER_NO_ANALYTICS", "1")
             // The server's downloadBase is ignored (only GitHub's releases are trusted), so the
             // fake release is reached the way CI's is
-            .env("CODEXNOTIFIER_DOWNLOAD_BASE", format!("{server}/dl"))
+            .env("CODEX_NOTIFIER_DOWNLOAD_BASE", format!("{server}/dl"))
             // A debug build also trusts this key, so the fake release can be signed here
-            .env("CODEXNOTIFIER_UPDATE_PUBLIC_KEY", hex(test_key(TEST_SEED).verifying_key().as_bytes()))
-            .env_remove("CODEXNOTIFIER_INSTALL_METHOD")
-            .env_remove("CODEXNOTIFIER_EPHEMERAL")
+            .env("CODEX_NOTIFIER_UPDATE_PUBLIC_KEY", hex(test_key(TEST_SEED).verifying_key().as_bytes()))
+            .env_remove("CODEX_NOTIFIER_INSTALL_METHOD")
+            .env_remove("CODEX_NOTIFIER_EPHEMERAL")
             .stdin(Stdio::null())
             .output()
             .unwrap()
@@ -289,7 +289,7 @@ fn replaces_the_binary_with_the_verified_release() {
     assert!(
         !sandbox
             .root
-            .join("codex/hooks.json.codexnotifier-backup")
+            .join("codex/hooks.json.codex-notifier-backup")
             .exists()
     );
 }

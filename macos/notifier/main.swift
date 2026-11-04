@@ -1,10 +1,10 @@
-// Codex Notifier.app: posts codexnotifier's desktop notifications on macOS, so they carry our name and icon
-// instead of Script Editor's. codexnotifier runs the executable inside the bundle directly:
+// Codex Notifier.app: posts codex-notifier's desktop notifications on macOS, so they carry our name and icon
+// instead of Script Editor's. codex-notifier runs the executable inside the bundle directly:
 //
-//   codexnotifier-notifier --title T --body B [--sound]   post one notification, exit when it is delivered
+//   codex-notifier-notifier --title T --body B [--sound]   post one notification, exit when it is delivered
 //                                               (through AppleScript until permission has been asked)
-//   codexnotifier-notifier --request-permission           ask for permission now (codexnotifier setup); prints granted|denied
-//   codexnotifier-notifier --status                       prints authorized|denied|not-determined (codexnotifier doctor)
+//   codex-notifier-notifier --request-permission           ask for permission now (codex-notifier setup); prints granted|denied
+//   codex-notifier-notifier --status                       prints authorized|denied|not-determined (codex-notifier doctor)
 //
 // Launched with no arguments (macOS does that when a notification is clicked) it just quits.
 
@@ -83,7 +83,7 @@ if args.contains("--status") {
     if let thread = value("--thread") { content.threadIdentifier = thread }
 
     // macOS only shows the permission prompt to an app opened through Launch Services, which
-    // `codexnotifier setup` does. Until it has asked, post through AppleScript so nothing is lost; once the
+    // `codex-notifier setup` does. Until it has asked, post through AppleScript so nothing is lost; once the
     // user has turned us off, stay quiet.
     center.getNotificationSettings { settings in
         switch settings.authorizationStatus {

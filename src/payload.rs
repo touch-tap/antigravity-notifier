@@ -191,7 +191,7 @@ pub fn questions_from_input(input: &Value) -> Vec<Value> {
 
 pub fn terminal_context(session_id: &str, cwd: &str, remote: bool) -> Value {
     json!({
-        "terminalApp": "codexnotifier",
+        "terminalApp": "codex-notifier",
         "sessionIdentifier": session_id,
         "workingDirectory": cwd,
         "supportsRemoteInput": remote,
