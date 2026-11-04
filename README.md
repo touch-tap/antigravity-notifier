@@ -8,10 +8,32 @@ background.
 few milliseconds when something happens and exits. Install it once with `codex-notifier pair`;
 after that every `codex` session is covered, however you start it.
 
-**Status: proof of concept (30 Oct 2026).** It pairs with the existing Claude Code Notifier phone
-app against a local server, and the real Codex CLI 0.166 runs its hooks from the trust hashes the
-installer writes. No release, website, store listing or brand exists yet. See
-`scripts/e2e-local.sh` for what is verified.
+**Status: proof of concept (30 Oct 2026), rebased on ccn 0.4.1 (4 Nov 2026).** It pairs with the
+existing Claude Code Notifier phone app against a local server, and the real Codex CLI 0.166 runs
+its hooks from the trust hashes the installer writes. No release, website, store listing or brand
+exists yet. See `scripts/e2e-local.sh` for what is verified.
+
+From ccn it carries: 17 languages (`locales/`), desktop notifications before any phone is paired
+(local mode), `upgrade` with a daily background check, web licences (`unlock`, `activate`,
+`deactivate`, `licence`), holding only when presence can be detected, atomic config writes and
+install-source tracking.
+
+### Placeholders to settle before a release
+
+- **Release repository.** `codex-notifier upgrade` downloads from `touch-tap/codex-notifier` GitHub
+  releases, which **doesn't exist yet**, so the update check finds nothing.
+- **Update signing key.** `RELEASE_KEYS` in `src/update.rs` is **empty**: ccn's release key was
+  deliberately not inherited. Until a Codex Notifier key is generated
+  (`cargo run --example release-sign -- keygen`, private half kept like ccn's), a release build
+  refuses every download.
+- **API host.** The default server is the shared Worker's `ccnotifier-api.touchtap.workers.dev`
+  (ccn now uses `api.claudecodenotifier.com`, the same Worker). A Codex-branded host waits on DNS
+  for `codexnotifier.com`, which the help text and licence messages already name.
+- **Server copy.** The server's `/api/cli/latest` and licence nudge copy are still ccn's; the
+  engine ignores ccn releases and rewrites the nudge's `ccn` command and "Claude" until the server
+  answers per app.
+- **Packaging.** ccn's Scoop and winget manifests, Homebrew formula script, install scripts and
+  Claude Code plugin were not carried over; npm packaging is below.
 
 ## Install (today: from source)
 
@@ -71,14 +93,20 @@ codex-notifier config show         effective settings (also editable from the ph
 codex-notifier config set KEY VAL  e.g. hold_ceiling_seconds 300, quiet_hours 22:00-08:00, stop_hold_seconds 0
 codex-notifier sync                pull settings from the server now
 codex-notifier setup               reinstall the hooks and their trust hashes (after moving the binary)
+codex-notifier upgrade [--check]   update to the latest release (also checked once a day in the background)
+codex-notifier unlock [--lifetime] buy a web licence for this computer; activate/deactivate/licence manage it
 codex-notifier uninstall           remove hooks, trust entries, pairings, credentials and local state
 codex-notifier forget [--yes]      erase this computer and its pairings from the server, then uninstall
 ```
 
+Output is in the computer's language (`LC_ALL`, `LC_MESSAGES`, `LANG`, then the OS's preferred
+languages), one of the 17 the phone apps speak; `CODEX_NOTIFIER_LANG=de` overrides it.
+
 Settings: `notify_on_done`, `notify_on_permission`, `notify_on_question`, `quiet_hours`,
 `quiet_when_present` (default on), `hold_ceiling_seconds` (30–3600, default 600),
 `presence_threshold_seconds` (default 30), `stop_hold_seconds` (0–600, default 120), `sound`, and
-the local-only `desktop_notifications` and `credential_store` (`keychain` or `file`).
+the local-only `desktop_notifications`, `credential_store` (`keychain` or `file`), `auto_update`,
+`pair_nudges` and `hold_without_presence` (hold for the phone even where presence can't be read).
 
 ## Files
 
@@ -91,9 +119,11 @@ the local-only `desktop_notifications` and `credential_store` (`keychain` or `fi
 
 ## Setup analytics
 
-`codex-notifier pair` sends a few anonymous events (pairing started, paired or failed with a short
-reason; how it was installed; the OS and processor; `agent: codex`). The hooks send none, and
-nothing about your sessions, prompts or computer name is included. Set
+`codex-notifier pair` and the other commands people type send a few anonymous events (pairing
+started, paired or failed with a short reason; how and from where it was installed; the OS and
+processor; `agent: codex`). The background updater sends `cli_updated` or `cli_update_failed`, and
+the one hook that sends anything is SessionStart, when it shows a licence nudge (at most once a
+day). Nothing about your sessions, prompts or computer name is included. Set
 `CODEX_NOTIFIER_NO_ANALYTICS=1` or `DO_NOT_TRACK=1` to turn them off.
 
 ## Development
@@ -108,13 +138,17 @@ echo '{"hook_event_name":"Stop","session_id":"s1","cwd":"/tmp","last_assistant_m
 ```
 
 `CODEX_NOTIFIER_SERVER_URL`, `CODEX_NOTIFIER_HOME`, `CODEX_HOME` (Codex's own folder, which the
-hooks go in), `CODEX_NOTIFIER_PRESENCE=away|present|file:<path>`, `CODEX_NOTIFIER_NOTIFY=off` and
-`CODEX_NOTIFIER_CREDENTIAL_STORE=file` are the test knobs. To try it against a real Codex without
+hooks go in), `CODEX_NOTIFIER_PRESENCE=away|present|unknown|file:<path>`,
+`CODEX_NOTIFIER_NOTIFY=off`, `CODEX_NOTIFIER_CREDENTIAL_STORE=file`, `CODEX_NOTIFIER_LANG`,
+`CODEX_NOTIFIER_NO_NUDGE=1`, `CODEX_NOTIFIER_NO_AUTO_UPDATE=1` and
+`CODEX_NOTIFIER_DOWNLOAD_BASE` (debug builds also trust `CODEX_NOTIFIER_UPDATE_PUBLIC_KEY`) are the
+test knobs. To try it against a real Codex without
 touching your own `~/.codex`, point `CODEX_HOME` at an empty folder, run `codex login` there,
 then `codex-notifier pair` with the same `CODEX_HOME`.
 
-Started from [ccn](https://github.com/touch-tap/ccn), the Claude Code engine, on 30 Oct 2026; the
-two share the server and the phone apps and nothing else. Server:
+Started from [ccn](https://github.com/touch-tap/ccn), the Claude Code engine, on 30 Oct 2026 and
+rebased on its 0.4.1 (878038a) on 4 Nov 2026; the two share the server and the phone apps and
+nothing else. Server:
 [CCNotifier_Server](../CCNotifier_Server) (Cloudflare Worker). Research and plan: the
 "Codex Notifier: research and plan" doc.
 
