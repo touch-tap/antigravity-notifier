@@ -1,0 +1,89 @@
+name: Release
+
+# Started by scripts/release.sh, which creates the DRAFT release with the notarized macOS notifier app
+# and pushes the tag. Builds every target and adds them to that draft; a person publishes it. The
+# install scripts, Homebrew formula, Scoop and winget manifests and npm packages all read these assets.
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { target: aarch64-apple-darwin,       os: macos-latest,   tool: cargo }
+          - { target: x86_64-apple-darwin,        os: macos-latest,   tool: cargo }
+          - { target: x86_64-unknown-linux-musl,  os: ubuntu-latest,  tool: zigbuild }
+          - { target: aarch64-unknown-linux-musl, os: ubuntu-latest,  tool: zigbuild }
+          - { target: x86_64-pc-windows-msvc,     os: windows-latest, tool: cargo }
+          - { target: aarch64-pc-windows-msvc,    os: windows-latest, tool: cargo }
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+      - name: Install zig and cargo-zigbuild
+        if: matrix.tool == 'zigbuild'
+        run: |
+          pip install ziglang
+          cargo install --locked cargo-zigbuild
+      - name: Fetch the notarized macOS notifier app
+        if: runner.os == 'macOS'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # scripts/release.sh signs and notarizes it on the developer's Mac and attaches it to the draft
+          gh release download "$GITHUB_REF_NAME" -p codex-notifier-macos-app.zip -D "$RUNNER_TEMP"
+          ditto -x -k "$RUNNER_TEMP/codex-notifier-macos-app.zip" "$RUNNER_TEMP"
+          app="$RUNNER_TEMP/Notifier for Codex.app"
+          codesign --verify --strict "$app"
+          spctl --assess --type exec -vv "$app" 2>&1 | tee /dev/stderr | grep -q "Notarized Developer ID"
+          echo "CODEX_NOTIFIER_NOTIFIER_APP=$app" >> "$GITHUB_ENV"
+      - name: Build
+        shell: bash
+        run: |
+          if [ "${{ matrix.tool }}" = zigbuild ]; then
+            cargo zigbuild --release --locked --target ${{ matrix.target }}
+          else
+            cargo build --release --locked --target ${{ matrix.target }}
+          fi
+      - name: Package
+        shell: bash
+        run: |
+          mkdir dist
+          cd target/${{ matrix.target }}/release
+          if [ "${{ runner.os }}" = Windows ]; then
+            7z a ../../../dist/codex-notifier-${{ matrix.target }}.zip codex-notifier.exe
+          else
+            tar czf ../../../dist/codex-notifier-${{ matrix.target }}.tar.gz codex-notifier
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: codex-notifier-${{ matrix.target }}
+          path: dist/*
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+      - name: Checksums
+        run: cd dist && sha256sum * > SHA256SUMS && cat SHA256SUMS
+      - name: Homebrew formula
+        run: scripts/brew-formula.sh "${GITHUB_REF_NAME#v}" dist/SHA256SUMS > dist/codex-notifier.rb
+      - name: Add to the draft release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # SHA256SUMS.sig is added by scripts/release.sh on the release Mac, where the signing key is
+          gh release upload "$GITHUB_REF_NAME" dist/* --clobber
