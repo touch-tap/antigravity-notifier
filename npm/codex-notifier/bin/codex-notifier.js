@@ -13,7 +13,7 @@ try {
   binary = require.resolve(`${pkg}/bin/${exe}`);
 } catch {
   console.error(`codex-notifier: no build for ${process.platform}-${process.arch} (looked for ${pkg}).`);
-  console.error('See https://codexnotifier.com/cli for other ways to install.');
+  console.error('See https://notifierforcodex.com/cli for other ways to install.');
   process.exit(1);
 }
 

@@ -2,7 +2,7 @@
   "name": "@touchtap/codex-notifier",
   "version": "0.1.0",
   "description": "Phone notifications and approvals for OpenAI Codex, from any terminal",
-  "homepage": "https://codexnotifier.com/cli",
+  "homepage": "https://notifierforcodex.com/cli",
   "license": "SEE LICENSE IN LICENSE.md",
   "bin": { "codex-notifier": "bin/codex-notifier.js" },
   "files": ["bin", "LICENSE.md"],

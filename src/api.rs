@@ -100,7 +100,7 @@ pub struct PairedDevice {
 pub struct CodeResponse {
     pub code: String,
     pub expires_in: u64,
-    /// codexnotifier.com/c/<token>: what the QR code opens on the phone
+    /// notifierforcodex.com/c/<token>: what the QR code opens on the phone
     #[serde(default)]
     pub link_url: Option<String>,
 }

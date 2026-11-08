@@ -5,14 +5,14 @@ use rust_i18n::t;
 #[cfg(not(windows))]
 use std::process::{Command, Stdio};
 
-/// The AppUserModelID `codex-notifier setup` registers on Windows, so toasts say "Codex Notifier".
+/// The AppUserModelID `codex-notifier setup` registers on Windows, so toasts say "Notifier for Codex".
 #[cfg_attr(not(windows), allow(dead_code))]
 pub const APP_ID: &str = "TouchTap.codexnotifier";
 /// Windows PowerShell's AUMID: always registered, so toasts still show before `codex-notifier setup` has run.
 #[cfg_attr(not(windows), allow(dead_code))]
 pub const FALLBACK_APP_ID: &str =
     r"{1AC14E77-02E7-4E5D-B744-2EB1AE5198B7}\WindowsPowerShell\v1.0\powershell.exe";
-pub const APP_NAME: &str = "Codex Notifier";
+pub const APP_NAME: &str = "Notifier for Codex";
 
 /// The app icon, written to disk by `codex-notifier setup` for the notification servers to read. macOS takes
 /// the icon of the app that posts (the bundled notifier app), so the binary there goes without it.
@@ -83,7 +83,7 @@ pub fn show(title: &str, body: &str, sound: bool) {
     {
         let _ = sound;
         let mut cmd = Command::new("notify-send");
-        cmd.arg("--app-name=Codex Notifier");
+        cmd.arg("--app-name=Notifier for Codex");
         let icon = icon_path();
         if icon.exists() {
             cmd.arg(format!("--icon={}", icon.display()));
@@ -207,7 +207,7 @@ fn osa_string(s: &str) -> String {
 
 #[cfg(target_os = "macos")]
 mod mac {
-    //! "Codex Notifier.app" (macos/notifier), embedded at build time and written to codex-notifier's
+    //! "Notifier for Codex.app" (macos/notifier), embedded at build time and written to codex-notifier's
     //! folder, so notifications carry our name and icon instead of Script Editor's. It is rewritten
     //! whenever its Info.plist differs from the embedded one, which carries the version.
 

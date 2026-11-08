@@ -1,5 +1,5 @@
 // Embeds the macOS notifier app (scripts/build-macos-notifier.sh) in the codex-notifier binary when
-// CODEX_NOTIFIER_NOTIFIER_APP points at a built "Codex Notifier.app". Without it, codex-notifier falls back to
+// CODEX_NOTIFIER_NOTIFIER_APP points at a built "Notifier for Codex.app". Without it, codex-notifier falls back to
 // osascript notifications. Generates notifier_files.rs: (path inside the bundle, bytes, executable).
 
 use std::fmt::Write as _;

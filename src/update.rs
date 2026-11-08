@@ -7,7 +7,7 @@
 //! and spawns `codex-notifier upgrade --quiet --background`, fully detached from the hook and the terminal,
 //! which installs a newer release in place when codex-notifier owns its binary. When something else owns it
 //! the background run records `update_available` instead, and `daily_check` then returns
-//! `Some({"systemMessage": "Codex Notifier: codex-notifier X is available: <command>"})` once a week,
+//! `Some({"systemMessage": "Notifier for Codex: codex-notifier X is available: <command>"})` once a week,
 //! for the hook to return as its output. `codex-notifier config set auto_update off` or
 //! `CODEX_NOTIFIER_NO_AUTO_UPDATE=1` turns all of this off.
 //!
@@ -61,7 +61,7 @@ const PROBE_TIMEOUT: Duration = Duration::from_secs(10);
 /// both keys, then sign with the new one.
 ///
 /// EMPTY ON PURPOSE: ccn's release key (9af03746…) was not carried over, since trusting it would
-/// let anything signed for ccn install as codex-notifier. Until Codex Notifier has its own key
+/// let anything signed for ccn install as codex-notifier. Until Notifier for Codex has its own key
 /// (`cargo run --example release-sign -- keygen`, private half in the release Mac's keychain),
 /// no release verifies, so a release build's `upgrade` refuses every download. Debug builds
 /// also trust `CODEX_NOTIFIER_UPDATE_PUBLIC_KEY`, which is how the tests sign their releases.
@@ -680,7 +680,7 @@ fn latest_from_server(v: &Value) -> Result<Latest> {
             "update: ignoring the server's downloadBase {base:?}; using {download_base}"
         ));
     }
-    // One Worker serves Claude Code Notifier and Codex Notifier, and (Nov 2026) its
+    // One Worker serves Claude Code Notifier and Notifier for Codex, and (Nov 2026) its
     // /api/cli/latest only knows ccn's releases. A reply that doesn't list codex-notifier's
     // archives is someone else's release, so GitHub is asked instead.
     // TODO: drop this once the server answers per app (X-App or clientKind codex_cli).

@@ -1,4 +1,4 @@
-// Codex Notifier.app: posts codex-notifier's desktop notifications on macOS, so they carry our name and icon
+// Notifier for Codex.app: posts codex-notifier's desktop notifications on macOS, so they carry our name and icon
 // instead of Script Editor's. codex-notifier runs the executable inside the bundle directly:
 //
 //   codex-notifier-notifier --title T --body B [--sound]   post one notification, exit when it is delivered

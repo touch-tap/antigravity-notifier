@@ -1,8 +1,8 @@
-# codex-notifier — Codex Notifier for the terminal
+# codex-notifier — Notifier for Codex in the terminal
 
 Get a push on your phone when OpenAI Codex finishes or needs you, and approve, deny or answer
 from there. Works on macOS, Linux and Windows, in any terminal, with no app running in the
-background.
+background. Not affiliated with OpenAI.
 
 `codex-notifier` is one small binary that Codex calls through its lifecycle hooks. It runs for a
 few milliseconds when something happens and exits. Install it once with `codex-notifier pair`;
@@ -23,12 +23,13 @@ install-source tracking.
 - **Release repository.** `codex-notifier upgrade` downloads from `touch-tap/codex-notifier` GitHub
   releases, which **doesn't exist yet**, so the update check finds nothing.
 - **Update signing key.** `RELEASE_KEYS` in `src/update.rs` is **empty**: ccn's release key was
-  deliberately not inherited. Until a Codex Notifier key is generated
+  deliberately not inherited. Until a Notifier for Codex key is generated
   (`cargo run --example release-sign -- keygen`, private half kept like ccn's), a release build
   refuses every download.
 - **API host.** The default server is the shared Worker's `ccnotifier-api.touchtap.workers.dev`
-  (ccn now uses `api.claudecodenotifier.com`, the same Worker). A Codex-branded host waits on DNS
-  for `codexnotifier.com`, which the help text and licence messages already name.
+  (ccn now uses `api.claudecodenotifier.com`, the same Worker). The Codex-branded host,
+  `api.notifierforcodex.com`, waits on DNS for `notifierforcodex.com`, which the help text and
+  licence messages already name.
 - **Server copy.** The server's `/api/cli/latest` and licence nudge copy are still ccn's; the
   engine ignores ccn releases and rewrites the nudge's `ccn` command and "Claude" until the server
   answers per app.
@@ -156,7 +157,7 @@ nothing else. Server:
 
 codex-notifier is source-available under the [PolyForm Shield License 1.0.0](LICENSE.md). You can
 use it, change it and share it, including at work, as long as you keep the copyright notice and
-don't use it to build a product that competes with Codex Notifier.
+don't use it to build a product that competes with Notifier for Codex.
 
 ## npm
 

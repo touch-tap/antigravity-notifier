@@ -32,7 +32,7 @@ for pair in darwin-arm64:aarch64-apple-darwin darwin-x64:x86_64-apple-darwin \
   "name": "@touchtap/codex-notifier-$npm_name",
   "version": "$version",
   "description": "The codex-notifier binary for $npm_name. Install @touchtap/codex-notifier instead.",
-  "homepage": "https://codexnotifier.com/cli",
+  "homepage": "https://notifierforcodex.com/cli",
   "license": "SEE LICENSE IN LICENSE.md",
   "os": ["$os"],
   "cpu": ["$cpu"],

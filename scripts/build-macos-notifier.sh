@@ -1,5 +1,5 @@
 #!/bin/sh
-# Builds "Codex Notifier.app", the helper that posts codex-notifier's notifications on macOS with our icon:
+# Builds "Notifier for Codex.app", the helper that posts codex-notifier's notifications on macOS with our icon:
 #   scripts/build-macos-notifier.sh 0.2.0 dist            # ad-hoc signed, fine for local testing
 #   CODESIGN_IDENTITY="Developer ID Application: …" scripts/build-macos-notifier.sh 0.2.0 dist
 # Universal (arm64 + x86_64). Notarization is a separate step (see RELEASING.md).
@@ -9,7 +9,7 @@ out=$2
 identity=${CODESIGN_IDENTITY:--}
 root="$(cd "$(dirname "$0")/.." && pwd)"
 src="$root/macos/notifier"
-app="$out/Codex Notifier.app"
+app="$out/Notifier for Codex.app"
 work="$(mktemp -d)"
 trap 'rm -rf "$work"' EXIT
 

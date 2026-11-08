@@ -1,4 +1,4 @@
-//! codex-notifier: Codex Notifier for the terminal.
+//! codex-notifier: Notifier for Codex in the terminal.
 //!
 //! One binary, invoked by OpenAI Codex's lifecycle hooks. It runs for milliseconds and exits:
 //! there is no daemon, no socket and no window. `codex-notifier pair` installs the hooks once

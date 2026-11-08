@@ -5,9 +5,9 @@
 	<key>CFBundleIdentifier</key>
 	<string>com.touchtap.codexnotifier.notifier</string>
 	<key>CFBundleName</key>
-	<string>Codex Notifier</string>
+	<string>Notifier for Codex</string>
 	<key>CFBundleDisplayName</key>
-	<string>Codex Notifier</string>
+	<string>Notifier for Codex</string>
 	<key>CFBundleExecutable</key>
 	<string>codex-notifier-notifier</string>
 	<key>CFBundleIconFile</key>
