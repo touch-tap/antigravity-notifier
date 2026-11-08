@@ -70,7 +70,9 @@ fn paired_system_message(phone: &str) -> String {
 /// TODO: drop once the server writes codex_cli copy itself.
 fn codex_wording(mut message: api::NudgeMessage) -> api::NudgeMessage {
     let fix = |text: &str| {
-        text.replace("Claude Code", "Codex")
+        // The product name first: "Claude Code Notifier" is "Notifier for Codex", not "Codex Notifier"
+        text.replace("Claude Code Notifier", crate::notify::APP_NAME)
+            .replace("Claude Code", "Codex")
             .replace("Claude", "Codex")
     };
     message.title = fix(&message.title);
@@ -719,14 +721,17 @@ mod tests {
             kind: "none".into(),
             variant: "b".into(),
             title: "Answer Claude from your phone, no subscription".into(),
-            body: "Approvals from Claude Code reach you.".into(),
+            body: "Approvals from Claude Code reach you. Claude Code Notifier unlocks once.".into(),
             command: "ccn unlock --lifetime".into(),
         });
         assert_eq!(
             message.title,
             "Answer Codex from your phone, no subscription"
         );
-        assert_eq!(message.body, "Approvals from Codex reach you.");
+        assert_eq!(
+            message.body,
+            "Approvals from Codex reach you. Notifier for Codex unlocks once."
+        );
         assert_eq!(message.command, "codex-notifier unlock --lifetime");
     }
 
