@@ -7,12 +7,10 @@ use std::fs;
 use std::io::Write;
 use std::path::{Path, PathBuf};
 
-/// The Worker that serves both Claude Code Notifier and Notifier for Codex, at its workers.dev address.
-/// ccn moved to api.claudecodenotifier.com (the same Worker, reachable from mainland China, where
-/// *.workers.dev is blocked); that name is Claude-branded, so Codex keeps the neutral address.
-/// TODO: switch to the Codex-branded api.notifierforcodex.com once that host has DNS and routes to
-/// this Worker; until then this stays the working workers.dev address.
-pub const DEFAULT_SERVER_URL: &str = "https://ccnotifier-api.touchtap.workers.dev";
+/// The Worker that serves both Claude Code Notifier and Notifier for Codex, at the Codex brand's address.
+/// api.notifierforcodex.com, api.claudecodenotifier.com and ccnotifier-api.touchtap.workers.dev are the
+/// same Worker; a custom domain is reachable from mainland China, where *.workers.dev is blocked.
+pub const DEFAULT_SERVER_URL: &str = "https://api.notifierforcodex.com";
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 pub const KEYRING_SERVICE: &str = "com.touchtap.codexnotifier";
 pub const KEYRING_USER: &str = "auth_token";

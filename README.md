@@ -26,10 +26,8 @@ install-source tracking.
   deliberately not inherited. Until a Notifier for Codex key is generated
   (`cargo run --example release-sign -- keygen`, private half kept like ccn's), a release build
   refuses every download.
-- **API host.** The default server is the shared Worker's `ccnotifier-api.touchtap.workers.dev`
-  (ccn now uses `api.claudecodenotifier.com`, the same Worker). The Codex-branded host,
-  `api.notifierforcodex.com`, waits on DNS for `notifierforcodex.com`, which the help text and
-  licence messages already name.
+- **API host.** The default server is `api.notifierforcodex.com`, a custom domain on the shared Worker
+  (live since 8 Nov 2026; also reachable from mainland China, unlike `*.workers.dev`).
 - **Server copy.** The server's `/api/cli/latest` and licence nudge copy are still ccn's; the
   engine ignores ccn releases and rewrites the nudge's `ccn` command and "Claude" until the server
   answers per app.
