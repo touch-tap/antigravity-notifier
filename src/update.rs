@@ -44,8 +44,8 @@ const CHECK_EVERY: i64 = 24 * 60 * 60;
 const ANNOUNCE_EVERY: i64 = 7 * 24 * 60 * 60;
 /// `codex-notifier upgrade --check` exits with this when a newer release exists.
 const EXIT_UPDATE_AVAILABLE: i32 = 10;
-// PLACEHOLDER: the touch-tap/codex-notifier repository doesn't exist yet (Nov 2026). Until it
-// does and has a release, `codex-notifier upgrade` finds nothing and says so.
+// Where scripts/release.sh and .github/workflows/release.yml publish (RELEASING.md). Until the
+// touch-tap/codex-notifier repository has a published release, `codex-notifier upgrade` finds nothing and says so.
 const GITHUB_LATEST: &str = "https://api.github.com/repos/touch-tap/codex-notifier/releases/latest";
 const RELEASES_BASE: &str = "https://github.com/touch-tap/codex-notifier/releases/download";
 /// Release archives are about 2 MB; anything near this is not one of ours.

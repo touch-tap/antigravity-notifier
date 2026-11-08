@@ -21,18 +21,19 @@ install-source tracking.
 ### Placeholders to settle before a release
 
 - **Release repository.** `codex-notifier upgrade` downloads from `touch-tap/codex-notifier` GitHub
-  releases, which **doesn't exist yet**, so the update check finds nothing.
-- **Update signing key.** `RELEASE_KEYS` in `src/update.rs` is **empty**: ccn's release key was
-  deliberately not inherited. Until a Notifier for Codex key is generated
-  (`cargo run --example release-sign -- keygen`, private half kept like ccn's), a release build
-  refuses every download.
+  releases, which **doesn't exist yet**, so the update check finds nothing. The release pipeline
+  is ready for it (RELEASING.md); `scripts/first-release-checklist.md` is the first release, step by step.
+- **Update signing key.** Notifier for Codex's own key (made 8 Nov 2026, public `eeb6e55b…`) is in
+  `RELEASE_KEYS`; the private half is in the release Mac's login keychain as
+  `codexnotifier-release-signing`. ccn's key is deliberately not trusted.
 - **API host.** The default server is `api.notifierforcodex.com`, a custom domain on the shared Worker
   (live since 8 Nov 2026; also reachable from mainland China, unlike `*.workers.dev`).
 - **Server copy.** The server's `/api/cli/latest` and licence nudge copy are still ccn's; the
   engine ignores ccn releases and rewrites the nudge's `ccn` command and "Claude" until the server
   answers per app.
-- **Packaging.** ccn's Scoop and winget manifests, Homebrew formula script, install scripts and
-  Claude Code plugin were not carried over; npm packaging is below.
+- **Packaging.** Homebrew formula, Scoop and winget manifests are generated from each release
+  (RELEASING.md). `install/` holds byte-for-byte copies of the website's install scripts, which CI
+  runs. ccn's Claude Code plugin was not carried over.
 
 ## Install (today: from source)
 
@@ -164,5 +165,4 @@ binary for the platform from `@touchtap/codex-notifier-<os>-<cpu>`. `npm/codexno
 unscoped `codexnotifier` alias: it depends on the real package and only forwards to it, for people
 who type the name that way. `scripts/npm-packages.sh <version> <dist>` builds all eight from a
 release's archives (`codex-notifier-<target>.tar.gz`/`.zip`) and `scripts/npm-publish.sh` publishes
-them in order. Publishing under `@touchtap` needs an owner of the npm org. There is no release
-workflow yet: port ccn's `.github/workflows/release.yml` and `scripts/release.sh` with the names changed.
+them in order. Publishing under `@touchtap` needs an owner of the npm org. See RELEASING.md.
