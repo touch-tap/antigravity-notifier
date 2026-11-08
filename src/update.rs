@@ -60,12 +60,13 @@ const PROBE_TIMEOUT: Duration = Duration::from_secs(10);
 /// anyone who could change the release's files on GitHub. To rotate, ship a release that lists
 /// both keys, then sign with the new one.
 ///
-/// EMPTY ON PURPOSE: ccn's release key (9af03746…) was not carried over, since trusting it would
-/// let anything signed for ccn install as codex-notifier. Until Notifier for Codex has its own key
-/// (`cargo run --example release-sign -- keygen`, private half in the release Mac's keychain),
-/// no release verifies, so a release build's `upgrade` refuses every download. Debug builds
+/// Notifier for Codex's own key, created on 8 Nov 2026 with `cargo run --release --example
+/// release-sign -- keygen`. The private half lives only in the release Mac's login keychain as the
+/// generic password `codexnotifier-release-signing` (account `touchtap`); scripts/release.sh reads
+/// it from there (RELEASING.md, "The update signing key"). ccn's key (9af03746…) is deliberately
+/// not here: trusting it would let anything signed for ccn install as codex-notifier. Debug builds
 /// also trust `CODEX_NOTIFIER_UPDATE_PUBLIC_KEY`, which is how the tests sign their releases.
-const RELEASE_KEYS: &[&str] = &[];
+const RELEASE_KEYS: &[&str] = &["eeb6e55bc550642bf30ec67b867d9cc3230830259a39709496b5059a4a78ce5f"];
 
 pub struct Mode {
     /// Only report whether a newer release exists
@@ -950,6 +951,10 @@ mod signature_tests {
 
     #[test]
     fn the_built_in_release_keys_are_valid_public_keys() {
+        assert!(
+            !RELEASE_KEYS.is_empty(),
+            "a release build would refuse every update"
+        );
         for key in RELEASE_KEYS {
             let bytes = unhex::<32>(key).expect("64 hex characters");
             assert!(ed25519_dalek::VerifyingKey::from_bytes(&bytes).is_ok());

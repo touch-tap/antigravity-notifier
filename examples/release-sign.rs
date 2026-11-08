@@ -1,7 +1,6 @@
 //! Signs a release's SHA256SUMS, so `codex-notifier upgrade` can tell the release came from TouchTap and not
-//! just from wherever the files were downloaded. Brought over from ccn, whose scripts/release.sh
-//! runs it on the release Mac; codex-notifier has no release script or signing key of its own yet
-//! (RELEASE_KEYS in src/update.rs is empty until it does).
+//! just from wherever the files were downloaded. Run on the release Mac by scripts/release.sh; the
+//! private key never leaves that Mac's keychain (see RELEASING.md, "The update signing key").
 //!
 //!   cargo run --release --example release-sign -- keygen
 //!       prints a new private key (hex) and its public key (hex) on two lines
