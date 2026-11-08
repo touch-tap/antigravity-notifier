@@ -12,7 +12,7 @@ rm -rf $CODEX_NOTIFIER_HOME; rm -f $CODEX_HOME/hooks.json; printf 'model = "gpt-
 pass=0; fail=0
 ok()   { echo "  ok   $1"; pass=$((pass+1)); }
 bad()  { echo "  FAIL $1"; fail=$((fail+1)); }
-phone() { curl -s -m 20 -H "X-Device-ID: $DEVICE" -H "Content-Type: application/json" "$@"; }
+phone() { curl -s -m 20 -H "X-App: codex" -H "X-Device-ID: $DEVICE" -H "Content-Type: application/json" "$@"; }
 
 echo "== phone shows a code"
 CODE=$(phone -X POST $SERVER/api/pairing/request-for-device -d "{\"deviceId\":\"$DEVICE\",\"platform\":\"ios\",\"name\":\"qa-codex-phone\"}" | python3 -c 'import sys,json;print(json.load(sys.stdin)["code"])')

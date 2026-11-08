@@ -32,11 +32,11 @@ case "$(uname -m)" in arm64|aarch64) model="$model-aarch64" ;; x86_64|amd64) mod
 track() {
   case "${CODEX_NOTIFIER_NO_ANALYTICS:-}${DO_NOT_TRACK:-}" in ""|0|00) ;; *) return 0 ;; esac
   body="{\"context\":{\"platform\":\"cli\",\"deviceModel\":\"$model\",\"environment\":\"production\"},\"events\":[{\"name\":\"$1\",\"properties\":{\"agent\":\"codex\",\"method\":\"script\"${2:+,$2}}}]}"
-  url="${CODEX_NOTIFIER_SERVER_URL:-https://ccnotifier-api.touchtap.workers.dev}/api/events"
+  url="${CODEX_NOTIFIER_SERVER_URL:-https://api.notifierforcodex.com}/api/events"
   if command -v curl >/dev/null 2>&1; then
-    curl -fsS -m 3 -H 'Content-Type: application/json' -d "$body" "$url" >/dev/null 2>&1 || true
+    curl -fsS -m 3 -H 'Content-Type: application/json' -H 'X-App: codex' -d "$body" "$url" >/dev/null 2>&1 || true
   elif command -v wget >/dev/null 2>&1; then
-    wget -q -T 3 -O /dev/null --header='Content-Type: application/json' --post-data="$body" "$url" >/dev/null 2>&1 || true
+    wget -q -T 3 -O /dev/null --header='Content-Type: application/json' --header='X-App: codex' --post-data="$body" "$url" >/dev/null 2>&1 || true
   fi
 }
 track cli_install_started "\"pairing\":\"$([ -n "$code" ] && echo yes || echo no)\""

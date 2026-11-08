@@ -10,6 +10,10 @@ use std::time::Duration;
 
 use crate::config::{self, Config, Settings};
 
+/// Every request says which product it is for. The server treats a request without it as Claude Code
+/// Notifier, so Codex analytics, config and nudges would otherwise be filed under CCN.
+pub const APP_HEADER: &str = "codex";
+
 #[derive(Clone)]
 pub struct Api {
     base: String,
@@ -181,7 +185,8 @@ impl Api {
                 } else {
                     agent.delete(&url)
                 }
-                .header("Accept-Language", &language);
+                .header("Accept-Language", &language)
+                .header("X-App", APP_HEADER);
                 if let Some(b) = &bearer {
                     req = req.header("Authorization", b);
                 }
@@ -196,7 +201,8 @@ impl Api {
                 } else {
                     agent.put(&url)
                 }
-                .header("Accept-Language", &language);
+                .header("Accept-Language", &language)
+                .header("X-App", APP_HEADER);
                 if let Some(b) = &bearer {
                     req = req.header("Authorization", b);
                 }

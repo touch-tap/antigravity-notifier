@@ -133,6 +133,7 @@ pub fn event(name: &str, properties: &[(&str, &str)]) {
     let _ = agent
         .post(&url)
         .header("Accept-Language", &config::locale())
+        .header("X-App", crate::api::APP_HEADER)
         .send_json(body);
 }
 
