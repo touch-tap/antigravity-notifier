@@ -6,10 +6,10 @@
 _version: 1
 
 cli:
-  about: "Codex Notifier: קבלו התראה בטלפון כש-Codex צריך אתכם, וענו משם"
+  about: "Notifier for Codex: קבלו התראה בטלפון כש-Codex צריך אתכם, וענו משם"
   pair:
     about: "צמדו את המחשב הזה לטלפון. העבירו את הקוד שהאפליקציה מציגה, או הריצו בלי קוד כדי לקבל קוד להקלדה באפליקציה"
-    code: "הקוד בן 6 הספרות שמוצג באפליקציית Codex Notifier"
+    code: "הקוד בן 6 הספרות שמוצג באפליקציית Notifier for Codex"
     name: "השם של המחשב הזה בטלפון (ברירת המחדל: שם המארח)"
     no_wait: "הציגו את קוד ה-QR וחזרו מיד: הצימוד מסתיים מעצמו כשהטלפון מתחבר"
   setup:
@@ -57,18 +57,18 @@ common:
 
 pair:
   reregister: "הצימוד הישן של המחשב הזה הוסר, ולכן הוא יירשם מחדש."
-  code_not_recognised: "הקוד לא זוהה. הקוד בן 6 הספרות נמצא באפליקציית Codex Notifier תחת מחשבים > הוספת מחשב; הוא מתחלף כל 24 שעות, אז העתיקו את השורה שהאפליקציה מציגה עכשיו."
+  code_not_recognised: "הקוד לא זוהה. הקוד בן 6 הספרות נמצא באפליקציית Notifier for Codex תחת מחשבים > הוספת מחשב; הוא מתחלף כל 24 שעות, אז העתיקו את השורה שהאפליקציה מציגה עכשיו."
   offer_qr: "הקישו Enter כדי להציג כאן קוד QR במקום (וסרקו אותו בטלפון), או Ctrl+C."
   options_without_terminal: "הריצו שוב `codex-notifier pair <code>` עם הקוד שהאפליקציה מציגה עכשיו, או הציגו כאן קוד QR וסרקו אותו בטלפון עם: `codex-notifier pair`"
   scan: "  סרקו את זה במצלמת הטלפון כדי לחבר אותו. אם האפליקציה עוד לא מותקנת, זה\n  מוביל ל-App Store או ל-Google Play: התקינו, ואז סרקו שוב."
-  or_type_code: "  או הקלידו את הקוד הזה באפליקציית Codex Notifier:  %{code}"
-  enter_code: "  הקלידו את הקוד הזה באפליקציית Codex Notifier:  %{code}"
+  or_type_code: "  או הקלידו את הקוד הזה באפליקציית Notifier for Codex:  %{code}"
+  enter_code: "  הקלידו את הקוד הזה באפליקציית Notifier for Codex:  %{code}"
   hooks_already_installed: "  ה-hooks מותקנים, אז אתם כבר מקבלים התראות שולחן עבודה במחשב הזה."
   code_lasts: "  צמדו מתי שתרצו: הקוד הזה תקף %{duration}."
   completes_on_its_own: "  הצימוד מסתיים מעצמו כשהטלפון מתחבר."
   waiting: "  מחכים לטלפון... (Ctrl+C בטוח: הצימוד מסתיים מעצמו כשהטלפון מתחבר)"
   code_expired: "הקוד פקע לפני שטלפון השתמש בו. הריצו שוב: `codex-notifier pair`"
-  code_is_six_digits: "הקוד הוא 6 הספרות שמוצגות באפליקציית Codex Notifier"
+  code_is_six_digits: "הקוד הוא 6 הספרות שמוצגות באפליקציית Notifier for Codex"
   credentials_stored: "פרטי הגישה נשמרו ב%{store}: %{path}"
   test_sent: "התראת בדיקה נשלחה לטלפון."
   test_failed: "עדיין לא ניתן לשלוח התראת בדיקה: %{error}"
@@ -162,7 +162,7 @@ settings:
 
 forget:
   needs_yes: "codex-notifier forget דורש אישור מכם: הריצו אותו בטרמינל, או הוסיפו --yes"
-  warning: "זה מוחק את המחשב הזה ואת הצימודים שלו משרת Codex Notifier, ואז מסיר את codex-notifier\nמ-Codex ומוחק את פרטי הגישה והקבצים שלו כאן, כמו `codex-notifier uninstall`.\nטלפונים שמצומדים למחשב הזה יראו אותו נעלם.\nרישיון שנרכש באתר לא מבוטל: עשו זאת ב-codexnotifier.com/licence\nעם \"מחיקת הרישיון שלי\"."
+  warning: "זה מוחק את המחשב הזה ואת הצימודים שלו משרת Notifier for Codex, ואז מסיר את codex-notifier\nמ-Codex ומוחק את פרטי הגישה והקבצים שלו כאן, כמו `codex-notifier uninstall`.\nטלפונים שמצומדים למחשב הזה יראו אותו נעלם.\nרישיון שנרכש באתר לא מבוטל: עשו זאת ב-notifierforcodex.com/licence\nעם \"מחיקת הרישיון שלי\"."
   # The word the user must type; `yes` is always accepted as well
   yes_word: "כן"
   prompt: "\nהקלידו %{yes} כדי להמשיך: "
@@ -185,15 +185,15 @@ local:
   question_title: "ל-Codex יש שאלה"
   first_nudge: "גם בטלפון: codex-notifier pair"
   milestone_nudge: "10 התראות עד עכשיו. קבלו אותן בטלפון, עם אישורים ממסך הנעילה: codex-notifier pair"
-  pair_message: "Codex Notifier: אתם מקבלים התראות שולחן עבודה. כדי לקבל אותן גם בטלפון ולאשר או לענות משם, הריצו בטרמינל: `codex-notifier pair`"
+  pair_message: "Notifier for Codex: אתם מקבלים התראות שולחן עבודה. כדי לקבל אותן גם בטלפון ולאשר או לענות משם, הריצו בטרמינל: `codex-notifier pair`"
 
 hook:
-  licence_message: "Codex Notifier: התראות לטלפון לא פתוחות למחשב הזה. לפתיחה: codex-notifier unlock"
-  unpaired_message: "Codex Notifier: המחשב הזה כבר לא מצומד, ולכן הטלפון לא יקבל התראות. לחיבור מחדש הריצו בטרמינל: `codex-notifier pair`"
+  licence_message: "Notifier for Codex: התראות לטלפון לא פתוחות למחשב הזה. לפתיחה: codex-notifier unlock"
+  unpaired_message: "Notifier for Codex: המחשב הזה כבר לא מצומד, ולכן הטלפון לא יקבל התראות. לחיבור מחדש הריצו בטרמינל: `codex-notifier pair`"
   unpaired_notification: "המחשב הזה כבר לא מצומד. לחיבור מחדש הריצו בטרמינל: `codex-notifier pair`"
-  paired_message: "Codex Notifier: מצומד עם %{phone}. ההתראות עוברות עכשיו לטלפון."
+  paired_message: "Notifier for Codex: מצומד עם %{phone}. ההתראות עוברות עכשיו לטלפון."
   # The server writes title, body and command in the user's language; this only joins them
-  nudge_message: "Codex Notifier: %{title} %{body} %{command}"
+  nudge_message: "Notifier for Codex: %{title} %{body} %{command}"
   needs_attention: "דורש את תשומת לבכם"
 
 hooks:
@@ -269,10 +269,10 @@ update:
   zip_empty: "בקובץ ה-zip אין codex-notifier.exe"
   did_not_run: "ה-codex-notifier שהורד לא רץ, ולכן הגרסה המותקנת נשמרה"
   updated: "codex-notifier עודכן %{from} → %{to}."
-  available_message: "Codex Notifier: codex-notifier %{version} זמין: %{command}"
+  available_message: "Notifier for Codex: codex-notifier %{version} זמין: %{command}"
 
 notify:
-  registered_windows: "\"Codex Notifier\" נרשם להתראות של Windows."
+  registered_windows: "\"Notifier for Codex\" נרשם להתראות של Windows."
   icon_installed: "סמל ההתראות הותקן ב-%{path}."
   doctor_applescript: "AppleScript (ל-build הזה אין אפליקציית התראות)"
   doctor_allowed: "מאושר עבור \"%{app}\""
@@ -306,7 +306,7 @@ update_lock:
 
 local_files:
   config_unreadable: "אי אפשר לקרוא את %{path} (%{error}), ולכן codex-notifier לא יכתוב מעליו. תקנו את הקובץ, או מחקו אותו והריצו שוב `codex-notifier pair`."
-  slot_not_freed: "לא ניתן היה לשחרר את מקום הרישיון של המחשב הזה (%{error}). אם יש לו רישיון, שחררו את המקום ב-codexnotifier.com/licence בעזרת המפתח שלכם."
+  slot_not_freed: "לא ניתן היה לשחרר את מקום הרישיון של המחשב הזה (%{error}). אם יש לו רישיון, שחררו את המקום ב-notifierforcodex.com/licence בעזרת המפתח שלכם."
   kept_dir: "הקבצים של codex-notifier הוסרו מ-%{path}. בתיקייה יש גם קבצים אחרים, ולכן היא נשארה במקומה."
   remove_binary: "codex-notifier עצמו עדיין מותקן. כדי להסיר אותו: %{command}"
 
@@ -326,7 +326,7 @@ payload:
   update_plan: "עדכון התוכנית"
 
 net:
-  unreachable: "לא הצלחנו להתחבר לשרת של Codex Notifier. בדקו את החיבור לאינטרנט ונסו שוב."
+  unreachable: "לא הצלחנו להתחבר לשרת של Notifier for Codex. בדקו את החיבור לאינטרנט ונסו שוב."
   doctor_unreachable: "שרת: אין גישה אל %{url}. בדקו את החיבור לאינטרנט, את ה-proxy או את חומת האש"
 
 clap:
@@ -342,4 +342,4 @@ clap:
 
 # `codex-notifier upgrade` refused a release whose SHA256SUMS isn't signed by TouchTap
 update_signature:
-  invalid: "לא ניתן לאמת את החתימה של הגרסה, ולכן שום דבר לא שונה. נסה שוב מאוחר יותר, או התקן מחדש מ-codexnotifier.com/cli"
+  invalid: "לא ניתן לאמת את החתימה של הגרסה, ולכן שום דבר לא שונה. נסה שוב מאוחר יותר, או התקן מחדש מ-notifierforcodex.com/cli"

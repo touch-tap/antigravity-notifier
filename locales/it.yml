@@ -1,12 +1,12 @@
 # Italiano. Traduce locales/en.yml; vedi locales/README.md. Registro: tu. Vocabolario dell'app
-# Codex Notifier: abbinare (pair), collegare (connect), licenza, sbloccare, telefono, computer.
+# Notifier for Codex: abbinare (pair), collegare (connect), licenza, sbloccare, telefono, computer.
 _version: 1
 
 cli:
-  about: "Codex Notifier: ricevi una notifica sul telefono quando Codex ha bisogno di te e rispondi da lì"
+  about: "Notifier for Codex: ricevi una notifica sul telefono quando Codex ha bisogno di te e rispondi da lì"
   pair:
     about: "Abbinare questo computer al tuo telefono. Passa il codice mostrato dall'app, oppure esegui senza codice per averne uno da digitare nell'app"
-    code: "Il codice a 6 cifre mostrato nell'app Codex Notifier"
+    code: "Il codice a 6 cifre mostrato nell'app Notifier for Codex"
     name: "Il nome di questo computer sul tuo telefono (predefinito: l'hostname)"
     no_wait: "Mostrare il codice QR e uscire subito: l'abbinamento si completa da solo quando il telefono si collega"
   setup:
@@ -54,18 +54,18 @@ common:
 
 pair:
   reregister: "Il vecchio abbinamento di questo computer è stato rimosso, quindi verrà registrato di nuovo."
-  code_not_recognised: "Codice non riconosciuto. Il codice a 6 cifre è nell'app Codex Notifier, in Computer > Aggiungi computer; cambia ogni 24 ore, quindi copia la riga che l'app mostra adesso."
+  code_not_recognised: "Codice non riconosciuto. Il codice a 6 cifre è nell'app Notifier for Codex, in Computer > Aggiungi computer; cambia ogni 24 ore, quindi copia la riga che l'app mostra adesso."
   offer_qr: "Premi Invio per mostrare qui un codice QR al suo posto (scansionalo con il telefono), oppure Ctrl+C."
   options_without_terminal: "Esegui di nuovo `codex-notifier pair <codice>` con il codice che l'app mostra adesso, oppure `codex-notifier pair` per mostrare qui un codice QR e scansionarlo con il telefono."
   scan: "  Scansiona questo con la fotocamera del telefono per collegarlo. Se non hai ancora l'app,\n  ti porta sull'App Store o su Google Play: installala, poi scansiona di nuovo."
-  or_type_code: "  Oppure digita questo codice nell'app Codex Notifier:  %{code}"
-  enter_code: "  Inserisci questo codice nell'app Codex Notifier:  %{code}"
+  or_type_code: "  Oppure digita questo codice nell'app Notifier for Codex:  %{code}"
+  enter_code: "  Inserisci questo codice nell'app Notifier for Codex:  %{code}"
   hooks_already_installed: "  Gli hook sono installati, quindi su questo computer ricevi già le notifiche sul desktop."
   code_lasts: "  Abbina quando vuoi: questo codice vale %{duration}."
   completes_on_its_own: "  L'abbinamento si completa da solo quando il telefono si collega."
   waiting: "  In attesa del tuo telefono... (Ctrl+C non fa danni: l'abbinamento si completa da solo quando il telefono si collega)"
   code_expired: "il codice è scaduto prima che un telefono lo usasse. Esegui di nuovo `codex-notifier pair`."
-  code_is_six_digits: "il codice sono le 6 cifre mostrate nell'app Codex Notifier"
+  code_is_six_digits: "il codice sono le 6 cifre mostrate nell'app Notifier for Codex"
   credentials_stored: "Credenziali salvate nel %{store} (%{path})."
   test_sent: "Notifica di prova inviata al tuo telefono."
   test_failed: "Non è ancora stato possibile inviare una notifica di prova: %{error}"
@@ -159,7 +159,7 @@ settings:
 
 forget:
   needs_yes: "codex-notifier forget ha bisogno di un sì da parte tua: eseguilo in un terminale, o aggiungi --yes"
-  warning: "Questo cancella questo computer e i suoi abbinamenti dal server di Codex Notifier,\npoi rimuove codex-notifier da Codex ed elimina le sue credenziali e i suoi file da qui, come fa\n`codex-notifier uninstall`. I telefoni abbinati a questo computer lo vedranno sparire.\nUna licenza comprata sul sito non viene annullata: fallo su codexnotifier.com/licence\ncon \"Erase my licence\"."
+  warning: "Questo cancella questo computer e i suoi abbinamenti dal server di Notifier for Codex,\npoi rimuove codex-notifier da Codex ed elimina le sue credenziali e i suoi file da qui, come fa\n`codex-notifier uninstall`. I telefoni abbinati a questo computer lo vedranno sparire.\nUna licenza comprata sul sito non viene annullata: fallo su notifierforcodex.com/licence\ncon \"Erase my licence\"."
   # La parola che l'utente deve digitare; `yes` è sempre accettato comunque
   yes_word: "sì"
   prompt: "\nDigita %{yes} per continuare: "
@@ -182,15 +182,15 @@ local:
   question_title: "Codex ha una domanda"
   first_nudge: "Ricevile sul telefono: codex-notifier pair"
   milestone_nudge: "Già 10 notifiche. Ricevile sul telefono, con le approvazioni dalla schermata di blocco: esegui codex-notifier pair"
-  pair_message: "Codex Notifier: ricevi le notifiche sul desktop. Per averle anche sul telefono, e consentire o rispondere da lì, esegui `codex-notifier pair` in un terminale."
+  pair_message: "Notifier for Codex: ricevi le notifiche sul desktop. Per averle anche sul telefono, e consentire o rispondere da lì, esegui `codex-notifier pair` in un terminale."
 
 hook:
-  licence_message: "Codex Notifier: le notifiche sul telefono non sono sbloccate per questo computer. Sbloccale: codex-notifier unlock"
-  unpaired_message: "Codex Notifier: questo computer non è più abbinato, quindi il tuo telefono non riceverà notifiche. Esegui `codex-notifier pair` in un terminale per ricollegarlo."
+  licence_message: "Notifier for Codex: le notifiche sul telefono non sono sbloccate per questo computer. Sbloccale: codex-notifier unlock"
+  unpaired_message: "Notifier for Codex: questo computer non è più abbinato, quindi il tuo telefono non riceverà notifiche. Esegui `codex-notifier pair` in un terminale per ricollegarlo."
   unpaired_notification: "Questo computer non è più abbinato. Esegui `codex-notifier pair` in un terminale per ricollegarlo."
-  paired_message: "Codex Notifier: abbinato a %{phone}. Le notifiche ora arrivano sul tuo telefono."
+  paired_message: "Notifier for Codex: abbinato a %{phone}. Le notifiche ora arrivano sul tuo telefono."
   # Il server scrive titolo, testo e comando nella lingua dell'utente; qui vengono solo uniti
-  nudge_message: "Codex Notifier: %{title} %{body} %{command}"
+  nudge_message: "Notifier for Codex: %{title} %{body} %{command}"
   needs_attention: "Richiede la tua attenzione"
 
 hooks:
@@ -266,10 +266,10 @@ update:
   zip_empty: "lo zip non contiene codex-notifier.exe"
   did_not_run: "il codex-notifier scaricato non si è avviato, quindi è stato tenuto quello installato"
   updated: "codex-notifier aggiornato %{from} → %{to}."
-  available_message: "Codex Notifier: codex-notifier %{version} è disponibile: %{command}"
+  available_message: "Notifier for Codex: codex-notifier %{version} è disponibile: %{command}"
 
 notify:
-  registered_windows: "\"Codex Notifier\" registrato per le notifiche di Windows."
+  registered_windows: "\"Notifier for Codex\" registrato per le notifiche di Windows."
   icon_installed: "Icona delle notifiche installata in %{path}."
   doctor_applescript: "AppleScript (questa build non ha un'app per le notifiche)"
   doctor_allowed: "consentite per \"%{app}\""
@@ -303,7 +303,7 @@ update_lock:
 
 local_files:
   config_unreadable: "Impossibile leggere %{path} (%{error}), quindi codex-notifier non lo sovrascriverà. Correggi il file, oppure eliminalo ed esegui di nuovo `codex-notifier pair`."
-  slot_not_freed: "Impossibile liberare il posto di questo computer sulla licenza (%{error}). Se ha una licenza, libera il posto su codexnotifier.com/licence con la tua chiave."
+  slot_not_freed: "Impossibile liberare il posto di questo computer sulla licenza (%{error}). Se ha una licenza, libera il posto su notifierforcodex.com/licence con la tua chiave."
   kept_dir: "Rimossi i file di codex-notifier da %{path}. La cartella contiene anche altri file, quindi è stata lasciata al suo posto."
   remove_binary: "codex-notifier è ancora installato. Per rimuoverlo: %{command}"
 
@@ -323,7 +323,7 @@ payload:
   update_plan: "Aggiornare il piano"
 
 net:
-  unreachable: "Impossibile raggiungere il server di Codex Notifier. Controlla la connessione a internet e riprova."
+  unreachable: "Impossibile raggiungere il server di Notifier for Codex. Controlla la connessione a internet e riprova."
   doctor_unreachable: "server: impossibile raggiungere %{url}. Controlla la connessione a internet, il proxy o il firewall"
 
 clap:
@@ -339,4 +339,4 @@ clap:
 
 # `codex-notifier upgrade` refused a release whose SHA256SUMS isn't signed by TouchTap
 update_signature:
-  invalid: "la firma della versione non è valida, quindi non è stato modificato nulla. Riprova più tardi o reinstalla da codexnotifier.com/cli"
+  invalid: "la firma della versione non è valida, quindi non è stato modificato nulla. Riprova più tardi o reinstalla da notifierforcodex.com/cli"

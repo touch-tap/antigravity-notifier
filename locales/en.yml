@@ -4,10 +4,10 @@
 _version: 1
 
 cli:
-  about: "Codex Notifier: get a push on your phone when Codex needs you, and answer from there"
+  about: "Notifier for Codex: get a push on your phone when Codex needs you, and answer from there"
   pair:
     about: "Pair this computer with your phone. Pass the code the app shows, or run with no code to get one to type into the app"
-    code: "The 6-digit code shown in the Codex Notifier app"
+    code: "The 6-digit code shown in the Notifier for Codex app"
     name: "What this computer is called on your phone (default: the hostname)"
     no_wait: "Show the QR code and return at once: pairing completes on its own when the phone connects"
   setup:
@@ -57,18 +57,18 @@ common:
 
 pair:
   reregister: "This computer's old pairing has been removed, so it will be registered again."
-  code_not_recognised: "That code wasn't recognised. The 6-digit code is in the Codex Notifier app under Computers > Add a computer; it changes every 24 hours, so copy the line the app shows right now."
+  code_not_recognised: "That code wasn't recognised. The 6-digit code is in the Notifier for Codex app under Computers > Add a computer; it changes every 24 hours, so copy the line the app shows right now."
   offer_qr: "Press Enter to show a QR code here instead (scan it with your phone), or Ctrl+C."
   options_without_terminal: "Run `codex-notifier pair <code>` again with the code the app shows now, or run `codex-notifier pair` to show a QR code here and scan it with your phone."
   scan: "  Scan this with your phone's camera to connect it. Without the app yet, it\n  takes you to the App Store or Google Play: install, then scan again."
-  or_type_code: "  Or type this code in the Codex Notifier app:  %{code}"
-  enter_code: "  Enter this code in the Codex Notifier app:  %{code}"
+  or_type_code: "  Or type this code in the Notifier for Codex app:  %{code}"
+  enter_code: "  Enter this code in the Notifier for Codex app:  %{code}"
   hooks_already_installed: "  Hooks are installed, so you already get desktop notifications on this computer."
   code_lasts: "  Pair when you like: this code lasts %{duration}."
   completes_on_its_own: "  Pairing completes on its own when the phone connects."
   waiting: "  Waiting for your phone... (Ctrl+C is safe: pairing completes on its own when the phone connects)"
   code_expired: "the code expired before a phone claimed it. Run `codex-notifier pair` again."
-  code_is_six_digits: "the code is the 6 digits shown in the Codex Notifier app"
+  code_is_six_digits: "the code is the 6 digits shown in the Notifier for Codex app"
   credentials_stored: "Credentials stored in the %{store} (%{path})."
   test_sent: "Sent a test notification to your phone."
   test_failed: "Could not send a test notification yet: %{error}"
@@ -162,7 +162,7 @@ settings:
 
 forget:
   needs_yes: "codex-notifier forget needs a yes from you: run it in a terminal, or add --yes"
-  warning: "This erases this computer and its pairings from the Codex Notifier server, then\nremoves codex-notifier from Codex and deletes its credentials and files here, as `codex-notifier uninstall` does.\nPhones paired with this computer will see it disappear.\nA licence bought on the website is not cancelled: do that at codexnotifier.com/licence\nwith \"Erase my licence\"."
+  warning: "This erases this computer and its pairings from the Notifier for Codex server, then\nremoves codex-notifier from Codex and deletes its credentials and files here, as `codex-notifier uninstall` does.\nPhones paired with this computer will see it disappear.\nA licence bought on the website is not cancelled: do that at notifierforcodex.com/licence\nwith \"Erase my licence\"."
   # The word the user must type; `yes` is always accepted as well
   yes_word: "yes"
   prompt: "\nType %{yes} to continue: "
@@ -185,15 +185,15 @@ local:
   question_title: "Codex has a question"
   first_nudge: "Get these on your phone: codex-notifier pair"
   milestone_nudge: "10 notifications so far. Get them on your phone, with approvals from the lock screen: run codex-notifier pair"
-  pair_message: "Codex Notifier: you get desktop notifications. To get them on your phone too, and approve or answer from there, run `codex-notifier pair` in a terminal."
+  pair_message: "Notifier for Codex: you get desktop notifications. To get them on your phone too, and approve or answer from there, run `codex-notifier pair` in a terminal."
 
 hook:
-  licence_message: "Codex Notifier: phone notifications aren't unlocked for this computer. Unlock them: codex-notifier unlock"
-  unpaired_message: "Codex Notifier: this computer isn't paired any more, so your phone won't get notifications. Run `codex-notifier pair` in a terminal to reconnect."
+  licence_message: "Notifier for Codex: phone notifications aren't unlocked for this computer. Unlock them: codex-notifier unlock"
+  unpaired_message: "Notifier for Codex: this computer isn't paired any more, so your phone won't get notifications. Run `codex-notifier pair` in a terminal to reconnect."
   unpaired_notification: "This computer isn't paired any more. Run `codex-notifier pair` in a terminal to reconnect."
-  paired_message: "Codex Notifier: paired with %{phone}. Notifications now go to your phone."
+  paired_message: "Notifier for Codex: paired with %{phone}. Notifications now go to your phone."
   # The server writes title, body and command in the user's language; this only joins them
-  nudge_message: "Codex Notifier: %{title} %{body} %{command}"
+  nudge_message: "Notifier for Codex: %{title} %{body} %{command}"
   needs_attention: "Needs your attention"
 
 hooks:
@@ -269,10 +269,10 @@ update:
   zip_empty: "the zip has no codex-notifier.exe in it"
   did_not_run: "the downloaded codex-notifier did not run, so the installed one was kept"
   updated: "Updated codex-notifier %{from} → %{to}."
-  available_message: "Codex Notifier: codex-notifier %{version} is available: %{command}"
+  available_message: "Notifier for Codex: codex-notifier %{version} is available: %{command}"
 
 notify:
-  registered_windows: "Registered \"Codex Notifier\" for Windows notifications."
+  registered_windows: "Registered \"Notifier for Codex\" for Windows notifications."
   icon_installed: "Installed the notification icon at %{path}."
   doctor_applescript: "AppleScript (this build has no notifier app)"
   doctor_allowed: "allowed for \"%{app}\""
@@ -306,7 +306,7 @@ update_lock:
 
 local_files:
   config_unreadable: "%{path} can't be read (%{error}), so codex-notifier won't write over it. Fix the file, or delete it and run `codex-notifier pair` again."
-  slot_not_freed: "Couldn't free this computer's licence slot (%{error}). If it has a licence, free the slot at codexnotifier.com/licence with your key."
+  slot_not_freed: "Couldn't free this computer's licence slot (%{error}). If it has a licence, free the slot at notifierforcodex.com/licence with your key."
   kept_dir: "Removed codex-notifier's files from %{path}. The folder holds other files too, so it was left in place."
   remove_binary: "codex-notifier itself is still installed. To remove it: %{command}"
 
@@ -333,7 +333,7 @@ payload:
 # When the server can't be reached at all (no connection, DNS, timeout). The raw error follows
 # on the next line.
 net:
-  unreachable: "Couldn't reach the Codex Notifier server. Check your internet connection and try again."
+  unreachable: "Couldn't reach the Notifier for Codex server. Check your internet connection and try again."
   # A `codex-notifier doctor` line, in the same label: text style as the doctor.* lines
   doctor_unreachable: "server: couldn't reach %{url}. Check your internet connection, proxy or firewall"
 
@@ -353,4 +353,4 @@ clap:
 
 # `codex-notifier upgrade` refused a release whose SHA256SUMS isn't signed by TouchTap
 update_signature:
-  invalid: "the release's signature doesn't check out, so nothing was changed. Try again later, or reinstall from codexnotifier.com/cli"
+  invalid: "the release's signature doesn't check out, so nothing was changed. Try again later, or reinstall from notifierforcodex.com/cli"

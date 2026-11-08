@@ -5,10 +5,10 @@
 _version: 1
 
 cli:
-  about: "Codex Notifier: nhận thông báo trên điện thoại khi Codex cần bạn, và trả lời ngay từ đó"
+  about: "Notifier for Codex: nhận thông báo trên điện thoại khi Codex cần bạn, và trả lời ngay từ đó"
   pair:
     about: "Ghép nối máy tính này với điện thoại của bạn. Truyền mã mà ứng dụng hiển thị, hoặc chạy không kèm mã để nhận một mã rồi nhập vào ứng dụng"
-    code: "Mã 6 chữ số hiển thị trong ứng dụng Codex Notifier"
+    code: "Mã 6 chữ số hiển thị trong ứng dụng Notifier for Codex"
     name: "Tên của máy tính này trên điện thoại của bạn (mặc định: hostname)"
     no_wait: "Hiển thị mã QR rồi thoát ngay: việc ghép nối tự hoàn tất khi điện thoại kết nối"
   setup:
@@ -56,18 +56,18 @@ common:
 
 pair:
   reregister: "Ghép nối cũ của máy tính này đã bị gỡ, nên nó sẽ được đăng ký lại."
-  code_not_recognised: "Mã này không được nhận ra. Mã 6 chữ số nằm trong ứng dụng Codex Notifier, mục Máy tính > Thêm máy tính; mã thay đổi mỗi 24 giờ, nên hãy sao chép dòng mà ứng dụng đang hiển thị lúc này."
+  code_not_recognised: "Mã này không được nhận ra. Mã 6 chữ số nằm trong ứng dụng Notifier for Codex, mục Máy tính > Thêm máy tính; mã thay đổi mỗi 24 giờ, nên hãy sao chép dòng mà ứng dụng đang hiển thị lúc này."
   offer_qr: "Nhấn Enter để hiển thị mã QR ở đây thay thế (quét bằng điện thoại của bạn), hoặc Ctrl+C."
   options_without_terminal: "Chạy lại `codex-notifier pair <mã>` với mã mà ứng dụng đang hiển thị, hoặc chạy `codex-notifier pair` để hiển thị mã QR ở đây rồi quét bằng điện thoại."
   scan: "  Quét mã này bằng camera điện thoại để kết nối. Nếu chưa có ứng dụng, mã sẽ đưa bạn\n  tới App Store hoặc Google Play: cài xong rồi quét lại."
-  or_type_code: "  Hoặc nhập mã này vào ứng dụng Codex Notifier:  %{code}"
-  enter_code: "  Nhập mã này vào ứng dụng Codex Notifier:  %{code}"
+  or_type_code: "  Hoặc nhập mã này vào ứng dụng Notifier for Codex:  %{code}"
+  enter_code: "  Nhập mã này vào ứng dụng Notifier for Codex:  %{code}"
   hooks_already_installed: "  Hook đã được cài, nên bạn đã nhận thông báo trên máy tính này rồi."
   code_lasts: "  Ghép nối khi bạn muốn: mã này có hiệu lực trong %{duration}."
   completes_on_its_own: "  Việc ghép nối tự hoàn tất khi điện thoại kết nối."
   waiting: "  Đang chờ điện thoại của bạn... (Ctrl+C không sao: việc ghép nối tự hoàn tất khi điện thoại kết nối)"
   code_expired: "mã đã hết hạn trước khi có điện thoại nào dùng nó. Chạy lại `codex-notifier pair`."
-  code_is_six_digits: "mã là 6 chữ số hiển thị trong ứng dụng Codex Notifier"
+  code_is_six_digits: "mã là 6 chữ số hiển thị trong ứng dụng Notifier for Codex"
   credentials_stored: "Thông tin xác thực đã được lưu trong %{store} (%{path})."
   test_sent: "Đã gửi một thông báo thử tới điện thoại của bạn."
   test_failed: "Chưa gửi được thông báo thử: %{error}"
@@ -161,7 +161,7 @@ settings:
 
 forget:
   needs_yes: "codex-notifier forget cần bạn xác nhận: chạy trong terminal, hoặc thêm --yes"
-  warning: "Lệnh này xóa máy tính này và các ghép nối của nó khỏi máy chủ Codex Notifier, rồi gỡ codex-notifier\nkhỏi Codex và xóa thông tin xác thực cùng các tệp của nó ở đây, như `codex-notifier uninstall` làm.\nCác điện thoại đã ghép nối với máy tính này sẽ thấy nó biến mất.\nGiấy phép mua trên trang web không bị hủy: hãy làm việc đó tại codexnotifier.com/licence\nbằng \"Xóa giấy phép của tôi\"."
+  warning: "Lệnh này xóa máy tính này và các ghép nối của nó khỏi máy chủ Notifier for Codex, rồi gỡ codex-notifier\nkhỏi Codex và xóa thông tin xác thực cùng các tệp của nó ở đây, như `codex-notifier uninstall` làm.\nCác điện thoại đã ghép nối với máy tính này sẽ thấy nó biến mất.\nGiấy phép mua trên trang web không bị hủy: hãy làm việc đó tại notifierforcodex.com/licence\nbằng \"Xóa giấy phép của tôi\"."
   # The word the user must type; `yes` is always accepted as well
   yes_word: "có"
   prompt: "\nNhập %{yes} để tiếp tục: "
@@ -184,15 +184,15 @@ local:
   question_title: "Codex có một câu hỏi"
   first_nudge: "Nhận trên điện thoại: codex-notifier pair"
   milestone_nudge: "Đã có 10 thông báo. Nhận chúng trên điện thoại, phê duyệt ngay từ màn hình khóa: chạy codex-notifier pair"
-  pair_message: "Codex Notifier: bạn đang nhận thông báo trên máy tính. Để nhận cả trên điện thoại và phê duyệt hoặc trả lời từ đó, hãy chạy `codex-notifier pair` trong terminal."
+  pair_message: "Notifier for Codex: bạn đang nhận thông báo trên máy tính. Để nhận cả trên điện thoại và phê duyệt hoặc trả lời từ đó, hãy chạy `codex-notifier pair` trong terminal."
 
 hook:
-  licence_message: "Codex Notifier: thông báo điện thoại chưa được mở khóa cho máy tính này. Mở khóa: codex-notifier unlock"
-  unpaired_message: "Codex Notifier: máy tính này không còn được ghép nối, nên điện thoại của bạn sẽ không nhận thông báo. Chạy `codex-notifier pair` trong terminal để kết nối lại."
+  licence_message: "Notifier for Codex: thông báo điện thoại chưa được mở khóa cho máy tính này. Mở khóa: codex-notifier unlock"
+  unpaired_message: "Notifier for Codex: máy tính này không còn được ghép nối, nên điện thoại của bạn sẽ không nhận thông báo. Chạy `codex-notifier pair` trong terminal để kết nối lại."
   unpaired_notification: "Máy tính này không còn được ghép nối. Chạy `codex-notifier pair` trong terminal để kết nối lại."
-  paired_message: "Codex Notifier: đã ghép nối với %{phone}. Thông báo giờ sẽ tới điện thoại của bạn."
+  paired_message: "Notifier for Codex: đã ghép nối với %{phone}. Thông báo giờ sẽ tới điện thoại của bạn."
   # The server writes title, body and command in the user's language; this only joins them
-  nudge_message: "Codex Notifier: %{title} %{body} %{command}"
+  nudge_message: "Notifier for Codex: %{title} %{body} %{command}"
   needs_attention: "Cần bạn chú ý"
 
 hooks:
@@ -268,10 +268,10 @@ update:
   zip_empty: "tệp zip không chứa codex-notifier.exe"
   did_not_run: "bản codex-notifier vừa tải không chạy được, nên bản đang cài được giữ lại"
   updated: "Đã cập nhật codex-notifier %{from} → %{to}."
-  available_message: "Codex Notifier: đã có codex-notifier %{version}: %{command}"
+  available_message: "Notifier for Codex: đã có codex-notifier %{version}: %{command}"
 
 notify:
-  registered_windows: "Đã đăng ký \"Codex Notifier\" cho thông báo của Windows."
+  registered_windows: "Đã đăng ký \"Notifier for Codex\" cho thông báo của Windows."
   icon_installed: "Đã cài biểu tượng thông báo tại %{path}."
   doctor_applescript: "AppleScript (bản dựng này không có ứng dụng thông báo)"
   doctor_allowed: "đã cho phép cho \"%{app}\""
@@ -305,7 +305,7 @@ update_lock:
 
 local_files:
   config_unreadable: "Không đọc được %{path} (%{error}), nên codex-notifier sẽ không ghi đè lên nó. Hãy sửa tệp, hoặc xóa nó rồi chạy lại `codex-notifier pair`."
-  slot_not_freed: "Không giải phóng được chỗ của máy tính này trong giấy phép (%{error}). Nếu máy có giấy phép, hãy giải phóng chỗ tại codexnotifier.com/licence bằng khóa của bạn."
+  slot_not_freed: "Không giải phóng được chỗ của máy tính này trong giấy phép (%{error}). Nếu máy có giấy phép, hãy giải phóng chỗ tại notifierforcodex.com/licence bằng khóa của bạn."
   kept_dir: "Đã xóa các tệp của codex-notifier khỏi %{path}. Thư mục còn chứa tệp khác nên được giữ lại."
   remove_binary: "Bản thân codex-notifier vẫn còn được cài đặt. Để gỡ nó: %{command}"
 
@@ -325,7 +325,7 @@ payload:
   update_plan: "Cập nhật kế hoạch"
 
 net:
-  unreachable: "Không kết nối được tới máy chủ Codex Notifier. Hãy kiểm tra kết nối internet rồi thử lại."
+  unreachable: "Không kết nối được tới máy chủ Notifier for Codex. Hãy kiểm tra kết nối internet rồi thử lại."
   doctor_unreachable: "máy chủ: không kết nối được tới %{url}. Hãy kiểm tra kết nối internet, proxy hoặc tường lửa"
 
 clap:
@@ -341,4 +341,4 @@ clap:
 
 # `codex-notifier upgrade` refused a release whose SHA256SUMS isn't signed by TouchTap
 update_signature:
-  invalid: "chữ ký của bản phát hành không hợp lệ nên không có gì bị thay đổi. Hãy thử lại sau hoặc cài lại từ codexnotifier.com/cli"
+  invalid: "chữ ký của bản phát hành không hợp lệ nên không có gì bị thay đổi. Hãy thử lại sau hoặc cài lại từ notifierforcodex.com/cli"

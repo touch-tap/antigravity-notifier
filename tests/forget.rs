@@ -280,7 +280,7 @@ fn uninstall_offline_says_the_licence_slot_was_not_freed() {
     let stderr = text(&out.stderr);
     assert!(
         stderr.contains("Couldn't free this computer's licence slot")
-            && stderr.contains("codexnotifier.com/licence"),
+            && stderr.contains("notifierforcodex.com/licence"),
         "{stderr}"
     );
     assert!(!sandbox.app_dir().exists());

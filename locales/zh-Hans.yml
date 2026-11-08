@@ -3,10 +3,10 @@
 _version: 1
 
 cli:
-  about: "Codex Notifier: Codex 需要你时，在手机上收到推送，并直接在手机上回复"
+  about: "Notifier for Codex: Codex 需要你时，在手机上收到推送，并直接在手机上回复"
   pair:
     about: "把这台电脑与你的手机配对。传入应用显示的配对码，或不带配对码运行，获取一个输入到应用里的配对码"
-    code: "Codex Notifier 应用中显示的 6 位配对码"
+    code: "Notifier for Codex 应用中显示的 6 位配对码"
     name: "这台电脑在手机上显示的名称（默认：主机名）"
     no_wait: "显示二维码后立即返回：手机连接后配对会自动完成"
   setup:
@@ -55,18 +55,18 @@ common:
 
 pair:
   reregister: "这台电脑之前的配对已被移除，所以会重新注册。"
-  code_not_recognised: "无法识别这个配对码。6 位配对码在 Codex Notifier 应用的“电脑 > 添加电脑”里；它每 24 小时更换一次，所以请复制应用此刻显示的那一行。"
+  code_not_recognised: "无法识别这个配对码。6 位配对码在 Notifier for Codex 应用的“电脑 > 添加电脑”里；它每 24 小时更换一次，所以请复制应用此刻显示的那一行。"
   offer_qr: "按 Enter 改为在这里显示二维码（用手机扫描），或按 Ctrl+C 退出。"
   options_without_terminal: "用应用现在显示的配对码再次运行 `codex-notifier pair <code>`，或运行 `codex-notifier pair` 在这里显示二维码，再用手机扫描。"
   scan: "  用手机相机扫描它即可连接。还没有应用的话，它会带你去 App Store 或\n  Google Play: 安装后再扫一次。"
-  or_type_code: "  或者在 Codex Notifier 应用中输入这个配对码:  %{code}"
-  enter_code: "  在 Codex Notifier 应用中输入这个配对码:  %{code}"
+  or_type_code: "  或者在 Notifier for Codex 应用中输入这个配对码:  %{code}"
+  enter_code: "  在 Notifier for Codex 应用中输入这个配对码:  %{code}"
   hooks_already_installed: "  钩子已安装，所以这台电脑上你已经能收到桌面通知。"
   code_lasts: "  随时都可以配对：这个配对码 %{duration}内有效。"
   completes_on_its_own: "  手机连接后，配对会自动完成。"
   waiting: "  正在等待你的手机...（可以放心按 Ctrl+C: 手机连接后配对会自动完成）"
   code_expired: "配对码在手机使用之前就过期了。请再运行一次 `codex-notifier pair`。"
-  code_is_six_digits: "配对码是 Codex Notifier 应用中显示的 6 位数字"
+  code_is_six_digits: "配对码是 Notifier for Codex 应用中显示的 6 位数字"
   credentials_stored: "凭据已存入%{store}（%{path}）。"
   test_sent: "已向你的手机发送一条测试通知。"
   test_failed: "暂时无法发送测试通知: %{error}"
@@ -160,7 +160,7 @@ settings:
 
 forget:
   needs_yes: "codex-notifier forget 需要你确认：在终端中运行它，或加上 --yes"
-  warning: "这会从 Codex Notifier 服务器上抹掉这台电脑及其配对，然后像 `codex-notifier uninstall` 一样\n从 Codex 中移除 codex-notifier，并删除这里的凭据和文件。\n与这台电脑配对的手机会看到它消失。\n在网站上购买的许可不会被取消：请到 codexnotifier.com/licence\n使用“Erase my licence”处理。"
+  warning: "这会从 Notifier for Codex 服务器上抹掉这台电脑及其配对，然后像 `codex-notifier uninstall` 一样\n从 Codex 中移除 codex-notifier，并删除这里的凭据和文件。\n与这台电脑配对的手机会看到它消失。\n在网站上购买的许可不会被取消：请到 notifierforcodex.com/licence\n使用“Erase my licence”处理。"
   # 用户必须输入的词；`yes` 始终也可以
   yes_word: "是"
   prompt: "\n输入 %{yes} 继续: "
@@ -183,15 +183,15 @@ local:
   question_title: "Codex 有一个问题"
   first_nudge: "在手机上接收: codex-notifier pair"
   milestone_nudge: "到现在已有 10 条通知。想在手机上接收，并从锁屏直接批准：运行 codex-notifier pair"
-  pair_message: "Codex Notifier: 你现在收到的是桌面通知。想在手机上也收到，并在手机上批准或回答，请在终端中运行 `codex-notifier pair`。"
+  pair_message: "Notifier for Codex: 你现在收到的是桌面通知。想在手机上也收到，并在手机上批准或回答，请在终端中运行 `codex-notifier pair`。"
 
 hook:
-  licence_message: "Codex Notifier: 这台电脑的手机通知尚未解锁。解锁: codex-notifier unlock"
-  unpaired_message: "Codex Notifier: 这台电脑已不再配对，所以你的手机收不到通知。在终端中运行 `codex-notifier pair` 重新连接。"
+  licence_message: "Notifier for Codex: 这台电脑的手机通知尚未解锁。解锁: codex-notifier unlock"
+  unpaired_message: "Notifier for Codex: 这台电脑已不再配对，所以你的手机收不到通知。在终端中运行 `codex-notifier pair` 重新连接。"
   unpaired_notification: "这台电脑已不再配对。在终端中运行 `codex-notifier pair` 重新连接。"
-  paired_message: "Codex Notifier: 已与 %{phone} 配对。通知现在会发到你的手机。"
+  paired_message: "Notifier for Codex: 已与 %{phone} 配对。通知现在会发到你的手机。"
   # 标题、正文和命令由服务器用用户的语言写好；这里只是把它们拼起来
-  nudge_message: "Codex Notifier: %{title} %{body} %{command}"
+  nudge_message: "Notifier for Codex: %{title} %{body} %{command}"
   needs_attention: "需要你处理"
 
 hooks:
@@ -267,10 +267,10 @@ update:
   zip_empty: "zip 里没有 codex-notifier.exe"
   did_not_run: "下载的 codex-notifier 无法运行，所以保留了已安装的版本"
   updated: "已把 codex-notifier 从 %{from} 更新到 %{to}。"
-  available_message: "Codex Notifier: codex-notifier %{version} 可供更新: %{command}"
+  available_message: "Notifier for Codex: codex-notifier %{version} 可供更新: %{command}"
 
 notify:
-  registered_windows: "已为 Windows 通知注册“Codex Notifier”。"
+  registered_windows: "已为 Windows 通知注册“Notifier for Codex”。"
   icon_installed: "已把通知图标安装到 %{path}。"
   doctor_applescript: "AppleScript（这个构建没有通知应用）"
   doctor_allowed: "已允许“%{app}”"
@@ -304,7 +304,7 @@ update_lock:
 
 local_files:
   config_unreadable: "无法读取 %{path}（%{error}），所以 codex-notifier 不会覆盖它。请修复这个文件，或者删除它后再运行一次 `codex-notifier pair`。"
-  slot_not_freed: "无法释放这台电脑的许可名额（%{error}）。如果它有许可，请用你的密钥在 codexnotifier.com/licence 释放名额。"
+  slot_not_freed: "无法释放这台电脑的许可名额（%{error}）。如果它有许可，请用你的密钥在 notifierforcodex.com/licence 释放名额。"
   kept_dir: "已从 %{path} 移除 codex-notifier 的文件。这个文件夹里还有其他文件，所以保留了文件夹本身。"
   remove_binary: "codex-notifier 本身仍已安装。要移除它，请运行：%{command}"
 
@@ -324,7 +324,7 @@ payload:
   update_plan: "更新计划"
 
 net:
-  unreachable: "无法连接 Codex Notifier 服务器。请检查网络连接后重试。"
+  unreachable: "无法连接 Notifier for Codex 服务器。请检查网络连接后重试。"
   doctor_unreachable: "服务器: 无法连接 %{url}。请检查网络连接、代理或防火墙"
 
 clap:
@@ -340,4 +340,4 @@ clap:
 
 # `codex-notifier upgrade` refused a release whose SHA256SUMS isn't signed by TouchTap
 update_signature:
-  invalid: "版本签名校验失败，因此未做任何更改。请稍后再试，或从 codexnotifier.com/cli 重新安装"
+  invalid: "版本签名校验失败，因此未做任何更改。请稍后再试，或从 notifierforcodex.com/cli 重新安装"

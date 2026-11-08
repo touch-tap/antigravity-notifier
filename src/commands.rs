@@ -1087,7 +1087,7 @@ mod tests {
     fn pair_failures_read_as_before() {
         assert_eq!(
             format!("{:#}", anyhow::anyhow!(PairFailure::MalformedCode)),
-            "the code is the 6 digits shown in the Codex Notifier app"
+            "the code is the 6 digits shown in the Notifier for Codex app"
         );
         assert_eq!(
             format!("{:#}", anyhow::anyhow!(PairFailure::CodeTimeout)),

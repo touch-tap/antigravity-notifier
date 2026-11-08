@@ -1,6 +1,6 @@
 # Translating codex-notifier
 
-`codex-notifier` is the Codex Notifier command for the terminal. Everything a person reads from it
+`codex-notifier` is the Notifier for Codex command for the terminal. Everything a person reads from it
 (terminal output, desktop notifications, the one-line messages it hands to Codex, `--help`
 descriptions) lives in one YAML file per language in this folder. `en.yml` is the source; a
 translation is a copy of it with the values changed and the keys left alone. No Rust changes are
@@ -62,8 +62,8 @@ Do not translate:
   They are what the user types back.
 - File and product names: `SHA256SUMS`, `codex-notifier.log`, `config.toml`, `tmux`,
   `AppleScript`, `npx`, `Homebrew`, App Store, Google Play, `Ctrl+C`, `Enter`.
-- Product names: "Codex Notifier", "Codex". The phone app is "the Codex Notifier app".
-- URLs and paths: `codexnotifier.com/licence`, `%{path}`, `%{url}`.
+- Product names: "Notifier for Codex", "Codex". The phone app is "the Notifier for Codex app".
+- URLs and paths: `notifierforcodex.com/licence`, `%{path}`, `%{url}`.
 - Key formats: `CCN-…-%{last4}` (the server issues every licence key with the CCN- prefix).
 - The `ok ` / `!! ` markers are added by the program, not in the YAML.
 
@@ -108,7 +108,7 @@ too), "unlock" for buying a licence; use the same words the app uses on screen.
   phone shows them exactly as sent, in this computer's language.
 - `systemMessage` lines (`local.pair_message`, `hook.*_message`, `update.available_message`): one
   line that Codex shows in the terminal; aim for the English length, never more than about
-  220 characters. They start with "Codex Notifier:" so the reader knows who is talking: keep
+  220 characters. They start with "Notifier for Codex:" so the reader knows who is talking: keep
   that prefix.
 - `--help` descriptions (`cli.*`): one line each, no full stop at the end (clap prints them in a
   table). `cli.about` is the first line of `codex-notifier --help`.

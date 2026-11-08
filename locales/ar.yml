@@ -6,10 +6,10 @@
 _version: 1
 
 cli:
-  about: "Codex Notifier: يصلك إشعار على هاتفك عندما يحتاجك Codex، وتجيب من هناك"
+  about: "Notifier for Codex: يصلك إشعار على هاتفك عندما يحتاجك Codex، وتجيب من هناك"
   pair:
     about: "اربط هذا الكمبيوتر بهاتفك. أدخل الرمز الذي يعرضه التطبيق، أو شغّل الأمر بلا رمز لتحصل على رمز تكتبه في التطبيق"
-    code: "الرمز المكوّن من 6 أرقام المعروض في تطبيق Codex Notifier"
+    code: "الرمز المكوّن من 6 أرقام المعروض في تطبيق Notifier for Codex"
     name: "اسم هذا الكمبيوتر كما يظهر على هاتفك (الافتراضي: اسم المضيف)"
     no_wait: "اعرض رمز QR وارجع فورًا: يكتمل الربط من تلقاء نفسه عندما يتصل الهاتف"
   setup:
@@ -57,18 +57,18 @@ common:
 
 pair:
   reregister: "أُزيل الربط القديم لهذا الكمبيوتر، لذا سيُسجَّل من جديد."
-  code_not_recognised: "لم يُتعرَّف على هذا الرمز. الرمز المكوّن من 6 أرقام موجود في تطبيق Codex Notifier ضمن أجهزة الكمبيوتر > إضافة كمبيوتر؛ وهو يتغير كل 24 ساعة، فانسخ السطر الذي يعرضه التطبيق الآن."
+  code_not_recognised: "لم يُتعرَّف على هذا الرمز. الرمز المكوّن من 6 أرقام موجود في تطبيق Notifier for Codex ضمن أجهزة الكمبيوتر > إضافة كمبيوتر؛ وهو يتغير كل 24 ساعة، فانسخ السطر الذي يعرضه التطبيق الآن."
   offer_qr: "اضغط Enter لعرض رمز QR هنا بدلًا من ذلك (وامسحه بهاتفك)، أو Ctrl+C."
   options_without_terminal: "شغّل مجددًا `codex-notifier pair <code>` بالرمز الذي يعرضه التطبيق الآن، أو اعرض رمز QR هنا وامسحه بهاتفك بالأمر: `codex-notifier pair`"
   scan: "  امسح هذا بكاميرا هاتفك لربطه. إن لم يكن التطبيق مثبتًا بعد، ينقلك\n  إلى App Store أو Google Play: ثبّته ثم امسح مرة أخرى."
-  or_type_code: "  أو اكتب هذا الرمز في تطبيق Codex Notifier:  %{code}"
-  enter_code: "  أدخل هذا الرمز في تطبيق Codex Notifier:  %{code}"
+  or_type_code: "  أو اكتب هذا الرمز في تطبيق Notifier for Codex:  %{code}"
+  enter_code: "  أدخل هذا الرمز في تطبيق Notifier for Codex:  %{code}"
   hooks_already_installed: "  hooks مثبتة، لذا تصلك إشعارات سطح المكتب على هذا الكمبيوتر بالفعل."
   code_lasts: "  اربط وقتما تشاء: هذا الرمز صالح لمدة %{duration}."
   completes_on_its_own: "  يكتمل الربط من تلقاء نفسه عندما يتصل الهاتف."
   waiting: "  في انتظار هاتفك... (Ctrl+C آمن: يكتمل الربط من تلقاء نفسه عندما يتصل الهاتف)"
   code_expired: "انتهت صلاحية الرمز قبل أن يستخدمه أي هاتف. شغّل الأمر مجددًا: `codex-notifier pair`"
-  code_is_six_digits: "الرمز هو الأرقام الستة المعروضة في تطبيق Codex Notifier"
+  code_is_six_digits: "الرمز هو الأرقام الستة المعروضة في تطبيق Notifier for Codex"
   credentials_stored: "حُفظت بيانات الاعتماد في %{store}: %{path}"
   test_sent: "أُرسل إشعار تجريبي إلى هاتفك."
   test_failed: "تعذّر إرسال إشعار تجريبي حتى الآن: %{error}"
@@ -162,7 +162,7 @@ settings:
 
 forget:
   needs_yes: "codex-notifier forget يحتاج إلى تأكيد منك: شغّله في طرفية، أو أضف --yes"
-  warning: "هذا يمسح هذا الكمبيوتر وارتباطاته من خادم Codex Notifier، ثم يزيل codex-notifier من Codex\nويحذف بيانات اعتماده وملفاته هنا، كما يفعل `codex-notifier uninstall`.\nستلاحظ الهواتف المرتبطة بهذا الكمبيوتر اختفاءه.\nالترخيص المشترى من الموقع لا يُلغى: افعل ذلك من codexnotifier.com/licence\nعبر \"مسح ترخيصي\"."
+  warning: "هذا يمسح هذا الكمبيوتر وارتباطاته من خادم Notifier for Codex، ثم يزيل codex-notifier من Codex\nويحذف بيانات اعتماده وملفاته هنا، كما يفعل `codex-notifier uninstall`.\nستلاحظ الهواتف المرتبطة بهذا الكمبيوتر اختفاءه.\nالترخيص المشترى من الموقع لا يُلغى: افعل ذلك من notifierforcodex.com/licence\nعبر \"مسح ترخيصي\"."
   # The word the user must type; `yes` is always accepted as well
   yes_word: "نعم"
   prompt: "\nاكتب %{yes} للمتابعة: "
@@ -185,15 +185,15 @@ local:
   question_title: "لدى Codex سؤال"
   first_nudge: "على هاتفك أيضًا: codex-notifier pair"
   milestone_nudge: "10 إشعارات حتى الآن. استقبلها على هاتفك، مع الموافقة من شاشة القفل: codex-notifier pair"
-  pair_message: "Codex Notifier: تصلك إشعارات سطح المكتب. لتصلك على هاتفك أيضًا وتوافق أو تجيب من هناك، شغّل في طرفية: `codex-notifier pair`"
+  pair_message: "Notifier for Codex: تصلك إشعارات سطح المكتب. لتصلك على هاتفك أيضًا وتوافق أو تجيب من هناك، شغّل في طرفية: `codex-notifier pair`"
 
 hook:
-  licence_message: "Codex Notifier: إشعارات الهاتف غير مفعّلة لهذا الكمبيوتر. لتفعيلها: codex-notifier unlock"
-  unpaired_message: "Codex Notifier: هذا الكمبيوتر لم يعد مرتبطًا، فلن تصل الإشعارات إلى هاتفك. لإعادة الربط شغّل في طرفية: `codex-notifier pair`"
+  licence_message: "Notifier for Codex: إشعارات الهاتف غير مفعّلة لهذا الكمبيوتر. لتفعيلها: codex-notifier unlock"
+  unpaired_message: "Notifier for Codex: هذا الكمبيوتر لم يعد مرتبطًا، فلن تصل الإشعارات إلى هاتفك. لإعادة الربط شغّل في طرفية: `codex-notifier pair`"
   unpaired_notification: "هذا الكمبيوتر لم يعد مرتبطًا. لإعادة الربط شغّل في طرفية: `codex-notifier pair`"
-  paired_message: "Codex Notifier: تم الربط مع %{phone}. تصل الإشعارات الآن إلى هاتفك."
+  paired_message: "Notifier for Codex: تم الربط مع %{phone}. تصل الإشعارات الآن إلى هاتفك."
   # The server writes title, body and command in the user's language; this only joins them
-  nudge_message: "Codex Notifier: %{title} %{body} %{command}"
+  nudge_message: "Notifier for Codex: %{title} %{body} %{command}"
   needs_attention: "يحتاج إلى انتباهك"
 
 hooks:
@@ -269,10 +269,10 @@ update:
   zip_empty: "ملف zip لا يحتوي على codex-notifier.exe"
   did_not_run: "لم يعمل codex-notifier الذي نُزّل، لذا أُبقي على الإصدار المثبت"
   updated: "تم تحديث codex-notifier %{from} → %{to}."
-  available_message: "Codex Notifier: codex-notifier %{version} متاح: %{command}"
+  available_message: "Notifier for Codex: codex-notifier %{version} متاح: %{command}"
 
 notify:
-  registered_windows: "سُجّل \"Codex Notifier\" لإشعارات Windows."
+  registered_windows: "سُجّل \"Notifier for Codex\" لإشعارات Windows."
   icon_installed: "ثُبّتت أيقونة الإشعارات في %{path}."
   doctor_applescript: "AppleScript (هذا البناء بلا تطبيق إشعارات)"
   doctor_allowed: "مسموح بها لـ \"%{app}\""
@@ -306,7 +306,7 @@ update_lock:
 
 local_files:
   config_unreadable: "تعذّرت قراءة %{path} (%{error})، لذا لن يكتب codex-notifier فوقه. أصلِح الملف، أو احذفه ثم شغّل `codex-notifier pair` من جديد."
-  slot_not_freed: "تعذّر إفراغ مكان هذا الكمبيوتر على الترخيص (%{error}). إن كان له ترخيص، فأفرغ مكانه من codexnotifier.com/licence باستخدام مفتاحك."
+  slot_not_freed: "تعذّر إفراغ مكان هذا الكمبيوتر على الترخيص (%{error}). إن كان له ترخيص، فأفرغ مكانه من notifierforcodex.com/licence باستخدام مفتاحك."
   kept_dir: "أُزيلت ملفات codex-notifier من %{path}. يحتوي المجلد على ملفات أخرى أيضًا، لذا تُرك في مكانه."
   remove_binary: "ما زال codex-notifier نفسه مثبّتًا. لإزالته: %{command}"
 
@@ -326,7 +326,7 @@ payload:
   update_plan: "تحديث الخطة"
 
 net:
-  unreachable: "تعذّر الوصول إلى خادم Codex Notifier. تحقّق من اتصالك بالإنترنت وحاول مرة أخرى."
+  unreachable: "تعذّر الوصول إلى خادم Notifier for Codex. تحقّق من اتصالك بالإنترنت وحاول مرة أخرى."
   doctor_unreachable: "الخادم: تعذّر الوصول إلى %{url}. تحقّق من اتصالك بالإنترنت أو الوكيل أو جدار الحماية"
 
 clap:
@@ -342,4 +342,4 @@ clap:
 
 # `codex-notifier upgrade` refused a release whose SHA256SUMS isn't signed by TouchTap
 update_signature:
-  invalid: "تعذّر التحقق من توقيع الإصدار، لذلك لم يتغيّر شيء. حاول لاحقًا أو أعد التثبيت من codexnotifier.com/cli"
+  invalid: "تعذّر التحقق من توقيع الإصدار، لذلك لم يتغيّر شيء. حاول لاحقًا أو أعد التثبيت من notifierforcodex.com/cli"

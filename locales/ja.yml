@@ -3,10 +3,10 @@
 _version: 1
 
 cli:
-  about: "Codex Notifier: Codex があなたを必要とするときスマートフォンにプッシュ通知を届け、その場で返答できます"
+  about: "Notifier for Codex: Codex があなたを必要とするときスマートフォンにプッシュ通知を届け、その場で返答できます"
   pair:
     about: "このコンピュータをスマートフォンとペアリングします。アプリに表示されたコードを渡すか、コードなしで実行してアプリに入力するコードを取得します"
-    code: "Codex Notifier アプリに表示される6桁のコード"
+    code: "Notifier for Codex アプリに表示される6桁のコード"
     name: "スマートフォン上でのこのコンピュータの名前（デフォルト: ホスト名）"
     no_wait: "QR コードを表示してすぐ戻ります。スマートフォンが接続するとペアリングは自動で完了します"
   setup:
@@ -55,18 +55,18 @@ common:
 
 pair:
   reregister: "このコンピュータの以前のペアリングは削除されているため、改めて登録します。"
-  code_not_recognised: "そのコードは認識されませんでした。6桁のコードは Codex Notifier アプリの「コンピュータ > コンピュータを追加」にあります。24時間ごとに変わるので、アプリに今表示されている行をコピーしてください。"
+  code_not_recognised: "そのコードは認識されませんでした。6桁のコードは Notifier for Codex アプリの「コンピュータ > コンピュータを追加」にあります。24時間ごとに変わるので、アプリに今表示されている行をコピーしてください。"
   offer_qr: "代わりにここに QR コードを表示するには Enter を押してください（スマートフォンで読み取ります）。やめるには Ctrl+C。"
   options_without_terminal: "アプリに今表示されているコードで `codex-notifier pair <code>` をもう一度実行するか、`codex-notifier pair` を実行してここに QR コードを表示し、スマートフォンで読み取ってください。"
   scan: "  スマートフォンのカメラでこれを読み取ると接続できます。アプリがまだない場合は\n  App Store か Google Play が開きます。インストールしてから、もう一度読み取ってください。"
-  or_type_code: "  または Codex Notifier アプリにこのコードを入力:  %{code}"
-  enter_code: "  Codex Notifier アプリにこのコードを入力:  %{code}"
+  or_type_code: "  または Notifier for Codex アプリにこのコードを入力:  %{code}"
+  enter_code: "  Notifier for Codex アプリにこのコードを入力:  %{code}"
   hooks_already_installed: "  フックはインストール済みなので、このコンピュータではすでにデスクトップ通知が届きます。"
   code_lasts: "  ペアリングはいつでも構いません。このコードは %{duration} 有効です。"
   completes_on_its_own: "  スマートフォンが接続すると、ペアリングは自動で完了します。"
   waiting: "  スマートフォンを待っています...（Ctrl+C を押しても大丈夫です。スマートフォンが接続すればペアリングは自動で完了します）"
   code_expired: "スマートフォンが使う前にコードの期限が切れました。`codex-notifier pair` をもう一度実行してください。"
-  code_is_six_digits: "コードは Codex Notifier アプリに表示される6桁の数字です"
+  code_is_six_digits: "コードは Notifier for Codex アプリに表示される6桁の数字です"
   credentials_stored: "認証情報を%{store}に保存しました（%{path}）。"
   test_sent: "スマートフォンにテスト通知を送りました。"
   test_failed: "テスト通知をまだ送れません: %{error}"
@@ -160,7 +160,7 @@ settings:
 
 forget:
   needs_yes: "codex-notifier forget には確認が必要です。ターミナルで実行するか、--yes を付けてください"
-  warning: "この操作は、このコンピュータとそのペアリングを Codex Notifier のサーバーから消去し、\n`codex-notifier uninstall` と同じように Codex から codex-notifier を取り除き、ここにある認証情報とファイルを削除します。\nこのコンピュータとペアリングしていたスマートフォンからは、このコンピュータが消えます。\nウェブサイトで購入したライセンスは解約されません。codexnotifier.com/licence の\n「Erase my licence」から行ってください。"
+  warning: "この操作は、このコンピュータとそのペアリングを Notifier for Codex のサーバーから消去し、\n`codex-notifier uninstall` と同じように Codex から codex-notifier を取り除き、ここにある認証情報とファイルを削除します。\nこのコンピュータとペアリングしていたスマートフォンからは、このコンピュータが消えます。\nウェブサイトで購入したライセンスは解約されません。notifierforcodex.com/licence の\n「Erase my licence」から行ってください。"
   # ユーザーが入力する確認の言葉。`yes` も常に受け付けられる
   yes_word: "はい"
   prompt: "\n続けるには %{yes} と入力してください: "
@@ -183,15 +183,15 @@ local:
   question_title: "Codex からの質問があります"
   first_nudge: "スマートフォンでも受け取る: codex-notifier pair"
   milestone_nudge: "これで10件目の通知です。スマートフォンでも受け取り、ロック画面から承認するには codex-notifier pair を実行してください"
-  pair_message: "Codex Notifier: デスクトップ通知が届いています。スマートフォンでも受け取り、そこから承認や返答をするには、ターミナルで `codex-notifier pair` を実行してください。"
+  pair_message: "Notifier for Codex: デスクトップ通知が届いています。スマートフォンでも受け取り、そこから承認や返答をするには、ターミナルで `codex-notifier pair` を実行してください。"
 
 hook:
-  licence_message: "Codex Notifier: このコンピュータではスマートフォン通知がロック解除されていません。ロック解除するには: codex-notifier unlock"
-  unpaired_message: "Codex Notifier: このコンピュータのペアリングが解除されているため、スマートフォンに通知が届きません。再接続するにはターミナルで `codex-notifier pair` を実行してください。"
+  licence_message: "Notifier for Codex: このコンピュータではスマートフォン通知がロック解除されていません。ロック解除するには: codex-notifier unlock"
+  unpaired_message: "Notifier for Codex: このコンピュータのペアリングが解除されているため、スマートフォンに通知が届きません。再接続するにはターミナルで `codex-notifier pair` を実行してください。"
   unpaired_notification: "このコンピュータのペアリングが解除されています。再接続するにはターミナルで `codex-notifier pair` を実行してください。"
-  paired_message: "Codex Notifier: %{phone} とペアリングしました。通知はこれからスマートフォンに届きます。"
+  paired_message: "Notifier for Codex: %{phone} とペアリングしました。通知はこれからスマートフォンに届きます。"
   # タイトル、本文、コマンドはサーバーがユーザーの言語で書く。ここではつなげるだけ
-  nudge_message: "Codex Notifier: %{title} %{body} %{command}"
+  nudge_message: "Notifier for Codex: %{title} %{body} %{command}"
   needs_attention: "確認が必要です"
 
 hooks:
@@ -267,10 +267,10 @@ update:
   zip_empty: "zip に codex-notifier.exe が入っていません"
   did_not_run: "ダウンロードした codex-notifier が起動しなかったため、インストール済みのものを残しました"
   updated: "codex-notifier を %{from} → %{to} に更新しました。"
-  available_message: "Codex Notifier: codex-notifier %{version} が利用できます: %{command}"
+  available_message: "Notifier for Codex: codex-notifier %{version} が利用できます: %{command}"
 
 notify:
-  registered_windows: "Windows の通知に「Codex Notifier」を登録しました。"
+  registered_windows: "Windows の通知に「Notifier for Codex」を登録しました。"
   icon_installed: "通知アイコンを %{path} にインストールしました。"
   doctor_applescript: "AppleScript（このビルドには通知アプリがありません）"
   doctor_allowed: "「%{app}」に許可されています"
@@ -304,7 +304,7 @@ update_lock:
 
 local_files:
   config_unreadable: "%{path} を読み込めません（%{error}）。そのため codex-notifier は上書きしません。ファイルを修正するか、削除してから `codex-notifier pair` をもう一度実行してください。"
-  slot_not_freed: "このコンピュータのライセンス枠を空けられませんでした（%{error}）。ライセンスがある場合は、codexnotifier.com/licence でキーを使って枠を空けてください。"
+  slot_not_freed: "このコンピュータのライセンス枠を空けられませんでした（%{error}）。ライセンスがある場合は、notifierforcodex.com/licence でキーを使って枠を空けてください。"
   kept_dir: "%{path} から codex-notifier のファイルを削除しました。フォルダにはほかのファイルもあるため、フォルダ自体は残しています。"
   remove_binary: "codex-notifier 本体はまだインストールされています。削除するには: %{command}"
 
@@ -324,7 +324,7 @@ payload:
   update_plan: "プランを更新"
 
 net:
-  unreachable: "Codex Notifier のサーバーに接続できませんでした。インターネット接続を確認して、もう一度お試しください。"
+  unreachable: "Notifier for Codex のサーバーに接続できませんでした。インターネット接続を確認して、もう一度お試しください。"
   doctor_unreachable: "サーバー: %{url} に接続できません。インターネット接続、プロキシ、ファイアウォールを確認してください"
 
 clap:
@@ -340,4 +340,4 @@ clap:
 
 # `codex-notifier upgrade` refused a release whose SHA256SUMS isn't signed by TouchTap
 update_signature:
-  invalid: "リリースの署名を確認できなかったため、何も変更していません。しばらくしてからもう一度試すか、codexnotifier.com/cli から再インストールしてください"
+  invalid: "リリースの署名を確認できなかったため、何も変更していません。しばらくしてからもう一度試すか、notifierforcodex.com/cli から再インストールしてください"

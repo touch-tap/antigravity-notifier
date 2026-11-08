@@ -5,10 +5,10 @@
 _version: 1
 
 cli:
-  about: "Codex Notifier: Codex size ihtiyaç duyduğunda telefonunuza bildirim alın ve oradan yanıtlayın"
+  about: "Notifier for Codex: Codex size ihtiyaç duyduğunda telefonunuza bildirim alın ve oradan yanıtlayın"
   pair:
     about: "Bu bilgisayarı telefonunuzla eşleyin. Uygulamanın gösterdiği kodu verin ya da kod olmadan çalıştırıp uygulamaya yazacağınız bir kod alın"
-    code: "Codex Notifier uygulamasında gösterilen 6 haneli kod"
+    code: "Notifier for Codex uygulamasında gösterilen 6 haneli kod"
     name: "Bu bilgisayarın telefonunuzda görünen adı (varsayılan: ana makine adı)"
     no_wait: "QR kodunu gösterip hemen çık: telefon bağlandığında eşleme kendiliğinden tamamlanır"
   setup:
@@ -56,18 +56,18 @@ common:
 
 pair:
   reregister: "Bu bilgisayarın eski eşlemesi kaldırıldı, bu yüzden yeniden kaydedilecek."
-  code_not_recognised: "Bu kod tanınmadı. 6 haneli kod, Codex Notifier uygulamasında Bilgisayarlar > Bilgisayar ekle altında; her 24 saatte değişir, bu yüzden uygulamanın şu an gösterdiği satırı kopyalayın."
+  code_not_recognised: "Bu kod tanınmadı. 6 haneli kod, Notifier for Codex uygulamasında Bilgisayarlar > Bilgisayar ekle altında; her 24 saatte değişir, bu yüzden uygulamanın şu an gösterdiği satırı kopyalayın."
   offer_qr: "Bunun yerine burada bir QR kodu göstermek için Enter'a basın (telefonunuzla tarayın) ya da Ctrl+C."
   options_without_terminal: "Uygulamanın şu an gösterdiği kodla `codex-notifier pair <kod>` komutunu yeniden çalıştırın ya da burada bir QR kodu gösterip telefonunuzla taramak için `codex-notifier pair` çalıştırın."
   scan: "  Telefonunuzu bağlamak için bunu kamerasıyla tarayın. Uygulama henüz yoksa sizi\n  App Store'a veya Google Play'e götürür: kurun, sonra yeniden tarayın."
-  or_type_code: "  Ya da bu kodu Codex Notifier uygulamasına yazın:  %{code}"
-  enter_code: "  Bu kodu Codex Notifier uygulamasına girin:  %{code}"
+  or_type_code: "  Ya da bu kodu Notifier for Codex uygulamasına yazın:  %{code}"
+  enter_code: "  Bu kodu Notifier for Codex uygulamasına girin:  %{code}"
   hooks_already_installed: "  Hook'lar kurulu, yani bu bilgisayarda masaüstü bildirimlerini zaten alıyorsunuz."
   code_lasts: "  İstediğiniz zaman eşleyin: bu kod %{duration} geçerli."
   completes_on_its_own: "  Telefon bağlandığında eşleme kendiliğinden tamamlanır."
   waiting: "  Telefonunuz bekleniyor... (Ctrl+C güvenlidir: telefon bağlandığında eşleme kendiliğinden tamamlanır)"
   code_expired: "bir telefon kullanmadan kodun süresi doldu. `codex-notifier pair` komutunu yeniden çalıştırın."
-  code_is_six_digits: "kod, Codex Notifier uygulamasında gösterilen 6 hanedir"
+  code_is_six_digits: "kod, Notifier for Codex uygulamasında gösterilen 6 hanedir"
   credentials_stored: "Kimlik bilgileri %{store} içinde saklandı (%{path})."
   test_sent: "Telefonunuza bir deneme bildirimi gönderildi."
   test_failed: "Deneme bildirimi henüz gönderilemedi: %{error}"
@@ -161,7 +161,7 @@ settings:
 
 forget:
   needs_yes: "codex-notifier forget sizden bir onay bekler: bir terminalde çalıştırın ya da --yes ekleyin"
-  warning: "Bu, bu bilgisayarı ve eşlemelerini Codex Notifier sunucusundan siler, sonra `codex-notifier uninstall`\ngibi codex-notifier'ı Codex'ten kaldırır ve buradaki kimlik bilgilerini ve dosyalarını siler.\nBu bilgisayarla eşlenen telefonlar onun kaybolduğunu görür.\nWeb sitesinden satın alınan bir lisans iptal edilmez: bunu codexnotifier.com/licence\nadresinde \"Lisansımı sil\" ile yapın."
+  warning: "Bu, bu bilgisayarı ve eşlemelerini Notifier for Codex sunucusundan siler, sonra `codex-notifier uninstall`\ngibi codex-notifier'ı Codex'ten kaldırır ve buradaki kimlik bilgilerini ve dosyalarını siler.\nBu bilgisayarla eşlenen telefonlar onun kaybolduğunu görür.\nWeb sitesinden satın alınan bir lisans iptal edilmez: bunu notifierforcodex.com/licence\nadresinde \"Lisansımı sil\" ile yapın."
   # The word the user must type; `yes` is always accepted as well
   yes_word: "evet"
   prompt: "\nDevam etmek için %{yes} yazın: "
@@ -184,15 +184,15 @@ local:
   question_title: "Codex'in bir sorusu var"
   first_nudge: "Telefonunuzda da: codex-notifier pair"
   milestone_nudge: "Şimdiye kadar 10 bildirim. Bunları kilit ekranından onaylarla telefonunuzda alın: codex-notifier pair"
-  pair_message: "Codex Notifier: masaüstü bildirimleri alıyorsunuz. Telefonunuzda da almak ve oradan onaylamak ya da yanıtlamak için bir terminalde `codex-notifier pair` çalıştırın."
+  pair_message: "Notifier for Codex: masaüstü bildirimleri alıyorsunuz. Telefonunuzda da almak ve oradan onaylamak ya da yanıtlamak için bir terminalde `codex-notifier pair` çalıştırın."
 
 hook:
-  licence_message: "Codex Notifier: bu bilgisayar için telefon bildirimlerinin kilidi açık değil. Açmak için: codex-notifier unlock"
-  unpaired_message: "Codex Notifier: bu bilgisayar artık eşlenmiş değil, bu yüzden telefonunuz bildirim almayacak. Yeniden bağlamak için bir terminalde `codex-notifier pair` çalıştırın."
+  licence_message: "Notifier for Codex: bu bilgisayar için telefon bildirimlerinin kilidi açık değil. Açmak için: codex-notifier unlock"
+  unpaired_message: "Notifier for Codex: bu bilgisayar artık eşlenmiş değil, bu yüzden telefonunuz bildirim almayacak. Yeniden bağlamak için bir terminalde `codex-notifier pair` çalıştırın."
   unpaired_notification: "Bu bilgisayar artık eşlenmiş değil. Yeniden bağlamak için bir terminalde `codex-notifier pair` çalıştırın."
-  paired_message: "Codex Notifier: %{phone} ile eşlendi. Bildirimler artık telefonunuza gidiyor."
+  paired_message: "Notifier for Codex: %{phone} ile eşlendi. Bildirimler artık telefonunuza gidiyor."
   # The server writes title, body and command in the user's language; this only joins them
-  nudge_message: "Codex Notifier: %{title} %{body} %{command}"
+  nudge_message: "Notifier for Codex: %{title} %{body} %{command}"
   needs_attention: "İlginizi bekliyor"
 
 hooks:
@@ -268,10 +268,10 @@ update:
   zip_empty: "zip dosyasının içinde codex-notifier.exe yok"
   did_not_run: "indirilen codex-notifier çalışmadı, bu yüzden kurulu olan korundu"
   updated: "codex-notifier güncellendi: %{from} → %{to}."
-  available_message: "Codex Notifier: codex-notifier %{version} çıktı: %{command}"
+  available_message: "Notifier for Codex: codex-notifier %{version} çıktı: %{command}"
 
 notify:
-  registered_windows: "\"Codex Notifier\" Windows bildirimleri için kaydedildi."
+  registered_windows: "\"Notifier for Codex\" Windows bildirimleri için kaydedildi."
   icon_installed: "Bildirim simgesi %{path} konumuna kuruldu."
   doctor_applescript: "AppleScript (bu derlemede bildirim uygulaması yok)"
   doctor_allowed: "\"%{app}\" için izin verildi"
@@ -305,7 +305,7 @@ update_lock:
 
 local_files:
   config_unreadable: "%{path} okunamıyor (%{error}), bu yüzden codex-notifier üzerine yazmayacak. Dosyayı düzeltin ya da silip `codex-notifier pair` komutunu yeniden çalıştırın."
-  slot_not_freed: "Bu bilgisayarın lisans yeri boşaltılamadı (%{error}). Lisansı varsa, anahtarınızla codexnotifier.com/licence adresinden yeri boşaltın."
+  slot_not_freed: "Bu bilgisayarın lisans yeri boşaltılamadı (%{error}). Lisansı varsa, anahtarınızla notifierforcodex.com/licence adresinden yeri boşaltın."
   kept_dir: "codex-notifier dosyaları %{path} konumundan kaldırıldı. Klasörde başka dosyalar da olduğu için klasör yerinde bırakıldı."
   remove_binary: "codex-notifier'ın kendisi hâlâ yüklü. Kaldırmak için: %{command}"
 
@@ -325,7 +325,7 @@ payload:
   update_plan: "Planı güncelle"
 
 net:
-  unreachable: "Codex Notifier sunucusuna ulaşılamadı. İnternet bağlantınızı kontrol edip tekrar deneyin."
+  unreachable: "Notifier for Codex sunucusuna ulaşılamadı. İnternet bağlantınızı kontrol edip tekrar deneyin."
   doctor_unreachable: "sunucu: %{url} adresine ulaşılamıyor. İnternet bağlantınızı, proxy'yi veya güvenlik duvarını kontrol edin"
 
 clap:
@@ -341,4 +341,4 @@ clap:
 
 # `codex-notifier upgrade` refused a release whose SHA256SUMS isn't signed by TouchTap
 update_signature:
-  invalid: "sürümün imzası doğrulanamadı, bu yüzden hiçbir şey değiştirilmedi. Daha sonra yeniden dene veya codexnotifier.com/cli adresinden yeniden yükle"
+  invalid: "sürümün imzası doğrulanamadı, bu yüzden hiçbir şey değiştirilmedi. Daha sonra yeniden dene veya notifierforcodex.com/cli adresinden yeniden yükle"

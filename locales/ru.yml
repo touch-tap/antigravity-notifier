@@ -2,10 +2,10 @@
 _version: 1
 
 cli:
-  about: "Codex Notifier: получайте push на телефон, когда вы нужны Codex, и отвечайте оттуда"
+  about: "Notifier for Codex: получайте push на телефон, когда вы нужны Codex, и отвечайте оттуда"
   pair:
     about: "Подключить этот компьютер к телефону. Укажите код из приложения или запустите без кода, чтобы получить код для ввода в приложении"
-    code: "6-значный код, который показывает приложение Codex Notifier"
+    code: "6-значный код, который показывает приложение Notifier for Codex"
     name: "Как этот компьютер называется на телефоне (по умолчанию: имя хоста)"
     no_wait: "Показать QR-код и сразу выйти: подключение завершится само, когда телефон подключится"
   setup:
@@ -53,18 +53,18 @@ common:
 
 pair:
   reregister: "Старое подключение этого компьютера удалено, поэтому он будет зарегистрирован заново."
-  code_not_recognised: "Этот код не распознан. 6-значный код находится в приложении Codex Notifier в разделе Компьютеры > Добавить компьютер; он меняется каждые 24 часа, поэтому скопируйте строку, которую приложение показывает сейчас."
+  code_not_recognised: "Этот код не распознан. 6-значный код находится в приложении Notifier for Codex в разделе Компьютеры > Добавить компьютер; он меняется каждые 24 часа, поэтому скопируйте строку, которую приложение показывает сейчас."
   offer_qr: "Нажмите Enter, чтобы вместо этого показать здесь QR-код (отсканируйте его телефоном), или Ctrl+C."
   options_without_terminal: "Выполните `codex-notifier pair <code>` ещё раз с кодом, который приложение показывает сейчас, или выполните `codex-notifier pair`, чтобы показать здесь QR-код и отсканировать его телефоном."
   scan: "  Отсканируйте это камерой телефона, чтобы подключить его. Если приложения ещё нет,\n  вы попадёте в App Store или Google Play: установите его и отсканируйте снова."
-  or_type_code: "  Или введите этот код в приложении Codex Notifier:  %{code}"
-  enter_code: "  Введите этот код в приложении Codex Notifier:  %{code}"
+  or_type_code: "  Или введите этот код в приложении Notifier for Codex:  %{code}"
+  enter_code: "  Введите этот код в приложении Notifier for Codex:  %{code}"
   hooks_already_installed: "  Хуки установлены, так что уведомления на рабочем столе этого компьютера уже приходят."
   code_lasts: "  Подключайте, когда удобно: этот код действует %{duration}."
   completes_on_its_own: "  Подключение завершится само, когда телефон подключится."
   waiting: "  Ожидание телефона... (Ctrl+C не навредит: подключение завершится само, когда телефон подключится)"
   code_expired: "код истёк раньше, чем его использовал телефон. Выполните `codex-notifier pair` ещё раз."
-  code_is_six_digits: "код — это 6 цифр, которые показывает приложение Codex Notifier"
+  code_is_six_digits: "код — это 6 цифр, которые показывает приложение Notifier for Codex"
   credentials_stored: "Учётные данные сохранены в %{store} (%{path})."
   test_sent: "Тестовое уведомление отправлено на ваш телефон."
   test_failed: "Пока не удалось отправить тестовое уведомление: %{error}"
@@ -158,7 +158,7 @@ settings:
 
 forget:
   needs_yes: "codex-notifier forget нужно ваше подтверждение: выполните его в терминале или добавьте --yes"
-  warning: "Это стирает этот компьютер и его подключения с сервера Codex Notifier, затем убирает codex-notifier\nиз Codex и удаляет здесь его учётные данные и файлы, как делает `codex-notifier uninstall`.\nТелефоны, подключённые к этому компьютеру, увидят, что он исчез.\nЛицензия, купленная на сайте, не отменяется: сделайте это на codexnotifier.com/licence\nчерез \"Стереть мою лицензию\"."
+  warning: "Это стирает этот компьютер и его подключения с сервера Notifier for Codex, затем убирает codex-notifier\nиз Codex и удаляет здесь его учётные данные и файлы, как делает `codex-notifier uninstall`.\nТелефоны, подключённые к этому компьютеру, увидят, что он исчез.\nЛицензия, купленная на сайте, не отменяется: сделайте это на notifierforcodex.com/licence\nчерез \"Стереть мою лицензию\"."
   # Слово, которое должен ввести пользователь; `yes` принимается всегда
   yes_word: "да"
   prompt: "\nВведите %{yes}, чтобы продолжить: "
@@ -181,15 +181,15 @@ local:
   question_title: "У Codex вопрос"
   first_nudge: "И на телефон: codex-notifier pair"
   milestone_nudge: "Уже 10 уведомлений. Получайте их на телефон и подтверждайте с экрана блокировки: выполните codex-notifier pair"
-  pair_message: "Codex Notifier: вы получаете уведомления на рабочем столе. Чтобы получать их и на телефон и подтверждать или отвечать оттуда, выполните `codex-notifier pair` в терминале."
+  pair_message: "Notifier for Codex: вы получаете уведомления на рабочем столе. Чтобы получать их и на телефон и подтверждать или отвечать оттуда, выполните `codex-notifier pair` в терминале."
 
 hook:
-  licence_message: "Codex Notifier: уведомления на телефон не разблокированы для этого компьютера. Разблокируйте их: codex-notifier unlock"
-  unpaired_message: "Codex Notifier: этот компьютер больше не подключён, поэтому телефон не получит уведомлений. Выполните `codex-notifier pair` в терминале, чтобы подключить заново."
+  licence_message: "Notifier for Codex: уведомления на телефон не разблокированы для этого компьютера. Разблокируйте их: codex-notifier unlock"
+  unpaired_message: "Notifier for Codex: этот компьютер больше не подключён, поэтому телефон не получит уведомлений. Выполните `codex-notifier pair` в терминале, чтобы подключить заново."
   unpaired_notification: "Этот компьютер больше не подключён. Выполните `codex-notifier pair` в терминале, чтобы подключить заново."
-  paired_message: "Codex Notifier: подключено к %{phone}. Уведомления теперь идут на телефон."
+  paired_message: "Notifier for Codex: подключено к %{phone}. Уведомления теперь идут на телефон."
   # Сервер пишет заголовок, текст и команду на языке пользователя; здесь они только соединяются
-  nudge_message: "Codex Notifier: %{title} %{body} %{command}"
+  nudge_message: "Notifier for Codex: %{title} %{body} %{command}"
   needs_attention: "Требует вашего внимания"
 
 hooks:
@@ -265,10 +265,10 @@ update:
   zip_empty: "в zip нет codex-notifier.exe"
   did_not_run: "загруженный codex-notifier не запустился, поэтому оставлен установленный"
   updated: "codex-notifier обновлён %{from} → %{to}."
-  available_message: "Codex Notifier: доступен codex-notifier %{version}: %{command}"
+  available_message: "Notifier for Codex: доступен codex-notifier %{version}: %{command}"
 
 notify:
-  registered_windows: "\"Codex Notifier\" зарегистрирован для уведомлений Windows."
+  registered_windows: "\"Notifier for Codex\" зарегистрирован для уведомлений Windows."
   icon_installed: "Значок уведомлений установлен в %{path}."
   doctor_applescript: "AppleScript (в этой сборке нет приложения для уведомлений)"
   doctor_allowed: "разрешены для \"%{app}\""
@@ -302,7 +302,7 @@ update_lock:
 
 local_files:
   config_unreadable: "Не удаётся прочитать %{path} (%{error}), поэтому codex-notifier не будет его перезаписывать. Исправьте файл или удалите его и снова выполните `codex-notifier pair`."
-  slot_not_freed: "Не удалось освободить место этого компьютера в лицензии (%{error}). Если у него есть лицензия, освободите место на codexnotifier.com/licence с помощью своего ключа."
+  slot_not_freed: "Не удалось освободить место этого компьютера в лицензии (%{error}). Если у него есть лицензия, освободите место на notifierforcodex.com/licence с помощью своего ключа."
   kept_dir: "Файлы codex-notifier удалены из %{path}. В папке есть и другие файлы, поэтому она оставлена."
   remove_binary: "Сам codex-notifier всё ещё установлен. Чтобы удалить его: %{command}"
 
@@ -322,7 +322,7 @@ payload:
   update_plan: "Обновить план"
 
 net:
-  unreachable: "Не удалось связаться с сервером Codex Notifier. Проверьте подключение к интернету и попробуйте ещё раз."
+  unreachable: "Не удалось связаться с сервером Notifier for Codex. Проверьте подключение к интернету и попробуйте ещё раз."
   doctor_unreachable: "сервер: %{url} недоступен. Проверьте подключение к интернету, прокси или брандмауэр"
 
 clap:
@@ -338,4 +338,4 @@ clap:
 
 # `codex-notifier upgrade` refused a release whose SHA256SUMS isn't signed by TouchTap
 update_signature:
-  invalid: "подпись выпуска не прошла проверку, поэтому ничего не изменено. Попробуй позже или переустанови с codexnotifier.com/cli"
+  invalid: "подпись выпуска не прошла проверку, поэтому ничего не изменено. Попробуй позже или переустанови с notifierforcodex.com/cli"

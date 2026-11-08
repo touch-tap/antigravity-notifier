@@ -3,10 +3,10 @@
 _version: 1
 
 cli:
-  about: "Codex Notifier: Codex가 당신을 필요로 할 때 휴대폰으로 푸시 알림을 받고, 거기서 바로 답해요"
+  about: "Notifier for Codex: Codex가 당신을 필요로 할 때 휴대폰으로 푸시 알림을 받고, 거기서 바로 답해요"
   pair:
     about: "이 컴퓨터를 휴대폰과 연결해요. 앱에 표시된 코드를 넘기거나, 코드 없이 실행해 앱에 입력할 코드를 받으세요"
-    code: "Codex Notifier 앱에 표시된 6자리 코드"
+    code: "Notifier for Codex 앱에 표시된 6자리 코드"
     name: "휴대폰에 표시되는 이 컴퓨터의 이름 (기본값: 호스트 이름)"
     no_wait: "QR 코드를 표시하고 바로 돌아와요. 휴대폰이 연결되면 알아서 완료돼요"
   setup:
@@ -55,18 +55,18 @@ common:
 
 pair:
   reregister: "이 컴퓨터의 이전 연결이 제거되어 있어서 다시 등록해요."
-  code_not_recognised: "그 코드를 인식하지 못했어요. 6자리 코드는 Codex Notifier 앱의 컴퓨터 > 컴퓨터 추가에 있어요. 24시간마다 바뀌니 앱에 지금 표시된 줄을 복사하세요."
+  code_not_recognised: "그 코드를 인식하지 못했어요. 6자리 코드는 Notifier for Codex 앱의 컴퓨터 > 컴퓨터 추가에 있어요. 24시간마다 바뀌니 앱에 지금 표시된 줄을 복사하세요."
   offer_qr: "대신 여기에 QR 코드를 표시하려면 Enter를 누르세요 (휴대폰으로 스캔해요). 그만두려면 Ctrl+C."
   options_without_terminal: "앱에 지금 표시된 코드로 `codex-notifier pair <code>`를 다시 실행하거나, `codex-notifier pair`를 실행해 여기에 QR 코드를 띄우고 휴대폰으로 스캔하세요."
   scan: "  휴대폰 카메라로 이 코드를 스캔하면 연결돼요. 앱이 아직 없다면 App Store나\n  Google Play로 이동해요. 설치한 뒤 다시 스캔하세요."
-  or_type_code: "  또는 Codex Notifier 앱에 이 코드를 입력하세요:  %{code}"
-  enter_code: "  Codex Notifier 앱에 이 코드를 입력하세요:  %{code}"
+  or_type_code: "  또는 Notifier for Codex 앱에 이 코드를 입력하세요:  %{code}"
+  enter_code: "  Notifier for Codex 앱에 이 코드를 입력하세요:  %{code}"
   hooks_already_installed: "  훅이 설치되어 있어서 이 컴퓨터에서는 이미 데스크톱 알림을 받고 있어요."
   code_lasts: "  편할 때 연결하세요. 이 코드는 %{duration} 동안 유효해요."
   completes_on_its_own: "  휴대폰이 연결되면 알아서 완료돼요."
   waiting: "  휴대폰을 기다리는 중... (Ctrl+C를 눌러도 괜찮아요. 휴대폰이 연결되면 알아서 완료돼요)"
   code_expired: "휴대폰이 사용하기 전에 코드가 만료됐어요. `codex-notifier pair`를 다시 실행하세요."
-  code_is_six_digits: "코드는 Codex Notifier 앱에 표시된 6자리 숫자예요"
+  code_is_six_digits: "코드는 Notifier for Codex 앱에 표시된 6자리 숫자예요"
   credentials_stored: "인증 정보를 %{store}에 저장했어요 (%{path})."
   test_sent: "휴대폰에 테스트 알림을 보냈어요."
   test_failed: "아직 테스트 알림을 보낼 수 없어요: %{error}"
@@ -160,7 +160,7 @@ settings:
 
 forget:
   needs_yes: "codex-notifier forget에는 확인이 필요해요. 터미널에서 실행하거나 --yes를 붙이세요"
-  warning: "이 작업은 이 컴퓨터와 연결 정보를 Codex Notifier 서버에서 지우고, `codex-notifier uninstall`과\n마찬가지로 Codex에서 codex-notifier를 제거한 뒤 여기 있는 인증 정보와 파일을 삭제해요.\n이 컴퓨터와 연결된 휴대폰에서는 이 컴퓨터가 사라져요.\n웹사이트에서 구매한 라이선스는 취소되지 않아요. codexnotifier.com/licence의\n\"Erase my licence\"에서 처리하세요."
+  warning: "이 작업은 이 컴퓨터와 연결 정보를 Notifier for Codex 서버에서 지우고, `codex-notifier uninstall`과\n마찬가지로 Codex에서 codex-notifier를 제거한 뒤 여기 있는 인증 정보와 파일을 삭제해요.\n이 컴퓨터와 연결된 휴대폰에서는 이 컴퓨터가 사라져요.\n웹사이트에서 구매한 라이선스는 취소되지 않아요. notifierforcodex.com/licence의\n\"Erase my licence\"에서 처리하세요."
   # 사용자가 입력해야 하는 단어. `yes`도 항상 받아들여요
   yes_word: "예"
   prompt: "\n계속하려면 %{yes}를 입력하세요: "
@@ -183,15 +183,15 @@ local:
   question_title: "Codex가 질문이 있어요"
   first_nudge: "휴대폰으로도 받기: codex-notifier pair"
   milestone_nudge: "지금까지 알림 10개. 휴대폰으로도 받고 잠금 화면에서 승인하려면 codex-notifier pair를 실행하세요"
-  pair_message: "Codex Notifier: 데스크톱 알림을 받고 있어요. 휴대폰으로도 받고 거기서 승인이나 답변을 하려면 터미널에서 `codex-notifier pair`를 실행하세요."
+  pair_message: "Notifier for Codex: 데스크톱 알림을 받고 있어요. 휴대폰으로도 받고 거기서 승인이나 답변을 하려면 터미널에서 `codex-notifier pair`를 실행하세요."
 
 hook:
-  licence_message: "Codex Notifier: 이 컴퓨터에서는 휴대폰 알림이 잠금 해제되지 않았어요. 잠금 해제하려면: codex-notifier unlock"
-  unpaired_message: "Codex Notifier: 이 컴퓨터가 더 이상 연결되어 있지 않아서 휴대폰으로 알림이 가지 않아요. 다시 연결하려면 터미널에서 `codex-notifier pair`를 실행하세요."
+  licence_message: "Notifier for Codex: 이 컴퓨터에서는 휴대폰 알림이 잠금 해제되지 않았어요. 잠금 해제하려면: codex-notifier unlock"
+  unpaired_message: "Notifier for Codex: 이 컴퓨터가 더 이상 연결되어 있지 않아서 휴대폰으로 알림이 가지 않아요. 다시 연결하려면 터미널에서 `codex-notifier pair`를 실행하세요."
   unpaired_notification: "이 컴퓨터가 더 이상 연결되어 있지 않아요. 다시 연결하려면 터미널에서 `codex-notifier pair`를 실행하세요."
-  paired_message: "Codex Notifier: %{phone}과 연결됐어요. 이제 알림이 휴대폰으로 가요."
+  paired_message: "Notifier for Codex: %{phone}과 연결됐어요. 이제 알림이 휴대폰으로 가요."
   # 제목, 본문, 명령은 서버가 사용자 언어로 써요. 여기서는 이어 붙이기만 해요
-  nudge_message: "Codex Notifier: %{title} %{body} %{command}"
+  nudge_message: "Notifier for Codex: %{title} %{body} %{command}"
   needs_attention: "확인이 필요해요"
 
 hooks:
@@ -267,10 +267,10 @@ update:
   zip_empty: "zip 안에 codex-notifier.exe가 없어요"
   did_not_run: "다운로드한 codex-notifier가 실행되지 않아서 설치된 것을 그대로 두었어요"
   updated: "codex-notifier를 %{from} → %{to}로 업데이트했어요."
-  available_message: "Codex Notifier: codex-notifier %{version}을 쓸 수 있어요: %{command}"
+  available_message: "Notifier for Codex: codex-notifier %{version}을 쓸 수 있어요: %{command}"
 
 notify:
-  registered_windows: "Windows 알림에 \"Codex Notifier\"를 등록했어요."
+  registered_windows: "Windows 알림에 \"Notifier for Codex\"를 등록했어요."
   icon_installed: "알림 아이콘을 %{path}에 설치했어요."
   doctor_applescript: "AppleScript (이 빌드에는 알림 앱이 없어요)"
   doctor_allowed: "\"%{app}\"에 허용됨"
@@ -304,7 +304,7 @@ update_lock:
 
 local_files:
   config_unreadable: "%{path} 파일을 읽을 수 없어요(%{error}). 그래서 codex-notifier가 덮어쓰지 않아요. 파일을 고치거나, 삭제한 뒤 `codex-notifier pair`를 다시 실행하세요."
-  slot_not_freed: "이 컴퓨터의 라이선스 자리를 비우지 못했어요(%{error}). 라이선스가 있다면 codexnotifier.com/licence에서 키로 자리를 비우세요."
+  slot_not_freed: "이 컴퓨터의 라이선스 자리를 비우지 못했어요(%{error}). 라이선스가 있다면 notifierforcodex.com/licence에서 키로 자리를 비우세요."
   kept_dir: "%{path}에서 codex-notifier 파일을 제거했어요. 폴더에 다른 파일도 있어서 폴더는 그대로 두었어요."
   remove_binary: "codex-notifier 자체는 아직 설치되어 있어요. 제거하려면: %{command}"
 
@@ -324,7 +324,7 @@ payload:
   update_plan: "계획 업데이트"
 
 net:
-  unreachable: "Codex Notifier 서버에 연결하지 못했어요. 인터넷 연결을 확인하고 다시 시도해 주세요."
+  unreachable: "Notifier for Codex 서버에 연결하지 못했어요. 인터넷 연결을 확인하고 다시 시도해 주세요."
   doctor_unreachable: "서버: %{url}에 연결할 수 없어요. 인터넷 연결, 프록시, 방화벽을 확인해 주세요"
 
 clap:
@@ -340,4 +340,4 @@ clap:
 
 # `codex-notifier upgrade` refused a release whose SHA256SUMS isn't signed by TouchTap
 update_signature:
-  invalid: "릴리스 서명을 확인할 수 없어 아무것도 변경하지 않았습니다. 나중에 다시 시도하거나 codexnotifier.com/cli에서 다시 설치하세요"
+  invalid: "릴리스 서명을 확인할 수 없어 아무것도 변경하지 않았습니다. 나중에 다시 시도하거나 notifierforcodex.com/cli에서 다시 설치하세요"

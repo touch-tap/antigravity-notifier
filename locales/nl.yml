@@ -2,10 +2,10 @@
 _version: 1
 
 cli:
-  about: "Codex Notifier: krijg een push op je telefoon wanneer Codex je nodig heeft, en antwoord van daar"
+  about: "Notifier for Codex: krijg een push op je telefoon wanneer Codex je nodig heeft, en antwoord van daar"
   pair:
     about: "Koppel deze computer aan je telefoon. Geef de code op die de app toont, of start zonder code om er een te krijgen die je in de app typt"
-    code: "De 6-cijferige code die de Codex Notifier-app toont"
+    code: "De 6-cijferige code die de app Notifier for Codex toont"
     name: "Hoe deze computer op je telefoon heet (standaard: de hostnaam)"
     no_wait: "Toon de QR-code en keer meteen terug: het koppelen rondt zichzelf af zodra de telefoon verbindt"
   setup:
@@ -53,18 +53,18 @@ common:
 
 pair:
   reregister: "De oude koppeling van deze computer is verwijderd, dus hij wordt opnieuw geregistreerd."
-  code_not_recognised: "Die code is niet herkend. De 6-cijferige code staat in de Codex Notifier-app onder Computers > Voeg computer toe; hij verandert elke 24 uur, dus kopieer de regel die de app nu toont."
+  code_not_recognised: "Die code is niet herkend. De 6-cijferige code staat in de app Notifier for Codex onder Computers > Voeg computer toe; hij verandert elke 24 uur, dus kopieer de regel die de app nu toont."
   offer_qr: "Druk op Enter om hier in plaats daarvan een QR-code te tonen (scan die met je telefoon), of Ctrl+C."
   options_without_terminal: "Voer `codex-notifier pair <code>` opnieuw uit met de code die de app nu toont, of voer `codex-notifier pair` uit om hier een QR-code te tonen en scan die met je telefoon."
   scan: "  Scan dit met de camera van je telefoon om hem te koppelen. Heb je de app nog niet,\n  dan brengt het je naar de App Store of Google Play: installeer, en scan opnieuw."
-  or_type_code: "  Of typ deze code in de Codex Notifier-app:  %{code}"
-  enter_code: "  Voer deze code in de Codex Notifier-app in:  %{code}"
+  or_type_code: "  Of typ deze code in de app Notifier for Codex:  %{code}"
+  enter_code: "  Voer deze code in de app Notifier for Codex in:  %{code}"
   hooks_already_installed: "  De hooks zijn geïnstalleerd, dus je krijgt al bureaubladmeldingen op deze computer."
   code_lasts: "  Koppel wanneer je wilt: deze code blijft %{duration} geldig."
   completes_on_its_own: "  Het koppelen rondt zichzelf af zodra de telefoon verbindt."
   waiting: "  Wachten op je telefoon... (Ctrl+C kan geen kwaad: het koppelen rondt zichzelf af zodra de telefoon verbindt)"
   code_expired: "de code is verlopen voordat een telefoon hem gebruikte. Voer `codex-notifier pair` opnieuw uit."
-  code_is_six_digits: "de code bestaat uit de 6 cijfers die de Codex Notifier-app toont"
+  code_is_six_digits: "de code bestaat uit de 6 cijfers die de app Notifier for Codex toont"
   credentials_stored: "Inloggegevens opgeslagen in de %{store} (%{path})."
   test_sent: "Testmelding naar je telefoon gestuurd."
   test_failed: "Kon nog geen testmelding sturen: %{error}"
@@ -158,7 +158,7 @@ settings:
 
 forget:
   needs_yes: "codex-notifier forget heeft een ja van je nodig: voer het uit in een terminal, of voeg --yes toe"
-  warning: "Dit wist deze computer en zijn koppelingen van de Codex Notifier-server, verwijdert\ndaarna codex-notifier uit Codex en wist hier zijn inloggegevens en bestanden, zoals `codex-notifier uninstall`\ndoet. Telefoons die aan deze computer gekoppeld zijn, zien hem verdwijnen.\nEen licentie die op de website is gekocht wordt niet opgezegd: doe dat op\ncodexnotifier.com/licence met \"Wis mijn licentie\"."
+  warning: "Dit wist deze computer en zijn koppelingen van de server van Notifier for Codex, verwijdert\ndaarna codex-notifier uit Codex en wist hier zijn inloggegevens en bestanden, zoals `codex-notifier uninstall`\ndoet. Telefoons die aan deze computer gekoppeld zijn, zien hem verdwijnen.\nEen licentie die op de website is gekocht wordt niet opgezegd: doe dat op\nnotifierforcodex.com/licence met \"Wis mijn licentie\"."
   # Het woord dat de gebruiker moet typen; `yes` wordt altijd ook geaccepteerd
   yes_word: "ja"
   prompt: "\nTyp %{yes} om door te gaan: "
@@ -181,15 +181,15 @@ local:
   question_title: "Codex heeft een vraag"
   first_nudge: "Ook op je telefoon: codex-notifier pair"
   milestone_nudge: "Al 10 meldingen. Krijg ze op je telefoon, met goedkeuren vanaf het vergrendelscherm: voer codex-notifier pair uit"
-  pair_message: "Codex Notifier: je krijgt bureaubladmeldingen. Wil je ze ook op je telefoon, en van daar goedkeuren of antwoorden, voer dan `codex-notifier pair` uit in een terminal."
+  pair_message: "Notifier for Codex: je krijgt bureaubladmeldingen. Wil je ze ook op je telefoon, en van daar goedkeuren of antwoorden, voer dan `codex-notifier pair` uit in een terminal."
 
 hook:
-  licence_message: "Codex Notifier: telefoonmeldingen zijn voor deze computer niet ontgrendeld. Ontgrendel ze: codex-notifier unlock"
-  unpaired_message: "Codex Notifier: deze computer is niet meer gekoppeld, dus je telefoon krijgt geen meldingen. Voer `codex-notifier pair` uit in een terminal om opnieuw te verbinden."
+  licence_message: "Notifier for Codex: telefoonmeldingen zijn voor deze computer niet ontgrendeld. Ontgrendel ze: codex-notifier unlock"
+  unpaired_message: "Notifier for Codex: deze computer is niet meer gekoppeld, dus je telefoon krijgt geen meldingen. Voer `codex-notifier pair` uit in een terminal om opnieuw te verbinden."
   unpaired_notification: "Deze computer is niet meer gekoppeld. Voer `codex-notifier pair` uit in een terminal om opnieuw te verbinden."
-  paired_message: "Codex Notifier: gekoppeld aan %{phone}. Meldingen gaan nu naar je telefoon."
+  paired_message: "Notifier for Codex: gekoppeld aan %{phone}. Meldingen gaan nu naar je telefoon."
   # De server schrijft titel, tekst en opdracht in de taal van de gebruiker; dit voegt ze alleen samen
-  nudge_message: "Codex Notifier: %{title} %{body} %{command}"
+  nudge_message: "Notifier for Codex: %{title} %{body} %{command}"
   needs_attention: "Heeft je aandacht nodig"
 
 hooks:
@@ -265,10 +265,10 @@ update:
   zip_empty: "de zip bevat geen codex-notifier.exe"
   did_not_run: "de gedownloade codex-notifier startte niet, dus de geïnstalleerde versie is behouden"
   updated: "codex-notifier bijgewerkt %{from} → %{to}."
-  available_message: "Codex Notifier: codex-notifier %{version} is beschikbaar: %{command}"
+  available_message: "Notifier for Codex: codex-notifier %{version} is beschikbaar: %{command}"
 
 notify:
-  registered_windows: "\"Codex Notifier\" geregistreerd voor Windows-meldingen."
+  registered_windows: "\"Notifier for Codex\" geregistreerd voor Windows-meldingen."
   icon_installed: "Meldingspictogram geïnstalleerd in %{path}."
   doctor_applescript: "AppleScript (deze build heeft geen meldingsapp)"
   doctor_allowed: "toegestaan voor \"%{app}\""
@@ -302,7 +302,7 @@ update_lock:
 
 local_files:
   config_unreadable: "%{path} kan niet worden gelezen (%{error}), dus codex-notifier overschrijft het niet. Herstel het bestand, of verwijder het en voer `codex-notifier pair` opnieuw uit."
-  slot_not_freed: "De licentieplek van deze computer kon niet worden vrijgemaakt (%{error}). Als hij een licentie heeft, maak de plek dan vrij op codexnotifier.com/licence met je sleutel."
+  slot_not_freed: "De licentieplek van deze computer kon niet worden vrijgemaakt (%{error}). Als hij een licentie heeft, maak de plek dan vrij op notifierforcodex.com/licence met je sleutel."
   kept_dir: "De bestanden van codex-notifier zijn uit %{path} verwijderd. De map bevat ook andere bestanden en is daarom blijven staan."
   remove_binary: "codex-notifier zelf is nog geïnstalleerd. Zo verwijder je het: %{command}"
 
@@ -322,7 +322,7 @@ payload:
   update_plan: "Het plan bijwerken"
 
 net:
-  unreachable: "De server van Codex Notifier is niet bereikbaar. Controleer je internetverbinding en probeer het opnieuw."
+  unreachable: "De server van Notifier for Codex is niet bereikbaar. Controleer je internetverbinding en probeer het opnieuw."
   doctor_unreachable: "server: %{url} niet bereikbaar. Controleer je internetverbinding, proxy of firewall"
 
 clap:
@@ -338,4 +338,4 @@ clap:
 
 # `codex-notifier upgrade` refused a release whose SHA256SUMS isn't signed by TouchTap
 update_signature:
-  invalid: "de handtekening van de release klopt niet, dus er is niets gewijzigd. Probeer het later opnieuw of installeer opnieuw via codexnotifier.com/cli"
+  invalid: "de handtekening van de release klopt niet, dus er is niets gewijzigd. Probeer het later opnieuw of installeer opnieuw via notifierforcodex.com/cli"
