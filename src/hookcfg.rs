@@ -659,8 +659,11 @@ mod tests {
         let text = fs::read_to_string(&config_path).unwrap();
         assert!(text.starts_with("model = \"gpt-5.4\"\n"), "{text}");
         assert!(text.contains("[hooks.state.\"other\"]"));
+        // Windows paths hold backslashes, so the key is a 'literal' string there; both are valid TOML
         assert!(
-            text.contains(&format!(":stop:1:0\"]\ntrusted_hash = \"{}\"", stop.1)),
+            ["\"", "'"]
+                .iter()
+                .any(|q| text.contains(&format!(":stop:1:0{q}]\ntrusted_hash = \"{}\"", stop.1))),
             "{text}"
         );
         assert_eq!(read_trust(&config_path).len(), EVENTS.len() + 1);
