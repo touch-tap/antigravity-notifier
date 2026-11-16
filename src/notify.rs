@@ -262,7 +262,27 @@ mod mac {
             }
         }
         let _ = std::fs::remove_dir_all(&app);
-        std::fs::rename(&tmp, &app)
+        std::fs::rename(&tmp, &app)?;
+        register(&app);
+        Ok(())
+    }
+
+    /// Tells Launch Services the app at this path changed (a new version, a new icon), so Finder
+    /// and Notification Center read the new bundle instead of a cached record for the same bundle
+    /// ID. Fire and forget: a hook never waits for it, and a failure only means macOS notices the
+    /// change later by itself. Notification Center itself is never restarted: that would drop
+    /// whatever banners are on screen.
+    fn register(app: &std::path::Path) {
+        const LSREGISTER: &str = "/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister";
+        if std::path::Path::new(LSREGISTER).exists() {
+            let _ = Command::new(LSREGISTER)
+                .arg("-f")
+                .arg(app)
+                .stdin(Stdio::null())
+                .stdout(Stdio::null())
+                .stderr(Stdio::null())
+                .spawn();
+        }
     }
 
     /// Fire and forget. The app falls back to AppleScript itself while permission was never asked.
