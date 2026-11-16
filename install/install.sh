@@ -3,6 +3,9 @@
 #
 #   curl -fsSL https://notifierforcodex.com/install.sh | sh              # install, then a QR code to pair
 #   curl -fsSL https://notifierforcodex.com/install.sh | sh -s 482913    # install and pair with the app's code
+#   curl -fsSL https://notifierforcodex.com/install.sh | sh -s 482913 --licence CCN-XXXX-XXXX-XXXX-XXXX
+#   curl -fsSL https://notifierforcodex.com/install.sh | sh -s -- --licence CCN-XXXX-XXXX-XXXX-XXXX
+#                                                     # install, use a licence key (and pair)
 #
 # CODEX_NOTIFIER_VERSION=0.2.0 picks a release (default: the latest). CODEX_NOTIFIER_INSTALL_DIR overrides
 # ~/.local/bin. CODEX_NOTIFIER_NO_ANALYTICS=1 (or DO_NOT_TRACK=1) stops the anonymous install events.
@@ -13,8 +16,11 @@ set -eu
 
 repo="touch-tap/codex-notifier"
 code=""
+licence=""
 while [ $# -gt 0 ]; do
   case "$1" in
+    --licence|--license) licence="${2:-}"; [ $# -ge 2 ] && shift; shift ;;
+    --licence=*|--license=*) licence="${1#*=}"; shift ;;
     --) shift ;;
     *) [ -z "$code" ] && code="$1"; shift ;;
   esac
@@ -118,6 +124,15 @@ on_path=yes
 track cli_install_finished "\"pairing\":\"$([ -n "$code" ] && echo yes || echo no)\",\"on_path\":\"$on_path\""
 
 export CODEX_NOTIFIER_INSTALL_METHOD=script
+# The licence first, so the phone paired after it is unlocked as soon as it connects. A bad key
+# doesn't stop the install; the message says what to do.
+if [ -n "$licence" ]; then
+  say ""
+  "$dir/codex-notifier" activate "$licence" < /dev/null || say "The licence wasn't applied. Try again later: $cli activate $licence"
+fi
+# exec replaces this shell, so the EXIT trap never runs: clear the download first
+rm -rf "$tmp"
+trap - EXIT
 # Pairing installs the Codex hooks and marks them trusted. stdin is the piped script, so give pair
 # the terminal for anything it asks.
 say ""

@@ -1,6 +1,11 @@
 # Installs codex-notifier, the Notifier for Codex CLI, on Windows.
 #
 #   irm https://notifierforcodex.com/install.ps1 | iex; codex-notifier pair 482913
+#   irm https://notifierforcodex.com/install.ps1 | iex; codex-notifier activate CCN-XXXX-XXXX-XXXX-XXXX; codex-notifier
+#                                       # install, use a licence key, then a QR code to pair
+#
+# `irm | iex` can't pass arguments to the script, so a licence key goes on the same line as its own
+# command, as ccn's does (install.sh takes --licence instead).
 #
 # $env:CODEX_NOTIFIER_VERSION = "0.2.0" picks a release (default: the latest).
 # $env:CODEX_NOTIFIER_INSTALL_DIR overrides %LOCALAPPDATA%\Programs\codex-notifier.
