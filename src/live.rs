@@ -54,6 +54,15 @@ impl Turn {
         if let Some(progress) = todo_progress(tool_name, input) {
             self.progress = Some(progress);
         }
+        // Codex's `exec` tool wraps the real calls in a JavaScript snippet
+        if tool_name == payload::EXEC_TOOL {
+            for (name, input) in payload::tool_calls(tool_name, input) {
+                if name != payload::EXEC_TOOL {
+                    self.record_tool(&name, &input);
+                }
+            }
+            return;
+        }
         if tool_name != "apply_patch" {
             return;
         }
@@ -114,9 +123,10 @@ pub fn working(
         update["title"] = json!(SessionState::truncate(t.lines().next().unwrap_or(""), 80));
     }
     if let Some((name, input)) = tool {
+        let shown = payload::display_name(name, input);
         let detail = match payload::tool_summary(name, input) {
-            Some(summary) => format!("{name}({})", SessionState::truncate(&summary, 60)),
-            None => name.to_string(),
+            Some(summary) => format!("{shown}({})", SessionState::truncate(&summary, 60)),
+            None => shown,
         };
         update["detail"] = json!(detail);
     }
@@ -208,6 +218,39 @@ mod tests {
         );
         assert_eq!(update["files"], 2);
         assert!(update.get("summary").is_none() && update.get("projectName").is_none());
+    }
+
+    #[test]
+    fn counts_patches_inside_exec_snippets_and_the_0_169_shape() {
+        let mut turn = Turn::begin(0);
+        let js = r#"text(await tools.apply_patch("*** Begin Patch\n*** Add File: /Users/jack/codex-test-proj/colour.txt\n+Green\n*** End Patch"));
+text(await tools.exec_command({cmd:"cat colour.txt"}));
+text(await tools.apply_patch({input:`*** Begin Patch
+*** Update File: a.ts
+-x
++y
+*** End Patch`}));"#;
+        turn.record_tool("exec", &json!(js));
+        // Codex 0.169's PreToolUse: apply_patch with the patch under "command"
+        turn.record_tool(
+            "apply_patch",
+            &json!({ "command": "*** Begin Patch\n*** Add File: notes.md\n+one\n+two\n*** End Patch" }),
+        );
+        assert_eq!(
+            turn.files,
+            vec!["/Users/jack/codex-test-proj/colour.txt", "a.ts", "notes.md"]
+        );
+        assert_eq!((turn.added, turn.removed), (4, 1));
+        assert!(!turn.diff_unknown);
+    }
+
+    #[test]
+    fn working_update_names_the_tool_inside_exec() {
+        let input = json!(
+            r#"text(await tools.exec_command({cmd:"echo hi > hello.txt",max_output_tokens:1000}));"#
+        );
+        let update = working("s1", None, None, Some(("exec", &input)), None, 0);
+        assert_eq!(update["detail"], "Bash(echo hi > hello.txt)");
     }
 
     #[test]

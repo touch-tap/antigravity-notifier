@@ -82,9 +82,10 @@ pub fn patch_files(input: &Value) -> Vec<String> {
         .collect()
 }
 
-/// The patch itself, whichever field Codex puts it in.
+/// The patch itself, whichever field Codex puts it in. Codex 0.169's PreToolUse sends
+/// `apply_patch` as `{"command": "*** Begin Patch..."}`.
 pub fn patch_text(input: &Value) -> Option<String> {
-    for key in ["patch", "input", "content"] {
+    for key in ["patch", "input", "content", "command"] {
         if let Some(s) = input.get(key).and_then(|v| v.as_str()) {
             return Some(s.to_string());
         }
@@ -92,8 +93,92 @@ pub fn patch_text(input: &Value) -> Option<String> {
     input.as_str().map(|s| s.to_string())
 }
 
-/// A one-line summary of a tool call, the way the phone shows it.
+/// Codex's JavaScript tool: a snippet that calls the real tools (`tools.exec_command(...)`,
+/// `tools.apply_patch(...)`). See `jsexec`.
+pub const EXEC_TOOL: &str = "exec";
+
+/// The tool calls one hook call stands for, with names and inputs in the shape the older Codex
+/// tools use: an `exec` snippet becomes each call inside it (`exec_command` as `Bash {command}`,
+/// `apply_patch` as `{patch}`); any other tool is itself. An `exec` snippet with no readable call
+/// stays as it is.
+pub fn tool_calls(tool_name: &str, input: &Value) -> Vec<(String, Value)> {
+    if tool_name != EXEC_TOOL {
+        return vec![(tool_name.to_string(), input.clone())];
+    }
+    let source = input.as_str().map(str::to_string).or_else(|| {
+        ["input", "code", "source", "script", "command"]
+            .iter()
+            .find_map(|k| input.get(*k).and_then(|v| v.as_str()).map(str::to_string))
+    });
+    let calls: Vec<(String, Value)> = source
+        .map(|src| crate::jsexec::tool_calls(&src))
+        .unwrap_or_default()
+        .into_iter()
+        .map(|(name, arg)| normalise_call(name, arg))
+        .collect();
+    if calls.is_empty() {
+        vec![(tool_name.to_string(), input.clone())]
+    } else {
+        calls
+    }
+}
+
+fn normalise_call(name: String, arg: Value) -> (String, Value) {
+    match name.as_str() {
+        "exec_command" | "shell" | "shell_command" | "local_shell" => {
+            let command = match &arg {
+                Value::String(s) => Some(Value::String(s.clone())),
+                _ => ["cmd", "command"].iter().find_map(|k| arg.get(*k).cloned()),
+            };
+            let mut input = json!({});
+            if let Some(c) = command {
+                input["command"] = c;
+            }
+            for key in ["justification", "description"] {
+                if let Some(v) = arg.get(key) {
+                    input[key] = v.clone();
+                }
+            }
+            ("Bash".to_string(), input)
+        }
+        "apply_patch" => {
+            let patch = match &arg {
+                Value::String(s) => Some(s.clone()),
+                _ => patch_text(&arg),
+            };
+            let input = patch.map(|p| json!({ "patch": p })).unwrap_or(json!({}));
+            (name, input)
+        }
+        _ => (name, arg),
+    }
+}
+
+/// The tool name to show for a hook call: the first tool inside an `exec` snippet.
+pub fn display_name(tool_name: &str, input: &Value) -> String {
+    tool_calls(tool_name, input)
+        .into_iter()
+        .next()
+        .map(|(name, _)| name)
+        .unwrap_or_else(|| tool_name.to_string())
+}
+
+/// A one-line summary of a tool call, the way the phone shows it. An `exec` snippet is the
+/// summaries of the calls in it, joined.
 pub fn tool_summary(tool_name: &str, input: &Value) -> Option<String> {
+    if tool_name == EXEC_TOOL {
+        let calls = tool_calls(tool_name, input);
+        if !(calls.len() == 1 && calls[0].0 == EXEC_TOOL) {
+            let parts: Vec<String> = calls
+                .iter()
+                .filter_map(|(name, input)| single_summary(name, input))
+                .collect();
+            return (!parts.is_empty()).then(|| SessionState::truncate(&parts.join("; "), 200));
+        }
+    }
+    single_summary(tool_name, input)
+}
+
+fn single_summary(tool_name: &str, input: &Value) -> Option<String> {
     let field = |key: &str| {
         input
             .get(key)
@@ -128,17 +213,20 @@ pub fn tool_summary(tool_name: &str, input: &Value) -> Option<String> {
         "update_plan" => Some(t!("payload.update_plan").into_owned()),
         name if is_question_tool(name) => first_question(input),
         _ => {
-            // First string field, else a compact JSON rendering
-            input
-                .as_object()
-                .and_then(|o| o.values().find_map(|v| v.as_str().map(|s| s.to_string())))
-                .or_else(|| {
-                    if input.is_null() {
-                        None
-                    } else {
-                        Some(input.to_string())
-                    }
-                })
+            // The input itself when it is text (a custom tool), else the first string field,
+            // else a compact JSON rendering
+            input.as_str().map(str::to_string).or_else(|| {
+                input
+                    .as_object()
+                    .and_then(|o| o.values().find_map(|v| v.as_str().map(|s| s.to_string())))
+                    .or_else(|| {
+                        if input.is_null() {
+                            None
+                        } else {
+                            Some(input.to_string())
+                        }
+                    })
+            })
         }
     };
     summary.map(|s| SessionState::truncate(&s, 200))
@@ -201,9 +289,14 @@ pub fn terminal_context(session_id: &str, cwd: &str, remote: bool) -> Value {
 /// The card for a permission prompt. Returns the message, its kind and a key that identifies
 /// the request.
 pub fn permission_card(input: &Input, remote: bool) -> (Value, &'static str, String) {
-    let tool_name = input.tool_name().unwrap_or_else(|| "Tool".to_string());
-    let tool_input = input.tool_input();
-    let summary = tool_summary(&tool_name, &tool_input);
+    let raw_name = input.tool_name().unwrap_or_else(|| "Tool".to_string());
+    let raw_input = input.tool_input();
+    let summary = tool_summary(&raw_name, &raw_input);
+    // An `exec` snippet: name the tool inside it, and read its justification
+    let (tool_name, tool_input) = tool_calls(&raw_name, &raw_input)
+        .into_iter()
+        .next()
+        .unwrap_or((raw_name.clone(), raw_input.clone()));
     let project = input.project_name();
     let session_id = input.session_id();
 
@@ -346,6 +439,71 @@ mod tests {
             patch_files(&json!({ "input": patch })),
             vec!["src/main.rs", "README.md"]
         );
+    }
+
+    const EXEC_CMD: &str =
+        r#"text(await tools.exec_command({cmd:"echo hi > hello.txt",max_output_tokens:1000}));"#;
+    const EXEC_PATCH: &str = r#"text(await tools.apply_patch("*** Begin Patch\n*** Add File: /Users/jack/codex-test-proj/colour.txt\n+Green\n*** End Patch"));"#;
+
+    #[test]
+    fn reads_the_codex_0_169_hook_shape() {
+        // What PreToolUse sent from Codex 0.169 in a real session
+        let input = json!({ "command": "*** Begin Patch\n*** Add File: notes.md\n+First line.\n+Second line.\n*** End Patch" });
+        assert_eq!(patch_files(&input), vec!["notes.md"]);
+        assert_eq!(
+            tool_summary("apply_patch", &input).as_deref(),
+            Some("Edit notes.md")
+        );
+    }
+
+    #[test]
+    fn unwraps_the_exec_tool() {
+        for input in [
+            json!(EXEC_CMD),
+            json!({ "input": EXEC_CMD }),
+            json!({ "code": EXEC_CMD }),
+        ] {
+            assert_eq!(
+                tool_summary("exec", &input).as_deref(),
+                Some("echo hi > hello.txt")
+            );
+            assert_eq!(display_name("exec", &input), "Bash");
+        }
+        let patch = json!(EXEC_PATCH);
+        assert_eq!(
+            tool_summary("exec", &patch).as_deref(),
+            Some("Edit /Users/jack/codex-test-proj/colour.txt")
+        );
+        assert_eq!(display_name("exec", &patch), "apply_patch");
+        // Two calls in one snippet: both summarised, the first names the tool
+        let both = json!(format!("{EXEC_CMD}\n{EXEC_PATCH}"));
+        assert_eq!(
+            tool_summary("exec", &both).as_deref(),
+            Some("echo hi > hello.txt; Edit /Users/jack/codex-test-proj/colour.txt")
+        );
+        assert_eq!(display_name("exec", &both), "Bash");
+        // No readable call: the snippet itself, as before
+        let plain = json!("text(1 + 1)");
+        assert_eq!(tool_summary("exec", &plain).as_deref(), Some("text(1 + 1)"));
+        assert_eq!(display_name("exec", &plain), "exec");
+        // A tool that is not exec is left alone
+        assert_eq!(tool_calls("Bash", &json!({ "command": "ls" }))[0].0, "Bash");
+    }
+
+    #[test]
+    fn permission_card_for_an_exec_snippet() {
+        let js = r#"text(await tools.exec_command({cmd:"curl -sI https://example.com | head -1",sandbox_permissions:"require_escalated",justification:"May I run curl outside the sandbox?"}));"#;
+        let hook =
+            json!({ "session_id": "s", "cwd": "/tmp/p", "tool_name": "exec", "tool_input": js });
+        let (card, kind, key) = permission_card(&Input(&hook), true);
+        assert_eq!(kind, "permission");
+        assert_eq!(card["toolName"], "Bash");
+        assert_eq!(card["toolInput"], "curl -sI https://example.com | head -1");
+        assert_eq!(
+            card["promptText"],
+            "Bash: curl -sI https://example.com | head -1\n\nMay I run curl outside the sandbox?"
+        );
+        assert_eq!(key, "Bash:curl -sI https://example.com | head -1");
     }
 
     #[test]

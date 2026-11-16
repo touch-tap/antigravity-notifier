@@ -10,6 +10,7 @@ mod config;
 mod hook;
 mod hookcfg;
 mod i18n;
+mod jsexec;
 mod licence;
 mod live;
 mod local;
