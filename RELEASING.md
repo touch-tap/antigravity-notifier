@@ -1,8 +1,9 @@
 # Releasing codex-notifier
 
 Ported from ccn's RELEASING.md; the machinery is the same with the names changed. The command,
-binary, archives, Homebrew formula, Scoop manifest and winget alias are all `codex-notifier`; the
-npm alias package `codexnotifier` only forwards to `@touchtap/codex-notifier`.
+binary, archives, Homebrew formula, Scoop manifest and winget alias are all `codex-notifier`; on npm
+it is `@touchtap/codex-notifier` only (npm refused an unscoped `codexnotifier` alias as too close to
+the unrelated `codex-notifier` package).
 
 1. Bump `version` in `Cargo.toml` (and run `cargo build` so `Cargo.lock` follows), commit, push.
 2. On the release Mac, `scripts/release.sh 0.2.0`. It signs and notarizes the macOS notifier app,

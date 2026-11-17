@@ -64,7 +64,7 @@ scripts/winget-manifests.sh 0.1.0
 # 9. Commit the generated packaging files and push
 git add packaging && git commit -m "Scoop and winget manifests for 0.1.0" && git push
 
-# 10. npm (@touchtap/codex-notifier, its six platform packages, and the codexnotifier alias)
+# 10. npm (@touchtap/codex-notifier and its six platform packages; npm refused an unscoped alias)
 npm whoami                                   # must be an owner of the touchtap org; npm login if 401
 rm -rf dist/release && gh release download v0.1.0 -R touch-tap/codex-notifier -D dist/release \
   -p 'codex-notifier-*.tar.gz' -p 'codex-notifier-*.zip'

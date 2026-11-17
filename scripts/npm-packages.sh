@@ -2,7 +2,7 @@
 # Builds the npm packages for a release from its assets, ready for `npm publish` in each folder:
 #   scripts/npm-packages.sh 0.2.0 dist     # dist holds the release's .tar.gz/.zip files
 # Output in npm/out/: one package per platform, @touchtap/codex-notifier pinned to the same version, and the
-# unscoped `codexnotifier` alias pinned to that.
+# no unscoped alias: npm refuses `codexnotifier` as too close to the unrelated `codex-notifier`.
 set -eu
 version=$1
 dist=$2
@@ -42,17 +42,17 @@ JSON
   cp "$root/LICENSE.md" "$dir/LICENSE.md"
 done
 
-for pkg in codex-notifier codexnotifier; do
+for pkg in codex-notifier; do
   cp -R "$root/npm/$pkg" "$out/$pkg"
   cp "$root/LICENSE.md" "$out/$pkg/LICENSE.md"
 done
 node -e '
-  const fs = require("fs"), v = process.argv[3];
-  for (const file of process.argv.slice(1, 3)) {
+  const fs = require("fs"), v = process.argv[2];
+  for (const file of process.argv.slice(1, 2)) {
     const p = JSON.parse(fs.readFileSync(file));
     p.version = v;
     for (const deps of [p.optionalDependencies, p.dependencies]) for (const k of Object.keys(deps ?? {})) deps[k] = v;
     fs.writeFileSync(file, JSON.stringify(p, null, 2) + "\n");
   }
-' "$out/codex-notifier/package.json" "$out/codexnotifier/package.json" "$version"
-echo "Packages in $out. Publish with scripts/npm-publish.sh (platform packages, then codex-notifier, then the alias)."
+' "$out/codex-notifier/package.json" "$version"
+echo "Packages in $out. Publish with scripts/npm-publish.sh (platform packages, then codex-notifier)."

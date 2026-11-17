@@ -1,6 +1,6 @@
 #!/bin/sh
 # Publishes the packages scripts/npm-packages.sh built: platform packages first, then
-# @touchtap/codex-notifier, then the unscoped codexnotifier alias that depends on it. Skips any version
+# @touchtap/codex-notifier (npm refused the unscoped `codexnotifier` alias on 17 Nov 2026). Skips any version
 # already on npm, so an interrupted run can simply be repeated:
 #   scripts/npm-publish.sh            # in a real terminal: npm asks for your passkey in the browser
 #   scripts/npm-publish.sh 123456     # with an authenticator app's one-time password
@@ -8,7 +8,7 @@
 set -eu
 otp=${1:-}
 out="$(cd "$(dirname "$0")/.." && pwd)/npm/out"
-for dir in "$out"/codex-notifier-* "$out/codex-notifier" "$out/codexnotifier"; do
+for dir in "$out"/codex-notifier-* "$out/codex-notifier"; do
   name=$(node -p "require('$dir/package.json').name")
   version=$(node -p "require('$dir/package.json').version")
   if npm view "$name@$version" version >/dev/null 2>&1; then
