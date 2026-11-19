@@ -55,7 +55,7 @@ common:
 
 pair:
   reregister: "이 컴퓨터의 이전 연결이 제거되어 있어서 다시 등록해요."
-  code_not_recognised: "그 코드를 인식하지 못했어요. 6자리 코드는 Notifier for Codex 앱의 컴퓨터 > 컴퓨터 추가에 있어요. 24시간마다 바뀌니 앱에 지금 표시된 줄을 복사하세요."
+  code_not_recognised: "그 코드를 인식하지 못했어요. 6자리 코드는 Notifier for Codex 앱의 컴퓨터 > 컴퓨터 연결에 있어요. 24시간마다 바뀌니 앱에 지금 표시된 줄을 복사하세요."
   offer_qr: "대신 여기에 QR 코드를 표시하려면 Enter를 누르세요 (휴대폰으로 스캔해요). 그만두려면 Ctrl+C."
   options_without_terminal: "앱에 지금 표시된 코드로 `codex-notifier pair <code>`를 다시 실행하거나, `codex-notifier pair`를 실행해 여기에 QR 코드를 띄우고 휴대폰으로 스캔하세요."
   scan: "  휴대폰 카메라로 이 코드를 스캔하면 연결돼요. 앱이 아직 없다면 App Store나\n  Google Play로 이동해요. 설치한 뒤 다시 스캔하세요."

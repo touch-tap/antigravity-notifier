@@ -146,7 +146,7 @@ elif (: < /dev/tty) 2>/dev/null; then
   # No code: show a QR code to scan with the phone, which also offers the app if it isn't installed
   exec "$dir/codex-notifier" pair < /dev/tty
 else
-  say "To get Codex on your phone: open Notifier for Codex, add a computer, and run"
+  say "To get Codex on your phone: open Notifier for Codex, tap Machines > Link a computer, and run"
   say "  $cli pair <the code on your phone>"
   say "or run \`$cli\` in a terminal and scan the QR code."
 fi

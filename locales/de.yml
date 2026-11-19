@@ -54,7 +54,7 @@ common:
 
 pair:
   reregister: "Die alte Kopplung dieses Computers wurde entfernt, deshalb wird er neu registriert."
-  code_not_recognised: "Dieser Code wurde nicht erkannt. Der 6-stellige Code steht in der App Notifier for Codex unter Computer > Computer hinzufügen; er ändert sich alle 24 Stunden, kopiere also die Zeile, die die App gerade jetzt anzeigt."
+  code_not_recognised: "Dieser Code wurde nicht erkannt. Der 6-stellige Code steht in der App Notifier for Codex unter Computer > Computer verbinden; er ändert sich alle 24 Stunden, kopiere also die Zeile, die die App gerade jetzt anzeigt."
   offer_qr: "Drücke Enter, um stattdessen hier einen QR-Code anzuzeigen (mit dem Handy scannen), oder Ctrl+C."
   options_without_terminal: "Führe `codex-notifier pair <code>` noch einmal mit dem Code aus, den die App jetzt anzeigt, oder `codex-notifier pair`, um hier einen QR-Code anzuzeigen und ihn mit dem Handy zu scannen."
   scan: "  Scanne das mit der Kamera deines Handys, um es zu verbinden. Ohne die App führt es\n  dich zum App Store oder zu Google Play: installieren, dann noch einmal scannen."

@@ -53,7 +53,7 @@ common:
 
 pair:
   reregister: "Stare parowanie tego komputera zostało usunięte, więc zostanie zarejestrowany ponownie."
-  code_not_recognised: "Ten kod nie został rozpoznany. 6-cyfrowy kod jest w aplikacji Notifier for Codex w Komputery > Dodaj komputer; zmienia się co 24 godziny, więc skopiuj wiersz, który aplikacja pokazuje teraz."
+  code_not_recognised: "Ten kod nie został rozpoznany. 6-cyfrowy kod jest w aplikacji Notifier for Codex w Komputery > Połącz komputer; zmienia się co 24 godziny, więc skopiuj wiersz, który aplikacja pokazuje teraz."
   offer_qr: "Naciśnij Enter, aby zamiast tego pokazać tu kod QR (zeskanuj go telefonem), albo Ctrl+C."
   options_without_terminal: "Uruchom `codex-notifier pair <code>` ponownie z kodem, który aplikacja pokazuje teraz, albo uruchom `codex-notifier pair`, aby pokazać tu kod QR i zeskanować go telefonem."
   scan: "  Zeskanuj to aparatem telefonu, aby go połączyć. Jeśli nie masz jeszcze aplikacji,\n  trafisz do App Store lub Google Play: zainstaluj ją i zeskanuj ponownie."

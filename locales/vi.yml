@@ -56,7 +56,7 @@ common:
 
 pair:
   reregister: "Ghép nối cũ của máy tính này đã bị gỡ, nên nó sẽ được đăng ký lại."
-  code_not_recognised: "Mã này không được nhận ra. Mã 6 chữ số nằm trong ứng dụng Notifier for Codex, mục Máy tính > Thêm máy tính; mã thay đổi mỗi 24 giờ, nên hãy sao chép dòng mà ứng dụng đang hiển thị lúc này."
+  code_not_recognised: "Mã này không được nhận ra. Mã 6 chữ số nằm trong ứng dụng Notifier for Codex, mục Máy tính > Liên kết máy tính; mã thay đổi mỗi 24 giờ, nên hãy sao chép dòng mà ứng dụng đang hiển thị lúc này."
   offer_qr: "Nhấn Enter để hiển thị mã QR ở đây thay thế (quét bằng điện thoại của bạn), hoặc Ctrl+C."
   options_without_terminal: "Chạy lại `codex-notifier pair <mã>` với mã mà ứng dụng đang hiển thị, hoặc chạy `codex-notifier pair` để hiển thị mã QR ở đây rồi quét bằng điện thoại."
   scan: "  Quét mã này bằng camera điện thoại để kết nối. Nếu chưa có ứng dụng, mã sẽ đưa bạn\n  tới App Store hoặc Google Play: cài xong rồi quét lại."

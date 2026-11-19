@@ -55,7 +55,7 @@ common:
 
 pair:
   reregister: "這台電腦之前的配對已被移除，所以會重新註冊。"
-  code_not_recognised: "無法辨識這個配對碼。6 位配對碼在 Notifier for Codex App 的「電腦 > 加入電腦」裡；它每 24 小時更換一次，所以請複製 App 此刻顯示的那一行。"
+  code_not_recognised: "無法辨識這個配對碼。6 位配對碼在 Notifier for Codex App 的「電腦 > 連結電腦」裡；它每 24 小時更換一次，所以請複製 App 此刻顯示的那一行。"
   offer_qr: "按 Enter 改為在這裡顯示 QR 碼（用手機掃描），或按 Ctrl+C 離開。"
   options_without_terminal: "用 App 現在顯示的配對碼再次執行 `codex-notifier pair <code>`，或執行 `codex-notifier pair` 在這裡顯示 QR 碼，再用手機掃描。"
   scan: "  用手機相機掃描它即可連線。還沒有 App 的話，它會帶你去 App Store 或\n  Google Play: 安裝後再掃一次。"
