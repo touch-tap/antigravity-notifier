@@ -7,7 +7,7 @@ use std::time::Duration;
 
 use crate::api::{self, Api};
 use crate::config::{self, Config, Unpaired};
-use crate::{hookcfg, licence, notify, payload, presence, qr, telemetry};
+use crate::{crosspromo, hookcfg, licence, notify, payload, presence, qr, telemetry};
 
 /// What this computer tells the server about itself. None until credentials exist.
 pub fn identity(cfg: &Config) -> Option<Value> {
@@ -315,6 +315,7 @@ fn pair_inner(
     }
 
     licence_pitch(&api);
+    crosspromo::print_hint(&cfg, "pair");
 
     println!();
     println!("{}", t!("pair.done"));
@@ -535,6 +536,7 @@ pub fn default_command() -> Result<()> {
     println!("{}", t!("status.hint_test"));
     println!("{}", t!("status.hint_pair"));
     println!("{}", t!("status.hint_help"));
+    crosspromo::print_hint(&cfg, "status");
     Ok(())
 }
 
@@ -799,6 +801,7 @@ pub fn doctor() -> Result<()> {
         "{yes}{}",
         t!("doctor.log", path = config::log_path().display())
     );
+    crosspromo::print_hint(&cfg, "doctor");
     Ok(())
 }
 

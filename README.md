@@ -126,7 +126,7 @@ and `doctor`, and at most twice ever when Codex starts; `CODEX_NOTIFIER_NO_NUDGE
 started, paired or failed with a short reason; how and from where it was installed; the OS and
 processor; `agent: codex`). The background updater sends `cli_updated` or `cli_update_failed`, and
 the one hook that sends anything is SessionStart, when it shows a licence nudge (at most once a
-day). Nothing about your sessions, prompts or computer name is included. Set
+day) or the ccn suggestion (`cli_cross_promo_shown`, sent by a detached process so nothing waits). Nothing about your sessions, prompts or computer name is included. Set
 `CODEX_NOTIFIER_NO_ANALYTICS=1` or `DO_NOT_TRACK=1` to turn them off.
 
 ## Development

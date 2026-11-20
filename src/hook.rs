@@ -165,10 +165,20 @@ fn run_inner() -> Result<Option<Value>> {
         ));
         return Ok(unpaired(&ctx.cfg, &event, &mut ctx.state, Unpaired::new()).or(update_message));
     }
-    match announce {
-        Some(message) => Ok(Some(message)),
-        None => result.map(|message| message.or(update_message)),
+    let message = match announce {
+        Some(message) => Some(message),
+        None => result?.or(update_message),
+    };
+    // The ccn suggestion only on a SessionStart that says nothing else: never with a licence
+    // nudge, a "paired with" or an update notice. Never through codex_wording, which would
+    // turn its "Claude Code" into "Codex".
+    if message.is_none() && event == "SessionStart" {
+        return Ok(crate::crosspromo::session_message(
+            &mut ctx.cfg,
+            config::now(),
+        ));
     }
+    Ok(message)
 }
 
 /// Asks the server how many phones are paired and records the answer. Returns the one-time
@@ -733,6 +743,38 @@ mod tests {
             "Approvals from Codex reach you. Notifier for Codex unlocks once."
         );
         assert_eq!(message.command, "codex-notifier unlock --lifetime");
+    }
+
+    #[test]
+    fn codex_wording_never_touches_the_ccn_suggestion() {
+        // codex_wording would turn the line into nonsense about Codex...
+        let line = crate::crosspromo::line();
+        let rewritten = codex_wording(api::NudgeMessage {
+            id: String::new(),
+            kind: String::new(),
+            variant: String::new(),
+            title: String::new(),
+            body: line.clone(),
+            command: crate::crosspromo::COMMAND.into(),
+        });
+        assert_ne!(rewritten.body, line);
+        // ...so the SessionStart message is the line as written, naming Claude Code and ccn
+        let dir =
+            std::env::temp_dir().join(format!("cxn-hook-crosspromo-{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&dir);
+        std::fs::create_dir_all(dir.join(".claude")).unwrap();
+        let places = crate::crosspromo::Places {
+            claude_dir: dir.join(".claude"),
+            ccn_dir: dir.join("ccn"),
+            path: None,
+        };
+        let mut cfg = Config::default();
+        cfg.paired_at = Some(0);
+        let shown = crate::crosspromo::session_line(&mut cfg, 10 * DAY, &places).unwrap();
+        assert_eq!(shown, line);
+        assert!(shown.contains("Claude Code approvals"), "{shown}");
+        assert!(shown.contains("npm install -g @touchtap/ccn"), "{shown}");
+        assert!(!shown.contains("Codex"), "{shown}");
     }
 
     #[test]

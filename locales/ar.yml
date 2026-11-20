@@ -198,6 +198,11 @@ hook:
   nudge_message: "Notifier for Codex: %{title} %{body} %{command}"
   needs_attention: "يحتاج إلى انتباهك"
 
+# Suggests ccn, the Claude Code notifier, to someone who also uses Claude Code (crosspromo.rs).
+# command and url are not translated.
+cross_promo:
+  line: "هل تستخدم Claude Code أيضًا؟ يرسل ccn موافقات Claude Code وأسئلته إلى هاتفك كذلك: %{command}  ·  %{url}"
+
 hooks:
   doctor_presence_none: "الحضور: لا يمكن رصده هنا، لذا لا شيء ينتظر الهاتف: يصله تنبيه وتجيب أنت في الطرفية (`codex-notifier config set hold_without_presence on` للانتظار رغم ذلك)"
   doctor_presence_none_hold: "الحضور: لا يمكن رصده هنا، وhold_without_presence مفعّل، لذا ينتظر كل طلب الهاتف حتى يجيب أو تنقضي المدة القصوى"

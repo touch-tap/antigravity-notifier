@@ -195,6 +195,11 @@ hook:
   nudge_message: "Notifier for Codex : %{title} %{body} %{command}"
   needs_attention: "Demande ton attention"
 
+# Suggests ccn, the Claude Code notifier, to someone who also uses Claude Code (crosspromo.rs).
+# command and url are not translated.
+cross_promo:
+  line: "Tu utilises aussi Claude Code ? ccn envoie aussi les autorisations et les questions de Claude Code sur ton téléphone : %{command}  ·  %{url}"
+
 hooks:
   doctor_presence_none: "présence : non détectable ici, donc rien n'attend le téléphone : il reçoit une note et vous répondez dans le terminal (`codex-notifier config set hold_without_presence on` pour attendre quand même)"
   doctor_presence_none_hold: "présence : non détectable ici, et hold_without_presence est activé, donc chaque demande attend le téléphone jusqu'à sa réponse ou la fin du délai maximal"

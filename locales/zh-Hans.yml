@@ -196,6 +196,11 @@ hook:
   nudge_message: "Notifier for Codex: %{title} %{body} %{command}"
   needs_attention: "需要你处理"
 
+# Suggests ccn, the Claude Code notifier, to someone who also uses Claude Code (crosspromo.rs).
+# command and url are not translated.
+cross_promo:
+  line: "也在用 Claude Code？ccn 也能把 Claude Code 的批准请求和提问发到你的手机上：%{command}  ·  %{url}"
+
 hooks:
   doctor_presence_none: "在场检测：此处无法检测，因此不会等待手机：手机会收到提醒，你在终端中回复（如仍要等待，运行 `codex-notifier config set hold_without_presence on`）"
   doctor_presence_none_hold: "在场检测：此处无法检测，且 hold_without_presence 已开启，因此每个请求都会等待手机，直到手机回复或超过最长等待时间"

@@ -196,6 +196,11 @@ hook:
   nudge_message: "Notifier for Codex: %{title} %{body} %{command}"
   needs_attention: "확인이 필요해요"
 
+# Suggests ccn, the Claude Code notifier, to someone who also uses Claude Code (crosspromo.rs).
+# command and url are not translated.
+cross_promo:
+  line: "Claude Code도 쓰시나요? ccn을 쓰면 Claude Code의 승인 요청과 질문도 휴대폰으로 받을 수 있어요: %{command}  ·  %{url}"
+
 hooks:
   doctor_presence_none: "자리 감지: 여기서는 감지할 수 없어 휴대폰을 기다리지 않습니다. 휴대폰에는 알림이 가고 터미널에서 응답합니다(그래도 기다리려면 `codex-notifier config set hold_without_presence on`)"
   doctor_presence_none_hold: "자리 감지: 여기서는 감지할 수 없고 hold_without_presence가 켜져 있어, 모든 요청이 휴대폰이 응답하거나 최대 대기 시간이 지날 때까지 기다립니다"
