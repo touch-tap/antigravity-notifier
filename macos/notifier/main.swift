@@ -1,8 +1,10 @@
 // Notifier for Codex.app: posts codex-notifier's desktop notifications on macOS, so they carry our name and icon
 // instead of Script Editor's. codex-notifier runs the executable inside the bundle directly:
 //
-//   codex-notifier-notifier --title T --body B [--sound]   post one notification, exit when it is delivered
-//                                               (through AppleScript until permission has been asked)
+//   codex-notifier-notifier --title T --body B [--sound] [--url U]
+//                                               post one notification, exit when it is delivered
+//                                               (through AppleScript until permission has been asked);
+//                                               a click opens U, which AppleScript puts in the body instead
 //   codex-notifier-notifier --request-permission           ask for permission now (codex-notifier setup); prints granted|denied
 //   codex-notifier-notifier --status                       prints authorized|denied|not-determined (codex-notifier doctor)
 //
@@ -37,6 +39,14 @@ final class Delegate: NSObject, UNUserNotificationCenterDelegate {
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse,
                                 withCompletionHandler completionHandler: @escaping () -> Void) {
         completionHandler()
+        if let url = response.notification.request.content.userInfo["url"] as? String,
+           url.hasPrefix("https://") {
+            let open = Process()
+            open.executableURL = URL(fileURLWithPath: "/usr/bin/open")
+            open.arguments = [url]
+            try? open.run()
+            open.waitUntilExit()
+        }
         finish()
     }
 }
@@ -47,7 +57,11 @@ func appleScript(_ content: UNNotificationContent) -> Never {
     func quoted(_ s: String) -> String {
         "\"" + s.replacingOccurrences(of: "\\", with: "\\\\").replacingOccurrences(of: "\"", with: "\\\"") + "\""
     }
-    var script = "display notification \(quoted(content.body)) with title \(quoted(content.title))"
+    var body = content.body
+    if let url = content.userInfo["url"] as? String {
+        body += "\n" + (url.hasPrefix("https://") ? String(url.dropFirst(8)) : url)
+    }
+    var script = "display notification \(quoted(body)) with title \(quoted(content.title))"
     if content.sound != nil { script += " sound name \"default\"" }
     let osascript = Process()
     osascript.executableURL = URL(fileURLWithPath: "/usr/bin/osascript")
@@ -79,6 +93,7 @@ if args.contains("--status") {
     content.title = title
     content.body = value("--body") ?? ""
     if args.contains("--sound") { content.sound = .default }
+    if let url = value("--url") { content.userInfo = ["url": url] }
     // One thread per Codex session keeps Notification Center tidy
     if let thread = value("--thread") { content.threadIdentifier = thread }
 

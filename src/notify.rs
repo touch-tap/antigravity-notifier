@@ -104,6 +104,34 @@ pub fn show(title: &str, body: &str, sound: bool) {
     }
 }
 
+/// A notification that opens `url` when clicked, where the platform can: a Windows toast, or the
+/// macOS notifier app. Elsewhere (Linux, macOS without the app) the URL ends the body instead,
+/// without its scheme (`body_with_url`).
+pub fn show_link(title: &str, body: &str, url: &str) {
+    if disabled() {
+        return;
+    }
+    #[cfg(target_os = "macos")]
+    if !mac::post_with(title, body, false, Some(url)) {
+        show(title, &body_with_url(body, url), false);
+    }
+    #[cfg(target_os = "linux")]
+    show(title, &body_with_url(body, url), false);
+    #[cfg(windows)]
+    {
+        let body = crate::session::SessionState::truncate(body, 200);
+        if let Err(err) = win::show(&toast_xml_with(title, &body, false, Some(url))) {
+            crate::logger::log(&format!("toast failed: {err}"));
+        }
+    }
+}
+
+/// The body with the URL on a line of its own, for a notification that can't open it on a click.
+pub fn body_with_url(body: &str, url: &str) -> String {
+    let short = url.strip_prefix("https://").unwrap_or(url);
+    format!("{body}\n{short}")
+}
+
 /// What `codex-notifier setup` adds for desktop notifications: the icon, and on Windows the app identity
 /// toasts are shown under. Returns a line to print when it did something, and None when it was
 /// all in place already, so a repeated setup is quiet.
@@ -169,13 +197,22 @@ pub fn uninstall() {
 /// The toast's XML. Not platform-gated so the escaping is tested everywhere.
 #[cfg_attr(not(windows), allow(dead_code))]
 pub fn toast_xml(title: &str, body: &str, sound: bool) -> String {
+    toast_xml_with(title, body, sound, None)
+}
+
+/// The toast's XML, opening `launch` (a URL) in the browser when the toast is clicked.
+#[cfg_attr(not(windows), allow(dead_code))]
+pub fn toast_xml_with(title: &str, body: &str, sound: bool, launch: Option<&str>) -> String {
+    let open = launch
+        .map(|url| format!(r#" activationType="protocol" launch="{}""#, xml_escape(url)))
+        .unwrap_or_default();
     let audio = if sound {
         r#"<audio src="ms-winsoundevent:Notification.Default"/>"#
     } else {
         r#"<audio silent="true"/>"#
     };
     format!(
-        r#"<toast><visual><binding template="ToastGeneric"><text>{}</text><text>{}</text></binding></visual>{audio}</toast>"#,
+        r#"<toast{open}><visual><binding template="ToastGeneric"><text>{}</text><text>{}</text></binding></visual>{audio}</toast>"#,
         xml_escape(title),
         xml_escape(body)
     )
@@ -287,6 +324,12 @@ mod mac {
 
     /// Fire and forget. The app falls back to AppleScript itself while permission was never asked.
     pub fn post(title: &str, body: &str, sound: bool) -> bool {
+        post_with(title, body, sound, None)
+    }
+
+    /// `post`, opening `url` when the notification is clicked (the AppleScript fallback puts it
+    /// in the body instead).
+    pub fn post_with(title: &str, body: &str, sound: bool, url: Option<&str>) -> bool {
         if !ensure() {
             return false;
         }
@@ -294,6 +337,9 @@ mod mac {
         cmd.args(["--title", title, "--body", body]);
         if sound {
             cmd.arg("--sound");
+        }
+        if let Some(url) = url {
+            cmd.args(["--url", url]);
         }
         cmd.stdin(Stdio::null())
             .stdout(Stdio::null())
@@ -460,6 +506,22 @@ mod tests {
             "<toast><visual><binding template=\"ToastGeneric\"><text>Fix &lt;b&gt; &amp; &quot;quotes&quot;</text>\
              <text>it&apos;s 1 &lt; 2 &gt; 0</text></binding></visual>\
              <audio src=\"ms-winsoundevent:Notification.Default\"/></toast>"
+        );
+    }
+
+    #[test]
+    fn a_toast_with_a_link_opens_it() {
+        let xml = toast_xml_with("t", "b", false, Some("https://example.com/?a=1&b=2"));
+        assert!(
+            xml.starts_with(
+                "<toast activationType=\"protocol\" launch=\"https://example.com/?a=1&amp;b=2\"><visual>"
+            ),
+            "{xml}"
+        );
+        assert!(toast_xml("t", "b", false).starts_with("<toast><visual>"));
+        assert_eq!(
+            body_with_url("Rate it.", "https://example.com/rate?x=1"),
+            "Rate it.\nexample.com/rate?x=1"
         );
     }
 
