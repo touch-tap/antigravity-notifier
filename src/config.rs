@@ -340,6 +340,15 @@ pub struct Config {
     pub cross_promo_count: u32,
     /// When a SessionStart first looked at the ccn suggestion, for a computer with no pairing time
     pub cross_promo_first_seen_at: Option<i64>,
+    /// Requests and done cards answered from the phone while Codex waited (for `rate_prompt`)
+    pub phone_answers: u64,
+    /// The paired phones' platforms (ios, android), as the server last listed them
+    pub phone_platforms: Vec<String>,
+    /// Whether to ask once for an app-store rating after 20 answers from the phone
+    /// (`codex-notifier config set rate_prompt off`; default on). Its rules are in rate.rs.
+    pub rate_prompt: bool,
+    /// When the rating request was shown (it is shown once per install)
+    pub rate_prompt_shown_at: Option<i64>,
     /// The file as this process read it, to save only the fields it changed (see `save`)
     #[serde(skip)]
     loaded: Option<toml::Table>,
@@ -381,6 +390,10 @@ impl Default for Config {
             cross_promo_last_at: None,
             cross_promo_count: 0,
             cross_promo_first_seen_at: None,
+            phone_answers: 0,
+            phone_platforms: Vec::new(),
+            rate_prompt: true,
+            rate_prompt_shown_at: None,
             loaded: None,
             unreadable: None,
         }
@@ -593,6 +606,14 @@ impl Config {
         if count > 0 && self.paired_at.is_none() {
             self.paired_at = Some(now());
         }
+    }
+
+    /// Records the paired phones' platforms, distinct and sorted, when the server has said.
+    pub fn record_platforms<'a>(&mut self, platforms: impl IntoIterator<Item = &'a str>) {
+        let mut list: Vec<String> = platforms.into_iter().map(str::to_string).collect();
+        list.sort();
+        list.dedup();
+        self.phone_platforms = list;
     }
 
     /// `hold_without_presence`, or `CODEX_NOTIFIER_HOLD_WITHOUT_PRESENCE=1` for this process

@@ -172,11 +172,11 @@ fn run_inner() -> Result<Option<Value>> {
     // The ccn suggestion only on a SessionStart that says nothing else: never with a licence
     // nudge, a "paired with" or an update notice. Never through codex_wording, which would
     // turn its "Claude Code" into "Codex".
+    // Then the rating request, the same way.
     if message.is_none() && event == "SessionStart" {
-        return Ok(crate::crosspromo::session_message(
-            &mut ctx.cfg,
-            config::now(),
-        ));
+        let now = config::now();
+        return Ok(crate::crosspromo::session_message(&mut ctx.cfg, now)
+            .or_else(|| crate::rate::session_message(&mut ctx.cfg, now)));
     }
     Ok(message)
 }
@@ -192,6 +192,7 @@ fn check_phones(cfg: &mut Config, api: &Api) -> Option<Value> {
         }
     };
     cfg.record_phones(devices.len());
+    cfg.record_platforms(devices.iter().map(|d| d.platform.as_str()));
     let mut message = None;
     if !devices.is_empty() && !cfg.paired_message_shown {
         cfg.paired_message_shown = true;
@@ -358,6 +359,11 @@ impl Ctx {
                 return None;
             }
         };
+        if let Some(platforms) = &status.phone_platforms {
+            self.cfg
+                .record_platforms(platforms.iter().map(String::as_str));
+            let _ = self.cfg.save();
+        }
         if !status.nudge {
             return None;
         }
@@ -662,6 +668,11 @@ impl Ctx {
                     }
                     let _ = self.state.save();
                     log(&format!("{id} answered from the phone"));
+                    // Counted for the rating request (rate.rs), on a fresh read so concurrent
+                    // hooks don't undo each other's count
+                    let mut fresh = Config::load();
+                    fresh.phone_answers += 1;
+                    let _ = fresh.save();
                     return Ok(Some(text));
                 }
                 Ok(None) => return Ok(None),

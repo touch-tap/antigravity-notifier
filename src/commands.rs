@@ -435,6 +435,7 @@ pub fn duration_text(secs: u64) -> String {
 pub fn list_phones(cfg: &mut Config, api: &Api) -> Result<Vec<api::PairedDevice>> {
     let devices = api.pairings()?;
     cfg.record_phones(devices.len());
+    cfg.record_platforms(devices.iter().map(|d| d.platform.as_str()));
     let _ = cfg.save();
     Ok(devices)
 }
@@ -653,6 +654,10 @@ pub fn doctor() -> Result<()> {
         match api.me() {
             Ok(me) => {
                 Unpaired::clear();
+                if let Some(platforms) = &me.phone_platforms {
+                    cfg.record_platforms(platforms.iter().map(String::as_str));
+                    let _ = cfg.save();
+                }
                 println!(
                     "{yes}{}",
                     t!(
@@ -938,6 +943,10 @@ pub fn config_show() -> Result<()> {
         "cross_promo                {} {local_only}",
         if cfg.cross_promo { "on" } else { "off" }
     );
+    println!(
+        "rate_prompt                {} {local_only}",
+        if cfg.rate_prompt { "on" } else { "off" }
+    );
     if let Some(at) = cfg.settings_updated_at {
         let when = chrono::DateTime::from_timestamp(at, 0)
             .map(|t| t.to_rfc3339())
@@ -975,6 +984,14 @@ pub fn config_set(key: &str, value: &str) -> Result<()> {
     }
     if key == "cross_promo" {
         cfg.cross_promo = matches!(
+            value.to_ascii_lowercase().as_str(),
+            "on" | "true" | "yes" | "1"
+        );
+        cfg.save()?;
+        return config_show();
+    }
+    if key == "rate_prompt" {
+        cfg.rate_prompt = matches!(
             value.to_ascii_lowercase().as_str(),
             "on" | "true" | "yes" | "1"
         );

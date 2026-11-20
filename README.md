@@ -109,7 +109,8 @@ the local-only `desktop_notifications`, `credential_store` (`keychain` or `file`
 `pair_nudges`, `hold_without_presence` (hold for the phone even where presence can't be read) and
 `cross_promo` (default on: someone who also uses Claude Code, without
 [ccn](https://claudecodenotifier.com) installed, sees one line about it after pairing, in `status`
-and `doctor`, and at most twice ever when Codex starts, as a desktop notification and a line in Codex; `CODEX_NOTIFIER_NO_NUDGE=1` also turns it off).
+and `doctor`, and at most twice ever when Codex starts, as a desktop notification and a line in Codex; `CODEX_NOTIFIER_NO_NUDGE=1` also turns it off), and `rate_prompt` (default on: once per install,
+after 20 answers from the phone, a desktop notification asks for an app-store rating).
 
 ## Files
 
@@ -126,7 +127,7 @@ and `doctor`, and at most twice ever when Codex starts, as a desktop notificatio
 started, paired or failed with a short reason; how and from where it was installed; the OS and
 processor; `agent: codex`). The background updater sends `cli_updated` or `cli_update_failed`, and
 the one hook that sends anything is SessionStart, when it shows a licence nudge (at most once a
-day) or the ccn suggestion (`cli_cross_promo_shown`, sent by a detached process so nothing waits). Nothing about your sessions, prompts or computer name is included. Set
+day) or the ccn suggestion or rating request (`cli_cross_promo_shown`, `cli_rate_prompt_shown`, sent by a detached process so nothing waits). Nothing about your sessions, prompts or computer name is included. Set
 `CODEX_NOTIFIER_NO_ANALYTICS=1` or `DO_NOT_TRACK=1` to turn them off.
 
 ## Development

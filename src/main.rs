@@ -20,6 +20,7 @@ mod notify;
 mod payload;
 mod presence;
 mod qr;
+mod rate;
 mod respond;
 mod session;
 mod telemetry;

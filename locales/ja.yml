@@ -202,6 +202,11 @@ cross_promo:
   line: "Claude Code もお使いですか？ ccn なら Claude Code の承認や質問もスマートフォンに届きます: %{command}  ·  %{url}"
   notification: "Claude Code もお使いですか？ ccn なら Claude Code の承認もスマートフォンに届きます。"
 
+# Asks once, after 20 answers from the phone, for an app-store rating (rate.rs). url is not translated.
+rate:
+  notification: "Notifier for Codex は気に入っていただけましたか？ 評価をいただけると、ほかの開発者が見つけやすくなります。"
+  message: "Notifier for Codex は気に入っていただけましたか？ 評価をいただけると、ほかの開発者が見つけやすくなります: %{url}"
+
 hooks:
   doctor_presence_none: "在席検出: ここでは検出できないため、スマートフォンの応答は待ちません。スマートフォンには通知が届き、ターミナルで応答します（それでも待つには `codex-notifier config set hold_without_presence on`）"
   doctor_presence_none_hold: "在席検出: ここでは検出できず、hold_without_presence がオンのため、各リクエストはスマートフォンが応答するか上限時間が過ぎるまで待ちます"

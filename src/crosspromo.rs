@@ -206,6 +206,10 @@ pub fn session_message(cfg: &mut Config, now: i64) -> Option<Value> {
             NOTIFICATION_URL,
         );
     }
+    crate::logger::log(&format!(
+        "ccn suggestion shown at SessionStart (desktop notification: {})",
+        cfg.desktop_notifications
+    ));
     shown("session");
     Some(json!({ "systemMessage": text }))
 }
@@ -213,7 +217,10 @@ pub fn session_message(cfg: &mut Config, now: i64) -> Option<Value> {
 /// The cadence and detection behind `session_message`, without saving: the line when it is due
 /// here, with the showing counted in `cfg`.
 pub fn session_line(cfg: &mut Config, now: i64, places: &Places) -> Option<String> {
-    if cfg.cross_promo_count >= SESSION_MAX {
+    // Never the same day as the rating request
+    if cfg.cross_promo_count >= SESSION_MAX
+        || cfg.rate_prompt_shown_at.is_some_and(|at| now - at < DAY)
+    {
         return None;
     }
     let since = cfg

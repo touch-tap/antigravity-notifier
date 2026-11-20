@@ -84,6 +84,9 @@ pub struct Me {
     pub client_kind: Option<String>,
     pub capabilities: Option<Vec<String>>,
     pub settings_updated_at: Option<i64>,
+    /// The paired phones' platforms (ios, android). None from a server that doesn't send them.
+    #[serde(default)]
+    pub phone_platforms: Option<Vec<String>>,
 }
 
 #[derive(Deserialize, Debug, Clone)]
@@ -452,6 +455,9 @@ pub struct LicenceStatus {
     /// The server-authored nudge for `nudge: true`, with its A/B id. None from an older server.
     #[serde(default)]
     pub nudge_message: Option<NudgeMessage>,
+    /// The paired phones' platforms (ios, android). None from a server that doesn't send them.
+    #[serde(default)]
+    pub phone_platforms: Option<Vec<String>>,
 }
 
 #[derive(Deserialize, Debug, Clone)]

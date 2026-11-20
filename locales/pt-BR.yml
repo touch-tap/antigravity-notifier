@@ -200,6 +200,11 @@ cross_promo:
   line: "Também usa o Claude Code? O ccn envia ao celular as aprovações e perguntas do Claude Code também: %{command}  ·  %{url}"
   notification: "Também usa o Claude Code? O ccn envia ao celular as aprovações do Claude Code também."
 
+# Asks once, after 20 answers from the phone, for an app-store rating (rate.rs). url is not translated.
+rate:
+  notification: "Está gostando do Notifier for Codex? Uma avaliação rápida ajuda outros desenvolvedores a encontrá-lo."
+  message: "Está gostando do Notifier for Codex? Uma avaliação rápida ajuda outros desenvolvedores a encontrá-lo: %{url}"
+
 hooks:
   doctor_presence_none: "presença: não detectável aqui, então nada espera pelo celular: ele recebe um aviso e você responde no terminal (`codex-notifier config set hold_without_presence on` para esperar mesmo assim)"
   doctor_presence_none_hold: "presença: não detectável aqui, e hold_without_presence está ativado, então cada pedido espera pelo celular até ele responder ou o tempo máximo passar"

@@ -202,6 +202,11 @@ cross_promo:
   line: "也在用 Claude Code？ccn 也能把 Claude Code 的批准请求和提问发到你的手机上：%{command}  ·  %{url}"
   notification: "也在用 Claude Code？ccn 也能把 Claude Code 的批准请求发到你的手机上。"
 
+# Asks once, after 20 answers from the phone, for an app-store rating (rate.rs). url is not translated.
+rate:
+  notification: "喜欢 Notifier for Codex 吗？给个评分，能帮其他开发者找到它。"
+  message: "喜欢 Notifier for Codex 吗？给个评分，能帮其他开发者找到它：%{url}"
+
 hooks:
   doctor_presence_none: "在场检测：此处无法检测，因此不会等待手机：手机会收到提醒，你在终端中回复（如仍要等待，运行 `codex-notifier config set hold_without_presence on`）"
   doctor_presence_none_hold: "在场检测：此处无法检测，且 hold_without_presence 已开启，因此每个请求都会等待手机，直到手机回复或超过最长等待时间"
