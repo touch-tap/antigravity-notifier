@@ -198,6 +198,7 @@ hook:
 # command and url are not translated.
 cross_promo:
   line: "Пользуетесь и Claude Code? ccn тоже отправляет подтверждения и вопросы Claude Code на телефон: %{command}  ·  %{url}"
+  notification: "Пользуетесь и Claude Code? ccn тоже отправляет подтверждения Claude Code на телефон."
 
 hooks:
   doctor_presence_none: "присутствие: здесь не определяется, поэтому ничто не ждёт телефон: он получает уведомление, а вы отвечаете в терминале (`codex-notifier config set hold_without_presence on`, чтобы всё равно ждать)"

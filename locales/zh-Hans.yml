@@ -200,6 +200,7 @@ hook:
 # command and url are not translated.
 cross_promo:
   line: "也在用 Claude Code？ccn 也能把 Claude Code 的批准请求和提问发到你的手机上：%{command}  ·  %{url}"
+  notification: "也在用 Claude Code？ccn 也能把 Claude Code 的批准请求发到你的手机上。"
 
 hooks:
   doctor_presence_none: "在场检测：此处无法检测，因此不会等待手机：手机会收到提醒，你在终端中回复（如仍要等待，运行 `codex-notifier config set hold_without_presence on`）"

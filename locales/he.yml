@@ -202,6 +202,7 @@ hook:
 # command and url are not translated.
 cross_promo:
   line: "משתמשים גם ב-Claude Code? ccn שולח גם את האישורים והשאלות של Claude Code לטלפון: %{command}  ·  %{url}"
+  notification: "משתמשים גם ב-Claude Code? ccn שולח גם את האישורים של Claude Code לטלפון."
 
 hooks:
   doctor_presence_none: "נוכחות: לא ניתנת לזיהוי כאן, ולכן שום דבר לא ממתין לטלפון: הוא מקבל הודעה ואתה עונה בטרמינל (`codex-notifier config set hold_without_presence on` כדי להמתין בכל זאת)"

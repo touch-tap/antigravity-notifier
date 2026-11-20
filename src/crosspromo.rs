@@ -23,6 +23,8 @@ const SESSION_MAX: u32 = 2;
 
 pub const COMMAND: &str = "npm install -g @touchtap/ccn";
 pub const URL: &str = "https://claudecodenotifier.com/?ref=codex-cli";
+/// Where a click on the SessionStart notification goes
+pub const NOTIFICATION_URL: &str = "https://claudecodenotifier.com/?ref=codex-notification";
 
 /// Where Claude Code and ccn would live on this computer.
 #[derive(Debug, Clone)]
@@ -155,6 +157,11 @@ pub fn line() -> String {
     t!("cross_promo.line", command = COMMAND, url = URL).into_owned()
 }
 
+/// The SessionStart desktop notification's body (its title is the app's name).
+pub fn notification_body() -> String {
+    t!("cross_promo.notification").into_owned()
+}
+
 /// Counts a showing; `place` is pair, session, status or doctor.
 fn shown(place: &str) {
     crate::telemetry::event_detached("cli_cross_promo_shown", &[("where", place)]);
@@ -179,7 +186,9 @@ pub fn session_due(now: i64, since: i64, last_at: Option<i64>, count: u32) -> bo
     }
 }
 
-/// The `systemMessage` for a paired SessionStart that shows nothing else, when due and eligible.
+/// The `systemMessage` for a paired SessionStart that shows nothing else, when due and eligible,
+/// with a desktop notification as well (most people never read Codex's start-up lines) unless
+/// desktop notifications are off. Neither goes through `codex_wording`.
 pub fn session_message(cfg: &mut Config, now: i64) -> Option<Value> {
     if !enabled(cfg) {
         return None;
@@ -190,6 +199,13 @@ pub fn session_message(cfg: &mut Config, now: i64) -> Option<Value> {
         let _ = cfg.save();
     }
     let text = text?;
+    if cfg.desktop_notifications {
+        crate::notify::show_link(
+            crate::notify::APP_NAME,
+            &notification_body(),
+            NOTIFICATION_URL,
+        );
+    }
     shown("session");
     Some(json!({ "systemMessage": text }))
 }
@@ -406,6 +422,12 @@ mod tests {
             for mac_only in ["Mac", "macOS"] {
                 assert!(!text.contains(mac_only), "{lang}: {text}");
             }
+            let notification = rust_i18n::t!("cross_promo.notification", locale = lang);
+            assert!(
+                notification.contains("Claude Code") && notification.contains("ccn"),
+                "{lang}: {notification}"
+            );
+            assert!(!notification.contains("Mac"), "{lang}: {notification}");
             assert!(dir.join(format!("{lang}.yml")).exists());
         }
     }
