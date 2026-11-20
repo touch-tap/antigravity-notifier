@@ -95,6 +95,29 @@ fn timeout() -> Duration {
     }
 }
 
+/// `event`, sent by a detached `codex-notifier telemetry` process so nothing waits for it, not even
+/// for the short timeout: what a hook, or a hint in `status` and `doctor`, uses.
+pub fn event_detached(name: &str, properties: &[(&str, &str)]) {
+    if !enabled() {
+        return;
+    }
+    let pairs: Vec<String> = properties.iter().map(|(k, v)| format!("{k}={v}")).collect();
+    let mut args = vec!["telemetry", name];
+    args.extend(pairs.iter().map(String::as_str));
+    if let Err(err) = crate::update::spawn_detached(&args) {
+        crate::logger::log(&format!("telemetry: {name} could not start: {err}"));
+    }
+}
+
+/// `codex-notifier telemetry <name> [key=value...]`, the detached half of `event_detached`.
+pub fn event_from_args(name: &str, properties: &[String]) {
+    let pairs: Vec<(&str, &str)> = properties
+        .iter()
+        .filter_map(|p| p.split_once('='))
+        .collect();
+    event(name, &pairs);
+}
+
 pub fn event(name: &str, properties: &[(&str, &str)]) {
     if !enabled() {
         return;

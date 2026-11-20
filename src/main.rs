@@ -112,6 +112,12 @@ enum Command {
     // Run as a Codex hook: reads the event JSON on stdin
     #[command(hide = true)]
     Hook,
+    // Sends one anonymous event, started detached by telemetry::event_detached
+    #[command(hide = true)]
+    Telemetry {
+        name: String,
+        properties: Vec<String>,
+    },
 }
 
 #[derive(Subcommand)]
@@ -141,6 +147,10 @@ fn main() {
     };
     let result = match command {
         Command::Hook => hook::run(),
+        Command::Telemetry { name, properties } => {
+            telemetry::event_from_args(&name, &properties);
+            Ok(())
+        }
         Command::Pair {
             code,
             name,
