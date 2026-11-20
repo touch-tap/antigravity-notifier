@@ -931,6 +931,10 @@ pub fn config_show() -> Result<()> {
         "auto_update                {} {local_only}",
         if cfg.auto_update { "on" } else { "off" }
     );
+    println!(
+        "cross_promo                {} {local_only}",
+        if cfg.cross_promo { "on" } else { "off" }
+    );
     if let Some(at) = cfg.settings_updated_at {
         let when = chrono::DateTime::from_timestamp(at, 0)
             .map(|t| t.to_rfc3339())
@@ -960,6 +964,14 @@ pub fn config_set(key: &str, value: &str) -> Result<()> {
     }
     if key == "pair_nudges" {
         cfg.pair_nudges = matches!(
+            value.to_ascii_lowercase().as_str(),
+            "on" | "true" | "yes" | "1"
+        );
+        cfg.save()?;
+        return config_show();
+    }
+    if key == "cross_promo" {
+        cfg.cross_promo = matches!(
             value.to_ascii_lowercase().as_str(),
             "on" | "true" | "yes" | "1"
         );

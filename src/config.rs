@@ -331,6 +331,15 @@ pub struct Config {
     /// Hold Codex for the phone even where presence can't be detected (`codex-notifier config set
     /// hold_without_presence on`; default off, since typing can't then release the hold)
     pub hold_without_presence: bool,
+    /// Whether to mention ccn, the Claude Code notifier, to someone who also uses Claude Code
+    /// (`codex-notifier config set cross_promo off`; default on). Its cadence is in crosspromo.rs.
+    pub cross_promo: bool,
+    /// When the ccn suggestion was last shown in Codex at SessionStart
+    pub cross_promo_last_at: Option<i64>,
+    /// How many times SessionStart has shown the ccn suggestion (it stops at two)
+    pub cross_promo_count: u32,
+    /// When a SessionStart first looked at the ccn suggestion, for a computer with no pairing time
+    pub cross_promo_first_seen_at: Option<i64>,
     /// The file as this process read it, to save only the fields it changed (see `save`)
     #[serde(skip)]
     loaded: Option<toml::Table>,
@@ -368,6 +377,10 @@ impl Default for Config {
             update_available: None,
             update_announced_at: None,
             hold_without_presence: false,
+            cross_promo: true,
+            cross_promo_last_at: None,
+            cross_promo_count: 0,
+            cross_promo_first_seen_at: None,
             loaded: None,
             unreadable: None,
         }

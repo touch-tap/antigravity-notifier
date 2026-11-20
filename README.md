@@ -106,7 +106,10 @@ Settings: `notify_on_done`, `notify_on_permission`, `notify_on_question`, `quiet
 `quiet_when_present` (default on), `hold_ceiling_seconds` (30–3600, default 600),
 `presence_threshold_seconds` (default 30), `stop_hold_seconds` (0–600, default 120), `sound`, and
 the local-only `desktop_notifications`, `credential_store` (`keychain` or `file`), `auto_update`,
-`pair_nudges` and `hold_without_presence` (hold for the phone even where presence can't be read).
+`pair_nudges`, `hold_without_presence` (hold for the phone even where presence can't be read) and
+`cross_promo` (default on: someone who also uses Claude Code, without
+[ccn](https://claudecodenotifier.com) installed, sees one line about it after pairing, in `status`
+and `doctor`, and at most twice ever when Codex starts; `CODEX_NOTIFIER_NO_NUDGE=1` also turns it off).
 
 ## Files
 
