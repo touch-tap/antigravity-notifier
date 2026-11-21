@@ -1,15 +1,19 @@
 // Notifier for Codex.app: posts codex-notifier's desktop notifications on macOS, so they carry our name and icon
 // instead of Script Editor's. codex-notifier runs the executable inside the bundle directly:
 //
-//   codex-notifier-notifier --title T --body B [--sound] [--url U]
+//   codex-notifier-notifier --title T --body B [--sound] [--url U] [--activate ID]
 //                                               post one notification, exit when it is delivered
 //                                               (through AppleScript until permission has been asked);
-//                                               a click opens U, which AppleScript puts in the body instead
+//                                               a click opens U, which AppleScript puts in the body instead,
+//                                               or else brings the running app with bundle id ID (the
+//                                               session's terminal) to the front
 //   codex-notifier-notifier --request-permission           ask for permission now (codex-notifier setup); prints granted|denied
 //   codex-notifier-notifier --status                       prints authorized|denied|not-determined (codex-notifier doctor)
 //
-// Launched with no arguments (macOS does that when a notification is clicked) it just quits.
+// Launched with no arguments (macOS does that when a notification is clicked) it opens the
+// notification's URL, or brings its app forward, and quits.
 
+import AppKit
 import Foundation
 import UserNotifications
 
@@ -26,6 +30,35 @@ func finish(_ line: String? = nil, code: Int32 = 0) -> Never {
     exit(code)
 }
 
+func run(_ path: String, _ arguments: [String]) {
+    let process = Process()
+    process.executableURL = URL(fileURLWithPath: path)
+    process.arguments = arguments
+    try? process.run()
+    process.waitUntilExit()
+}
+
+// A reverse-DNS bundle id, checked as codex-notifier checks it (presence::valid_bundle_id): ASCII
+// letters, digits, '.' and '-', starting with a letter or digit, two parts or more and none empty,
+// 155 at most
+func validBundleID(_ id: String) -> Bool {
+    let allowed = Set("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.-")
+    let parts = id.split(separator: ".", omittingEmptySubsequences: false)
+    return (3...155).contains(id.count) && id.allSatisfy { allowed.contains($0) }
+        && id.first.map { $0 != "." && $0 != "-" } == true
+        && parts.count >= 2 && parts.allSatisfy { !$0.isEmpty }
+}
+
+// Brings the app the session runs in to the front, as a click on its Dock icon would. Only when it
+// is running: a click on an old notification should never start a terminal.
+func activate(_ id: String) {
+    guard validBundleID(id),
+          let app = NSRunningApplication.runningApplications(withBundleIdentifier: id).first else { return }
+    // Activation is cooperative since macOS 14: the app the user clicked (this one) hands over its turn
+    if #available(macOS 14, *) { NSApplication.shared.yieldActivation(to: app) }
+    run("/usr/bin/open", ["-b", id])
+}
+
 // Never outlive the hook by much, even if the notification server doesn't answer
 DispatchQueue.main.asyncAfter(deadline: .now() + 60) { finish(code: 2) }
 
@@ -39,13 +72,13 @@ final class Delegate: NSObject, UNUserNotificationCenterDelegate {
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse,
                                 withCompletionHandler completionHandler: @escaping () -> Void) {
         completionHandler()
-        if let url = response.notification.request.content.userInfo["url"] as? String,
-           url.hasPrefix("https://") {
-            let open = Process()
-            open.executableURL = URL(fileURLWithPath: "/usr/bin/open")
-            open.arguments = [url]
-            try? open.run()
-            open.waitUntilExit()
+        if response.actionIdentifier == UNNotificationDefaultActionIdentifier {
+            let info = response.notification.request.content.userInfo
+            if let url = info["url"] as? String, url.hasPrefix("https://") {
+                run("/usr/bin/open", [url])
+            } else if let id = info["activate"] as? String {
+                activate(id)
+            }
         }
         finish()
     }
@@ -93,7 +126,10 @@ if args.contains("--status") {
     content.title = title
     content.body = value("--body") ?? ""
     if args.contains("--sound") { content.sound = .default }
-    if let url = value("--url") { content.userInfo = ["url": url] }
+    var info: [String: String] = [:]
+    if let url = value("--url") { info["url"] = url }
+    if let id = value("--activate"), validBundleID(id) { info["activate"] = id }
+    content.userInfo = info
     // One thread per Codex session keeps Notification Center tidy
     if let thread = value("--thread") { content.threadIdentifier = thread }
 
@@ -113,8 +149,12 @@ if args.contains("--status") {
         }
     }
 } else {
-    // Opened by a click on one of our notifications: nothing to do yet
-    DispatchQueue.main.asyncAfter(deadline: .now() + 1) { finish() }
+    // Launched by a click on one of our notifications. The delegate, set above before launch
+    // finishes, gets the response once the app has checked in with NSApplication's run loop, acts on
+    // it and quits. Quit anyway if no response comes.
+    DispatchQueue.main.asyncAfter(deadline: .now() + 10) { finish() }
+    NSApplication.shared.setActivationPolicy(.accessory)
+    NSApplication.shared.run()
 }
 
 RunLoop.main.run()
