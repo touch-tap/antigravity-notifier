@@ -62,6 +62,11 @@ the terminal is also the frontmost app; elsewhere, keyboard activity alone); if 
 another app it gets an informational card. If you are away, the hook holds for the phone's
 answer, up to a ceiling you choose, and releases the moment you touch the keyboard.
 
+On macOS, clicking a desktop notification brings the app the session runs in (Terminal, iTerm2,
+Ghostty, VS Code, Cursor and so on) to the front, when it was started from the Dock, Finder or
+Spotlight and is still running. Over ssh there is nothing to bring forward, and AppleScript
+notifications (before `codex-notifier setup` has asked for permission) do nothing on a click.
+
 ## How it hooks into Codex
 
 `codex-notifier setup` (which `pair` runs) adds six entries to `$CODEX_HOME/hooks.json`
