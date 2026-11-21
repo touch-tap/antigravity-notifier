@@ -1,0 +1,20 @@
+# yaml-language-server: $schema=https://aka.ms/winget-manifest.installer.1.28.0.schema.json
+PackageIdentifier: TouchTap.CodexNotifier
+PackageVersion: 0.1.4
+MinimumOSVersion: 10.0.0.0
+InstallerType: zip
+NestedInstallerType: portable
+NestedInstallerFiles:
+  - RelativeFilePath: codex-notifier.exe
+    PortableCommandAlias: codex-notifier.exe
+Commands:
+  - codex-notifier
+Installers:
+  - Architecture: x64
+    InstallerUrl: https://github.com/touch-tap/codex-notifier/releases/download/v0.1.4/codex-notifier-x86_64-pc-windows-msvc.zip
+    InstallerSha256: 32135DB12F0B7DC2AFBA516D844E91D73F0832F77F0FFAF581B1C2DC5C4D662C
+  - Architecture: arm64
+    InstallerUrl: https://github.com/touch-tap/codex-notifier/releases/download/v0.1.4/codex-notifier-aarch64-pc-windows-msvc.zip
+    InstallerSha256: ECA12C470FF7357CA72B4397B5B930D3DAD0D9A6ED2B03870F097382BBED48D2
+ManifestType: installer
+ManifestVersion: 1.28.0
