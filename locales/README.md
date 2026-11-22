@@ -68,8 +68,9 @@ Do not translate:
 - The `ok ` / `!! ` markers are added by the program, not in the YAML.
 
 Translate "System Settings > Notifications" the way Apple writes it in your language, and
-"Computers > Add a computer" the way the phone app shows it (see the app's own strings; this is
-the Settings tab's "Computers" screen and its "Add a computer" button).
+"Machines > Link a computer" the way the phone app shows it: the Machines tab's label and its
+"Link a computer" button, copied exactly from the app's own strings (iOS `tabs.codex.machines` and
+`codex.machines.link`).
 
 `forget.yes_word` is the word the user types to confirm `codex-notifier forget` (English `yes` is always
 accepted too); `forget.prompt` shows it through `%{yes}`. `licence.no_initial` is the first letter
