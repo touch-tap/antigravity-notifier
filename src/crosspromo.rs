@@ -29,8 +29,9 @@ const UNIX_COMMAND: &str = "curl -fsSL https://claudecodenotifier.com/install.sh
 const WINDOWS_COMMAND: &str = "irm https://claudecodenotifier.com/install.ps1 | iex; ccn pair";
 /// The website, whose buttons take a phone to the App Store or Google Play
 pub const URL: &str = "https://claudecodenotifier.com/?ref=codex-cli";
-/// The same, from the QR code and link after `codex-notifier pair`
-pub const PAIR_URL: &str = "https://claudecodenotifier.com/?ref=codex-pair";
+/// The QR code and link after `codex-notifier pair`: /get sends a phone straight to the App Store or
+/// Google Play (and shows a computer both store buttons), tagged ref=codex-pair
+pub const PAIR_URL: &str = "https://claudecodenotifier.com/get?ref=codex-pair";
 /// Where a click on the SessionStart notification goes
 pub const NOTIFICATION_URL: &str = "https://claudecodenotifier.com/?ref=codex-notification";
 
@@ -454,6 +455,7 @@ mod tests {
         );
         assert!(command().contains("claudecodenotifier.com/install."));
         assert!(!command().contains("npm"));
+        assert_eq!(PAIR_URL, "https://claudecodenotifier.com/get?ref=codex-pair");
         assert!(qr::render(PAIR_URL).is_some());
     }
 
