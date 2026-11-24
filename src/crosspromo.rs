@@ -1,6 +1,7 @@
-//! The one place codex-notifier mentions its sister tool: ccn, Claude Code Notifier, which does the
-//! same for Claude Code. Shown only to someone who has Claude Code and not ccn already, and only
-//! where the user is looking at codex-notifier anyway: the end of `codex-notifier pair`, a hint in
+//! The one place codex-notifier mentions its sister app: Claude Code Notifier (its computer side is
+//! ccn), which does the same for Claude Code. Shown only to someone who has Claude Code and not ccn
+//! already, and only where the user is looking at codex-notifier anyway: the end of every
+//! `codex-notifier pair` (with a QR code for the app: the phone is in their hand), a hint in
 //! `status` and `doctor`, and at most twice ever in Codex at SessionStart. Never a desktop
 //! notification. ccn's own copy of this module suggests codex-notifier the same way.
 //!
@@ -12,6 +13,7 @@ use std::ffi::OsString;
 use std::path::{Path, PathBuf};
 
 use crate::config::{self, Config};
+use crate::qr;
 
 const DAY: i64 = 24 * 60 * 60;
 /// The first SessionStart mention waits this long after pairing
@@ -21,8 +23,14 @@ const SECOND_AFTER: i64 = 30 * DAY;
 /// SessionStart mentions it no more often than this, ever
 const SESSION_MAX: u32 = 2;
 
-pub const COMMAND: &str = "npm install -g @touchtap/ccn";
+/// One line installs ccn, sets up Claude Code's hooks and pairs: the script ends in `ccn pair`,
+/// whose QR code also offers the app to a phone without it. No Node needed, unlike npm.
+const UNIX_COMMAND: &str = "curl -fsSL https://claudecodenotifier.com/install.sh | sh";
+const WINDOWS_COMMAND: &str = "irm https://claudecodenotifier.com/install.ps1 | iex; ccn pair";
+/// The website, whose buttons take a phone to the App Store or Google Play
 pub const URL: &str = "https://claudecodenotifier.com/?ref=codex-cli";
+/// The same, from the QR code and link after `codex-notifier pair`
+pub const PAIR_URL: &str = "https://claudecodenotifier.com/?ref=codex-pair";
 /// Where a click on the SessionStart notification goes
 pub const NOTIFICATION_URL: &str = "https://claudecodenotifier.com/?ref=codex-notification";
 
@@ -152,9 +160,18 @@ pub fn eligible(cfg: &Config) -> bool {
     enabled(cfg) && worth_suggesting(&Places::from_env())
 }
 
+/// The one line that sets ccn up on this computer
+pub fn command() -> &'static str {
+    if cfg!(windows) {
+        WINDOWS_COMMAND
+    } else {
+        UNIX_COMMAND
+    }
+}
+
 /// The line itself, the same everywhere it is shown.
 pub fn line() -> String {
-    t!("cross_promo.line", command = COMMAND, url = URL).into_owned()
+    t!("cross_promo.line", command = command(), url = URL).into_owned()
 }
 
 /// The SessionStart desktop notification's body (its title is the app's name).
@@ -167,13 +184,36 @@ fn shown(place: &str) {
     crate::telemetry::event_detached("cli_cross_promo_shown", &[("where", place)]);
 }
 
-/// Prints the line (after a blank one) when eligible. For `pair`, `status` and `doctor`.
+/// Prints the line (after a blank one) when eligible. For `status` and `doctor`.
 pub fn print_hint(cfg: &Config, place: &str) {
     if eligible(cfg) {
         println!();
         println!("{}", line());
         shown(place);
     }
+}
+
+/// After every successful `codex-notifier pair`, when eligible: the phone is in their hand, so a
+/// QR code for the app, its link, and the one command for this computer.
+pub fn print_after_pair(cfg: &Config) {
+    if !eligible(cfg) {
+        return;
+    }
+    let code = qr::render(PAIR_URL);
+    println!();
+    println!("{}", t!("cross_promo.pair_title"));
+    match &code {
+        Some(code) => {
+            println!("{}", t!("cross_promo.pair_scan"));
+            println!();
+            print!("{code}");
+        }
+        None => println!("{}", t!("cross_promo.pair_steps")),
+    }
+    println!("  {PAIR_URL}");
+    println!("  {}", command());
+    let qr = if code.is_some() { "yes" } else { "no" };
+    crate::telemetry::event_detached("cli_cross_promo_shown", &[("where", "pair"), ("qr", qr)]);
 }
 
 /// Whether SessionStart may show the line: the first time no earlier than 3 days after `since`
@@ -407,8 +447,14 @@ mod tests {
         let line = line();
         assert_eq!(
             line,
-            "Also using Claude Code? ccn sends Claude Code approvals and questions to your phone too: npm install -g @touchtap/ccn  ·  https://claudecodenotifier.com/?ref=codex-cli"
+            format!(
+                "Claude Code detected — get Claude Code approvals and questions on your phone too, with the Claude Code Notifier app (iPhone and Android). Set up this computer with one command: {}  ·  https://claudecodenotifier.com/?ref=codex-cli",
+                command()
+            )
         );
+        assert!(command().contains("claudecodenotifier.com/install."));
+        assert!(!command().contains("npm"));
+        assert!(qr::render(PAIR_URL).is_some());
     }
 
     #[test]
@@ -418,23 +464,30 @@ mod tests {
             let text = rust_i18n::t!(
                 "cross_promo.line",
                 locale = lang,
-                command = COMMAND,
+                command = command(),
                 url = URL
             );
-            assert!(text.contains("Claude Code"), "{lang}: {text}");
             assert!(
-                text.contains(COMMAND) && text.contains(URL),
+                text.contains(command()) && text.contains(URL),
                 "{lang}: {text}"
             );
-            for mac_only in ["Mac", "macOS"] {
-                assert!(!text.contains(mac_only), "{lang}: {text}");
+            let naming_the_app = [
+                text.to_string(),
+                rust_i18n::t!("cross_promo.notification", locale = lang).into_owned(),
+                rust_i18n::t!("cross_promo.pair_title", locale = lang).into_owned(),
+            ];
+            for text in &naming_the_app {
+                assert!(text.contains("Claude Code Notifier"), "{lang}: {text}");
             }
-            let notification = rust_i18n::t!("cross_promo.notification", locale = lang);
-            assert!(
-                notification.contains("Claude Code") && notification.contains("ccn"),
-                "{lang}: {notification}"
-            );
-            assert!(!notification.contains("Mac"), "{lang}: {notification}");
+            let steps = [
+                rust_i18n::t!("cross_promo.pair_scan", locale = lang).into_owned(),
+                rust_i18n::t!("cross_promo.pair_steps", locale = lang).into_owned(),
+            ];
+            for text in naming_the_app.iter().chain(&steps) {
+                for mac_only in ["Mac", "macOS"] {
+                    assert!(!text.contains(mac_only), "{lang}: {text}");
+                }
+            }
             assert!(dir.join(format!("{lang}.yml")).exists());
         }
     }

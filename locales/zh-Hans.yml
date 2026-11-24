@@ -196,11 +196,15 @@ hook:
   nudge_message: "Notifier for Codex: %{title} %{body} %{command}"
   needs_attention: "需要你处理"
 
-# Suggests ccn, the Claude Code notifier, to someone who also uses Claude Code (crosspromo.rs).
-# command and url are not translated.
+# Suggests the Claude Code Notifier app (and its ccn CLI) to someone who also uses Claude Code (crosspromo.rs).
+# "Claude Code Notifier", command and url are not translated; never name one computer platform.
 cross_promo:
-  line: "也在用 Claude Code？ccn 也能把 Claude Code 的批准请求和提问发到你的手机上：%{command}  ·  %{url}"
-  notification: "也在用 Claude Code？ccn 也能把 Claude Code 的批准请求发到你的手机上。"
+  line: "检测到 Claude Code：用 Claude Code Notifier 应用（iPhone 和 Android），Claude Code 的批准请求和提问也能发到你的手机。一条命令即可设置这台电脑：%{command}  ·  %{url}"
+  notification: "检测到 Claude Code：用 Claude Code Notifier 应用，Claude Code 的批准请求也能发到你的手机。"
+  # After `codex-notifier pair`, above a QR code (pair_scan) or without one (pair_steps), the app's link and the command
+  pair_title: "检测到 Claude Code：用 Claude Code Notifier 应用（iPhone 和 Android），Claude Code 的批准请求和提问也能发到你的手机。"
+  pair_scan: "扫码获取应用，然后用一条命令设置这台电脑："
+  pair_steps: "获取应用，然后用一条命令设置这台电脑："
 
 # Asks once, after 20 answers from the phone, for an app-store rating (rate.rs). url is not translated.
 rate:

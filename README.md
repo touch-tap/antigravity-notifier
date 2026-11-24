@@ -113,7 +113,8 @@ Settings: `notify_on_done`, `notify_on_permission`, `notify_on_question`, `quiet
 the local-only `desktop_notifications`, `credential_store` (`keychain` or `file`), `auto_update`,
 `pair_nudges`, `hold_without_presence` (hold for the phone even where presence can't be read) and
 `cross_promo` (default on: someone who also uses Claude Code, without
-[ccn](https://claudecodenotifier.com) installed, sees one line about it after pairing, in `status`
+[ccn](https://claudecodenotifier.com) installed, hears about the Claude Code Notifier app and its
+one-line install after every pairing, with a QR code for the app, then as one line in `status`
 and `doctor`, and at most twice ever when Codex starts, as a desktop notification and a line in Codex; `CODEX_NOTIFIER_NO_NUDGE=1` also turns it off), and `rate_prompt` (default on: once per install,
 after 20 answers from the phone, a desktop notification asks for an app-store rating).
 

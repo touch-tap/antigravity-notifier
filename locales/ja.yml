@@ -196,11 +196,15 @@ hook:
   nudge_message: "Notifier for Codex: %{title} %{body} %{command}"
   needs_attention: "確認が必要です"
 
-# Suggests ccn, the Claude Code notifier, to someone who also uses Claude Code (crosspromo.rs).
-# command and url are not translated.
+# Suggests the Claude Code Notifier app (and its ccn CLI) to someone who also uses Claude Code (crosspromo.rs).
+# "Claude Code Notifier", command and url are not translated; never name one computer platform.
 cross_promo:
-  line: "Claude Code もお使いですか？ ccn なら Claude Code の承認や質問もスマートフォンに届きます: %{command}  ·  %{url}"
-  notification: "Claude Code もお使いですか？ ccn なら Claude Code の承認もスマートフォンに届きます。"
+  line: "Claude Code を検出しました。Claude Code Notifier アプリ（iPhone・Android）で、Claude Code の承認や質問もスマートフォンに届きます。このコンピュータはコマンド 1 つで設定できます: %{command}  ·  %{url}"
+  notification: "Claude Code を検出しました。Claude Code Notifier アプリで、Claude Code の承認もスマートフォンに届きます。"
+  # After `codex-notifier pair`, above a QR code (pair_scan) or without one (pair_steps), the app's link and the command
+  pair_title: "Claude Code を検出しました。Claude Code Notifier アプリ（iPhone・Android）で、Claude Code の承認や質問もスマートフォンに届きます。"
+  pair_scan: "スキャンしてアプリを入手し、このコンピュータをコマンド 1 つで設定してください:"
+  pair_steps: "アプリを入手し、このコンピュータをコマンド 1 つで設定してください:"
 
 # Asks once, after 20 answers from the phone, for an app-store rating (rate.rs). url is not translated.
 rate:

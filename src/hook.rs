@@ -766,7 +766,7 @@ mod tests {
             variant: String::new(),
             title: String::new(),
             body: line.clone(),
-            command: crate::crosspromo::COMMAND.into(),
+            command: crate::crosspromo::command().into(),
         });
         assert_ne!(rewritten.body, line);
         // ...so the SessionStart message is the line as written, naming Claude Code and ccn
@@ -784,7 +784,7 @@ mod tests {
         let shown = crate::crosspromo::session_line(&mut cfg, 10 * DAY, &places).unwrap();
         assert_eq!(shown, line);
         assert!(shown.contains("Claude Code approvals"), "{shown}");
-        assert!(shown.contains("npm install -g @touchtap/ccn"), "{shown}");
+        assert!(shown.contains(crate::crosspromo::command()), "{shown}");
         assert!(!shown.contains("Codex"), "{shown}");
     }
 
