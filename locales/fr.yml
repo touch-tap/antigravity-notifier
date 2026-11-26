@@ -3,14 +3,14 @@
 _version: 1
 
 cli:
-  about: "Antigravity Notifier : reçois une notification sur ton téléphone quand Codex a besoin de toi, et réponds depuis là"
+  about: "Antigravity Notifier : reçois une notification sur ton téléphone quand Antigravity a besoin de toi, et réponds depuis là"
   pair:
     about: "Jumeler cet ordinateur avec ton téléphone. Donne le code affiché par l'app, ou lance sans code pour en obtenir un à saisir dans l'app"
     code: "Le code à 6 chiffres affiché dans l'app Antigravity Notifier"
     name: "Le nom de cet ordinateur sur ton téléphone (par défaut : le nom d'hôte)"
     no_wait: "Afficher le QR code et rendre la main tout de suite : le jumelage se termine tout seul quand le téléphone se connecte"
   setup:
-    about: "Installer les hooks Codex et les notifications de bureau (pair et antigravity-notifier sans argument le font d'abord)"
+    about: "Installer les hooks Antigravity et les notifications de bureau (pair et antigravity-notifier sans argument le font d'abord)"
   doctor:
     about: "Vérifier les hooks, les identifiants, le serveur et ce que ce terminal sait faire"
   test:
@@ -50,6 +50,8 @@ common:
   not_paired: "cet ordinateur n'est pas encore jumelé. Lance `antigravity-notifier pair <code>` avec le code de l'app."
   store_keychain: "trousseau"
   store_file: "fichier"
+  # chrono strftime format for dates in sentences (renews, last seen). chrono only knows English
+  # month names, so a translation should use a numeric form such as "%d.%m.%Y" or "%Y-%m-%d".
   date_format: "%d/%m/%Y"
 
 pair:
@@ -71,7 +73,7 @@ pair:
   credentials_stored: "Identifiants enregistrés dans le %{store} (%{path})."
   test_sent: "Notification de test envoyée à ton téléphone."
   test_failed: "Impossible d'envoyer une notification de test pour l'instant : %{error}"
-  done: "C'est fait. Lance `codex` comme d'habitude : tu recevras une notification quand Codex termine\nou a besoin de toi, et tu pourras autoriser, refuser ou répondre depuis le téléphone.\n`antigravity-notifier doctor` vérifie tout."
+  done: "C'est fait. Lance Antigravity (`agy`) comme d'habitude : tu recevras une notification quand il termine\nou a besoin de toi, et tu pourras autoriser, refuser ou répondre depuis le téléphone.\n`antigravity-notifier doctor` vérifie tout."
   paired_with: "Jumelé avec %{name} (%{platform})."
   hours_one: "1 heure"
   hours_other: "%{count} heures"
@@ -84,7 +86,7 @@ pair:
   welcome_no_terminal: "Une notification de test est en route vers ton téléphone : essaie d'y répondre depuis là."
   welcome: "Une notification de test est en route vers ton téléphone. Essaie d'y répondre depuis là..."
   welcome_skip: "(Entrée pour passer)"
-  welcome_answered: "✓ Ton téléphone a répondu \"%{answer}\". C'est ainsi que tu répondras à Codex."
+  welcome_answered: "✓ Ton téléphone a répondu \"%{answer}\". C'est ainsi que tu répondras à Antigravity."
   welcome_no_answer: "Pas encore de réponse. La notification reste une heure sur ton téléphone."
 
 status:
@@ -98,7 +100,6 @@ status:
 setup:
   installed_self: "antigravity-notifier installé dans %{path}."
   hooks_installed: "Hooks installés dans %{path} (avec %{exe})."
-  hooks_trusted: "Marqués comme fiables dans %{path}, pour que Codex les lance sans passer par /hooks."
 
 sync:
   not_synced: "Réglages pas encore synchronisés : %{error}"
@@ -122,8 +123,6 @@ doctor:
   hooks_missing: "hooks : il manque %{names} (lance `antigravity-notifier setup`)"
   hooks_error: "hooks : %{error}"
   hooks_stale: "les hooks pointent vers un autre binaire antigravity-notifier ; lance `antigravity-notifier setup` pour les mettre à jour"
-  trust_ok: "confiance : chaque hook a son empreinte dans %{path}"
-  trust_missing: "confiance : Codex ignorera %{names} tant qu'ils ne sont pas approuvés (lance `antigravity-notifier setup`, ou /hooks dans Codex)"
   presence: "présence : inactif depuis %{idle}s, seuil %{threshold}s"
   replies: "réponses : les autorisations et les réponses aux questions depuis le téléphone marchent dans tout terminal ; le texte libre vers une session inactive %{free_text}"
   replies_tmux: "marche (tmux)"
@@ -150,6 +149,7 @@ config:
   credentials_moved: "Les identifiants sont maintenant dans le %{store}."
   credential_store_expects: "credential_store attend keychain ou file"
   auto_update_expects: "auto_update attend on ou off"
+  phone_approvals_expects: "phone_approvals attend all, commands ou off"
 
 settings:
   expects_on_off: "%{key} attend on ou off"
@@ -161,7 +161,7 @@ settings:
 
 forget:
   needs_yes: "antigravity-notifier forget a besoin d'un oui de ta part : lance-le dans un terminal, ou ajoute --yes"
-  warning: "Ceci efface cet ordinateur et ses jumelages du serveur Antigravity Notifier, puis retire antigravity-notifier\nde Codex et supprime ses identifiants et ses fichiers ici, comme le fait `antigravity-notifier uninstall`.\nLes téléphones jumelés avec cet ordinateur le verront disparaître.\nUne licence achetée sur le site n'est pas annulée : fais-le sur antigravitynotifier.com/licence\navec \"Erase my licence\"."
+  warning: "Ceci efface cet ordinateur et ses jumelages du serveur Antigravity Notifier, puis retire antigravity-notifier\nd'Antigravity et supprime ses identifiants et ses fichiers ici, comme le fait `antigravity-notifier uninstall`.\nLes téléphones jumelés avec cet ordinateur le verront disparaître.\nUne licence achetée sur le site n'est pas annulée : fais-le sur %{licence_url}\navec \"Erase my licence\"."
   # Le mot que l'utilisateur doit taper ; `yes` est toujours accepté aussi
   yes_word: "oui"
   prompt: "\nTape %{yes} pour continuer : "
@@ -172,16 +172,16 @@ forget:
   not_registered: "Cet ordinateur n'est pas enregistré auprès du serveur, il n'y a donc rien à y effacer."
 
 uninstall:
-  hooks_removed: "Hooks de antigravity-notifier retirés de %{path}, et leurs entrées de confiance de %{config}."
+  hooks_removed: "Hooks de antigravity-notifier retirés de %{path}."
   slot_freed: "Place de cet ordinateur sur la licence libérée."
   unpaired_all: "Tous les téléphones ont été déjumelés."
   removed_dir: "%{path} supprimé."
 
 local:
-  finished_title: "Codex a terminé"
-  finished_body: "Codex a terminé et t'attend."
-  permission_title: "Codex demande une autorisation"
-  question_title: "Codex a une question"
+  finished_title: "Antigravity a terminé"
+  finished_body: "Antigravity a terminé et t'attend."
+  error_title: "Antigravity s'est arrêté sur une erreur"
+  question_title: "Antigravity a une question"
   first_nudge: "Sur ton téléphone : antigravity-notifier pair"
   milestone_nudge: "Déjà 10 notifications. Reçois-les sur ton téléphone, avec les autorisations depuis l'écran verrouillé : lance antigravity-notifier pair"
   pair_message: "Antigravity Notifier : tu reçois des notifications de bureau. Pour les recevoir aussi sur ton téléphone, et autoriser ou répondre depuis là, lance `antigravity-notifier pair` dans un terminal."
@@ -194,6 +194,8 @@ hook:
   # Le serveur écrit le titre, le corps et la commande dans la langue de l'utilisateur ; ceci ne fait que les assembler
   nudge_message: "Antigravity Notifier : %{title} %{body} %{command}"
   needs_attention: "Demande ton attention"
+  # Shown on Antigravity's own permission prompt when a request waited for the phone and nobody answered
+  no_answer: "Pas de réponse de ton téléphone"
 
 # Suggests the Claude Code Notifier app (and its ccn CLI) to someone who also uses Claude Code (crosspromo.rs).
 # "Claude Code Notifier", command and url are not translated; never name one computer platform.
@@ -320,30 +322,35 @@ update_lock:
 
 local_files:
   config_unreadable: "Impossible de lire %{path} (%{error}), donc antigravity-notifier ne l'écrasera pas. Corrige le fichier, ou supprime-le et relance `antigravity-notifier pair`."
-  slot_not_freed: "Impossible de libérer la place de cet ordinateur sur la licence (%{error}). S'il a une licence, libère sa place sur antigravitynotifier.com/licence avec ta clé."
+  slot_not_freed: "Impossible de libérer la place de cet ordinateur sur la licence (%{error}). S'il a une licence, libère sa place sur %{licence_url} avec ta clé."
   kept_dir: "Fichiers de antigravity-notifier supprimés de %{path}. Le dossier contient d'autres fichiers, il a donc été conservé."
   remove_binary: "antigravity-notifier lui-même est toujours installé. Pour le supprimer : %{command}"
 
+# What the phone shows, and the desktop notification repeats, when Antigravity gives no text of its
+# own. The apps display it as sent, so it is in the computer's language.
 payload:
+  # %{tool} is Antigravity's tool name: run_command, write_file, edit_file...
   needs_permission: "%{tool} demande une autorisation"
   permission_required: "Autorisation requise"
-  has_questions: "Codex a des questions"
+  has_questions: "Antigravity a des questions"
+  # %{prompt} is what the user asked Antigravity to do
   finished_prompt: "Terminé : %{prompt}"
   question_header: "Question"
-  search: "Recherche : %{pattern}"
-  # What the phone shows for an apply_patch call: no files named, one, or the first and how
-  # many more (%{count} is 1 or more)
-  apply_patch: "Appliquer un patch"
+  # What the phone shows for a write_file or edit_file call
   edit_file: "Modifier %{file}"
-  edit_files: "Modifier %{file} et %{count} autres"
-  # What the phone shows for an update_plan call
-  update_plan: "Mettre à jour le plan"
+  # The done card when the turn ended because something went wrong; %{error} is Antigravity's own message
+  stopped_error: "Antigravity s'est arrêté à cause d'une erreur : %{error}"
 
+# When the server can't be reached at all (no connection, DNS, timeout). The raw error follows
+# on the next line.
 net:
-  unreachable: "Impossible de joindre le serveur de Antigravity Notifier. Vérifie ta connexion internet et réessaie."
+  unreachable: "Impossible de joindre le serveur d'Antigravity Notifier. Vérifie ta connexion internet et réessaie."
+  # A `antigravity-notifier doctor` line, in the same label: text style as the doctor.* lines
   doctor_unreachable: "serveur : impossible de joindre %{url}. Vérifie ta connexion internet, ton proxy ou ton pare-feu"
 
+# The frame around the cli.* descriptions: `antigravity-notifier --help` headings and the -h / -V flags
 clap:
+  # Headings: a word and a colon, as other command-line tools in your language write them
   usage: "Utilisation :"
   commands: "Commandes :"
   arguments: "Arguments :"
@@ -352,8 +359,9 @@ clap:
   version: "Afficher la version"
   help_command: "Afficher l'aide de antigravity-notifier ou de l'une de ses commandes"
   help_command_arg: "La commande dont afficher l'aide"
+  # Printed under clap's own (English) message when a command line can't be parsed
   error_hint: "Lance `antigravity-notifier --help` pour voir les commandes et les options."
 
 # `antigravity-notifier upgrade` refused a release whose SHA256SUMS isn't signed by TouchTap
 update_signature:
-  invalid: "la signature de la version n'est pas valide, rien n'a donc été modifié. Réessaie plus tard ou réinstalle depuis antigravitynotifier.com/cli"
+  invalid: "la signature de la version n'est pas valide, rien n'a donc été modifié. Réessaie plus tard ou réinstalle depuis %{cli_url}"

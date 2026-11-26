@@ -6,14 +6,14 @@
 _version: 1
 
 cli:
-  about: "Antigravity Notifier: קבלו התראה בטלפון כש-Codex צריך אתכם, וענו משם"
+  about: "Antigravity Notifier: קבלו התראה בטלפון כש-Antigravity צריך אתכם, וענו משם"
   pair:
     about: "צמדו את המחשב הזה לטלפון. העבירו את הקוד שהאפליקציה מציגה, או הריצו בלי קוד כדי לקבל קוד להקלדה באפליקציה"
     code: "הקוד בן 6 הספרות שמוצג באפליקציית Antigravity Notifier"
     name: "השם של המחשב הזה בטלפון (ברירת המחדל: שם המארח)"
     no_wait: "הציגו את קוד ה-QR וחזרו מיד: הצימוד מסתיים מעצמו כשהטלפון מתחבר"
   setup:
-    about: "התקינו את ה-hooks של Codex והתראות שולחן העבודה (pair ו-antigravity-notifier בלי פקודה עושים זאת קודם)"
+    about: "התקינו את ה-hooks של Antigravity והתראות שולחן העבודה (pair ו-antigravity-notifier בלי פקודה עושים זאת קודם)"
   doctor:
     about: "בדקו את ה-hooks, פרטי הגישה, השרת ומה הטרמינל הזה תומך בו"
   test:
@@ -53,6 +53,8 @@ common:
   not_paired: "המחשב הזה עדיין לא מצומד. הריצו עם הקוד מהאפליקציה: `antigravity-notifier pair <code>`"
   store_keychain: "צרור המפתחות"
   store_file: "קובץ"
+  # chrono strftime format for dates in sentences (renews, last seen). chrono only knows English
+  # month names, so a translation should use a numeric form such as "%d.%m.%Y" or "%Y-%m-%d".
   date_format: "%d/%m/%Y"
 
 pair:
@@ -74,7 +76,7 @@ pair:
   credentials_stored: "פרטי הגישה נשמרו ב%{store}: %{path}"
   test_sent: "התראת בדיקה נשלחה לטלפון."
   test_failed: "עדיין לא ניתן לשלוח התראת בדיקה: %{error}"
-  done: "סיימנו. הפעילו `codex` כרגיל: תקבלו התראה כש-Codex מסיים או צריך אתכם,\nותוכלו לאשר, לדחות או לענות מהטלפון. לבדיקה של הכול: `antigravity-notifier doctor`"
+  done: "סיימנו. הפעילו את Antigravity (`agy`) כרגיל: תקבלו התראה כשהוא מסיים או צריך אתכם,\nותוכלו לאשר, לדחות או לענות מהטלפון. לבדיקה של הכול: `antigravity-notifier doctor`"
   paired_with: "מצומד עם %{name} (%{platform})."
   hours_one: "שעה אחת"
   hours_other: "%{count} שעות"
@@ -87,7 +89,7 @@ pair:
   welcome_no_terminal: "התראת בדיקה בדרך לטלפון: נסו לענות עליה משם."
   welcome: "התראת בדיקה בדרך לטלפון. נסו לענות עליה משם..."
   welcome_skip: "(הקישו Enter כדי לדלג)"
-  welcome_answered: "✓ הטלפון ענה \"%{answer}\". כך תענו ל-Codex."
+  welcome_answered: "✓ הטלפון ענה \"%{answer}\". כך תענו ל-Antigravity."
   welcome_no_answer: "עדיין אין תשובה. ההתראה נשארת בטלפון למשך שעה."
 
 status:
@@ -101,7 +103,6 @@ status:
 setup:
   installed_self: "antigravity-notifier הותקן ב-%{path}."
   hooks_installed: "ה-hooks הותקנו ב-%{path} (באמצעות %{exe})."
-  hooks_trusted: "סומנו כמהימנים ב-%{path}, כך ש-Codex מריץ אותם בלי ביקור ב-/hooks."
 
 sync:
   not_synced: "ההגדרות עדיין לא סונכרנו: %{error}"
@@ -125,8 +126,6 @@ doctor:
   hooks_missing: "hooks: חסרים %{names} (הריצו `antigravity-notifier setup`)"
   hooks_error: "hooks: %{error}"
   hooks_stale: "ה-hooks מצביעים על קובץ antigravity-notifier אחר; כדי לעדכן אותם הריצו `antigravity-notifier setup`"
-  trust_ok: "אמון: לכל hook יש hash ב-%{path}"
-  trust_missing: "אמון: Codex ידלג על %{names} עד שיסומנו כמהימנים (הריצו `antigravity-notifier setup`, או /hooks ב-Codex)"
   presence: "נוכחות: לא פעיל כבר %{idle} שנ', סף %{threshold} שנ'"
   replies: "תשובות: אישורים ותשובות לשאלות מהטלפון עובדים בכל טרמינל; טקסט חופשי לסשן לא פעיל %{free_text}"
   replies_tmux: "עובד (tmux)"
@@ -153,6 +152,7 @@ config:
   credentials_moved: "פרטי הגישה נמצאים עכשיו ב%{store}."
   credential_store_expects: "credential_store מקבל keychain או file"
   auto_update_expects: "auto_update מקבל on או off"
+  phone_approvals_expects: "phone_approvals מקבל all, commands או off"
 
 settings:
   expects_on_off: "%{key} מקבל on או off"
@@ -164,7 +164,7 @@ settings:
 
 forget:
   needs_yes: "antigravity-notifier forget דורש אישור מכם: הריצו אותו בטרמינל, או הוסיפו --yes"
-  warning: "זה מוחק את המחשב הזה ואת הצימודים שלו משרת Antigravity Notifier, ואז מסיר את antigravity-notifier\nמ-Codex ומוחק את פרטי הגישה והקבצים שלו כאן, כמו `antigravity-notifier uninstall`.\nטלפונים שמצומדים למחשב הזה יראו אותו נעלם.\nרישיון שנרכש באתר לא מבוטל: עשו זאת ב-antigravitynotifier.com/licence\nעם \"מחיקת הרישיון שלי\"."
+  warning: "זה מוחק את המחשב הזה ואת הצימודים שלו משרת Antigravity Notifier, ואז מסיר את antigravity-notifier\nמ-Antigravity ומוחק את פרטי הגישה והקבצים שלו כאן, כמו `antigravity-notifier uninstall`.\nטלפונים שמצומדים למחשב הזה יראו אותו נעלם.\nרישיון שנרכש באתר לא מבוטל: עשו זאת ב-%{licence_url}\nעם \"מחיקת הרישיון שלי\"."
   # The word the user must type; `yes` is always accepted as well
   yes_word: "כן"
   prompt: "\nהקלידו %{yes} כדי להמשיך: "
@@ -175,16 +175,16 @@ forget:
   not_registered: "המחשב הזה לא רשום בשרת, ולכן אין שם מה למחוק."
 
 uninstall:
-  hooks_removed: "ה-hooks של antigravity-notifier הוסרו מ-%{path} ורשומות האמון שלהם מ-%{config}."
+  hooks_removed: "ה-hooks של antigravity-notifier הוסרו מ-%{path}."
   slot_freed: "מקום הרישיון של המחשב הזה שוחרר."
   unpaired_all: "הצימוד של כל הטלפונים בוטל."
   removed_dir: "%{path} הוסר."
 
 local:
-  finished_title: "Codex סיים"
-  finished_body: "Codex סיים ומחכה לכם."
-  permission_title: "Codex צריך הרשאה"
-  question_title: "ל-Codex יש שאלה"
+  finished_title: "Antigravity סיים"
+  finished_body: "Antigravity סיים ומחכה לכם."
+  error_title: "Antigravity נעצר עם שגיאה"
+  question_title: "ל-Antigravity יש שאלה"
   first_nudge: "גם בטלפון: antigravity-notifier pair"
   milestone_nudge: "10 התראות עד עכשיו. קבלו אותן בטלפון, עם אישורים ממסך הנעילה: antigravity-notifier pair"
   pair_message: "Antigravity Notifier: אתם מקבלים התראות שולחן עבודה. כדי לקבל אותן גם בטלפון ולאשר או לענות משם, הריצו בטרמינל: `antigravity-notifier pair`"
@@ -197,6 +197,8 @@ hook:
   # The server writes title, body and command in the user's language; this only joins them
   nudge_message: "Antigravity Notifier: %{title} %{body} %{command}"
   needs_attention: "דורש את תשומת לבכם"
+  # Shown on Antigravity's own permission prompt when a request waited for the phone and nobody answered
+  no_answer: "אין תשובה מהטלפון"
 
 # Suggests the Claude Code Notifier app (and its ccn CLI) to someone who also uses Claude Code (crosspromo.rs).
 # "Claude Code Notifier", command and url are not translated; never name one computer platform.
@@ -323,30 +325,35 @@ update_lock:
 
 local_files:
   config_unreadable: "אי אפשר לקרוא את %{path} (%{error}), ולכן antigravity-notifier לא יכתוב מעליו. תקנו את הקובץ, או מחקו אותו והריצו שוב `antigravity-notifier pair`."
-  slot_not_freed: "לא ניתן היה לשחרר את מקום הרישיון של המחשב הזה (%{error}). אם יש לו רישיון, שחררו את המקום ב-antigravitynotifier.com/licence בעזרת המפתח שלכם."
+  slot_not_freed: "לא ניתן היה לשחרר את מקום הרישיון של המחשב הזה (%{error}). אם יש לו רישיון, שחררו את המקום ב-%{licence_url} בעזרת המפתח שלכם."
   kept_dir: "הקבצים של antigravity-notifier הוסרו מ-%{path}. בתיקייה יש גם קבצים אחרים, ולכן היא נשארה במקומה."
   remove_binary: "antigravity-notifier עצמו עדיין מותקן. כדי להסיר אותו: %{command}"
 
+# What the phone shows, and the desktop notification repeats, when Antigravity gives no text of its
+# own. The apps display it as sent, so it is in the computer's language.
 payload:
+  # %{tool} is Antigravity's tool name: run_command, write_file, edit_file...
   needs_permission: "%{tool} צריך הרשאה"
   permission_required: "נדרשת הרשאה"
-  has_questions: "ל-Codex יש שאלות"
+  has_questions: "ל-Antigravity יש שאלות"
+  # %{prompt} is what the user asked Antigravity to do
   finished_prompt: "הסתיים: %{prompt}"
   question_header: "שאלה"
-  search: "חיפוש: %{pattern}"
-  # What the phone shows for an apply_patch call: no files named, one, or the first and how
-  # many more (%{count} is 1 or more)
-  apply_patch: "החלת תיקון"
+  # What the phone shows for a write_file or edit_file call
   edit_file: "עריכת %{file}"
-  edit_files: "עריכת %{file} ועוד %{count}"
-  # What the phone shows for an update_plan call
-  update_plan: "עדכון התוכנית"
+  # The done card when the turn ended because something went wrong; %{error} is Antigravity's own message
+  stopped_error: "Antigravity נעצר בגלל שגיאה: %{error}"
 
+# When the server can't be reached at all (no connection, DNS, timeout). The raw error follows
+# on the next line.
 net:
   unreachable: "לא הצלחנו להתחבר לשרת של Antigravity Notifier. בדקו את החיבור לאינטרנט ונסו שוב."
+  # A `antigravity-notifier doctor` line, in the same label: text style as the doctor.* lines
   doctor_unreachable: "שרת: אין גישה אל %{url}. בדקו את החיבור לאינטרנט, את ה-proxy או את חומת האש"
 
+# The frame around the cli.* descriptions: `antigravity-notifier --help` headings and the -h / -V flags
 clap:
+  # Headings: a word and a colon, as other command-line tools in your language write them
   usage: "שימוש:"
   commands: "פקודות:"
   arguments: "ארגומנטים:"
@@ -355,8 +362,9 @@ clap:
   version: "הצגת הגרסה"
   help_command: "הצגת העזרה של antigravity-notifier או של אחת הפקודות שלו"
   help_command_arg: "הפקודה שאת העזרה שלה רוצים להציג"
+  # Printed under clap's own (English) message when a command line can't be parsed
   error_hint: "הריצו `antigravity-notifier --help` כדי לראות את הפקודות והאפשרויות."
 
 # `antigravity-notifier upgrade` refused a release whose SHA256SUMS isn't signed by TouchTap
 update_signature:
-  invalid: "לא ניתן לאמת את החתימה של הגרסה, ולכן שום דבר לא שונה. נסה שוב מאוחר יותר, או התקן מחדש מ-antigravitynotifier.com/cli"
+  invalid: "לא ניתן לאמת את החתימה של הגרסה, ולכן שום דבר לא שונה. נסה שוב מאוחר יותר, או התקן מחדש מ-%{cli_url}"

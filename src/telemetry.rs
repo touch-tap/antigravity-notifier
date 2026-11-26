@@ -6,7 +6,7 @@
 //! hook: SessionStart posts `cli_nudge_shown` when it shows a licence nudge, at most once a day.
 //! Never anything about sessions, prompts or the computer's name. Each event is a name plus a few
 //! short words (the stage that failed, how antigravity-notifier was installed), posted once with a short timeout
-//! and no retry: 3 s, or 1 s inside a hook, which Codex waits on.
+//! and no retry: 3 s, or 1 s inside a hook, which Antigravity waits on.
 //! `ANTIGRAVITY_NOTIFIER_NO_ANALYTICS=1` or `DO_NOT_TRACK=1` turns them off.
 
 use serde_json::{Map, Value, json};
@@ -85,7 +85,7 @@ pub fn remember_install_source() {
     }
 }
 
-/// How long an event may take. A hook holds up Codex while it runs, so an event sent from
+/// How long an event may take. A hook holds up Antigravity while it runs, so an event sent from
 /// one gets a third of the usual time: a slow server costs the user at most a second.
 fn timeout() -> Duration {
     if std::env::args().nth(1).as_deref() == Some("hook") {
@@ -124,7 +124,7 @@ pub fn event(name: &str, properties: &[(&str, &str)]) {
     }
     let cfg = Config::load();
     let mut props = Map::new();
-    props.insert("agent".to_string(), Value::from("codex"));
+    props.insert("agent".to_string(), Value::from("antigravity"));
     for (key, value) in properties {
         props.insert((*key).to_string(), Value::from(*value));
     }

@@ -1,4 +1,4 @@
-//! The server over HTTPS. Every call has a short timeout: a hook must never hang Codex.
+//! The server over HTTPS. Every call has a short timeout: a hook must never hang Antigravity.
 
 use anyhow::{Context, Result, anyhow};
 use rust_i18n::t;
@@ -11,8 +11,8 @@ use std::time::Duration;
 use crate::config::{self, Config, Settings};
 
 /// Every request says which product it is for. The server treats a request without it as Claude Code
-/// Notifier, so Codex analytics, config and nudges would otherwise be filed under CCN.
-pub const APP_HEADER: &str = "codex";
+/// Notifier, so Antigravity analytics, config and nudges would otherwise be filed under CCN.
+pub use crate::brand::APP_HEADER;
 
 #[derive(Clone)]
 pub struct Api {
@@ -445,7 +445,7 @@ pub struct LicenceStatus {
     pub licence: Option<Licence>,
     #[serde(default)]
     pub computers: Vec<LicenceComputer>,
-    /// Show the once-a-day upgrade line in Codex (the server decides; off until launch)
+    /// Show the once-a-day upgrade line in Antigravity (the server decides; off until launch)
     #[serde(default)]
     pub nudge: bool,
     /// What a web licence costs, for the pitch after pairing. None when the server has no offer

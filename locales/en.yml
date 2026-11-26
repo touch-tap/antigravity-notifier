@@ -4,14 +4,14 @@
 _version: 1
 
 cli:
-  about: "Antigravity Notifier: get a push on your phone when Codex needs you, and answer from there"
+  about: "Antigravity Notifier: get a push on your phone when Antigravity needs you, and answer from there"
   pair:
     about: "Pair this computer with your phone. Pass the code the app shows, or run with no code to get one to type into the app"
     code: "The 6-digit code shown in the Antigravity Notifier app"
     name: "What this computer is called on your phone (default: the hostname)"
     no_wait: "Show the QR code and return at once: pairing completes on its own when the phone connects"
   setup:
-    about: "Install the Codex hooks and desktop notifications (pair and bare antigravity-notifier do this first)"
+    about: "Install the Antigravity hooks and desktop notifications (pair and bare antigravity-notifier do this first)"
   doctor:
     about: "Check hooks, credentials, the server and what this terminal supports"
   test:
@@ -74,7 +74,7 @@ pair:
   credentials_stored: "Credentials stored in the %{store} (%{path})."
   test_sent: "Sent a test notification to your phone."
   test_failed: "Could not send a test notification yet: %{error}"
-  done: "Done. Start `codex` as usual: you will get a push when Codex finishes or needs you,\nand you can approve, deny or answer from the phone. `antigravity-notifier doctor` checks everything."
+  done: "Done. Start Antigravity (`agy`) as usual: you will get a push when it finishes or needs you,\nand you can approve, deny or answer from the phone. `antigravity-notifier doctor` checks everything."
   paired_with: "Paired with %{name} (%{platform})."
   hours_one: "1 hour"
   hours_other: "%{count} hours"
@@ -87,7 +87,7 @@ pair:
   welcome_no_terminal: "A test notification is on its way to your phone: try answering it there."
   welcome: "A test notification is on its way to your phone. Try answering it there..."
   welcome_skip: "(press Enter to skip)"
-  welcome_answered: "✓ Your phone answered \"%{answer}\". That is how you'll answer Codex."
+  welcome_answered: "✓ Your phone answered \"%{answer}\". That is how you'll answer Antigravity."
   welcome_no_answer: "No answer yet. The notification stays on your phone for an hour."
 
 status:
@@ -101,7 +101,6 @@ status:
 setup:
   installed_self: "Installed antigravity-notifier to %{path}."
   hooks_installed: "Hooks installed in %{path} (using %{exe})."
-  hooks_trusted: "Marked them trusted in %{path}, so Codex runs them without a visit to /hooks."
 
 sync:
   not_synced: "Settings not synced yet: %{error}"
@@ -125,8 +124,6 @@ doctor:
   hooks_missing: "hooks: missing %{names} (run `antigravity-notifier setup`)"
   hooks_error: "hooks: %{error}"
   hooks_stale: "hooks point at a different antigravity-notifier binary; run `antigravity-notifier setup` to update them"
-  trust_ok: "trust: every hook has its hash in %{path}"
-  trust_missing: "trust: Codex will skip %{names} until trusted (run `antigravity-notifier setup`, or /hooks in Codex)"
   presence: "presence: idle %{idle}s now, threshold %{threshold}s"
   replies: "replies: approvals and question answers from the phone work in any terminal; free text into an idle session %{free_text}"
   replies_tmux: "works (tmux)"
@@ -153,6 +150,7 @@ config:
   credentials_moved: "Credentials are now in the %{store}."
   credential_store_expects: "credential_store expects keychain or file"
   auto_update_expects: "auto_update expects on or off"
+  phone_approvals_expects: "phone_approvals expects all, commands or off"
 
 settings:
   expects_on_off: "%{key} expects on or off"
@@ -164,7 +162,7 @@ settings:
 
 forget:
   needs_yes: "antigravity-notifier forget needs a yes from you: run it in a terminal, or add --yes"
-  warning: "This erases this computer and its pairings from the Antigravity Notifier server, then\nremoves antigravity-notifier from Codex and deletes its credentials and files here, as `antigravity-notifier uninstall` does.\nPhones paired with this computer will see it disappear.\nA licence bought on the website is not cancelled: do that at antigravitynotifier.com/licence\nwith \"Erase my licence\"."
+  warning: "This erases this computer and its pairings from the Antigravity Notifier server, then\nremoves antigravity-notifier from Antigravity and deletes its credentials and files here, as `antigravity-notifier uninstall` does.\nPhones paired with this computer will see it disappear.\nA licence bought on the website is not cancelled: do that at %{licence_url}\nwith \"Erase my licence\"."
   # The word the user must type; `yes` is always accepted as well
   yes_word: "yes"
   prompt: "\nType %{yes} to continue: "
@@ -175,16 +173,16 @@ forget:
   not_registered: "This computer isn't registered with the server, so there is nothing to erase there."
 
 uninstall:
-  hooks_removed: "Removed antigravity-notifier's hooks from %{path} and their trust entries from %{config}."
+  hooks_removed: "Removed antigravity-notifier's hooks from %{path}."
   slot_freed: "Freed this computer's licence slot."
   unpaired_all: "Unpaired every phone."
   removed_dir: "Removed %{path}."
 
 local:
-  finished_title: "Codex has finished"
-  finished_body: "Codex has finished and is waiting for you."
-  permission_title: "Codex needs permission"
-  question_title: "Codex has a question"
+  finished_title: "Antigravity has finished"
+  finished_body: "Antigravity has finished and is waiting for you."
+  error_title: "Antigravity stopped with an error"
+  question_title: "Antigravity has a question"
   first_nudge: "Get these on your phone: antigravity-notifier pair"
   milestone_nudge: "10 notifications so far. Get them on your phone, with approvals from the lock screen: run antigravity-notifier pair"
   pair_message: "Antigravity Notifier: you get desktop notifications. To get them on your phone too, and approve or answer from there, run `antigravity-notifier pair` in a terminal."
@@ -197,6 +195,8 @@ hook:
   # The server writes title, body and command in the user's language; this only joins them
   nudge_message: "Antigravity Notifier: %{title} %{body} %{command}"
   needs_attention: "Needs your attention"
+  # Shown on Antigravity's own permission prompt when a request waited for the phone and nobody answered
+  no_answer: "No answer from your phone"
 
 # Suggests the Claude Code Notifier app (and its ccn CLI) to someone who also uses Claude Code (crosspromo.rs).
 # "Claude Code Notifier", command and url are not translated; never name one computer platform.
@@ -323,29 +323,24 @@ update_lock:
 
 local_files:
   config_unreadable: "%{path} can't be read (%{error}), so antigravity-notifier won't write over it. Fix the file, or delete it and run `antigravity-notifier pair` again."
-  slot_not_freed: "Couldn't free this computer's licence slot (%{error}). If it has a licence, free the slot at antigravitynotifier.com/licence with your key."
+  slot_not_freed: "Couldn't free this computer's licence slot (%{error}). If it has a licence, free the slot at %{licence_url} with your key."
   kept_dir: "Removed antigravity-notifier's files from %{path}. The folder holds other files too, so it was left in place."
   remove_binary: "antigravity-notifier itself is still installed. To remove it: %{command}"
 
-# What the phone shows, and the desktop notification repeats, when Codex gives no text of its
+# What the phone shows, and the desktop notification repeats, when Antigravity gives no text of its
 # own. The apps display it as sent, so it is in the computer's language.
 payload:
-  # %{tool} is Codex's tool name: Bash, apply_patch, web_search...
+  # %{tool} is Antigravity's tool name: run_command, write_file, edit_file...
   needs_permission: "%{tool} needs permission"
   permission_required: "Permission required"
-  has_questions: "Codex has questions"
-  # %{prompt} is what the user asked Codex to do
+  has_questions: "Antigravity has questions"
+  # %{prompt} is what the user asked Antigravity to do
   finished_prompt: "Finished: %{prompt}"
   question_header: "Question"
-  # A web search query
-  search: "Search: %{pattern}"
-  # What the phone shows for an apply_patch call: no files named, one, or the first and how
-  # many more (%{count} is 1 or more)
-  apply_patch: "Apply a patch"
+  # What the phone shows for a write_file or edit_file call
   edit_file: "Edit %{file}"
-  edit_files: "Edit %{file} and %{count} more"
-  # What the phone shows for an update_plan call
-  update_plan: "Update the plan"
+  # The done card when the turn ended because something went wrong; %{error} is Antigravity's own message
+  stopped_error: "Antigravity stopped because of an error: %{error}"
 
 # When the server can't be reached at all (no connection, DNS, timeout). The raw error follows
 # on the next line.
@@ -370,4 +365,4 @@ clap:
 
 # `antigravity-notifier upgrade` refused a release whose SHA256SUMS isn't signed by TouchTap
 update_signature:
-  invalid: "the release's signature doesn't check out, so nothing was changed. Try again later, or reinstall from antigravitynotifier.com/cli"
+  invalid: "the release's signature doesn't check out, so nothing was changed. Try again later, or reinstall from %{cli_url}"

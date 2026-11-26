@@ -5,14 +5,14 @@
 _version: 1
 
 cli:
-  about: "Antigravity Notifier: nhận thông báo trên điện thoại khi Codex cần bạn, và trả lời ngay từ đó"
+  about: "Antigravity Notifier: nhận thông báo trên điện thoại khi Antigravity cần bạn, và trả lời ngay từ đó"
   pair:
     about: "Ghép nối máy tính này với điện thoại của bạn. Truyền mã mà ứng dụng hiển thị, hoặc chạy không kèm mã để nhận một mã rồi nhập vào ứng dụng"
     code: "Mã 6 chữ số hiển thị trong ứng dụng Antigravity Notifier"
     name: "Tên của máy tính này trên điện thoại của bạn (mặc định: hostname)"
     no_wait: "Hiển thị mã QR rồi thoát ngay: việc ghép nối tự hoàn tất khi điện thoại kết nối"
   setup:
-    about: "Cài các hook của Codex và thông báo trên máy tính (pair và antigravity-notifier không kèm lệnh sẽ làm việc này trước)"
+    about: "Cài các hook của Antigravity và thông báo trên máy tính (pair và antigravity-notifier không kèm lệnh sẽ làm việc này trước)"
   doctor:
     about: "Kiểm tra hook, thông tin xác thực, máy chủ và những gì terminal này hỗ trợ"
   test:
@@ -52,6 +52,8 @@ common:
   not_paired: "máy tính này chưa được ghép nối. Chạy `antigravity-notifier pair <mã>` với mã trong ứng dụng."
   store_keychain: "chuỗi khóa"
   store_file: "tệp"
+  # chrono strftime format for dates in sentences (renews, last seen). chrono only knows English
+  # month names, so a translation should use a numeric form such as "%d.%m.%Y" or "%Y-%m-%d".
   date_format: "%d/%m/%Y"
 
 pair:
@@ -73,7 +75,7 @@ pair:
   credentials_stored: "Thông tin xác thực đã được lưu trong %{store} (%{path})."
   test_sent: "Đã gửi một thông báo thử tới điện thoại của bạn."
   test_failed: "Chưa gửi được thông báo thử: %{error}"
-  done: "Xong. Khởi động `codex` như thường lệ: bạn sẽ nhận thông báo khi Codex hoàn tất hoặc cần bạn,\nvà có thể phê duyệt, từ chối hoặc trả lời từ điện thoại. `antigravity-notifier doctor` kiểm tra mọi thứ."
+  done: "Xong. Khởi động Antigravity (`agy`) như thường lệ: bạn sẽ nhận thông báo khi nó hoàn tất hoặc cần bạn,\nvà có thể phê duyệt, từ chối hoặc trả lời từ điện thoại. `antigravity-notifier doctor` kiểm tra mọi thứ."
   paired_with: "Đã ghép nối với %{name} (%{platform})."
   hours_one: "1 giờ"
   hours_other: "%{count} giờ"
@@ -86,7 +88,7 @@ pair:
   welcome_no_terminal: "Một thông báo thử đang được gửi tới điện thoại của bạn: hãy thử trả lời từ đó."
   welcome: "Một thông báo thử đang được gửi tới điện thoại của bạn. Hãy thử trả lời từ đó..."
   welcome_skip: "(nhấn Enter để bỏ qua)"
-  welcome_answered: "✓ Điện thoại của bạn đã trả lời \"%{answer}\". Đó là cách bạn sẽ trả lời Codex."
+  welcome_answered: "✓ Điện thoại của bạn đã trả lời \"%{answer}\". Đó là cách bạn sẽ trả lời Antigravity."
   welcome_no_answer: "Chưa có trả lời. Thông báo sẽ ở lại trên điện thoại trong một giờ."
 
 status:
@@ -100,7 +102,6 @@ status:
 setup:
   installed_self: "Đã cài antigravity-notifier vào %{path}."
   hooks_installed: "Đã cài hook vào %{path} (dùng %{exe})."
-  hooks_trusted: "Đã đánh dấu tin cậy trong %{path}, nên Codex chạy chúng mà không cần vào /hooks."
 
 sync:
   not_synced: "Cài đặt chưa được đồng bộ: %{error}"
@@ -124,8 +125,6 @@ doctor:
   hooks_missing: "hook: thiếu %{names} (chạy `antigravity-notifier setup`)"
   hooks_error: "hook: %{error}"
   hooks_stale: "hook đang trỏ tới một tệp antigravity-notifier khác; chạy `antigravity-notifier setup` để cập nhật"
-  trust_ok: "tin cậy: mọi hook đều có hash trong %{path}"
-  trust_missing: "tin cậy: Codex sẽ bỏ qua %{names} cho đến khi được tin cậy (chạy `antigravity-notifier setup`, hoặc /hooks trong Codex)"
   presence: "hiện diện: đã rảnh %{idle}s, ngưỡng %{threshold}s"
   replies: "trả lời: phê duyệt và trả lời câu hỏi từ điện thoại hoạt động trong mọi terminal; văn bản tự do vào một phiên đang rảnh %{free_text}"
   replies_tmux: "hoạt động (tmux)"
@@ -152,6 +151,7 @@ config:
   credentials_moved: "Thông tin xác thực hiện nằm trong %{store}."
   credential_store_expects: "credential_store cần keychain hoặc file"
   auto_update_expects: "auto_update cần on hoặc off"
+  phone_approvals_expects: "phone_approvals cần all, commands hoặc off"
 
 settings:
   expects_on_off: "%{key} cần on hoặc off"
@@ -163,7 +163,7 @@ settings:
 
 forget:
   needs_yes: "antigravity-notifier forget cần bạn xác nhận: chạy trong terminal, hoặc thêm --yes"
-  warning: "Lệnh này xóa máy tính này và các ghép nối của nó khỏi máy chủ Antigravity Notifier, rồi gỡ antigravity-notifier\nkhỏi Codex và xóa thông tin xác thực cùng các tệp của nó ở đây, như `antigravity-notifier uninstall` làm.\nCác điện thoại đã ghép nối với máy tính này sẽ thấy nó biến mất.\nGiấy phép mua trên trang web không bị hủy: hãy làm việc đó tại antigravitynotifier.com/licence\nbằng \"Xóa giấy phép của tôi\"."
+  warning: "Lệnh này xóa máy tính này và các ghép nối của nó khỏi máy chủ Antigravity Notifier, rồi gỡ antigravity-notifier\nkhỏi Antigravity và xóa thông tin xác thực cùng các tệp của nó ở đây, như `antigravity-notifier uninstall` làm.\nCác điện thoại đã ghép nối với máy tính này sẽ thấy nó biến mất.\nGiấy phép mua trên trang web không bị hủy: hãy làm việc đó tại %{licence_url}\nbằng \"Xóa giấy phép của tôi\"."
   # The word the user must type; `yes` is always accepted as well
   yes_word: "có"
   prompt: "\nNhập %{yes} để tiếp tục: "
@@ -174,16 +174,16 @@ forget:
   not_registered: "Máy tính này chưa đăng ký với máy chủ, nên không có gì để xóa ở đó."
 
 uninstall:
-  hooks_removed: "Đã gỡ các hook của antigravity-notifier khỏi %{path} và các mục tin cậy của chúng khỏi %{config}."
+  hooks_removed: "Đã gỡ các hook của antigravity-notifier khỏi %{path}."
   slot_freed: "Đã giải phóng chỗ của máy tính này trong giấy phép."
   unpaired_all: "Đã hủy ghép nối mọi điện thoại."
   removed_dir: "Đã xóa %{path}."
 
 local:
-  finished_title: "Codex đã hoàn tất"
-  finished_body: "Codex đã hoàn tất và đang chờ bạn."
-  permission_title: "Codex cần quyền"
-  question_title: "Codex có một câu hỏi"
+  finished_title: "Antigravity đã hoàn tất"
+  finished_body: "Antigravity đã hoàn tất và đang chờ bạn."
+  error_title: "Antigravity đã dừng do lỗi"
+  question_title: "Antigravity có một câu hỏi"
   first_nudge: "Nhận trên điện thoại: antigravity-notifier pair"
   milestone_nudge: "Đã có 10 thông báo. Nhận chúng trên điện thoại, phê duyệt ngay từ màn hình khóa: chạy antigravity-notifier pair"
   pair_message: "Antigravity Notifier: bạn đang nhận thông báo trên máy tính. Để nhận cả trên điện thoại và phê duyệt hoặc trả lời từ đó, hãy chạy `antigravity-notifier pair` trong terminal."
@@ -196,6 +196,8 @@ hook:
   # The server writes title, body and command in the user's language; this only joins them
   nudge_message: "Antigravity Notifier: %{title} %{body} %{command}"
   needs_attention: "Cần bạn chú ý"
+  # Shown on Antigravity's own permission prompt when a request waited for the phone and nobody answered
+  no_answer: "Không có trả lời từ điện thoại"
 
 # Suggests the Claude Code Notifier app (and its ccn CLI) to someone who also uses Claude Code (crosspromo.rs).
 # "Claude Code Notifier", command and url are not translated; never name one computer platform.
@@ -322,30 +324,35 @@ update_lock:
 
 local_files:
   config_unreadable: "Không đọc được %{path} (%{error}), nên antigravity-notifier sẽ không ghi đè lên nó. Hãy sửa tệp, hoặc xóa nó rồi chạy lại `antigravity-notifier pair`."
-  slot_not_freed: "Không giải phóng được chỗ của máy tính này trong giấy phép (%{error}). Nếu máy có giấy phép, hãy giải phóng chỗ tại antigravitynotifier.com/licence bằng khóa của bạn."
+  slot_not_freed: "Không giải phóng được chỗ của máy tính này trong giấy phép (%{error}). Nếu máy có giấy phép, hãy giải phóng chỗ tại %{licence_url} bằng khóa của bạn."
   kept_dir: "Đã xóa các tệp của antigravity-notifier khỏi %{path}. Thư mục còn chứa tệp khác nên được giữ lại."
   remove_binary: "Bản thân antigravity-notifier vẫn còn được cài đặt. Để gỡ nó: %{command}"
 
+# What the phone shows, and the desktop notification repeats, when Antigravity gives no text of its
+# own. The apps display it as sent, so it is in the computer's language.
 payload:
+  # %{tool} is Antigravity's tool name: run_command, write_file, edit_file...
   needs_permission: "%{tool} cần quyền"
   permission_required: "Cần cấp quyền"
-  has_questions: "Codex có vài câu hỏi"
+  has_questions: "Antigravity có vài câu hỏi"
+  # %{prompt} is what the user asked Antigravity to do
   finished_prompt: "Đã xong: %{prompt}"
   question_header: "Câu hỏi"
-  search: "Tìm kiếm: %{pattern}"
-  # What the phone shows for an apply_patch call: no files named, one, or the first and how
-  # many more (%{count} is 1 or more)
-  apply_patch: "Áp dụng bản vá"
+  # What the phone shows for a write_file or edit_file call
   edit_file: "Sửa %{file}"
-  edit_files: "Sửa %{file} và %{count} tệp khác"
-  # What the phone shows for an update_plan call
-  update_plan: "Cập nhật kế hoạch"
+  # The done card when the turn ended because something went wrong; %{error} is Antigravity's own message
+  stopped_error: "Antigravity đã dừng vì gặp lỗi: %{error}"
 
+# When the server can't be reached at all (no connection, DNS, timeout). The raw error follows
+# on the next line.
 net:
   unreachable: "Không kết nối được tới máy chủ Antigravity Notifier. Hãy kiểm tra kết nối internet rồi thử lại."
+  # A `antigravity-notifier doctor` line, in the same label: text style as the doctor.* lines
   doctor_unreachable: "máy chủ: không kết nối được tới %{url}. Hãy kiểm tra kết nối internet, proxy hoặc tường lửa"
 
+# The frame around the cli.* descriptions: `antigravity-notifier --help` headings and the -h / -V flags
 clap:
+  # Headings: a word and a colon, as other command-line tools in your language write them
   usage: "Cách dùng:"
   commands: "Lệnh:"
   arguments: "Đối số:"
@@ -354,8 +361,9 @@ clap:
   version: "Hiện phiên bản"
   help_command: "Hiện trợ giúp của antigravity-notifier hoặc của một lệnh"
   help_command_arg: "Lệnh cần xem trợ giúp"
+  # Printed under clap's own (English) message when a command line can't be parsed
   error_hint: "Chạy `antigravity-notifier --help` để xem các lệnh và tùy chọn."
 
 # `antigravity-notifier upgrade` refused a release whose SHA256SUMS isn't signed by TouchTap
 update_signature:
-  invalid: "chữ ký của bản phát hành không hợp lệ nên không có gì bị thay đổi. Hãy thử lại sau hoặc cài lại từ antigravitynotifier.com/cli"
+  invalid: "chữ ký của bản phát hành không hợp lệ nên không có gì bị thay đổi. Hãy thử lại sau hoặc cài lại từ %{cli_url}"

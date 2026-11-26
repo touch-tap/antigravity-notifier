@@ -18,7 +18,7 @@ impl Sandbox {
             std::process::id()
         ));
         let _ = std::fs::remove_dir_all(&root);
-        std::fs::create_dir_all(root.join("codex")).unwrap();
+        std::fs::create_dir_all(root.join("gemini/config")).unwrap();
         std::fs::create_dir_all(root.join("antigravity-notifier")).unwrap();
         std::fs::write(
             root.join("antigravity-notifier/config.toml"),
@@ -26,10 +26,10 @@ impl Sandbox {
         )
         .unwrap();
         std::fs::write(root.join("antigravity-notifier/credentials"), "test-token\n").unwrap();
-        std::fs::write(root.join("codex/config.toml"), "model = \"gpt-5.4\"\n").unwrap();
+        // The user's own hook group, which must survive everything
         std::fs::write(
-            root.join("codex/hooks.json"),
-            r#"{"hooks":{"Stop":[{"hooks":[{"type":"command","command":"echo hi"}]}]}}"#,
+            root.join("gemini/config/hooks.json"),
+            r#"{"mine":{"Stop":[{"type":"command","command":"echo hi"}]}}"#,
         )
         .unwrap();
         Sandbox { root, lang: "en" }
@@ -44,7 +44,7 @@ impl Sandbox {
             .args(args)
             .env("HOME", &self.root)
             .env("ANTIGRAVITY_NOTIFIER_HOME", self.app_dir())
-            .env("CODEX_HOME", self.root.join("codex"))
+            .env("ANTIGRAVITY_NOTIFIER_GEMINI_HOME", self.root.join("gemini"))
             .env("ANTIGRAVITY_NOTIFIER_SERVER_URL", server)
             .env("ANTIGRAVITY_NOTIFIER_CREDENTIAL_STORE", "file")
             .env("ANTIGRAVITY_NOTIFIER_NOTIFY", "off")
@@ -114,12 +114,10 @@ fn text(bytes: &[u8]) -> String {
 }
 
 fn settings_hooks_gone(sandbox: &Sandbox) -> bool {
-    let hooks = std::fs::read_to_string(Path::new(&sandbox.root).join("codex/hooks.json")).unwrap();
-    let config =
-        std::fs::read_to_string(Path::new(&sandbox.root).join("codex/config.toml")).unwrap();
-    !hooks.contains("antigravity-notifier")
-        && !config.contains("antigravity-notifier")
-        && hooks.contains("echo hi")
+    let hooks =
+        std::fs::read_to_string(Path::new(&sandbox.root).join("gemini/config/hooks.json"))
+            .unwrap();
+    !hooks.contains("antigravity-notifier") && hooks.contains("echo hi")
 }
 
 #[test]

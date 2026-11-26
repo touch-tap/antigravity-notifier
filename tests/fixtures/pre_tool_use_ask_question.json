@@ -1,0 +1,30 @@
+{
+  "hookEventName": "PreToolUse",
+  "conversationId": "4176c7f2-f5a2-40da-a5ec-84d7fd84c74e",
+  "cwd": "/Users/dev/projects/demo",
+  "workspacePaths": [
+    "/Users/dev/projects/demo"
+  ],
+  "transcriptPath": "/Users/dev/.gemini/antigravity-cli/brain/4176c7f2-f5a2-40da-a5ec-84d7fd84c74e/.system_generated/logs/transcript_full.jsonl",
+  "artifactDirectoryPath": "/Users/dev/.gemini/antigravity-cli/brain/4176c7f2-f5a2-40da-a5ec-84d7fd84c74e",
+  "modelName": "gemini-4-hydrogen-high",
+  "lastUserInput": "Before doing anything, use your ask_question tool to ask me which colour I prefer, with options red, green and blue. Then tell me which I chose.",
+  "stepIdx": 2,
+  "toolCall": {
+    "args": {
+      "questions": [
+        {
+          "is_multi_select": false,
+          "options": [
+            "red",
+            "green",
+            "blue"
+          ],
+          "question": "Which colour do you prefer?"
+        }
+      ]
+    },
+    "id": "call_653389975024260766",
+    "name": "ask_question"
+  }
+}

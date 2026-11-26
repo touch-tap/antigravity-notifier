@@ -1,17 +1,17 @@
 //! antigravity-notifier: Antigravity Notifier in the terminal.
 //!
-//! One binary, invoked by OpenAI Codex's lifecycle hooks. It runs for milliseconds and exits:
+//! One binary, invoked by Google Antigravity's lifecycle hooks. It runs for milliseconds and exits:
 //! there is no daemon, no socket and no window. `antigravity-notifier pair` installs the hooks once
-//! (and marks them trusted); after that every `codex` session is covered.
+//! in Antigravity's global hooks file; after that every Antigravity session is covered.
 
 mod api;
+mod brand;
 mod commands;
 mod config;
 mod crosspromo;
 mod hook;
 mod hookcfg;
 mod i18n;
-mod jsexec;
 mod licence;
 mod live;
 mod local;
@@ -24,6 +24,7 @@ mod rate;
 mod respond;
 mod session;
 mod telemetry;
+mod transcript;
 mod update;
 
 use clap::{Arg, ArgAction, CommandFactory, FromArgMatches, Parser, Subcommand};
@@ -111,9 +112,13 @@ enum Command {
         #[arg(help = t!("clap.help_command_arg").to_string())]
         command: Vec<String>,
     },
-    // Run as a Codex hook: reads the event JSON on stdin
+    // Run as an Antigravity hook: `hook <Event>`, with the event JSON on stdin. main() answers
+    // this before clap sees it; the variant keeps `hook` a known (hidden) command.
     #[command(hide = true)]
-    Hook,
+    Hook {
+        #[arg(trailing_var_arg = true, allow_hyphen_values = true)]
+        args: Vec<String>,
+    },
     // Sends one anonymous event, started detached by telemetry::event_detached
     #[command(hide = true)]
     Telemetry {
@@ -137,6 +142,15 @@ enum ConfigCommand {
 }
 
 fn main() {
+    // A hook must answer and exit 0 whatever else is wrong: Antigravity blocks the user's tool
+    // call when a PreToolUse hook fails. So `hook` never goes through clap (whose parse errors
+    // exit 2) or anything else below that can fail.
+    // args_os: `std::env::args` panics on an argument that is not UTF-8
+    let mut argv = std::env::args_os().skip(1);
+    if argv.next().is_some_and(|arg| arg == "hook") {
+        hook::main(argv.next().map(|arg| arg.to_string_lossy().into_owned()));
+        return;
+    }
     i18n::init();
     update::remove_leftovers();
     let cli = parse_cli(std::env::args_os());
@@ -148,7 +162,10 @@ fn main() {
         return;
     };
     let result = match command {
-        Command::Hook => hook::run(),
+        Command::Hook { args } => {
+            hook::main(args.into_iter().next());
+            Ok(())
+        }
         Command::Telemetry { name, properties } => {
             telemetry::event_from_args(&name, &properties);
             Ok(())

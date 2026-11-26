@@ -40,14 +40,13 @@ use crate::{hookcfg, telemetry};
 
 /// How often the SessionStart hook starts a background check.
 const CHECK_EVERY: i64 = 24 * 60 * 60;
-/// How often Codex is told about a version a package manager has to install.
+/// How often Antigravity is told about a version a package manager has to install.
 const ANNOUNCE_EVERY: i64 = 7 * 24 * 60 * 60;
 /// `antigravity-notifier upgrade --check` exits with this when a newer release exists.
 const EXIT_UPDATE_AVAILABLE: i32 = 10;
 // Where scripts/release.sh and .github/workflows/release.yml publish (RELEASING.md). Until the
 // touch-tap/antigravity-notifier repository has a published release, `antigravity-notifier upgrade` finds nothing and says so.
-const GITHUB_LATEST: &str = "https://api.github.com/repos/touch-tap/antigravity-notifier/releases/latest";
-const RELEASES_BASE: &str = "https://github.com/touch-tap/antigravity-notifier/releases/download";
+use crate::brand::{GITHUB_LATEST, RELEASES_BASE};
 /// Release archives are about 2 MB; anything near this is not one of ours.
 const MAX_DOWNLOAD: u64 = 64 * 1024 * 1024;
 /// An update lock older than this was left by an upgrader that died: two 120 s downloads and the
@@ -60,13 +59,15 @@ const PROBE_TIMEOUT: Duration = Duration::from_secs(10);
 /// anyone who could change the release's files on GitHub. To rotate, ship a release that lists
 /// both keys, then sign with the new one.
 ///
-/// Antigravity Notifier's own key, created on 8 Nov 2026 with `cargo run --release --example
-/// release-sign -- keygen`. The private half lives only in the release Mac's login keychain as the
-/// generic password `antigravitynotifier-release-signing` (account `touchtap`); scripts/release.sh reads
-/// it from there (RELEASING.md, "The update signing key"). ccn's key (9af03746…) is deliberately
-/// not here: trusting it would let anything signed for ccn install as antigravity-notifier. Debug builds
-/// also trust `ANTIGRAVITY_NOTIFIER_UPDATE_PUBLIC_KEY`, which is how the tests sign their releases.
-const RELEASE_KEYS: &[&str] = &["eeb6e55bc550642bf30ec67b867d9cc3230830259a39709496b5059a4a78ce5f"];
+/// EMPTY until Antigravity Notifier has a signing key of its own (make one with `cargo run
+/// --release --example release-sign -- keygen`, keep the private half in the release Mac's login
+/// keychain as `antigravitynotifier-release-signing`, and list the public half here: RELEASING.md,
+/// "The update signing key"). While it is empty a release build verifies nothing, so it never
+/// updates itself and the daily check is off (`auto_update_enabled`). The keys of ccn and
+/// codex-notifier are deliberately not here: trusting one would let anything signed for that
+/// product install as antigravity-notifier. Debug builds also trust
+/// `ANTIGRAVITY_NOTIFIER_UPDATE_PUBLIC_KEY`, which is how the tests sign their releases.
+const RELEASE_KEYS: &[&str] = &[];
 
 pub struct Mode {
     /// Only report whether a newer release exists
@@ -246,7 +247,7 @@ fn run_inner(mode: &Mode) -> Result<i32> {
     if !signature_valid(&sums, &signature, &release_keys()) {
         return Err(failed(
             "signature",
-            anyhow::anyhow!("{}", t!("update_signature.invalid")),
+            anyhow::anyhow!("{}", t!("update_signature.invalid", cli_url = crate::brand::cli_page())),
         ));
     }
     let expected = checksum_for(&String::from_utf8_lossy(&sums), &asset)
@@ -346,7 +347,8 @@ fn auto_update_enabled(cfg: &Config) -> bool {
     let off = std::env::var("ANTIGRAVITY_NOTIFIER_NO_AUTO_UPDATE")
         .map(|v| !v.is_empty() && v != "0")
         .unwrap_or(false);
-    cfg.auto_update && !off
+    // No key to check a release against: nothing could be installed, so don't look
+    cfg.auto_update && !off && !release_keys().is_empty()
 }
 
 /// Once a day, starts `antigravity-notifier upgrade --quiet --background` detached from the hook, and once a week
@@ -384,7 +386,7 @@ fn spawn_background() {
 }
 
 /// Runs this same binary with `args`, with no terminal, no standard streams and its own session,
-/// so neither Codex nor the shell waits for it or stops it.
+/// so neither Antigravity nor the shell waits for it or stops it.
 pub fn spawn_detached(args: &[&str]) -> std::io::Result<()> {
     let exe = std::env::current_exe()?;
     let mut command = Command::new(exe);
@@ -954,10 +956,8 @@ mod signature_tests {
 
     #[test]
     fn the_built_in_release_keys_are_valid_public_keys() {
-        assert!(
-            !RELEASE_KEYS.is_empty(),
-            "a release build would refuse every update"
-        );
+        // Empty for now (no signing key yet), which turns self-update off; any key listed
+        // later must be a real one
         for key in RELEASE_KEYS {
             let bytes = unhex::<32>(key).expect("64 hex characters");
             assert!(ed25519_dalek::VerifyingKey::from_bytes(&bytes).is_ok());

@@ -5,14 +5,14 @@
 _version: 1
 
 cli:
-  about: "Antigravity Notifier: Codex size ihtiyaç duyduğunda telefonunuza bildirim alın ve oradan yanıtlayın"
+  about: "Antigravity Notifier: Antigravity size ihtiyaç duyduğunda telefonunuza bildirim alın ve oradan yanıtlayın"
   pair:
     about: "Bu bilgisayarı telefonunuzla eşleyin. Uygulamanın gösterdiği kodu verin ya da kod olmadan çalıştırıp uygulamaya yazacağınız bir kod alın"
     code: "Antigravity Notifier uygulamasında gösterilen 6 haneli kod"
     name: "Bu bilgisayarın telefonunuzda görünen adı (varsayılan: ana makine adı)"
     no_wait: "QR kodunu gösterip hemen çık: telefon bağlandığında eşleme kendiliğinden tamamlanır"
   setup:
-    about: "Codex hook'larını ve masaüstü bildirimlerini kur (pair ve tek başına antigravity-notifier bunu önce yapar)"
+    about: "Antigravity hook'larını ve masaüstü bildirimlerini kur (pair ve tek başına antigravity-notifier bunu önce yapar)"
   doctor:
     about: "Hook'ları, kimlik bilgilerini, sunucuyu ve bu terminalin neleri desteklediğini denetle"
   test:
@@ -52,6 +52,8 @@ common:
   not_paired: "bu bilgisayar henüz eşlenmedi. Uygulamadaki kodla `antigravity-notifier pair <kod>` komutunu çalıştırın."
   store_keychain: "anahtar zinciri"
   store_file: "dosya"
+  # chrono strftime format for dates in sentences (renews, last seen). chrono only knows English
+  # month names, so a translation should use a numeric form such as "%d.%m.%Y" or "%Y-%m-%d".
   date_format: "%d.%m.%Y"
 
 pair:
@@ -73,7 +75,7 @@ pair:
   credentials_stored: "Kimlik bilgileri %{store} içinde saklandı (%{path})."
   test_sent: "Telefonunuza bir deneme bildirimi gönderildi."
   test_failed: "Deneme bildirimi henüz gönderilemedi: %{error}"
-  done: "Tamam. `codex` komutunu her zamanki gibi başlatın: Codex bitirdiğinde ya da size ihtiyaç\nduyduğunda bildirim alır, telefondan onaylar, reddeder veya yanıtlarsınız. `antigravity-notifier doctor` her şeyi denetler."
+  done: "Tamam. Antigravity'yi (`agy`) her zamanki gibi başlatın: bitirdiğinde ya da size ihtiyaç\nduyduğunda bildirim alır, telefondan onaylar, reddeder veya yanıtlarsınız. `antigravity-notifier doctor` her şeyi denetler."
   paired_with: "%{name} (%{platform}) ile eşlendi."
   hours_one: "1 saat"
   hours_other: "%{count} saat"
@@ -86,7 +88,7 @@ pair:
   welcome_no_terminal: "Telefonunuza bir deneme bildirimi yolda: oradan yanıtlamayı deneyin."
   welcome: "Telefonunuza bir deneme bildirimi yolda. Oradan yanıtlamayı deneyin..."
   welcome_skip: "(geçmek için Enter'a basın)"
-  welcome_answered: "✓ Telefonunuz \"%{answer}\" yanıtını verdi. Codex'e böyle yanıt vereceksiniz."
+  welcome_answered: "✓ Telefonunuz \"%{answer}\" yanıtını verdi. Antigravity'ye böyle yanıt vereceksiniz."
   welcome_no_answer: "Henüz yanıt yok. Bildirim telefonunuzda bir saat kalır."
 
 status:
@@ -100,7 +102,6 @@ status:
 setup:
   installed_self: "antigravity-notifier %{path} konumuna kuruldu."
   hooks_installed: "Hook'lar %{path} içine kuruldu (%{exe} kullanılıyor)."
-  hooks_trusted: "%{path} içinde güvenilir olarak işaretlendi, böylece Codex onları /hooks'a uğramadan çalıştırır."
 
 sync:
   not_synced: "Ayarlar henüz eşitlenmedi: %{error}"
@@ -124,8 +125,6 @@ doctor:
   hooks_missing: "hook'lar: eksik: %{names} (`antigravity-notifier setup` çalıştırın)"
   hooks_error: "hook'lar: %{error}"
   hooks_stale: "hook'lar farklı bir antigravity-notifier dosyasına işaret ediyor; güncellemek için `antigravity-notifier setup` çalıştırın"
-  trust_ok: "güven: her hook'un hash'i %{path} içinde"
-  trust_missing: "güven: Codex, güvenilene kadar %{names} hook'larını atlayacak (`antigravity-notifier setup` çalıştırın ya da Codex'te /hooks)"
   presence: "varlık: şu an %{idle} sn boşta, eşik %{threshold} sn"
   replies: "yanıtlar: telefondan onaylar ve soru yanıtları her terminalde çalışır; boşta bir oturuma serbest metin %{free_text}"
   replies_tmux: "çalışır (tmux)"
@@ -152,6 +151,7 @@ config:
   credentials_moved: "Kimlik bilgileri artık %{store} içinde."
   credential_store_expects: "credential_store için keychain veya file bekleniyor"
   auto_update_expects: "auto_update için on veya off bekleniyor"
+  phone_approvals_expects: "phone_approvals için all, commands veya off bekleniyor"
 
 settings:
   expects_on_off: "%{key} için on veya off bekleniyor"
@@ -163,7 +163,7 @@ settings:
 
 forget:
   needs_yes: "antigravity-notifier forget sizden bir onay bekler: bir terminalde çalıştırın ya da --yes ekleyin"
-  warning: "Bu, bu bilgisayarı ve eşlemelerini Antigravity Notifier sunucusundan siler, sonra `antigravity-notifier uninstall`\ngibi antigravity-notifier'ı Codex'ten kaldırır ve buradaki kimlik bilgilerini ve dosyalarını siler.\nBu bilgisayarla eşlenen telefonlar onun kaybolduğunu görür.\nWeb sitesinden satın alınan bir lisans iptal edilmez: bunu antigravitynotifier.com/licence\nadresinde \"Lisansımı sil\" ile yapın."
+  warning: "Bu, bu bilgisayarı ve eşlemelerini Antigravity Notifier sunucusundan siler, sonra `antigravity-notifier uninstall`\ngibi antigravity-notifier'ı Antigravity'den kaldırır ve buradaki kimlik bilgilerini ve dosyalarını siler.\nBu bilgisayarla eşlenen telefonlar onun kaybolduğunu görür.\nWeb sitesinden satın alınan bir lisans iptal edilmez: bunu %{licence_url}\nadresinde \"Lisansımı sil\" ile yapın."
   # The word the user must type; `yes` is always accepted as well
   yes_word: "evet"
   prompt: "\nDevam etmek için %{yes} yazın: "
@@ -174,16 +174,16 @@ forget:
   not_registered: "Bu bilgisayar sunucuda kayıtlı değil, dolayısıyla orada silinecek bir şey yok."
 
 uninstall:
-  hooks_removed: "antigravity-notifier hook'ları %{path} içinden, güven kayıtları da %{config} içinden kaldırıldı."
+  hooks_removed: "antigravity-notifier hook'ları %{path} içinden kaldırıldı."
   slot_freed: "Bu bilgisayarın lisans yeri boşaltıldı."
   unpaired_all: "Tüm telefonların eşlemesi kaldırıldı."
   removed_dir: "%{path} kaldırıldı."
 
 local:
-  finished_title: "Codex bitirdi"
-  finished_body: "Codex bitirdi ve sizi bekliyor."
-  permission_title: "Codex izin istiyor"
-  question_title: "Codex'in bir sorusu var"
+  finished_title: "Antigravity bitirdi"
+  finished_body: "Antigravity bitirdi ve sizi bekliyor."
+  error_title: "Antigravity bir hatayla durdu"
+  question_title: "Antigravity'nin bir sorusu var"
   first_nudge: "Telefonunuzda da: antigravity-notifier pair"
   milestone_nudge: "Şimdiye kadar 10 bildirim. Bunları kilit ekranından onaylarla telefonunuzda alın: antigravity-notifier pair"
   pair_message: "Antigravity Notifier: masaüstü bildirimleri alıyorsunuz. Telefonunuzda da almak ve oradan onaylamak ya da yanıtlamak için bir terminalde `antigravity-notifier pair` çalıştırın."
@@ -196,6 +196,8 @@ hook:
   # The server writes title, body and command in the user's language; this only joins them
   nudge_message: "Antigravity Notifier: %{title} %{body} %{command}"
   needs_attention: "İlginizi bekliyor"
+  # Shown on Antigravity's own permission prompt when a request waited for the phone and nobody answered
+  no_answer: "Telefonunuzdan yanıt gelmedi"
 
 # Suggests the Claude Code Notifier app (and its ccn CLI) to someone who also uses Claude Code (crosspromo.rs).
 # "Claude Code Notifier", command and url are not translated; never name one computer platform.
@@ -322,30 +324,35 @@ update_lock:
 
 local_files:
   config_unreadable: "%{path} okunamıyor (%{error}), bu yüzden antigravity-notifier üzerine yazmayacak. Dosyayı düzeltin ya da silip `antigravity-notifier pair` komutunu yeniden çalıştırın."
-  slot_not_freed: "Bu bilgisayarın lisans yeri boşaltılamadı (%{error}). Lisansı varsa, anahtarınızla antigravitynotifier.com/licence adresinden yeri boşaltın."
+  slot_not_freed: "Bu bilgisayarın lisans yeri boşaltılamadı (%{error}). Lisansı varsa, anahtarınızla %{licence_url} adresinden yeri boşaltın."
   kept_dir: "antigravity-notifier dosyaları %{path} konumundan kaldırıldı. Klasörde başka dosyalar da olduğu için klasör yerinde bırakıldı."
   remove_binary: "antigravity-notifier'ın kendisi hâlâ yüklü. Kaldırmak için: %{command}"
 
+# What the phone shows, and the desktop notification repeats, when Antigravity gives no text of its
+# own. The apps display it as sent, so it is in the computer's language.
 payload:
+  # %{tool} is Antigravity's tool name: run_command, write_file, edit_file...
   needs_permission: "%{tool} için izin gerekiyor"
   permission_required: "İzin gerekiyor"
-  has_questions: "Codex'in soruları var"
+  has_questions: "Antigravity'nin soruları var"
+  # %{prompt} is what the user asked Antigravity to do
   finished_prompt: "Bitti: %{prompt}"
   question_header: "Soru"
-  search: "Arama: %{pattern}"
-  # What the phone shows for an apply_patch call: no files named, one, or the first and how
-  # many more (%{count} is 1 or more)
-  apply_patch: "Yama uygula"
+  # What the phone shows for a write_file or edit_file call
   edit_file: "%{file} dosyasını düzenle"
-  edit_files: "%{file} ve %{count} dosya daha düzenle"
-  # What the phone shows for an update_plan call
-  update_plan: "Planı güncelle"
+  # The done card when the turn ended because something went wrong; %{error} is Antigravity's own message
+  stopped_error: "Antigravity bir hata nedeniyle durdu: %{error}"
 
+# When the server can't be reached at all (no connection, DNS, timeout). The raw error follows
+# on the next line.
 net:
   unreachable: "Antigravity Notifier sunucusuna ulaşılamadı. İnternet bağlantınızı kontrol edip tekrar deneyin."
+  # A `antigravity-notifier doctor` line, in the same label: text style as the doctor.* lines
   doctor_unreachable: "sunucu: %{url} adresine ulaşılamıyor. İnternet bağlantınızı, proxy'yi veya güvenlik duvarını kontrol edin"
 
+# The frame around the cli.* descriptions: `antigravity-notifier --help` headings and the -h / -V flags
 clap:
+  # Headings: a word and a colon, as other command-line tools in your language write them
   usage: "Kullanım:"
   commands: "Komutlar:"
   arguments: "Argümanlar:"
@@ -354,8 +361,9 @@ clap:
   version: "Sürümü göster"
   help_command: "antigravity-notifier'ın veya komutlarından birinin yardımını göster"
   help_command_arg: "Yardımı gösterilecek komut"
+  # Printed under clap's own (English) message when a command line can't be parsed
   error_hint: "Komutları ve seçenekleri görmek için `antigravity-notifier --help` çalıştırın."
 
 # `antigravity-notifier upgrade` refused a release whose SHA256SUMS isn't signed by TouchTap
 update_signature:
-  invalid: "sürümün imzası doğrulanamadı, bu yüzden hiçbir şey değiştirilmedi. Daha sonra yeniden dene veya antigravitynotifier.com/cli adresinden yeniden yükle"
+  invalid: "sürümün imzası doğrulanamadı, bu yüzden hiçbir şey değiştirilmedi. Daha sonra yeniden dene veya %{cli_url} adresinden yeniden yükle"

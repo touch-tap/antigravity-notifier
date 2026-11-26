@@ -3,14 +3,14 @@
 _version: 1
 
 cli:
-  about: "Antigravity Notifier: Codex 需要你時，在手機上收到推播，並直接在手機上回覆"
+  about: "Antigravity Notifier: Antigravity 需要你時，在手機上收到推播，並直接在手機上回覆"
   pair:
     about: "把這台電腦與你的手機配對。傳入 App 顯示的配對碼，或不帶配對碼執行，取得一個輸入到 App 裡的配對碼"
     code: "Antigravity Notifier App 中顯示的 6 位配對碼"
     name: "這台電腦在手機上顯示的名稱（預設：主機名稱）"
     no_wait: "顯示 QR 碼後立即返回：手機連線後配對會自動完成"
   setup:
-    about: "安裝 Codex 的鉤子和桌面通知（pair 和不帶參數的 antigravity-notifier 會先做這一步）"
+    about: "安裝 Antigravity 的鉤子和桌面通知（pair 和不帶參數的 antigravity-notifier 會先做這一步）"
   doctor:
     about: "檢查鉤子、憑證、伺服器以及這個終端機支援的功能"
   test:
@@ -72,7 +72,7 @@ pair:
   credentials_stored: "憑證已存入%{store}（%{path}）。"
   test_sent: "已向你的手機傳送一則測試通知。"
   test_failed: "暫時無法傳送測試通知: %{error}"
-  done: "完成。像平常一樣啟動 `codex`: Codex 完成或需要你時，你會收到推播，\n並且可以在手機上核准、拒絕或回答。`antigravity-notifier doctor` 可以檢查所有內容。"
+  done: "完成。像平常一樣啟動 Antigravity（`agy`）：Antigravity 完成或需要你時，你會收到推播，\n並且可以在手機上核准、拒絕或回答。`antigravity-notifier doctor` 可以檢查所有內容。"
   paired_with: "已與 %{name}（%{platform}）配對。"
   hours_one: "1 小時"
   hours_other: "%{count} 小時"
@@ -85,7 +85,7 @@ pair:
   welcome_no_terminal: "一則測試通知正在發往你的手機：試著在手機上回覆它。"
   welcome: "一則測試通知正在發往你的手機。試著在手機上回覆它..."
   welcome_skip: "（按 Enter 略過）"
-  welcome_answered: "✓ 你的手機回覆了「%{answer}」。以後你就是這樣回覆 Codex 的。"
+  welcome_answered: "✓ 你的手機回覆了「%{answer}」。以後你就是這樣回覆 Antigravity 的。"
   welcome_no_answer: "還沒有回覆。這則通知會在你的手機上保留一小時。"
 
 status:
@@ -99,7 +99,6 @@ status:
 setup:
   installed_self: "已把 antigravity-notifier 安裝到 %{path}。"
   hooks_installed: "鉤子已安裝到 %{path}（使用 %{exe}）。"
-  hooks_trusted: "已在 %{path} 中將其標記為受信任，Codex 無需進入 /hooks 即可執行。"
 
 sync:
   not_synced: "設定尚未同步: %{error}"
@@ -123,8 +122,6 @@ doctor:
   hooks_missing: "鉤子: 缺少 %{names}（執行 `antigravity-notifier setup`）"
   hooks_error: "鉤子: %{error}"
   hooks_stale: "鉤子指向另一個 antigravity-notifier 執行檔；執行 `antigravity-notifier setup` 更新它們"
-  trust_ok: "信任: 每個鉤子在 %{path} 中都有雜湊"
-  trust_missing: "信任: 在受信任之前，Codex 會略過 %{names}（執行 `antigravity-notifier setup`，或在 Codex 中使用 /hooks）"
   presence: "在場偵測: 目前已閒置 %{idle} 秒，門檻 %{threshold} 秒"
   replies: "回覆: 來自手機的核准和問題回答在任何終端機都可用；向閒置工作階段輸入自由文字%{free_text}"
   replies_tmux: "可用（tmux）"
@@ -151,6 +148,7 @@ config:
   credentials_moved: "憑證現已存放在%{store}中。"
   credential_store_expects: "credential_store 只接受 keychain 或 file"
   auto_update_expects: "auto_update 只接受 on 或 off"
+  phone_approvals_expects: "phone_approvals 只接受 all、commands 或 off"
 
 settings:
   expects_on_off: "%{key} 只接受 on 或 off"
@@ -162,7 +160,7 @@ settings:
 
 forget:
   needs_yes: "antigravity-notifier forget 需要你確認：在終端機中執行它，或加上 --yes"
-  warning: "這會從 Antigravity Notifier 伺服器上抹除這台電腦及其配對，然後像 `antigravity-notifier uninstall` 一樣\n從 Codex 中移除 antigravity-notifier，並刪除這裡的憑證和檔案。\n與這台電腦配對的手機會看到它消失。\n在網站上購買的授權不會被取消：請到 antigravitynotifier.com/licence\n使用「Erase my licence」處理。"
+  warning: "這會從 Antigravity Notifier 伺服器上抹除這台電腦及其配對，然後像 `antigravity-notifier uninstall` 一樣\n從 Antigravity 中移除 antigravity-notifier，並刪除這裡的憑證和檔案。\n與這台電腦配對的手機會看到它消失。\n在網站上購買的授權不會被取消：請到 %{licence_url}\n使用「Erase my licence」處理。"
   # 使用者必須輸入的詞；`yes` 始終也可以
   yes_word: "是"
   prompt: "\n輸入 %{yes} 繼續: "
@@ -173,16 +171,16 @@ forget:
   not_registered: "這台電腦沒有在伺服器上註冊，所以伺服器上沒有可抹除的內容。"
 
 uninstall:
-  hooks_removed: "已從 %{path} 移除 antigravity-notifier 的鉤子，並從 %{config} 移除其信任項目。"
+  hooks_removed: "已從 %{path} 移除 antigravity-notifier 的鉤子。"
   slot_freed: "已釋放這台電腦的授權名額。"
   unpaired_all: "已取消與每一部手機的配對。"
   removed_dir: "已移除 %{path}。"
 
 local:
-  finished_title: "Codex 已完成"
-  finished_body: "Codex 已完成，正在等你。"
-  permission_title: "Codex 需要權限"
-  question_title: "Codex 有一個問題"
+  finished_title: "Antigravity 已完成"
+  finished_body: "Antigravity 已完成，正在等你。"
+  error_title: "Antigravity 因錯誤而停止"
+  question_title: "Antigravity 有一個問題"
   first_nudge: "在手機上接收: antigravity-notifier pair"
   milestone_nudge: "到現在已有 10 則通知。想在手機上接收，並從鎖定畫面直接核准：執行 antigravity-notifier pair"
   pair_message: "Antigravity Notifier: 你現在收到的是桌面通知。想在手機上也收到，並在手機上核准或回答，請在終端機中執行 `antigravity-notifier pair`。"
@@ -195,6 +193,8 @@ hook:
   # 標題、內文和指令由伺服器用使用者的語言寫好；這裡只是把它們拼起來
   nudge_message: "Antigravity Notifier: %{title} %{body} %{command}"
   needs_attention: "需要你處理"
+  # Shown on Antigravity's own permission prompt when a request waited for the phone and nobody answered
+  no_answer: "手機沒有回應"
 
 # Suggests the Claude Code Notifier app (and its ccn CLI) to someone who also uses Claude Code (crosspromo.rs).
 # "Claude Code Notifier", command and url are not translated; never name one computer platform.
@@ -321,30 +321,35 @@ update_lock:
 
 local_files:
   config_unreadable: "無法讀取 %{path}（%{error}），所以 antigravity-notifier 不會覆寫它。請修復這個檔案，或刪除它後再執行一次 `antigravity-notifier pair`。"
-  slot_not_freed: "無法釋放這台電腦的授權名額（%{error}）。如果它有授權，請用你的金鑰在 antigravitynotifier.com/licence 釋放名額。"
+  slot_not_freed: "無法釋放這台電腦的授權名額（%{error}）。如果它有授權，請用你的金鑰在 %{licence_url} 釋放名額。"
   kept_dir: "已從 %{path} 移除 antigravity-notifier 的檔案。這個資料夾裡還有其他檔案，所以保留了資料夾本身。"
   remove_binary: "antigravity-notifier 本身仍已安裝。要移除它，請執行：%{command}"
 
+# What the phone shows, and the desktop notification repeats, when Antigravity gives no text of its
+# own. The apps display it as sent, so it is in the computer's language.
 payload:
+  # %{tool} is Antigravity's tool name: run_command, write_file, edit_file...
   needs_permission: "%{tool} 需要權限"
   permission_required: "需要權限"
-  has_questions: "Codex 有幾個問題"
+  has_questions: "Antigravity 有幾個問題"
+  # %{prompt} is what the user asked Antigravity to do
   finished_prompt: "已完成：%{prompt}"
   question_header: "問題"
-  search: "搜尋：%{pattern}"
-  # What the phone shows for an apply_patch call: no files named, one, or the first and how
-  # many more (%{count} is 1 or more)
-  apply_patch: "套用修補"
+  # What the phone shows for a write_file or edit_file call
   edit_file: "編輯 %{file}"
-  edit_files: "編輯 %{file} 及另外 %{count} 個檔案"
-  # What the phone shows for an update_plan call
-  update_plan: "更新計畫"
+  # The done card when the turn ended because something went wrong; %{error} is Antigravity's own message
+  stopped_error: "Antigravity 因發生錯誤而停止: %{error}"
 
+# When the server can't be reached at all (no connection, DNS, timeout). The raw error follows
+# on the next line.
 net:
   unreachable: "無法連線到 Antigravity Notifier 伺服器。請檢查網路連線後再試一次。"
+  # A `antigravity-notifier doctor` line, in the same label: text style as the doctor.* lines
   doctor_unreachable: "伺服器: 無法連線到 %{url}。請檢查網路連線、Proxy 或防火牆"
 
+# The frame around the cli.* descriptions: `antigravity-notifier --help` headings and the -h / -V flags
 clap:
+  # Headings: a word and a colon, as other command-line tools in your language write them
   usage: "用法:"
   commands: "命令:"
   arguments: "引數:"
@@ -353,8 +358,9 @@ clap:
   version: "顯示版本"
   help_command: "顯示 antigravity-notifier 或其某個命令的說明"
   help_command_arg: "要查看說明的命令"
+  # Printed under clap's own (English) message when a command line can't be parsed
   error_hint: "執行 `antigravity-notifier --help` 查看所有命令和選項。"
 
 # `antigravity-notifier upgrade` refused a release whose SHA256SUMS isn't signed by TouchTap
 update_signature:
-  invalid: "版本簽章驗證失敗，因此未做任何變更。請稍後再試，或從 antigravitynotifier.com/cli 重新安裝"
+  invalid: "版本簽章驗證失敗，因此未做任何變更。請稍後再試，或從 %{cli_url} 重新安裝"

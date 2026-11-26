@@ -18,7 +18,7 @@ pub fn identity(cfg: &Config) -> Option<Value> {
         "authToken": token,
         "name": cfg.machine_name(),
         "platform": config::platform(),
-        "clientKind": "antigravity_cli",
+        "clientKind": crate::brand::CLIENT_KIND,
         "clientVersion": config::VERSION,
         "capabilities": config::CAPABILITIES,
     }))
@@ -44,7 +44,7 @@ pub fn ensure_registered(cfg: &mut Config) -> Result<Api> {
         "authToken": token,
         "name": machine_name,
         "platform": config::platform(),
-        "clientKind": "antigravity_cli",
+        "clientKind": crate::brand::CLIENT_KIND,
         "clientVersion": config::VERSION,
         "capabilities": config::CAPABILITIES,
     }))?;
@@ -166,7 +166,7 @@ fn pair_inner(
         "authToken": token,
         "name": machine_name,
         "platform": config::platform(),
-        "clientKind": "antigravity_cli",
+        "clientKind": crate::brand::CLIENT_KIND,
         "clientVersion": config::VERSION,
         "capabilities": config::CAPABILITIES,
     });
@@ -562,10 +562,6 @@ pub fn ensure_setup() -> Result<()> {
                 exe = report.exe.display()
             )
         );
-        println!(
-            "{}",
-            t!("setup.hooks_trusted", path = report.config_path.display())
-        );
     }
     if let Some(line) = notify::install() {
         println!("{line}");
@@ -741,22 +737,6 @@ pub fn doctor() -> Result<()> {
             }
             if status.stale_exe {
                 println!("{no}{}", t!("doctor.hooks_stale"));
-            }
-            if status.untrusted.is_empty() {
-                if !status.installed.is_empty() {
-                    println!(
-                        "{yes}{}",
-                        t!(
-                            "doctor.trust_ok",
-                            path = config::codex_config_path().display()
-                        )
-                    );
-                }
-            } else {
-                println!(
-                    "{no}{}",
-                    t!("doctor.trust_missing", names = status.untrusted.join(", "))
-                );
             }
         }
         Err(err) => println!(
@@ -936,6 +916,10 @@ pub fn config_show() -> Result<()> {
         }
     );
     println!(
+        "phone_approvals            {} {local_only}",
+        cfg.phone_approvals
+    );
+    println!(
         "auto_update                {} {local_only}",
         if cfg.auto_update { "on" } else { "off" }
     );
@@ -998,6 +982,17 @@ pub fn config_set(key: &str, value: &str) -> Result<()> {
         cfg.save()?;
         return config_show();
     }
+    if key == "phone_approvals" {
+        let mode = value.to_ascii_lowercase();
+        anyhow::ensure!(
+            ["all", "commands", "off"].contains(&mode.as_str()),
+            "{}",
+            t!("config.phone_approvals_expects")
+        );
+        cfg.phone_approvals = mode;
+        cfg.save()?;
+        return config_show();
+    }
     if key == "credential_store" {
         let store = value.to_ascii_lowercase();
         anyhow::ensure!(
@@ -1048,7 +1043,7 @@ pub fn forget(yes: bool) -> Result<()> {
     if !yes && !std::io::stdin().is_terminal() {
         bail!("{}", t!("forget.needs_yes"));
     }
-    println!("{}", t!("forget.warning"));
+    println!("{}", t!("forget.warning", licence_url = crate::brand::licence_page()));
     if !yes {
         let yes_word = t!("forget.yes_word");
         print!("{}", t!("forget.prompt", yes = yes_word));
@@ -1087,11 +1082,7 @@ fn remove_local(revoke_on_server: bool) -> Result<()> {
     let path = hookcfg::uninstall()?;
     println!(
         "{}",
-        t!(
-            "uninstall.hooks_removed",
-            path = path.display(),
-            config = config::codex_config_path().display()
-        )
+        t!("uninstall.hooks_removed", path = path.display())
     );
     notify::uninstall();
     if revoke_on_server && cfg.is_paired() {
@@ -1106,7 +1097,11 @@ fn remove_local(revoke_on_server: bool) -> Result<()> {
             // do it from the licence page, and carry on (uninstall must work offline)
             Err(err) => eprintln!(
                 "{}",
-                t!("local_files.slot_not_freed", error = format!("{err:#}"))
+                t!(
+                    "local_files.slot_not_freed",
+                    error = format!("{err:#}"),
+                    licence_url = crate::brand::licence_page()
+                )
             ),
         }
         if let Ok(devices) = api.pairings() {

@@ -3,14 +3,14 @@
 _version: 1
 
 cli:
-  about: "Antigravity Notifier: Codex가 당신을 필요로 할 때 휴대폰으로 푸시 알림을 받고, 거기서 바로 답해요"
+  about: "Antigravity Notifier: Antigravity가 당신을 필요로 할 때 휴대폰으로 푸시 알림을 받고, 거기서 바로 답해요"
   pair:
     about: "이 컴퓨터를 휴대폰과 연결해요. 앱에 표시된 코드를 넘기거나, 코드 없이 실행해 앱에 입력할 코드를 받으세요"
     code: "Antigravity Notifier 앱에 표시된 6자리 코드"
     name: "휴대폰에 표시되는 이 컴퓨터의 이름 (기본값: 호스트 이름)"
     no_wait: "QR 코드를 표시하고 바로 돌아와요. 휴대폰이 연결되면 알아서 완료돼요"
   setup:
-    about: "Codex 훅과 데스크톱 알림을 설치해요 (pair와 인수 없는 antigravity-notifier가 먼저 하는 일이에요)"
+    about: "Antigravity 훅과 데스크톱 알림을 설치해요 (pair와 인수 없는 antigravity-notifier가 먼저 하는 일이에요)"
   doctor:
     about: "훅, 인증 정보, 서버, 이 터미널이 지원하는 기능을 점검해요"
   test:
@@ -72,7 +72,7 @@ pair:
   credentials_stored: "인증 정보를 %{store}에 저장했어요 (%{path})."
   test_sent: "휴대폰에 테스트 알림을 보냈어요."
   test_failed: "아직 테스트 알림을 보낼 수 없어요: %{error}"
-  done: "끝났어요. 평소처럼 `codex`를 시작하세요. Codex가 끝나거나 당신을 필요로 하면 푸시 알림이 오고,\n휴대폰에서 승인, 거부, 답변을 할 수 있어요. `antigravity-notifier doctor`로 전체를 점검할 수 있어요."
+  done: "끝났어요. 평소처럼 Antigravity(`agy`)를 시작하세요. Antigravity가 끝나거나 당신을 필요로 하면 푸시 알림이 오고,\n휴대폰에서 승인, 거부, 답변을 할 수 있어요. `antigravity-notifier doctor`로 전체를 점검할 수 있어요."
   paired_with: "%{name} (%{platform})과 연결됐어요."
   hours_one: "1시간"
   hours_other: "%{count}시간"
@@ -85,7 +85,7 @@ pair:
   welcome_no_terminal: "테스트 알림이 휴대폰으로 가고 있어요. 거기서 답해 보세요."
   welcome: "테스트 알림이 휴대폰으로 가고 있어요. 거기서 답해 보세요..."
   welcome_skip: "(건너뛰려면 Enter)"
-  welcome_answered: "✓ 휴대폰에서 \"%{answer}\"라고 답했어요. Codex에게도 이렇게 답하게 돼요."
+  welcome_answered: "✓ 휴대폰에서 \"%{answer}\"라고 답했어요. Antigravity에게도 이렇게 답하게 돼요."
   welcome_no_answer: "아직 답이 없어요. 알림은 휴대폰에 1시간 동안 남아 있어요."
 
 status:
@@ -99,7 +99,6 @@ status:
 setup:
   installed_self: "antigravity-notifier를 %{path}에 설치했어요."
   hooks_installed: "훅을 %{path}에 설치했어요 (%{exe} 사용)."
-  hooks_trusted: "%{path}에 신뢰함으로 표시해서, Codex가 /hooks에 들르지 않아도 실행해요."
 
 sync:
   not_synced: "설정이 아직 동기화되지 않았어요: %{error}"
@@ -123,8 +122,6 @@ doctor:
   hooks_missing: "훅: %{names} 없음 (`antigravity-notifier setup` 실행)"
   hooks_error: "훅: %{error}"
   hooks_stale: "훅이 다른 antigravity-notifier 바이너리를 가리키고 있어요. `antigravity-notifier setup`으로 업데이트하세요"
-  trust_ok: "신뢰: 모든 훅의 해시가 %{path}에 있음"
-  trust_missing: "신뢰: 신뢰할 때까지 Codex가 %{names}을(를) 건너뜀 (`antigravity-notifier setup` 실행, 또는 Codex에서 /hooks)"
   presence: "자리 감지: 현재 %{idle}초 동안 입력 없음, 기준 %{threshold}초"
   replies: "답장: 휴대폰에서 보낸 승인과 질문 답변은 어떤 터미널에서도 동작해요. 대기 중인 세션에 자유 입력: %{free_text}"
   replies_tmux: "tmux로 동작해요"
@@ -151,6 +148,7 @@ config:
   credentials_moved: "인증 정보가 이제 %{store}에 있어요."
   credential_store_expects: "credential_store에는 keychain 또는 file을 지정하세요"
   auto_update_expects: "auto_update에는 on 또는 off를 지정하세요"
+  phone_approvals_expects: "phone_approvals에는 all, commands 또는 off를 지정하세요"
 
 settings:
   expects_on_off: "%{key}에는 on 또는 off를 지정하세요"
@@ -162,7 +160,7 @@ settings:
 
 forget:
   needs_yes: "antigravity-notifier forget에는 확인이 필요해요. 터미널에서 실행하거나 --yes를 붙이세요"
-  warning: "이 작업은 이 컴퓨터와 연결 정보를 Antigravity Notifier 서버에서 지우고, `antigravity-notifier uninstall`과\n마찬가지로 Codex에서 antigravity-notifier를 제거한 뒤 여기 있는 인증 정보와 파일을 삭제해요.\n이 컴퓨터와 연결된 휴대폰에서는 이 컴퓨터가 사라져요.\n웹사이트에서 구매한 라이선스는 취소되지 않아요. antigravitynotifier.com/licence의\n\"Erase my licence\"에서 처리하세요."
+  warning: "이 작업은 이 컴퓨터와 연결 정보를 Antigravity Notifier 서버에서 지우고, `antigravity-notifier uninstall`과\n마찬가지로 Antigravity에서 antigravity-notifier를 제거한 뒤 여기 있는 인증 정보와 파일을 삭제해요.\n이 컴퓨터와 연결된 휴대폰에서는 이 컴퓨터가 사라져요.\n웹사이트에서 구매한 라이선스는 취소되지 않아요. %{licence_url}의\n\"Erase my licence\"에서 처리하세요."
   # 사용자가 입력해야 하는 단어. `yes`도 항상 받아들여요
   yes_word: "예"
   prompt: "\n계속하려면 %{yes}를 입력하세요: "
@@ -173,16 +171,16 @@ forget:
   not_registered: "이 컴퓨터는 서버에 등록되어 있지 않아서 서버에서 지울 것이 없어요."
 
 uninstall:
-  hooks_removed: "%{path}에서 antigravity-notifier 훅을, %{config}에서 그 신뢰 항목을 제거했어요."
+  hooks_removed: "%{path}에서 antigravity-notifier 훅을 제거했어요."
   slot_freed: "이 컴퓨터의 라이선스 자리를 비웠어요."
   unpaired_all: "모든 휴대폰의 연결을 해제했어요."
   removed_dir: "%{path}를 제거했어요."
 
 local:
-  finished_title: "Codex가 끝냈어요"
-  finished_body: "Codex가 작업을 끝내고 당신을 기다리고 있어요."
-  permission_title: "Codex가 권한을 요청해요"
-  question_title: "Codex가 질문이 있어요"
+  finished_title: "Antigravity가 끝냈어요"
+  finished_body: "Antigravity가 작업을 끝내고 당신을 기다리고 있어요."
+  error_title: "Antigravity가 오류로 멈췄어요"
+  question_title: "Antigravity가 질문이 있어요"
   first_nudge: "휴대폰으로도 받기: antigravity-notifier pair"
   milestone_nudge: "지금까지 알림 10개. 휴대폰으로도 받고 잠금 화면에서 승인하려면 antigravity-notifier pair를 실행하세요"
   pair_message: "Antigravity Notifier: 데스크톱 알림을 받고 있어요. 휴대폰으로도 받고 거기서 승인이나 답변을 하려면 터미널에서 `antigravity-notifier pair`를 실행하세요."
@@ -195,6 +193,8 @@ hook:
   # 제목, 본문, 명령은 서버가 사용자 언어로 써요. 여기서는 이어 붙이기만 해요
   nudge_message: "Antigravity Notifier: %{title} %{body} %{command}"
   needs_attention: "확인이 필요해요"
+  # Shown on Antigravity's own permission prompt when a request waited for the phone and nobody answered
+  no_answer: "휴대폰에서 답이 없어요"
 
 # Suggests the Claude Code Notifier app (and its ccn CLI) to someone who also uses Claude Code (crosspromo.rs).
 # "Claude Code Notifier", command and url are not translated; never name one computer platform.
@@ -321,30 +321,35 @@ update_lock:
 
 local_files:
   config_unreadable: "%{path} 파일을 읽을 수 없어요(%{error}). 그래서 antigravity-notifier가 덮어쓰지 않아요. 파일을 고치거나, 삭제한 뒤 `antigravity-notifier pair`를 다시 실행하세요."
-  slot_not_freed: "이 컴퓨터의 라이선스 자리를 비우지 못했어요(%{error}). 라이선스가 있다면 antigravitynotifier.com/licence에서 키로 자리를 비우세요."
+  slot_not_freed: "이 컴퓨터의 라이선스 자리를 비우지 못했어요(%{error}). 라이선스가 있다면 %{licence_url}에서 키로 자리를 비우세요."
   kept_dir: "%{path}에서 antigravity-notifier 파일을 제거했어요. 폴더에 다른 파일도 있어서 폴더는 그대로 두었어요."
   remove_binary: "antigravity-notifier 자체는 아직 설치되어 있어요. 제거하려면: %{command}"
 
+# What the phone shows, and the desktop notification repeats, when Antigravity gives no text of its
+# own. The apps display it as sent, so it is in the computer's language.
 payload:
+  # %{tool} is Antigravity's tool name: run_command, write_file, edit_file...
   needs_permission: "%{tool} 권한이 필요해요"
   permission_required: "권한이 필요해요"
-  has_questions: "Codex가 질문이 있어요"
+  has_questions: "Antigravity가 질문이 있어요"
+  # %{prompt} is what the user asked Antigravity to do
   finished_prompt: "완료: %{prompt}"
   question_header: "질문"
-  search: "검색: %{pattern}"
-  # What the phone shows for an apply_patch call: no files named, one, or the first and how
-  # many more (%{count} is 1 or more)
-  apply_patch: "패치 적용"
+  # What the phone shows for a write_file or edit_file call
   edit_file: "%{file} 편집"
-  edit_files: "%{file} 외 %{count}개 편집"
-  # What the phone shows for an update_plan call
-  update_plan: "계획 업데이트"
+  # The done card when the turn ended because something went wrong; %{error} is Antigravity's own message
+  stopped_error: "Antigravity가 오류 때문에 멈췄어요: %{error}"
 
+# When the server can't be reached at all (no connection, DNS, timeout). The raw error follows
+# on the next line.
 net:
   unreachable: "Antigravity Notifier 서버에 연결하지 못했어요. 인터넷 연결을 확인하고 다시 시도해 주세요."
+  # A `antigravity-notifier doctor` line, in the same label: text style as the doctor.* lines
   doctor_unreachable: "서버: %{url}에 연결할 수 없어요. 인터넷 연결, 프록시, 방화벽을 확인해 주세요"
 
+# The frame around the cli.* descriptions: `antigravity-notifier --help` headings and the -h / -V flags
 clap:
+  # Headings: a word and a colon, as other command-line tools in your language write them
   usage: "사용법:"
   commands: "명령:"
   arguments: "인수:"
@@ -353,8 +358,9 @@ clap:
   version: "버전 보기"
   help_command: "antigravity-notifier 또는 명령의 도움말 보기"
   help_command_arg: "도움말을 볼 명령"
+  # Printed under clap's own (English) message when a command line can't be parsed
   error_hint: "`antigravity-notifier --help`를 실행하면 명령과 옵션을 볼 수 있어요."
 
 # `antigravity-notifier upgrade` refused a release whose SHA256SUMS isn't signed by TouchTap
 update_signature:
-  invalid: "릴리스 서명을 확인할 수 없어 아무것도 변경하지 않았습니다. 나중에 다시 시도하거나 antigravitynotifier.com/cli에서 다시 설치하세요"
+  invalid: "릴리스 서명을 확인할 수 없어 아무것도 변경하지 않았습니다. 나중에 다시 시도하거나 %{cli_url}에서 다시 설치하세요"

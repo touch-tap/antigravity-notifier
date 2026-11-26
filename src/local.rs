@@ -1,5 +1,5 @@
 //! Local mode: no phone is paired with this computer, so the hooks show desktop notifications,
-//! never touch the network and never hold Codex. A counter and a few nudges suggest pairing.
+//! never touch the network and never hold Antigravity. A counter and a few nudges suggest pairing.
 //!
 //! The text here is what the user sees; each piece is one key in locales/<lang>.yml.
 
@@ -23,8 +23,8 @@ pub fn finished_title() -> String {
 pub fn finished_body() -> String {
     t!("local.finished_body").into_owned()
 }
-pub fn permission_title() -> String {
-    t!("local.permission_title").into_owned()
+pub fn error_title() -> String {
+    t!("local.error_title").into_owned()
 }
 pub fn question_title() -> String {
     t!("local.question_title").into_owned()
@@ -38,7 +38,7 @@ pub fn first_nudge_line() -> String {
 pub fn milestone_nudge() -> String {
     t!("local.milestone_nudge").into_owned()
 }
-/// Shown in Codex after the 10th, then every week at SessionStart
+/// Shown in Antigravity after the 10th, then every week at SessionStart
 pub fn pair_system_message() -> String {
     t!("local.pair_message").into_owned()
 }
@@ -60,7 +60,7 @@ pub enum Milestone {
     None,
     /// Append `first_nudge_line` to the body
     First,
-    /// Show `milestone_nudge` as well, and ask Codex to show `pair_system_message`
+    /// Show `milestone_nudge` as well, and ask Antigravity to show `pair_system_message`
     Tenth,
 }
 
@@ -93,7 +93,8 @@ pub fn body_with_nudge(body: &str) -> String {
     )
 }
 
-/// The hook's work while no phone is paired. Returns a `systemMessage` for Codex or None.
+/// The hook's work while no phone is paired. Returns a `systemMessage` or None; hook.rs turns
+/// None into the answer each event needs.
 pub fn run(
     cfg: &mut Config,
     event: &str,
@@ -105,16 +106,20 @@ pub fn run(
     match event {
         "SessionStart" => {
             state.started_at = now;
-            state.source = inp.str("source").map(|s| s.to_string());
             let _ = state.save();
             session::prune_old(7);
             pair_message(cfg, now, true)
         }
-        "UserPromptSubmit" => {
-            if let Some(prompt) = inp.str("prompt") {
+        "PreInvocation" => {
+            if !crate::hook::new_prompt(input, state) {
+                return None;
+            }
+            if let Some(prompt) = inp.prompt() {
                 state.prompt = Some(SessionState::truncate(prompt, 4000));
                 state.prompt_at = Some(now);
             }
+            state.turn_stopped = false;
+            state.done_execution = None;
             let _ = state.save();
             pair_message(cfg, now, false)
         }
@@ -125,6 +130,8 @@ pub fn run(
             state.tool_input = Some(tool_input.clone());
             state.tool_at = Some(now);
             let _ = state.save();
+            // Antigravity has no event for "a prompt is showing", so the only request a hook
+            // can be sure of is a question
             if tool_name.as_deref().is_some_and(payload::is_question_tool)
                 && cfg.settings.notify_on_question()
             {
@@ -134,39 +141,26 @@ pub fn run(
             }
             None
         }
-        // Codex has no Notification event: its PermissionRequest hook carries the tool, and
-        // returning nothing leaves the prompt to the terminal
-        "PermissionRequest" => {
-            if !cfg.settings.notify_on_permission() {
-                return None;
-            }
-            let (card, _, _) = payload::permission_card(&inp, false);
-            let title = permission_title();
-            let body = card["promptText"]
-                .as_str()
-                .or(card["message"].as_str())
-                .unwrap_or(&title);
-            show(cfg, &title, body);
-            None
-        }
         "Stop" => {
+            let stop = crate::hook::StopInfo::read(input);
+            state.turn_stopped = true;
+            let _ = state.save();
             if !cfg.settings.notify_on_done()
-                || input["stop_hook_active"].as_bool().unwrap_or(false)
+                || !stop.announce()
+                || state.done_execution == Some(stop.execution)
             {
                 return None;
             }
             let project = inp.project_name();
-            let finished = finished_body();
-            let body = inp
-                .str("last_assistant_message")
-                .map(str::trim)
-                .filter(|s| !s.is_empty())
-                .unwrap_or(&finished);
-            show(cfg, &project.unwrap_or_else(finished_title), body);
-            None
-        }
-        "SessionEnd" => {
-            SessionState::remove(&state.session_id);
+            let message = crate::hook::final_message(input, state).map(|m| m.text);
+            let body = payload::done_text(message.as_deref(), stop.error.as_deref(), state);
+            state.done_execution = Some(stop.execution);
+            let _ = state.save();
+            let title = match stop.error {
+                Some(_) => error_title(),
+                None => project.unwrap_or_else(finished_title),
+            };
+            show(cfg, &title, &body);
             None
         }
         _ => None,

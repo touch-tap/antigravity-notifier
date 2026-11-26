@@ -1,5 +1,8 @@
-//! Per-session state, one small JSON file per Codex session. Written by the fast hooks
-//! (PreToolUse, UserPromptSubmit) and read by the ones that notify.
+//! Per-session state, one small JSON file per Antigravity conversation. Written by the fast
+//! hooks (PreInvocation, PreToolUse, PostToolUse) and read by the ones that notify.
+//!
+//! Antigravity has no SessionEnd event, so nothing removes a conversation's file when it ends:
+//! `prune_old` clears files a week after their last hook.
 
 use anyhow::Result;
 use serde::{Deserialize, Serialize};
@@ -40,7 +43,6 @@ pub struct SessionState {
     pub session_id: String,
     pub cwd: String,
     pub started_at: i64,
-    pub source: Option<String>,
     pub prompt: Option<String>,
     pub prompt_at: Option<i64>,
     pub tool_name: Option<String>,
@@ -50,8 +52,22 @@ pub struct SessionState {
     /// What the current turn has done, for the phone's lock-screen card
     pub turn: Turn,
     pub last_card: Option<Card>,
-    /// Codex has shown this session the "not paired any more" message
+    /// This conversation has been told once that the computer is "not paired any more"
     pub unpaired_warned: bool,
+    /// Tools the phone allowed for the rest of this conversation ("Allow for session")
+    pub allowed_tools: Vec<String>,
+    /// The turn has stopped (a Stop hook saw it), so the next first invocation is a new prompt
+    /// even when its text is the same as the last one
+    pub turn_stopped: bool,
+    /// The `executionNum` of the last Stop that sent a done card. Antigravity's
+    /// `continuationActive` stays false after a `continue`, so this is what stops one stop from
+    /// being announced, held and continued twice.
+    pub done_execution: Option<i64>,
+    /// The `executionNum`s a phone reply has continued, newest last
+    pub continued: Vec<i64>,
+    /// The transcript step of the final message the last done card showed, to tell a new
+    /// message from the previous turn's
+    pub done_step: Option<i64>,
     pub updated_at: i64,
 }
 
@@ -83,14 +99,11 @@ impl SessionState {
         Ok(())
     }
 
-    pub fn remove(session_id: &str) {
-        let _ = fs::remove_file(path_for(session_id));
-    }
-
     /// Records what every hook invocation knows: the working directory and the terminal it runs in.
     pub fn touch(&mut self, input: &Value) {
-        if let Some(cwd) = input["cwd"].as_str() {
-            self.cwd = cwd.to_string();
+        let cwd = crate::payload::Input(input).cwd();
+        if !cwd.is_empty() {
+            self.cwd = cwd;
         }
         let env = |key: &str| std::env::var(key).ok().filter(|v| !v.is_empty());
         if let Some(v) = env("TERM_PROGRAM") {
@@ -115,8 +128,9 @@ impl SessionState {
 }
 
 /// Deletes every session file (and any temp file a crash left), then the sessions directory if
-/// that leaves it empty. Only files that look like antigravity-notifier's: uninstall must not empty a `sessions`
-/// folder of someone else's when `ANTIGRAVITY_NOTIFIER_HOME` points somewhere shared.
+/// that leaves it empty. Only files that look like antigravity-notifier's: uninstall must not
+/// empty a `sessions` folder of someone else's when `ANTIGRAVITY_NOTIFIER_HOME` points somewhere
+/// shared.
 pub fn remove_all() {
     let dir = config::sessions_dir();
     let Ok(entries) = fs::read_dir(&dir) else {

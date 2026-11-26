@@ -3,14 +3,14 @@
 _version: 1
 
 cli:
-  about: "Antigravity Notifier: Codex があなたを必要とするときスマートフォンにプッシュ通知を届け、その場で返答できます"
+  about: "Antigravity Notifier: Antigravity があなたを必要とするときスマートフォンにプッシュ通知を届け、その場で返答できます"
   pair:
     about: "このコンピュータをスマートフォンとペアリングします。アプリに表示されたコードを渡すか、コードなしで実行してアプリに入力するコードを取得します"
     code: "Antigravity Notifier アプリに表示される6桁のコード"
     name: "スマートフォン上でのこのコンピュータの名前（デフォルト: ホスト名）"
     no_wait: "QR コードを表示してすぐ戻ります。スマートフォンが接続するとペアリングは自動で完了します"
   setup:
-    about: "Codex のフックとデスクトップ通知をインストールします（pair と引数なしの antigravity-notifier は最初にこれを行います）"
+    about: "Antigravity のフックとデスクトップ通知をインストールします（pair と引数なしの antigravity-notifier は最初にこれを行います）"
   doctor:
     about: "フック、認証情報、サーバー、このターミナルの対応状況を確認します"
   test:
@@ -72,7 +72,7 @@ pair:
   credentials_stored: "認証情報を%{store}に保存しました（%{path}）。"
   test_sent: "スマートフォンにテスト通知を送りました。"
   test_failed: "テスト通知をまだ送れません: %{error}"
-  done: "完了です。いつも通り `codex` を起動してください。Codex が終了したり、あなたを必要としたときに\nプッシュ通知が届き、スマートフォンから承認・拒否・返答ができます。`antigravity-notifier doctor` で全体を確認できます。"
+  done: "完了です。いつも通り Antigravity（`agy`）を起動してください。Antigravity が終了したり、あなたを必要としたときに\nプッシュ通知が届き、スマートフォンから承認・拒否・返答ができます。`antigravity-notifier doctor` で全体を確認できます。"
   paired_with: "%{name}（%{platform}）とペアリングしました。"
   hours_one: "1時間"
   hours_other: "%{count}時間"
@@ -85,7 +85,7 @@ pair:
   welcome_no_terminal: "テスト通知をスマートフォンに送りました。そこから返答してみてください。"
   welcome: "テスト通知をスマートフォンに送りました。そこから返答してみてください..."
   welcome_skip: "（Enter でスキップ）"
-  welcome_answered: "✓ スマートフォンから「%{answer}」と返答がありました。Codex にもこのように返答します。"
+  welcome_answered: "✓ スマートフォンから「%{answer}」と返答がありました。Antigravity にもこのように返答します。"
   welcome_no_answer: "まだ返答がありません。通知はスマートフォンに1時間残ります。"
 
 status:
@@ -99,7 +99,6 @@ status:
 setup:
   installed_self: "antigravity-notifier を %{path} にインストールしました。"
   hooks_installed: "フックを %{path} にインストールしました（%{exe} を使用）。"
-  hooks_trusted: "%{path} で信頼済みにしたので、Codex は /hooks を開かなくても実行します。"
 
 sync:
   not_synced: "設定はまだ同期されていません: %{error}"
@@ -123,8 +122,6 @@ doctor:
   hooks_missing: "フック: %{names} がありません（`antigravity-notifier setup` を実行）"
   hooks_error: "フック: %{error}"
   hooks_stale: "フックが別の antigravity-notifier バイナリを指しています。`antigravity-notifier setup` で更新してください"
-  trust_ok: "信頼: すべてのフックのハッシュが %{path} にあります"
-  trust_missing: "信頼: 信頼されるまで Codex は %{names} をスキップします（`antigravity-notifier setup` を実行するか、Codex で /hooks）"
   presence: "在席検出: 現在 %{idle} 秒間操作なし、しきい値 %{threshold} 秒"
   replies: "返答: スマートフォンからの承認と質問への回答はどのターミナルでも動作します。待機中のセッションへの自由入力: %{free_text}"
   replies_tmux: "tmux で動作します"
@@ -151,6 +148,7 @@ config:
   credentials_moved: "認証情報は%{store}に移動しました。"
   credential_store_expects: "credential_store には keychain か file を指定してください"
   auto_update_expects: "auto_update には on か off を指定してください"
+  phone_approvals_expects: "phone_approvals には all、commands、off のいずれかを指定してください"
 
 settings:
   expects_on_off: "%{key} には on か off を指定してください"
@@ -162,7 +160,7 @@ settings:
 
 forget:
   needs_yes: "antigravity-notifier forget には確認が必要です。ターミナルで実行するか、--yes を付けてください"
-  warning: "この操作は、このコンピュータとそのペアリングを Antigravity Notifier のサーバーから消去し、\n`antigravity-notifier uninstall` と同じように Codex から antigravity-notifier を取り除き、ここにある認証情報とファイルを削除します。\nこのコンピュータとペアリングしていたスマートフォンからは、このコンピュータが消えます。\nウェブサイトで購入したライセンスは解約されません。antigravitynotifier.com/licence の\n「Erase my licence」から行ってください。"
+  warning: "この操作は、このコンピュータとそのペアリングを Antigravity Notifier のサーバーから消去し、\n`antigravity-notifier uninstall` と同じように Antigravity から antigravity-notifier を取り除き、ここにある認証情報とファイルを削除します。\nこのコンピュータとペアリングしていたスマートフォンからは、このコンピュータが消えます。\nウェブサイトで購入したライセンスは解約されません。%{licence_url} の\n「Erase my licence」から行ってください。"
   # ユーザーが入力する確認の言葉。`yes` も常に受け付けられる
   yes_word: "はい"
   prompt: "\n続けるには %{yes} と入力してください: "
@@ -173,16 +171,16 @@ forget:
   not_registered: "このコンピュータはサーバーに登録されていないため、サーバー側で消去するものはありません。"
 
 uninstall:
-  hooks_removed: "%{path} から antigravity-notifier のフックを、%{config} からその信頼エントリを削除しました。"
+  hooks_removed: "%{path} から antigravity-notifier のフックを削除しました。"
   slot_freed: "このコンピュータのライセンス枠を空けました。"
   unpaired_all: "すべてのスマートフォンのペアリングを解除しました。"
   removed_dir: "%{path} を削除しました。"
 
 local:
-  finished_title: "Codex が終了しました"
-  finished_body: "Codex が終了し、あなたを待っています。"
-  permission_title: "Codex が許可を求めています"
-  question_title: "Codex からの質問があります"
+  finished_title: "Antigravity が終了しました"
+  finished_body: "Antigravity が終了し、あなたを待っています。"
+  error_title: "Antigravity がエラーで停止しました"
+  question_title: "Antigravity からの質問があります"
   first_nudge: "スマートフォンでも受け取る: antigravity-notifier pair"
   milestone_nudge: "これで10件目の通知です。スマートフォンでも受け取り、ロック画面から承認するには antigravity-notifier pair を実行してください"
   pair_message: "Antigravity Notifier: デスクトップ通知が届いています。スマートフォンでも受け取り、そこから承認や返答をするには、ターミナルで `antigravity-notifier pair` を実行してください。"
@@ -195,6 +193,8 @@ hook:
   # タイトル、本文、コマンドはサーバーがユーザーの言語で書く。ここではつなげるだけ
   nudge_message: "Antigravity Notifier: %{title} %{body} %{command}"
   needs_attention: "確認が必要です"
+  # Shown on Antigravity's own permission prompt when a request waited for the phone and nobody answered
+  no_answer: "スマートフォンから返答がありません"
 
 # Suggests the Claude Code Notifier app (and its ccn CLI) to someone who also uses Claude Code (crosspromo.rs).
 # "Claude Code Notifier", command and url are not translated; never name one computer platform.
@@ -321,30 +321,35 @@ update_lock:
 
 local_files:
   config_unreadable: "%{path} を読み込めません（%{error}）。そのため antigravity-notifier は上書きしません。ファイルを修正するか、削除してから `antigravity-notifier pair` をもう一度実行してください。"
-  slot_not_freed: "このコンピュータのライセンス枠を空けられませんでした（%{error}）。ライセンスがある場合は、antigravitynotifier.com/licence でキーを使って枠を空けてください。"
+  slot_not_freed: "このコンピュータのライセンス枠を空けられませんでした（%{error}）。ライセンスがある場合は、%{licence_url} でキーを使って枠を空けてください。"
   kept_dir: "%{path} から antigravity-notifier のファイルを削除しました。フォルダにはほかのファイルもあるため、フォルダ自体は残しています。"
   remove_binary: "antigravity-notifier 本体はまだインストールされています。削除するには: %{command}"
 
+# What the phone shows, and the desktop notification repeats, when Antigravity gives no text of its
+# own. The apps display it as sent, so it is in the computer's language.
 payload:
+  # %{tool} is Antigravity's tool name: run_command, write_file, edit_file...
   needs_permission: "%{tool} の許可が必要です"
   permission_required: "許可が必要です"
-  has_questions: "Codex から質問があります"
+  has_questions: "Antigravity から質問があります"
+  # %{prompt} is what the user asked Antigravity to do
   finished_prompt: "完了: %{prompt}"
   question_header: "質問"
-  search: "検索: %{pattern}"
-  # What the phone shows for an apply_patch call: no files named, one, or the first and how
-  # many more (%{count} is 1 or more)
-  apply_patch: "パッチを適用"
+  # What the phone shows for a write_file or edit_file call
   edit_file: "%{file} を編集"
-  edit_files: "%{file} ほか %{count} 件を編集"
-  # What the phone shows for an update_plan call
-  update_plan: "プランを更新"
+  # The done card when the turn ended because something went wrong; %{error} is Antigravity's own message
+  stopped_error: "Antigravity がエラーのため停止しました: %{error}"
 
+# When the server can't be reached at all (no connection, DNS, timeout). The raw error follows
+# on the next line.
 net:
   unreachable: "Antigravity Notifier のサーバーに接続できませんでした。インターネット接続を確認して、もう一度お試しください。"
+  # A `antigravity-notifier doctor` line, in the same label: text style as the doctor.* lines
   doctor_unreachable: "サーバー: %{url} に接続できません。インターネット接続、プロキシ、ファイアウォールを確認してください"
 
+# The frame around the cli.* descriptions: `antigravity-notifier --help` headings and the -h / -V flags
 clap:
+  # Headings: a word and a colon, as other command-line tools in your language write them
   usage: "使い方:"
   commands: "コマンド:"
   arguments: "引数:"
@@ -353,8 +358,9 @@ clap:
   version: "バージョンを表示"
   help_command: "antigravity-notifier またはそのコマンドのヘルプを表示"
   help_command_arg: "ヘルプを表示するコマンド"
+  # Printed under clap's own (English) message when a command line can't be parsed
   error_hint: "`antigravity-notifier --help` でコマンドとオプションの一覧を確認できます。"
 
 # `antigravity-notifier upgrade` refused a release whose SHA256SUMS isn't signed by TouchTap
 update_signature:
-  invalid: "リリースの署名を確認できなかったため、何も変更していません。しばらくしてからもう一度試すか、antigravitynotifier.com/cli から再インストールしてください"
+  invalid: "リリースの署名を確認できなかったため、何も変更していません。しばらくしてからもう一度試すか、%{cli_url} から再インストールしてください"

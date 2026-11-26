@@ -7,10 +7,7 @@ use std::fs;
 use std::io::Write;
 use std::path::{Path, PathBuf};
 
-/// The Worker that serves both Claude Code Notifier and Antigravity Notifier, at the Codex brand's address.
-/// ccnotifier-api.touchtap.workers.dev, api.claudecodenotifier.com and ccnotifier-api.touchtap.workers.dev are the
-/// same Worker; a custom domain is reachable from mainland China, where *.workers.dev is blocked.
-pub const DEFAULT_SERVER_URL: &str = "https://ccnotifier-api.touchtap.workers.dev";
+pub use crate::brand::DEFAULT_SERVER_URL;
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 pub const KEYRING_SERVICE: &str = "com.touchtap.antigravitynotifier";
 pub const KEYRING_USER: &str = "auth_token";
@@ -84,14 +81,15 @@ pub fn unpaired_path() -> PathBuf {
     app_dir().join("unpaired.json")
 }
 
-/// Codex's config folder: `$CODEX_HOME`, as Codex itself reads it, else `~/.codex`. Made absolute,
-/// because Codex keys hook trust by the hooks file's absolute path.
-pub fn codex_home() -> PathBuf {
-    let dir = std::env::var("CODEX_HOME")
+/// Antigravity's config folder, shared by the CLI (`agy`), the desktop app and the IDE: `~/.gemini`.
+/// `$ANTIGRAVITY_NOTIFIER_GEMINI_HOME` points somewhere else, for tests and for trying a build
+/// without touching the real hooks file.
+pub fn gemini_home() -> PathBuf {
+    let dir = std::env::var("ANTIGRAVITY_NOTIFIER_GEMINI_HOME")
         .ok()
         .filter(|d| !d.is_empty())
         .map(PathBuf::from)
-        .unwrap_or_else(|| home_dir().join(".codex"));
+        .unwrap_or_else(|| home_dir().join(".gemini"));
     if dir.is_absolute() {
         dir
     } else {
@@ -101,14 +99,9 @@ pub fn codex_home() -> PathBuf {
     }
 }
 
-/// Codex's hooks file, where our entries go.
-pub fn codex_hooks_path() -> PathBuf {
-    codex_home().join("hooks.json")
-}
-
-/// Codex's config file, where the hooks' trust hashes go.
-pub fn codex_config_path() -> PathBuf {
-    codex_home().join("config.toml")
+/// Antigravity's global hooks file, where our named group goes.
+pub fn hooks_path() -> PathBuf {
+    gemini_home().join("config").join("hooks.json")
 }
 
 // ============================================
@@ -135,7 +128,7 @@ pub struct Settings {
     pub stop_hold_seconds: Option<u64>,
     pub reminder_interval_seconds: Option<u64>,
     pub sound: Option<bool>,
-    /// Send nothing to the phone while the user is at the terminal running Codex (default on)
+    /// Send nothing to the phone while the user is at the terminal running Antigravity (default on)
     pub quiet_when_present: Option<bool>,
 }
 
@@ -298,7 +291,7 @@ pub struct Config {
     pub registered_at: Option<i64>,
     /// When a SessionStart hook last asked the server about this computer's licence (once a day)
     pub licence_checked_at: Option<i64>,
-    /// When the licence nudge was last shown in Codex (its cadence is in hook.rs)
+    /// When the licence nudge was last shown in Antigravity (its cadence is in hook.rs)
     pub licence_nudge_last_at: Option<i64>,
     /// How many phones are paired, as of the last `pairings` call that succeeded. None until the
     /// server has been asked; Some(0) is local mode (desktop notifications only).
@@ -308,11 +301,11 @@ pub struct Config {
     /// Where the install line came from (web, app, link or direct), set by the install scripts'
     /// ANTIGRAVITY_NOTIFIER_INSTALL_SOURCE the first time `antigravity-notifier setup` runs, and sent with the anonymous setup events
     pub install_source: Option<String>,
-    /// Codex has shown "paired with <phone>" once
+    /// Antigravity has shown "paired with <phone>" once
     pub paired_message_shown: bool,
     /// Desktop notifications shown while no phone was paired
     pub local_notifications: u64,
-    /// When the "run antigravity-notifier pair" message was last shown in Codex
+    /// When the "run antigravity-notifier pair" message was last shown in Antigravity
     pub pair_nudge_last_at: Option<i64>,
     /// The 10th local notification has asked for the message at the next SessionStart or prompt
     pub pair_nudge_due: bool,
@@ -326,21 +319,26 @@ pub struct Config {
     /// A newer version the background check found but could not install (Homebrew or npm
     /// owns the binary); the SessionStart hook mentions it once a week
     pub update_available: Option<String>,
-    /// When `update_available` was last mentioned in Codex
+    /// When `update_available` was last mentioned in Antigravity
     pub update_announced_at: Option<i64>,
-    /// Hold Codex for the phone even where presence can't be detected (`antigravity-notifier config set
+    /// Hold Antigravity for the phone even where presence can't be detected (`antigravity-notifier config set
     /// hold_without_presence on`; default off, since typing can't then release the hold)
     pub hold_without_presence: bool,
+    /// Which tool calls wait for the phone while the user is away: `all` (commands, file edits
+    /// and other tools that change something; the default), `commands` (shell commands only) or
+    /// `off` (`antigravity-notifier config set phone_approvals commands`). Questions and done
+    /// cards are not affected.
+    pub phone_approvals: String,
     /// Whether to mention ccn, the Claude Code notifier, to someone who also uses Claude Code
     /// (`antigravity-notifier config set cross_promo off`; default on). Its cadence is in crosspromo.rs.
     pub cross_promo: bool,
-    /// When the ccn suggestion was last shown in Codex at SessionStart
+    /// When the ccn suggestion was last shown in Antigravity at SessionStart
     pub cross_promo_last_at: Option<i64>,
     /// How many times SessionStart has shown the ccn suggestion (it stops at two)
     pub cross_promo_count: u32,
     /// When a SessionStart first looked at the ccn suggestion, for a computer with no pairing time
     pub cross_promo_first_seen_at: Option<i64>,
-    /// Requests and done cards answered from the phone while Codex waited (for `rate_prompt`)
+    /// Requests and done cards answered from the phone while Antigravity waited (for `rate_prompt`)
     pub phone_answers: u64,
     /// The paired phones' platforms (ios, android), as the server last listed them
     pub phone_platforms: Vec<String>,
@@ -386,6 +384,7 @@ impl Default for Config {
             update_available: None,
             update_announced_at: None,
             hold_without_presence: false,
+            phone_approvals: "all".to_string(),
             cross_promo: true,
             cross_promo_last_at: None,
             cross_promo_count: 0,
@@ -621,6 +620,17 @@ impl Config {
         self.hold_without_presence
             || std::env::var("ANTIGRAVITY_NOTIFIER_HOLD_WITHOUT_PRESENCE")
                 .is_ok_and(|v| !v.is_empty() && v != "0")
+    }
+
+    /// Whether a tool call of this kind should wait for the phone (`phone_approvals`). An
+    /// unknown value counts as `all`.
+    pub fn approval_wanted(&self, class: crate::payload::ToolClass) -> bool {
+        use crate::payload::ToolClass;
+        match self.phone_approvals.as_str() {
+            "off" => false,
+            "commands" => class == ToolClass::Command,
+            _ => class.side_effects(),
+        }
     }
 
     pub fn machine_name(&self) -> String {
@@ -876,7 +886,7 @@ pub fn ensure_dir(dir: &Path) -> std::io::Result<()> {
     }
 }
 
-/// Replaces `path` with `contents` all at once. Hooks run concurrently (several Codex sessions,
+/// Replaces `path` with `contents` all at once. Hooks run concurrently (several Antigravity sessions,
 /// parallel hooks in one), and `fs::write` truncates first, so a reader could see an empty or
 /// half-written file. This writes a uniquely named temp file beside it (0600 on Unix from the
 /// start) and renames it over the target, which readers see as either the old file or the new.

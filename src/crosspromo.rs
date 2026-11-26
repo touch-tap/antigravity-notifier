@@ -2,7 +2,7 @@
 //! ccn), which does the same for Claude Code. Shown only to someone who has Claude Code and not ccn
 //! already, and only where the user is looking at antigravity-notifier anyway: the end of every
 //! `antigravity-notifier pair` (with a QR code for the app: the phone is in their hand), a hint in
-//! `status` and `doctor`, and at most twice ever in Codex at SessionStart. Never a desktop
+//! `status` and `doctor`, and at most twice ever in Antigravity at SessionStart. Never a desktop
 //! notification. ccn's own copy of this module suggests antigravity-notifier the same way.
 //!
 //! Detection is a few `stat` calls and at most one small file read: no network.
@@ -25,15 +25,10 @@ const SESSION_MAX: u32 = 2;
 
 /// One line installs ccn, sets up Claude Code's hooks and pairs: the script ends in `ccn pair`,
 /// whose QR code also offers the app to a phone without it. No Node needed, unlike npm.
-const UNIX_COMMAND: &str = "curl -fsSL https://claudecodenotifier.com/install.sh | sh";
-const WINDOWS_COMMAND: &str = "irm https://claudecodenotifier.com/install.ps1 | iex; ccn pair";
-/// The website, whose buttons take a phone to the App Store or Google Play
-pub const URL: &str = "https://claudecodenotifier.com/?ref=codex-cli";
-/// The QR code and link after `antigravity-notifier pair`: /get sends a phone straight to the App Store or
-/// Google Play (and shows a computer both store buttons), tagged ref=codex-pair
-pub const PAIR_URL: &str = "https://claudecodenotifier.com/get?ref=codex-pair";
-/// Where a click on the SessionStart notification goes
-pub const NOTIFICATION_URL: &str = "https://claudecodenotifier.com/?ref=codex-notification";
+/// The addresses themselves are in brand.rs. /get sends a phone straight to the App Store or
+/// Google Play (and shows a computer both store buttons).
+use crate::brand::claude_code::{UNIX_COMMAND, WINDOWS_COMMAND};
+pub use crate::brand::claude_code::{NOTIFICATION_URL, PAIR_URL, URL};
 
 /// Where Claude Code and ccn would live on this computer.
 #[derive(Debug, Clone)]
@@ -228,8 +223,8 @@ pub fn session_due(now: i64, since: i64, last_at: Option<i64>, count: u32) -> bo
 }
 
 /// The `systemMessage` for a paired SessionStart that shows nothing else, when due and eligible,
-/// with a desktop notification as well (most people never read Codex's start-up lines) unless
-/// desktop notifications are off. Neither goes through `codex_wording`.
+/// with a desktop notification as well (most people never read Antigravity's start-up lines) unless
+/// desktop notifications are off. Neither goes through `antigravity_wording`.
 pub fn session_message(cfg: &mut Config, now: i64) -> Option<Value> {
     if !enabled(cfg) {
         return None;
@@ -449,13 +444,13 @@ mod tests {
         assert_eq!(
             line,
             format!(
-                "Claude Code detected — get Claude Code approvals and questions on your phone too, with the Claude Code Notifier app (iPhone and Android). Set up this computer with one command: {}  ·  https://claudecodenotifier.com/?ref=codex-cli",
+                "Claude Code detected — get Claude Code approvals and questions on your phone too, with the Claude Code Notifier app (iPhone and Android). Set up this computer with one command: {}  ·  https://claudecodenotifier.com/?ref=antigravity-cli",
                 command()
             )
         );
         assert!(command().contains("claudecodenotifier.com/install."));
         assert!(!command().contains("npm"));
-        assert_eq!(PAIR_URL, "https://claudecodenotifier.com/get?ref=codex-pair");
+        assert_eq!(PAIR_URL, "https://claudecodenotifier.com/get?ref=antigravity-pair");
         assert!(qr::render(PAIR_URL).is_some());
     }
 

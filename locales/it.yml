@@ -3,14 +3,14 @@
 _version: 1
 
 cli:
-  about: "Antigravity Notifier: ricevi una notifica sul telefono quando Codex ha bisogno di te e rispondi da lì"
+  about: "Antigravity Notifier: ricevi una notifica sul telefono quando Antigravity ha bisogno di te e rispondi da lì"
   pair:
     about: "Abbinare questo computer al tuo telefono. Passa il codice mostrato dall'app, oppure esegui senza codice per averne uno da digitare nell'app"
     code: "Il codice a 6 cifre mostrato nell'app Antigravity Notifier"
     name: "Il nome di questo computer sul tuo telefono (predefinito: l'hostname)"
     no_wait: "Mostrare il codice QR e uscire subito: l'abbinamento si completa da solo quando il telefono si collega"
   setup:
-    about: "Installare gli hook di Codex e le notifiche sul desktop (pair e antigravity-notifier senza argomenti lo fanno per primi)"
+    about: "Installare gli hook di Antigravity e le notifiche sul desktop (pair e antigravity-notifier senza argomenti lo fanno per primi)"
   doctor:
     about: "Controllare hook, credenziali, server e cosa supporta questo terminale"
   test:
@@ -50,6 +50,8 @@ common:
   not_paired: "questo computer non è ancora abbinato. Esegui `antigravity-notifier pair <codice>` con il codice dell'app."
   store_keychain: "portachiavi"
   store_file: "file"
+  # chrono strftime format for dates in sentences (renews, last seen). chrono only knows English
+  # month names, so a translation should use a numeric form such as "%d.%m.%Y" or "%Y-%m-%d".
   date_format: "%d/%m/%Y"
 
 pair:
@@ -71,7 +73,7 @@ pair:
   credentials_stored: "Credenziali salvate nel %{store} (%{path})."
   test_sent: "Notifica di prova inviata al tuo telefono."
   test_failed: "Non è ancora stato possibile inviare una notifica di prova: %{error}"
-  done: "Fatto. Avvia `codex` come sempre: riceverai una notifica quando Codex finisce o ha bisogno\ndi te, e potrai consentire, negare o rispondere dal telefono. `antigravity-notifier doctor` controlla tutto."
+  done: "Fatto. Avvia Antigravity (`agy`) come sempre: riceverai una notifica quando finisce o ha bisogno\ndi te, e potrai consentire, negare o rispondere dal telefono. `antigravity-notifier doctor` controlla tutto."
   paired_with: "Abbinato a %{name} (%{platform})."
   hours_one: "1 ora"
   hours_other: "%{count} ore"
@@ -84,7 +86,7 @@ pair:
   welcome_no_terminal: "Una notifica di prova sta arrivando sul tuo telefono: prova a rispondere da lì."
   welcome: "Una notifica di prova sta arrivando sul tuo telefono. Prova a rispondere da lì..."
   welcome_skip: "(premi Invio per saltare)"
-  welcome_answered: "✓ Il tuo telefono ha risposto \"%{answer}\". È così che risponderai a Codex."
+  welcome_answered: "✓ Il tuo telefono ha risposto \"%{answer}\". È così che risponderai ad Antigravity."
   welcome_no_answer: "Ancora nessuna risposta. La notifica resta sul telefono per un'ora."
 
 status:
@@ -98,7 +100,6 @@ status:
 setup:
   installed_self: "antigravity-notifier installato in %{path}."
   hooks_installed: "Hook installati in %{path} (con %{exe})."
-  hooks_trusted: "Segnati come attendibili in %{path}, così Codex li esegue senza passare da /hooks."
 
 sync:
   not_synced: "Impostazioni non ancora sincronizzate: %{error}"
@@ -122,8 +123,6 @@ doctor:
   hooks_missing: "hook: mancano %{names} (esegui `antigravity-notifier setup`)"
   hooks_error: "hook: %{error}"
   hooks_stale: "gli hook puntano a un altro binario di antigravity-notifier; esegui `antigravity-notifier setup` per aggiornarli"
-  trust_ok: "attendibilità: ogni hook ha il suo hash in %{path}"
-  trust_missing: "attendibilità: Codex salterà %{names} finché non sono attendibili (esegui `antigravity-notifier setup`, o /hooks in Codex)"
   presence: "presenza: inattivo da %{idle}s, soglia %{threshold}s"
   replies: "risposte: approvazioni e risposte alle domande dal telefono funzionano in qualsiasi terminale; il testo libero in una sessione inattiva %{free_text}"
   replies_tmux: "funziona (tmux)"
@@ -150,6 +149,7 @@ config:
   credentials_moved: "Le credenziali ora sono nel %{store}."
   credential_store_expects: "credential_store accetta keychain o file"
   auto_update_expects: "auto_update accetta on o off"
+  phone_approvals_expects: "phone_approvals accetta all, commands o off"
 
 settings:
   expects_on_off: "%{key} accetta on o off"
@@ -161,7 +161,7 @@ settings:
 
 forget:
   needs_yes: "antigravity-notifier forget ha bisogno di un sì da parte tua: eseguilo in un terminale, o aggiungi --yes"
-  warning: "Questo cancella questo computer e i suoi abbinamenti dal server di Antigravity Notifier,\npoi rimuove antigravity-notifier da Codex ed elimina le sue credenziali e i suoi file da qui, come fa\n`antigravity-notifier uninstall`. I telefoni abbinati a questo computer lo vedranno sparire.\nUna licenza comprata sul sito non viene annullata: fallo su antigravitynotifier.com/licence\ncon \"Erase my licence\"."
+  warning: "Questo cancella questo computer e i suoi abbinamenti dal server di Antigravity Notifier,\npoi rimuove antigravity-notifier dad Antigravity ed elimina le sue credenziali e i suoi file da qui, come fa\n`antigravity-notifier uninstall`. I telefoni abbinati a questo computer lo vedranno sparire.\nUna licenza comprata sul sito non viene annullata: fallo su %{licence_url}\ncon \"Erase my licence\"."
   # La parola che l'utente deve digitare; `yes` è sempre accettato comunque
   yes_word: "sì"
   prompt: "\nDigita %{yes} per continuare: "
@@ -172,16 +172,16 @@ forget:
   not_registered: "Questo computer non è registrato sul server, quindi lì non c'è nulla da cancellare."
 
 uninstall:
-  hooks_removed: "Rimossi gli hook di antigravity-notifier da %{path} e le loro voci di attendibilità da %{config}."
+  hooks_removed: "Rimossi gli hook di antigravity-notifier da %{path}."
   slot_freed: "Liberato il posto di questo computer sulla licenza."
   unpaired_all: "Tutti i telefoni sono stati disabbinati."
   removed_dir: "Rimosso %{path}."
 
 local:
-  finished_title: "Codex ha finito"
-  finished_body: "Codex ha finito e ti sta aspettando."
-  permission_title: "Codex chiede un permesso"
-  question_title: "Codex ha una domanda"
+  finished_title: "Antigravity ha finito"
+  finished_body: "Antigravity ha finito e ti sta aspettando."
+  error_title: "Antigravity si è fermato con un errore"
+  question_title: "Antigravity ha una domanda"
   first_nudge: "Ricevile sul telefono: antigravity-notifier pair"
   milestone_nudge: "Già 10 notifiche. Ricevile sul telefono, con le approvazioni dalla schermata di blocco: esegui antigravity-notifier pair"
   pair_message: "Antigravity Notifier: ricevi le notifiche sul desktop. Per averle anche sul telefono, e consentire o rispondere da lì, esegui `antigravity-notifier pair` in un terminale."
@@ -194,6 +194,8 @@ hook:
   # Il server scrive titolo, testo e comando nella lingua dell'utente; qui vengono solo uniti
   nudge_message: "Antigravity Notifier: %{title} %{body} %{command}"
   needs_attention: "Richiede la tua attenzione"
+  # Shown on Antigravity's own permission prompt when a request waited for the phone and nobody answered
+  no_answer: "Nessuna risposta dal telefono"
 
 # Suggests the Claude Code Notifier app (and its ccn CLI) to someone who also uses Claude Code (crosspromo.rs).
 # "Claude Code Notifier", command and url are not translated; never name one computer platform.
@@ -320,30 +322,35 @@ update_lock:
 
 local_files:
   config_unreadable: "Impossibile leggere %{path} (%{error}), quindi antigravity-notifier non lo sovrascriverà. Correggi il file, oppure eliminalo ed esegui di nuovo `antigravity-notifier pair`."
-  slot_not_freed: "Impossibile liberare il posto di questo computer sulla licenza (%{error}). Se ha una licenza, libera il posto su antigravitynotifier.com/licence con la tua chiave."
+  slot_not_freed: "Impossibile liberare il posto di questo computer sulla licenza (%{error}). Se ha una licenza, libera il posto su %{licence_url} con la tua chiave."
   kept_dir: "Rimossi i file di antigravity-notifier da %{path}. La cartella contiene anche altri file, quindi è stata lasciata al suo posto."
   remove_binary: "antigravity-notifier è ancora installato. Per rimuoverlo: %{command}"
 
+# What the phone shows, and the desktop notification repeats, when Antigravity gives no text of its
+# own. The apps display it as sent, so it is in the computer's language.
 payload:
+  # %{tool} is Antigravity's tool name: run_command, write_file, edit_file...
   needs_permission: "%{tool} chiede un permesso"
   permission_required: "Permesso richiesto"
-  has_questions: "Codex ha delle domande"
+  has_questions: "Antigravity ha delle domande"
+  # %{prompt} is what the user asked Antigravity to do
   finished_prompt: "Finito: %{prompt}"
   question_header: "Domanda"
-  search: "Ricerca: %{pattern}"
-  # What the phone shows for an apply_patch call: no files named, one, or the first and how
-  # many more (%{count} is 1 or more)
-  apply_patch: "Applicare una patch"
+  # What the phone shows for a write_file or edit_file call
   edit_file: "Modificare %{file}"
-  edit_files: "Modificare %{file} e altri %{count}"
-  # What the phone shows for an update_plan call
-  update_plan: "Aggiornare il piano"
+  # The done card when the turn ended because something went wrong; %{error} is Antigravity's own message
+  stopped_error: "Antigravity si è fermato per un errore: %{error}"
 
+# When the server can't be reached at all (no connection, DNS, timeout). The raw error follows
+# on the next line.
 net:
   unreachable: "Impossibile raggiungere il server di Antigravity Notifier. Controlla la connessione a internet e riprova."
+  # A `antigravity-notifier doctor` line, in the same label: text style as the doctor.* lines
   doctor_unreachable: "server: impossibile raggiungere %{url}. Controlla la connessione a internet, il proxy o il firewall"
 
+# The frame around the cli.* descriptions: `antigravity-notifier --help` headings and the -h / -V flags
 clap:
+  # Headings: a word and a colon, as other command-line tools in your language write them
   usage: "Uso:"
   commands: "Comandi:"
   arguments: "Argomenti:"
@@ -352,8 +359,9 @@ clap:
   version: "Mostra la versione"
   help_command: "Mostra l'aiuto di antigravity-notifier o di uno dei suoi comandi"
   help_command_arg: "Il comando di cui mostrare l'aiuto"
+  # Printed under clap's own (English) message when a command line can't be parsed
   error_hint: "Esegui `antigravity-notifier --help` per vedere i comandi e le opzioni."
 
 # `antigravity-notifier upgrade` refused a release whose SHA256SUMS isn't signed by TouchTap
 update_signature:
-  invalid: "la firma della versione non è valida, quindi non è stato modificato nulla. Riprova più tardi o reinstalla da antigravitynotifier.com/cli"
+  invalid: "la firma della versione non è valida, quindi non è stato modificato nulla. Riprova più tardi o reinstalla da %{cli_url}"

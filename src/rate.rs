@@ -1,8 +1,8 @@
 //! A request, once per install, to rate the phone app. Asked only of someone it is working for:
-//! after the 20th request or done card answered from the phone while Codex waited, at the next
+//! after the 20th request or done card answered from the phone while Antigravity waited, at the next
 //! SessionStart that shows nothing else, and never the same day as the ccn suggestion or a licence
 //! nudge. A desktop notification whose click opens the server's /rate page (which sends the phone
-//! to its store), plus a line in Codex. `antigravity-notifier config set rate_prompt off` or
+//! to its store), plus a line in Antigravity. `antigravity-notifier config set rate_prompt off` or
 //! `ANTIGRAVITY_NOTIFIER_NO_NUDGE=1` turns it off.
 
 use rust_i18n::t;
@@ -41,7 +41,7 @@ pub fn url(platforms: &[String]) -> String {
         .map(|p| format!("&platform={p}"))
         .unwrap_or_default();
     format!(
-        "{}/rate?app=codex{platform}&ref=cli",
+        "{}/rate?app=antigravity{platform}&ref=cli",
         config::DEFAULT_SERVER_URL
     )
 }
@@ -89,7 +89,7 @@ mod tests {
 
     #[test]
     fn one_platform_goes_in_the_url_otherwise_the_page_chooses() {
-        let base = "https://ccnotifier-api.touchtap.workers.dev/rate?app=codex";
+        let base = "https://ccnotifier-api.touchtap.workers.dev/rate?app=antigravity";
         assert_eq!(url(&list(&["ios"])), format!("{base}&platform=ios&ref=cli"));
         assert_eq!(
             url(&list(&["android", "android"])),

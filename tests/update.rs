@@ -47,7 +47,7 @@ struct Sandbox {
 }
 
 impl Sandbox {
-    /// A home with antigravity-notifier's config, Codex's settings (hooks pointing at the sandbox binary) and a
+    /// A home with antigravity-notifier's config, Antigravity's hooks file (pointing at the sandbox binary) and a
     /// copy of the real antigravity-notifier at `bin/antigravity-notifier`, or at `exe_rel` when given.
     fn new(name: &str, exe_rel: &str) -> Sandbox {
         let root = std::env::temp_dir().join(format!(
@@ -55,7 +55,7 @@ impl Sandbox {
             std::process::id()
         ));
         let _ = std::fs::remove_dir_all(&root);
-        std::fs::create_dir_all(root.join("codex")).unwrap();
+        std::fs::create_dir_all(root.join("gemini/config")).unwrap();
         std::fs::create_dir_all(root.join("antigravity-notifier")).unwrap();
         let exe = root.join(exe_rel);
         std::fs::create_dir_all(exe.parent().unwrap()).unwrap();
@@ -67,11 +67,11 @@ impl Sandbox {
             "auto_update = true\n",
         )
         .unwrap();
-        let hook = format!("{} hook", exe.display());
+        let hook = format!("{} hook Stop", exe.display());
         std::fs::write(
-            root.join("codex/hooks.json"),
+            root.join("gemini/config/hooks.json"),
             format!(
-                r#"{{"hooks":{{"Stop":[{{"hooks":[{{"type":"command","command":"{hook}","timeout":700}}]}}]}}}}"#
+                r#"{{"antigravity-notifier":{{"Stop":[{{"type":"command","command":"{hook}","timeout":700}}]}}}}"#
             ),
         )
         .unwrap();
@@ -87,7 +87,7 @@ impl Sandbox {
             .args(args)
             .env("HOME", &self.root)
             .env("ANTIGRAVITY_NOTIFIER_HOME", self.root.join("antigravity-notifier"))
-            .env("CODEX_HOME", self.root.join("codex"))
+            .env("ANTIGRAVITY_NOTIFIER_GEMINI_HOME", self.root.join("gemini"))
             .env("ANTIGRAVITY_NOTIFIER_SERVER_URL", server)
             .env("ANTIGRAVITY_NOTIFIER_CREDENTIAL_STORE", "file")
             .env("ANTIGRAVITY_NOTIFIER_NOTIFY", "off")
@@ -294,12 +294,12 @@ fn replaces_the_binary_with_the_verified_release() {
     assert_eq!(text(&version.stdout).trim(), "antigravity-notifier 9.9.9");
 
     // The hooks already pointed at this path, so hooks.json was not rewritten
-    let settings = std::fs::read_to_string(sandbox.root.join("codex/hooks.json")).unwrap();
-    assert!(settings.contains(&format!("{} hook", sandbox.exe().display())));
+    let settings = std::fs::read_to_string(sandbox.root.join("gemini/config/hooks.json")).unwrap();
+    assert!(settings.contains(&format!("{} hook Stop", sandbox.exe().display())));
     assert!(
         !sandbox
             .root
-            .join("codex/hooks.json.antigravity-notifier-backup")
+            .join("gemini/config/hooks.json.antigravity-notifier-backup")
             .exists()
     );
 }

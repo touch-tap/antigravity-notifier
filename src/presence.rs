@@ -53,7 +53,7 @@ pub fn user_present(threshold: f64) -> bool {
     idle_seconds().map(|idle| idle < threshold).unwrap_or(false)
 }
 
-/// Whether a blocking hook may hold Codex for the phone, given what presence detection said.
+/// Whether a blocking hook may hold Antigravity for the phone, given what presence detection said.
 /// Unknown presence holds only when the user asked for it (`antigravity-notifier config set hold_without_presence
 /// on`, or `ANTIGRAVITY_NOTIFIER_HOLD_WITHOUT_PRESENCE=1`): typing can't release a hold that can't see typing.
 pub fn hold_allowed(idle: Option<f64>, threshold: f64, hold_without_presence: bool) -> bool {
@@ -97,7 +97,7 @@ fn run_bounded(program: &str, args: &[&str], timeout: Duration) -> Option<String
     }
 }
 
-/// True when the user is at the terminal Codex runs in: active within `threshold` seconds and,
+/// True when the user is at the terminal Antigravity runs in: active within `threshold` seconds and,
 /// on macOS, with that terminal the frontmost app. Someone typing in a browser is not at the
 /// terminal. Where the terminal can't be identified (Linux, Windows, ssh), activity alone decides.
 pub fn at_terminal(threshold: f64) -> bool {
@@ -192,7 +192,7 @@ fn macos() -> Option<f64> {
 }
 
 /// Linux: the desktop's idle time where there is one (X11 via xprintidle, GNOME's Mutter, KDE and
-/// others via the freedesktop ScreenSaver interface), and otherwise the terminal's: when Codex
+/// others via the freedesktop ScreenSaver interface), and otherwise the terminal's: when Antigravity
 /// runs over ssh, in WSL or on a console, the last keypress is the last read from its terminal.
 #[cfg(target_os = "linux")]
 fn linux() -> Option<f64> {
@@ -365,9 +365,9 @@ mod tests {
     }
 }
 
-/// Seconds since the terminal Codex runs in was last read from, which is the last keypress (as
+/// Seconds since the terminal Antigravity runs in was last read from, which is the last keypress (as
 /// `w` reports it). The hook's own stdin is a pipe, so this walks up to the first ancestor whose
-/// stdin is a terminal: Codex itself, or the shell around it. The kernel updates a
+/// stdin is a terminal: Antigravity itself, or the shell around it. The kernel updates a
 /// terminal's read time in 8-second steps, well inside the presence threshold.
 #[cfg(target_os = "linux")]
 fn terminal_idle() -> Option<f64> {

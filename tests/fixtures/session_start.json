@@ -1,0 +1,12 @@
+{
+  "hookEventName": "SessionStart",
+  "conversationId": "32fc0aec-d58e-47c7-b08c-f489e3a4644a",
+  "cwd": "/Users/dev/projects/demo",
+  "workspacePaths": [
+    "/Users/dev/projects/demo"
+  ],
+  "transcriptPath": "/Users/dev/.gemini/antigravity-cli/brain/32fc0aec-d58e-47c7-b08c-f489e3a4644a/.system_generated/logs/transcript_full.jsonl",
+  "artifactDirectoryPath": "/Users/dev/.gemini/antigravity-cli/brain/32fc0aec-d58e-47c7-b08c-f489e3a4644a",
+  "modelName": "gemini-4-hydrogen-high",
+  "lastUserInput": "Run the shell command 'echo first-step' and tell me what it printed."
+}

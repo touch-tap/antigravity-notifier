@@ -216,7 +216,7 @@ mod tests {
         "licence.yes_no",
         "licence.no_initial",
         "test.failed",
-        // "hooks" is Codex's name for the feature, kept in hooks_all of the same files
+        // "hooks" is Antigravity's name for the feature, kept in hooks_all of the same files
         "ar:doctor.hooks_error",
         "he:doctor.hooks_error",
         "es:doctor.hooks_error",
