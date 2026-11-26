@@ -21,7 +21,7 @@ rm -rf "$app"
 mkdir -p "$app/Contents/MacOS" "$app/Contents/Resources"
 lipo -create -output "$app/Contents/MacOS/antigravity-notifier-notifier" "$work/antigravity-notifier-notifier-arm64" "$work/antigravity-notifier-notifier-x86_64"
 sed "s/VERSION/$version/g" "$src/Info.plist" > "$app/Contents/Info.plist"
-# The phone apps' icon (Icon Composer file copied from the iOS app), compiled to an .icns for older
+# The Antigravity Notifier icon (Icon Composer file built from the layers in CCNotifier_Docs/assets/antigravity-icon), compiled to an .icns for older
 # macOS plus Assets.car for the light, dark and tinted looks on macOS 26 and later
 xcrun actool "$src/AppIcon.icon" --compile "$app/Contents/Resources" --platform macosx \
   --minimum-deployment-target 11.0 --app-icon AppIcon --output-partial-info-plist "$work/icon.plist" >/dev/null

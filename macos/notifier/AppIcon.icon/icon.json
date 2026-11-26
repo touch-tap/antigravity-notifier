@@ -3,8 +3,8 @@
     {
       "value": {
         "linear-gradient": [
-          "srgb:0.55686,0.40392,0.96078,1.00000",
-          "srgb:0.32157,0.18824,0.76078,1.00000"
+          "srgb:1.00000,1.00000,1.00000,1.00000",
+          "srgb:0.89020,0.91373,0.97647,1.00000"
         ],
         "orientation": {
           "start": {
@@ -22,8 +22,8 @@
       "appearance": "dark",
       "value": {
         "linear-gradient": [
-          "srgb:0.10980,0.13725,0.12941,1.00000",
-          "srgb:0.02353,0.03529,0.03137,1.00000"
+          "srgb:0.10588,0.12549,0.34510,1.00000",
+          "srgb:0.02745,0.03137,0.10980,1.00000"
         ],
         "orientation": {
           "start": {
@@ -40,25 +40,29 @@
   ],
   "groups": [
     {
-      "name": "Front banner",
+      "name": "Front",
       "layers": [
         {
-          "fill-specializations": [
-            {
-              "value": {
-                "solid": "srgb:1.00000,1.00000,1.00000,1.00000"
-              }
-            },
-            {
-              "appearance": "dark",
-              "value": {
-                "solid": "srgb:0.78824,0.72157,0.98431,1.00000"
-              }
-            }
-          ],
           "glass": true,
-          "image-name": "05-front-banner.svg",
-          "name": "05-front-banner"
+          "image-name": "06-satellite.svg",
+          "name": "06-satellite",
+          "image-name-specializations": [
+            {
+              "appearance": "tinted",
+              "value": "06-satellite-mono.svg"
+            }
+          ]
+        },
+        {
+          "glass": true,
+          "image-name": "05-ring-front.svg",
+          "name": "05-ring-front",
+          "image-name-specializations": [
+            {
+              "appearance": "tinted",
+              "value": "05-ring-front-mono.svg"
+            }
+          ]
         }
       ],
       "shadow": {
@@ -72,60 +76,54 @@
       }
     },
     {
-      "name": "Accent",
-      "layers": [
-        {
-          "fill-specializations": [
-            {
-              "value": {
-                "solid": "srgb:0.35294,0.21569,0.79216,1.00000"
-              }
-            },
-            {
-              "appearance": "dark",
-              "value": {
-                "solid": "srgb:0.04314,0.05882,0.05490,1.00000"
-              }
-            }
-          ],
-          "glass": false,
-          "image-name": "04-accent.svg",
-          "name": "04-accent"
-        }
-      ],
-      "shadow": {
-        "kind": "none",
-        "opacity": 0
-      },
-      "specular": false,
-      "translucency": {
-        "enabled": false,
-        "value": 0.5
-      },
-      "hidden-specializations": [
-        {
-          "appearance": "tinted",
-          "value": true
-        }
-      ]
-    },
-    {
-      "name": "Back banners",
+      "name": "Planet",
       "layers": [
         {
           "glass": true,
-          "image-name": "03-back-banner-near.svg",
-          "name": "03-back-banner-near"
+          "image-name": "04-prompt.svg",
+          "name": "04-prompt"
         },
         {
           "glass": true,
-          "image-name": "02-back-banner-far.svg",
-          "name": "02-back-banner-far"
+          "image-name": "03-planet.svg",
+          "name": "03-planet",
+          "image-name-specializations": [
+            {
+              "appearance": "tinted",
+              "value": "03-planet-mono.svg"
+            }
+          ]
         }
       ],
       "shadow": {
         "kind": "neutral",
         "opacity": 0.5
+      },
+      "specular": true,
+      "translucency": {
+        "enabled": true,
+        "value": 0.4
+      }
+    },
+    {
+      "name": "Back",
+      "layers": [
+        {
+          "glass": true,
+          "image-name": "02-ring-back.svg",
+          "name": "02-ring-back",
+          "image-name-specializations": [
+            {
+              "appearance": "tinted",
+              "value": "02-ring-back-mono.svg"
+            }
+          ],
+          "opacity": 0.6
+        }
+      ],
+      "shadow": {
+        "kind": "neutral",
+        "opacity": 0.3
       },
       "specular": true,
       "translucency": {
