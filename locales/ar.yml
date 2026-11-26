@@ -210,6 +210,12 @@ cross_promo:
   pair_scan: "امسح الرمز لتحصل على التطبيق، ثم جهّز هذا الكمبيوتر بأمر واحد:"
   pair_steps: "احصل على التطبيق، ثم جهّز هذا الكمبيوتر بأمر واحد:"
 
+# The push when a tool call that was allowed with the user at the keyboard is still open after
+# they walked away (walkaway.rs). %{summary} is the command or file; it can't be approved from the phone.
+walkaway:
+  title: "قد يكون Antigravity بانتظارك"
+  body: "لم ينتهِ %{summary} بعد. إن كان يحتاج إلى موافقة، فذلك على حاسوبك."
+
 # Asks once, after 20 answers from the phone, for an app-store rating (rate.rs). url is not translated.
 rate:
   notification: "هل يعجبك Antigravity Notifier؟ تقييم سريع يساعد مطورين آخرين على العثور عليه."

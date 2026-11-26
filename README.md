@@ -122,6 +122,19 @@ docs in places:
   `antigravity-notifier config set phone_approvals all` also holds file writes and edits and
   other tools that change something (Antigravity's Auto mode makes those without asking, so by
   default they don't wait); `off` turns approvals off.
+- **Presence.** "At the keyboard" is input within the threshold (30 s by default) on a screen
+  that is not locked: a locked screen is away at once (macOS `IOConsoleLocked`, Linux logind's
+  `LockedHint`; Windows and a display that merely sleeps are not detected, and "can't tell" is
+  never treated as away). A hold ends early only on real input made after it began.
+- **Walking away from a prompt.** With the user present the hook answers `allow`, and
+  Antigravity may then show its own approval prompt; if the user leaves, nothing would tell the
+  phone, and Antigravity has no event for "waiting for approval". So for a call that would have
+  waited for the phone, the hook starts a detached watcher (`src/walkaway.rs`). It ends
+  silently when the call's `PostToolUse` arrives, the model is invoked again, or the turn
+  stops, and after 15 minutes at most. If the user goes away while the call is still open, it
+  waits 20 s and sends one note: "Antigravity may be waiting for you: <command> hasn't
+  finished. If it needs approval, that's at your computer." It has no buttons, since the hook
+  has already answered. `antigravity-notifier config set walkaway_alerts off` turns it off.
 - **Print mode is never held.** In `agy -p` nobody can answer a local prompt, and `force_ask` is
   answered with a denial, so a script would stall and then fail. The hook finds `agy -p` among
   its parent processes and sends cards as notes instead (`ANTIGRAVITY_NOTIFIER_HEADLESS=0|1`
@@ -157,7 +170,7 @@ Settings: `notify_on_done`, `notify_on_permission`, `notify_on_question`, `quiet
 `quiet_when_present` (default on), `hold_ceiling_seconds` (30–3600, default 600),
 `presence_threshold_seconds` (default 30), `stop_hold_seconds` (0–600, default 120), `sound`, and
 the local-only `desktop_notifications`, `credential_store` (`keychain` or `file`), `auto_update`,
-`pair_nudges`, `phone_approvals` (`commands` by default, `all` or `off`: which tool calls wait
+`pair_nudges`, `walkaway_alerts` (default on), `phone_approvals` (`commands` by default, `all` or `off`: which tool calls wait
 for the phone), `hold_without_presence` (hold for the phone even where presence can't be read) and
 `cross_promo` (default on: someone who also uses Claude Code, without
 [ccn](https://claudecodenotifier.com) installed, hears about the Claude Code Notifier app and its
@@ -168,7 +181,7 @@ after 20 answers from the phone, a desktop notification asks for an app-store ra
 ## Files
 
 - `~/.config/antigravity-notifier/` (`%APPDATA%\antigravity-notifier\` on Windows, or `$ANTIGRAVITY_NOTIFIER_HOME`):
-  `config.toml`, `sessions/`, `antigravity-notifier.log`
+  `config.toml`, `sessions/`, `watch/`, `antigravity-notifier.log`
 - The computer's token: the macOS keychain or Windows Credential Manager (item
   `com.touchtap.antigravitynotifier`), or `credentials` in the folder above (mode 0600) on Linux, or
   wherever `credential_store` says.

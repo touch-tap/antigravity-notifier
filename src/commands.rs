@@ -920,6 +920,10 @@ pub fn config_show() -> Result<()> {
         cfg.phone_approvals
     );
     println!(
+        "walkaway_alerts            {} {local_only}",
+        if cfg.walkaway_alerts { "on" } else { "off" }
+    );
+    println!(
         "auto_update                {} {local_only}",
         if cfg.auto_update { "on" } else { "off" }
     );
@@ -976,6 +980,14 @@ pub fn config_set(key: &str, value: &str) -> Result<()> {
     }
     if key == "rate_prompt" {
         cfg.rate_prompt = matches!(
+            value.to_ascii_lowercase().as_str(),
+            "on" | "true" | "yes" | "1"
+        );
+        cfg.save()?;
+        return config_show();
+    }
+    if key == "walkaway_alerts" {
+        cfg.walkaway_alerts = matches!(
             value.to_ascii_lowercase().as_str(),
             "on" | "true" | "yes" | "1"
         );

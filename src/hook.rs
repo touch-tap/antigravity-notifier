@@ -32,7 +32,7 @@ use crate::config::{self, Config, Unpaired};
 use crate::logger::log;
 use crate::payload::{self, Input, ToolClass};
 use crate::session::{self, Card, SessionState};
-use crate::{hookcfg, live, local, notify, presence, respond, transcript};
+use crate::{hookcfg, live, local, notify, presence, respond, transcript, walkaway};
 
 const EVENT_TIMEOUT: Duration = Duration::from_secs(3);
 const QUICK_TIMEOUT: Duration = Duration::from_secs(2);
@@ -493,6 +493,16 @@ fn run_inner(event: Option<&'static str>, input: Value) -> Result<Option<Value>>
     let mut cfg = Config::load();
     let mut state = SessionState::load(&session_id);
     state.touch(&input);
+    // The walk-away watcher's note, whatever state the pairing is in: once the model is invoked
+    // again, the turn stops or the call's result arrives, there is nothing left to watch
+    match event {
+        "PreInvocation" | "Stop" => walkaway::clear(&session_id),
+        "PostToolUse" => walkaway::finished(
+            &session_id,
+            input["toolCall"]["id"].as_str().unwrap_or_default(),
+        ),
+        _ => {}
+    }
     // Once a day, start a detached look for a newer antigravity-notifier; the hook itself never waits on it
     let update_message = if event == "SessionStart" {
         crate::update::daily_check(&mut cfg)
@@ -870,11 +880,30 @@ impl Ctx {
             }
             // Nobody answered: Antigravity's own prompt takes over, saying why
             Ok(Hold::Unanswered) => Ok(respond::force_ask()),
-            Ok(Hold::NotHeld) => Ok(respond::allow()),
+            Ok(Hold::NotHeld) => {
+                // The answer goes out before anything else is looked at
+                let answer = respond::allow();
+                emit(&answer);
+                self.watch_for_walking_away();
+                Ok(answer)
+            }
             Err(err) => {
                 log(&format!("approval card not sent: {err:#}"));
                 Ok(respond::allow())
             }
+        }
+    }
+
+    /// A tool call that would have waited for the phone was allowed because the user is at the
+    /// keyboard. Antigravity may now be showing them its own prompt; if they walk away from
+    /// it, the watcher tells the phone (walkaway.rs). Runs after the hook has answered.
+    fn watch_for_walking_away(&self) {
+        let threshold = self.cfg.settings.presence_threshold();
+        // Only when the user is known to be here: unknown presence can't be watched, an away
+        // user got (or was refused) a card, and print mode shows no prompt to anyone
+        let present = presence::idle_seconds().is_some_and(|idle| idle < threshold);
+        if present && walkaway::wanted(&self.cfg) && !self.quiet() && !headless() {
+            walkaway::start(&self.input);
         }
     }
 

@@ -209,6 +209,12 @@ cross_promo:
   pair_scan: "Uygulamayı almak için tarayın, ardından bu bilgisayarı tek komutla kurun:"
   pair_steps: "Uygulamayı indirin, ardından bu bilgisayarı tek komutla kurun:"
 
+# The push when a tool call that was allowed with the user at the keyboard is still open after
+# they walked away (walkaway.rs). %{summary} is the command or file; it can't be approved from the phone.
+walkaway:
+  title: "Antigravity sizi bekliyor olabilir"
+  body: "%{summary} henüz bitmedi. Onay gerekiyorsa, bilgisayarınızda bekliyor."
+
 # Asks once, after 20 answers from the phone, for an app-store rating (rate.rs). url is not translated.
 rate:
   notification: "Antigravity Notifier'i beğendiniz mi? Kısa bir puan, diğer geliştiricilerin onu bulmasına yardımcı olur."

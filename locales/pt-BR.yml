@@ -206,6 +206,12 @@ cross_promo:
   pair_scan: "Escaneie para baixar o app e depois configure este computador com um só comando:"
   pair_steps: "Baixe o app e depois configure este computador com um só comando:"
 
+# The push when a tool call that was allowed with the user at the keyboard is still open after
+# they walked away (walkaway.rs). %{summary} is the command or file; it can't be approved from the phone.
+walkaway:
+  title: "O Antigravity pode estar esperando por você"
+  body: "%{summary} ainda não terminou. Se precisar de aprovação, ela está no seu computador."
+
 # Asks once, after 20 answers from the phone, for an app-store rating (rate.rs). url is not translated.
 rate:
   notification: "Está gostando do Antigravity Notifier? Uma avaliação rápida ajuda outros desenvolvedores a encontrá-lo."

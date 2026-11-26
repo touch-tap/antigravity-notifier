@@ -209,6 +209,12 @@ cross_promo:
   pair_scan: "Quét để tải ứng dụng, rồi thiết lập máy tính này bằng một lệnh:"
   pair_steps: "Tải ứng dụng, rồi thiết lập máy tính này bằng một lệnh:"
 
+# The push when a tool call that was allowed with the user at the keyboard is still open after
+# they walked away (walkaway.rs). %{summary} is the command or file; it can't be approved from the phone.
+walkaway:
+  title: "Antigravity có thể đang chờ bạn"
+  body: "%{summary} chưa xong. Nếu cần phê duyệt, hãy thao tác trên máy tính của bạn."
+
 # Asks once, after 20 answers from the phone, for an app-store rating (rate.rs). url is not translated.
 rate:
   notification: "Bạn thích Antigravity Notifier? Một đánh giá nhanh giúp các nhà phát triển khác tìm thấy ứng dụng."

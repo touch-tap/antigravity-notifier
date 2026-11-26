@@ -89,6 +89,32 @@ out=$(tool run_command '{"CommandLine":"rm -rf build","toolSummary":"Remove the 
 took=$(( $(date +%s) - start ))
 [ "$out" = '{"decision":"allow"}' ] && [ $took -lt 5 ] && ok "allow in ${took}s" || bad "output '$out' in ${took}s"
 
+echo "== walk-away: allowed with the user present, then they leave while the call is still open"
+# A debug build lets the watcher's clock be shortened: look every 0.2 s, alert after 1.5 s away
+WATCH=$S/presence; echo present > $WATCH
+hasnt() { phone "$SERVER/api/notifications" | grep -c "sleep 300 hasn't finished"; }
+out=$(tool run_command '{"CommandLine":"sleep 300"}' callw | ANTIGRAVITY_NOTIFIER_PRESENCE=file:$WATCH ANTIGRAVITY_NOTIFIER_TEST_WATCH_MS=200,1500,60000 $B hook PreToolUse)
+[ "$out" = '{"decision":"allow"}' ] && ok "allow" || bad "output: $out"
+[ -e $ANTIGRAVITY_NOTIFIER_HOME/watch/c1.json ] && ok "watcher has its note" || bad "no note"
+sleep 2; [ "$(hasnt)" = 0 ] && ok "nothing sent while the user is there" || bad "sent too early"
+echo away > $WATCH
+for i in $(seq 1 20); do [ "$(hasnt)" != 0 ] && break; sleep 0.5; done
+[ "$(hasnt)" != 0 ] && ok "one note reached the phone after the grace" || bad "no walk-away note on the server"
+sleep 3
+n=$(phone "$SERVER/api/notifications" | python3 -c 'import sys,json
+d=json.load(sys.stdin)
+print(sum(1 for m in d.get("macs",[]) for n in m.get("notifications",[]) if "sleep 300 hasn" in json.dumps(n) and not n.get("supportsRemoteInput")))')
+[ "$n" = 1 ] && ok "exactly one, and it can't be answered from the phone" || bad "$n walk-away notes"
+[ ! -e $ANTIGRAVITY_NOTIFIER_HOME/watch/c1.json ] && ok "the note is gone" || bad "note left"
+
+echo "== walk-away: the call finishes first, so leaving sends nothing"
+echo present > $WATCH
+out=$(tool run_command '{"CommandLine":"sleep 301"}' callx | ANTIGRAVITY_NOTIFIER_PRESENCE=file:$WATCH ANTIGRAVITY_NOTIFIER_TEST_WATCH_MS=200,1500,60000 $B hook PreToolUse)
+printf '{%s,"stepIdx":2,"error":"","toolCall":{"name":"run_command","args":{"CommandLine":"sleep 301"},"id":"callx"}}' "$(base PostToolUse)" | hook PostToolUse >/dev/null
+[ ! -e $ANTIGRAVITY_NOTIFIER_HOME/watch/c1.json ] && ok "PostToolUse ended the watch" || bad "note left"
+echo away > $WATCH; sleep 4
+[ "$(phone "$SERVER/api/notifications" | grep -c "sleep 301 hasn't finished")" = 0 ] && ok "nothing sent" || bad "sent after the call finished"
+
 echo "== PreToolUse read_file, user away: never held"
 out=$(tool read_file "{\"Path\":\"$S/proj/a.ts\"}" call2 | PRESENCE=away hook PreToolUse)
 [ "$out" = '{"decision":"allow"}' ] && ok "allow" || bad "output: $out"

@@ -206,6 +206,12 @@ cross_promo:
   pair_scan: "掃描以取得應用程式，然後用一個指令設定這台電腦："
   pair_steps: "取得應用程式，然後用一個指令設定這台電腦："
 
+# The push when a tool call that was allowed with the user at the keyboard is still open after
+# they walked away (walkaway.rs). %{summary} is the command or file; it can't be approved from the phone.
+walkaway:
+  title: "Antigravity 可能正在等你"
+  body: "%{summary} 尚未完成。如果需要核准，請在電腦上操作。"
+
 # Asks once, after 20 answers from the phone, for an app-store rating (rate.rs). url is not translated.
 rate:
   notification: "喜歡 Antigravity Notifier 嗎？給個評分，能幫其他開發者找到它。"

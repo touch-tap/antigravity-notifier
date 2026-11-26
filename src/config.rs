@@ -330,6 +330,11 @@ pub struct Config {
     /// or `off` (`antigravity-notifier config set phone_approvals all`). Questions and done cards
     /// are not affected.
     pub phone_approvals: String,
+    /// Whether to tell the phone when a tool call that was allowed with the user at the
+    /// keyboard is still open after they have walked away, since it may be waiting at
+    /// Antigravity's own prompt (`antigravity-notifier config set walkaway_alerts off`; default
+    /// on). See walkaway.rs.
+    pub walkaway_alerts: bool,
     /// Whether to mention ccn, the Claude Code notifier, to someone who also uses Claude Code
     /// (`antigravity-notifier config set cross_promo off`; default on). Its cadence is in crosspromo.rs.
     pub cross_promo: bool,
@@ -386,6 +391,7 @@ impl Default for Config {
             update_announced_at: None,
             hold_without_presence: false,
             phone_approvals: "commands".to_string(),
+            walkaway_alerts: true,
             cross_promo: true,
             cross_promo_last_at: None,
             cross_promo_count: 0,
@@ -836,6 +842,7 @@ pub fn remove_local_files() -> bool {
         let _ = fs::remove_file(dir.join(name));
     }
     crate::session::remove_all();
+    crate::walkaway::remove_all();
     let app = format!("{}.app", crate::notify::APP_NAME);
     // notify.rs builds the app as "<name>.tmp-<pid>" beside it, then renames it into place
     let app_tmp = format!("{}.tmp-", crate::notify::APP_NAME);

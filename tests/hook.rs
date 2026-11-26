@@ -310,3 +310,291 @@ fn a_whole_turn_keeps_its_state_and_stop_reads_the_transcript() {
     let log = std::fs::read_to_string(sandbox.root.join("home/antigravity-notifier.log")).unwrap();
     assert!(log.contains("not paired yet"), "{log}");
 }
+
+// ============================================
+// The walk-away watcher
+// ============================================
+
+use std::io::Read;
+use std::net::TcpListener;
+use std::sync::{Arc, Mutex};
+
+/// A server that accepts every event and keeps what it was sent.
+struct Recorder {
+    url: String,
+    bodies: Arc<Mutex<Vec<String>>>,
+}
+
+impl Recorder {
+    fn start() -> Recorder {
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        let url = format!("http://{}", listener.local_addr().unwrap());
+        let bodies = Arc::new(Mutex::new(Vec::new()));
+        let seen = bodies.clone();
+        std::thread::spawn(move || {
+            for stream in listener.incoming() {
+                let Ok(mut stream) = stream else { continue };
+                let request = read_request(&mut stream);
+                seen.lock().unwrap().push(request);
+                let body = r#"{"notificationId":"n1"}"#;
+                let reply = format!(
+                    "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{body}",
+                    body.len()
+                );
+                let _ = stream.write_all(reply.as_bytes());
+                let _ = stream.shutdown(std::net::Shutdown::Write);
+            }
+        });
+        Recorder { url, bodies }
+    }
+
+    /// The walk-away pushes received so far
+    fn alerts(&self) -> Vec<String> {
+        self.bodies
+            .lock()
+            .unwrap()
+            .iter()
+            .filter(|request| request.contains("may be waiting for you"))
+            .cloned()
+            .collect()
+    }
+
+    /// Waits until `count` alerts have arrived, or `within` has passed
+    fn wait_for_alerts(&self, count: usize, within: Duration) -> usize {
+        let deadline = Instant::now() + within;
+        while self.alerts().len() < count && Instant::now() < deadline {
+            std::thread::sleep(Duration::from_millis(25));
+        }
+        self.alerts().len()
+    }
+}
+
+fn read_request(stream: &mut std::net::TcpStream) -> String {
+    let mut data = Vec::new();
+    let mut chunk = [0u8; 4096];
+    loop {
+        let text = String::from_utf8_lossy(&data).to_string();
+        if let Some(end) = text.find("\r\n\r\n") {
+            let length = text[..end]
+                .lines()
+                .find_map(|line| {
+                    let (name, value) = line.split_once(':')?;
+                    name.eq_ignore_ascii_case("content-length")
+                        .then(|| value.trim().parse::<usize>().ok())?
+                })
+                .unwrap_or(0);
+            if data.len() >= end + 4 + length {
+                return text;
+            }
+        }
+        match stream.read(&mut chunk) {
+            Ok(0) | Err(_) => return String::from_utf8_lossy(&data).to_string(),
+            Ok(n) => data.extend_from_slice(&chunk[..n]),
+        }
+    }
+}
+
+/// A paired computer whose presence a test can change while the watcher runs, with the
+/// watcher's clock shortened: it looks every 40 ms and alerts after 400 ms away.
+struct Watched {
+    sandbox: Sandbox,
+    server: Recorder,
+    presence: PathBuf,
+}
+
+impl Watched {
+    fn new(name: &str) -> Watched {
+        let server = Recorder::start();
+        let sandbox = Sandbox::paired(name, &server.url);
+        let presence = sandbox.root.join("presence");
+        std::fs::write(&presence, "present").unwrap();
+        let sandbox = sandbox
+            .with("ANTIGRAVITY_NOTIFIER_PRESENCE", &format!("file:{}", presence.display()))
+            .with("ANTIGRAVITY_NOTIFIER_TEST_WATCH_MS", "40,400,20000");
+        Watched { sandbox, server, presence }
+    }
+
+    fn user_is(&self, state: &str) {
+        std::fs::write(&self.presence, state).unwrap();
+    }
+
+    fn note(&self) -> PathBuf {
+        self.sandbox
+            .root
+            .join("home/watch/32fc0aec-d58e-47c7-b08c-f489e3a4644a.json")
+    }
+
+    /// PreToolUse for `run_command` with this command and call id: allowed at once
+    fn tool_call(&self, command: &str, id: &str) {
+        let mut input: Value = serde_json::from_str(RUN_COMMAND).unwrap();
+        input["toolCall"]["args"]["CommandLine"] = json!(command);
+        input["toolCall"]["id"] = json!(id);
+        let started = Instant::now();
+        let output = self.sandbox.hook(&["PreToolUse"], input.to_string().as_bytes());
+        assert_eq!(answer(&output), allow());
+        assert!(started.elapsed() < Duration::from_secs(5), "{:?}", started.elapsed());
+    }
+
+    fn tool_result(&self, id: &str) {
+        let mut input: Value = serde_json::from_str(RUN_COMMAND).unwrap();
+        input["hookEventName"] = json!("PostToolUse");
+        input["error"] = json!("");
+        input["toolCall"]["id"] = json!(id);
+        assert_eq!(
+            answer(&self.sandbox.hook(&["PostToolUse"], input.to_string().as_bytes())),
+            json!({})
+        );
+    }
+
+    /// Long enough for the watcher to have alerted several times over, had it meant to
+    fn settle(&self) {
+        std::thread::sleep(Duration::from_millis(1200));
+    }
+}
+
+#[test]
+fn the_watcher_ends_when_the_tool_call_finishes() {
+    let w = Watched::new("watch-finished");
+    w.tool_call("npm publish", "call_a");
+    assert!(w.note().exists(), "the hook left a note for the watcher");
+    // A result for some other call changes nothing; this call's result ends the watch
+    w.tool_result("call_other");
+    assert!(w.note().exists());
+    w.tool_result("call_a");
+    assert!(!w.note().exists());
+    w.user_is("away");
+    w.settle();
+    assert_eq!(w.server.alerts().len(), 0);
+}
+
+#[test]
+fn the_watcher_ends_on_the_next_invocation_and_on_stop() {
+    for (event, input) in [("PreInvocation", PRE_INVOCATION), ("Stop", STOP)] {
+        let w = Watched::new(&format!("watch-{event}"));
+        w.tool_call("npm publish", "call_a");
+        assert!(w.note().exists());
+        assert_eq!(answer(&w.sandbox.hook(&[event], input.as_bytes())), json!({}));
+        assert!(!w.note().exists(), "{event}");
+        w.user_is("away");
+        w.settle();
+        assert_eq!(w.server.alerts().len(), 0, "{event}");
+    }
+}
+
+#[test]
+fn walking_away_from_an_open_call_sends_one_push_after_the_grace() {
+    let w = Watched::new("watch-alert");
+    w.tool_call("npm publish", "call_a");
+    // Still there: nothing, however long the command takes
+    w.settle();
+    assert_eq!(w.server.alerts().len(), 0);
+    let left_at = Instant::now();
+    w.user_is("away");
+    assert_eq!(w.server.wait_for_alerts(1, Duration::from_secs(10)), 1);
+    assert!(left_at.elapsed() >= Duration::from_millis(400), "not before the grace");
+    let alert = &w.server.alerts()[0];
+    assert!(alert.contains("npm publish hasn't finished. If it needs approval, that's at your computer."), "{alert}");
+    let body: Value = serde_json::from_str(alert.split_once("\r\n\r\n").unwrap().1).unwrap();
+    assert_eq!(body["terminalContext"]["supportsRemoteInput"], false);
+    assert_eq!(body["message"], "Antigravity may be waiting for you");
+    assert_eq!(body["title"], "Antigravity - demo");
+    assert!(body.get("options").is_none() && body.get("promptType").is_none(), "no buttons: {body}");
+    assert!(alert.to_ascii_lowercase().contains("x-app: antigravity"), "{alert}");
+    // Never a second one for the same call, and the note is gone
+    w.settle();
+    assert_eq!(w.server.alerts().len(), 1);
+    assert!(!w.note().exists());
+    // Its late result is harmless
+    w.tool_result("call_a");
+    assert_eq!(w.server.alerts().len(), 1);
+}
+
+#[test]
+fn a_locked_screen_counts_as_walking_away() {
+    let w = Watched::new("watch-locked");
+    w.tool_call("npm publish", "call_a");
+    w.user_is("locked");
+    assert_eq!(w.server.wait_for_alerts(1, Duration::from_secs(10)), 1);
+}
+
+#[test]
+fn coming_back_within_the_grace_sends_nothing() {
+    let w = Watched::new("watch-back");
+    w.tool_call("npm publish", "call_a");
+    w.user_is("away");
+    std::thread::sleep(Duration::from_millis(150));
+    w.user_is("present");
+    w.settle();
+    assert_eq!(w.server.alerts().len(), 0);
+    assert!(w.note().exists(), "still watching");
+    // Presence that can't be read is not "away" either
+    w.user_is("unknown");
+    w.settle();
+    assert_eq!(w.server.alerts().len(), 0);
+    // Away for good: the grace starts again from here
+    w.user_is("away");
+    assert_eq!(w.server.wait_for_alerts(1, Duration::from_secs(10)), 1);
+}
+
+#[test]
+fn a_newer_call_replaces_the_watch_and_only_it_can_alert() {
+    let w = Watched::new("watch-replaced");
+    w.tool_call("npm test", "call_a");
+    w.tool_call("npm publish", "call_b");
+    // The first call's result no longer matters
+    w.tool_result("call_a");
+    assert!(w.note().exists());
+    w.user_is("away");
+    assert_eq!(w.server.wait_for_alerts(1, Duration::from_secs(10)), 1);
+    w.settle();
+    let alerts = w.server.alerts();
+    assert_eq!(alerts.len(), 1, "one watcher, one push");
+    assert!(alerts[0].contains("npm publish hasn't finished"), "{}", alerts[0]);
+}
+
+#[test]
+fn nothing_is_watched_when_it_should_not_be() {
+    // Turned off
+    let off = Watched::new("watch-off");
+    let config = off.sandbox.root.join("home/config.toml");
+    let text = std::fs::read_to_string(&config).unwrap();
+    std::fs::write(&config, format!("walkaway_alerts = false\n{text}")).unwrap();
+    off.tool_call("npm publish", "call_a");
+    assert!(!off.note().exists());
+
+    // A file edit doesn't wait for the phone by default, so it isn't watched either
+    let edit = Watched::new("watch-edit");
+    let mut input: Value = serde_json::from_str(WRITE_FILE).unwrap();
+    input["conversationId"] = json!("32fc0aec-d58e-47c7-b08c-f489e3a4644a");
+    assert_eq!(answer(&edit.sandbox.hook(&["PreToolUse"], input.to_string().as_bytes())), allow());
+    assert!(!edit.note().exists());
+
+    // Presence unknown: there would be no telling when they left
+    let unknown = Watched::new("watch-unknown");
+    unknown.user_is("unknown");
+    unknown.tool_call("npm publish", "call_a");
+    assert!(!unknown.note().exists());
+
+    // `agy -p`: nobody is shown a prompt
+    let headless = Watched::new("watch-headless");
+    let headless = Watched {
+        sandbox: headless.sandbox.with("ANTIGRAVITY_NOTIFIER_HEADLESS", "1"),
+        server: headless.server,
+        presence: headless.presence,
+    };
+    headless.tool_call("npm publish", "call_a");
+    assert!(!headless.note().exists());
+
+    // Not paired
+    let unpaired = Sandbox::new("watch-unpaired");
+    assert_eq!(answer(&unpaired.hook(&["PreToolUse"], RUN_COMMAND.as_bytes())), allow());
+    assert!(!unpaired.root.join("home/watch").exists());
+
+    for w in [&off, &edit, &unknown, &headless] {
+        w.user_is("away");
+    }
+    off.settle();
+    for w in [&off, &edit, &unknown, &headless] {
+        assert_eq!(w.server.alerts().len(), 0);
+    }
+}

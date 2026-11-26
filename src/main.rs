@@ -26,6 +26,7 @@ mod session;
 mod telemetry;
 mod transcript;
 mod update;
+mod walkaway;
 
 use clap::{Arg, ArgAction, CommandFactory, FromArgMatches, Parser, Subcommand};
 use rust_i18n::t;
@@ -119,6 +120,9 @@ enum Command {
         #[arg(trailing_var_arg = true, allow_hyphen_values = true)]
         args: Vec<String>,
     },
+    // The walk-away watcher, started detached by a PreToolUse hook (walkaway.rs)
+    #[command(hide = true)]
+    Watch { conversation: String, token: String },
     // Sends one anonymous event, started detached by telemetry::event_detached
     #[command(hide = true)]
     Telemetry {
@@ -164,6 +168,13 @@ fn main() {
     let result = match command {
         Command::Hook { args } => {
             hook::main(args.into_iter().next());
+            Ok(())
+        }
+        Command::Watch {
+            conversation,
+            token,
+        } => {
+            walkaway::run(&conversation, &token);
             Ok(())
         }
         Command::Telemetry { name, properties } => {
