@@ -2,8 +2,7 @@
 
 Ported from ccn's RELEASING.md; the machinery is the same with the names changed. The command,
 binary, archives, Homebrew formula, Scoop manifest and winget alias are all `antigravity-notifier`; on npm
-it is `@touchtap/antigravity-notifier` only (npm refused an unscoped `antigravitynotifier` alias as too close to
-the unrelated `antigravity-notifier` package).
+it is `@touchtap/antigravity-notifier` only, as for codex-notifier (whose unscoped alias npm refused).
 
 1. Bump `version` in `Cargo.toml` (and run `cargo build` so `Cargo.lock` follows), commit, push.
 2. On the release Mac, `scripts/release.sh 0.2.0`. It signs and notarizes the macOS notifier app,
@@ -58,11 +57,9 @@ release installs and that a tampered or swapped `SHA256SUMS`, or a missing signa
 `SHA256SUMS` by a key in `RELEASE_KEYS` (src/update.rs). The private key lives only in the release
 Mac's login keychain as the generic password `antigravitynotifier-release-signing` (account `touchtap`),
 and `scripts/release.sh` refuses to start without it or if its public half isn't in `RELEASE_KEYS`.
-**No key exists yet (26 Nov 2026) and `RELEASE_KEYS` is empty**, so a release build never
-updates itself and the daily check is off. Before the first release: create a key with `cargo run
---release --example release-sign -- keygen`, store the private half as below, and list the public
-half in `RELEASE_KEYS`. It must be a new key, not ccn's or codex-notifier's: a shared key would
-let a release signed for one product install as another.
+It was created on 26 Nov 2026 with `cargo run --release --example release-sign -- keygen`; public key
+`82c67760427ba196edad705eec52fd9270d2b8694f20f2aa8041bc688dedcbaa`. It is separate from ccn's and
+codex-notifier's keys: a shared key would let a release signed for one product install as another.
 
 Keep a copy in the company password manager: without it no later release can be signed and every
 installed antigravity-notifier would stop updating itself. To copy it:

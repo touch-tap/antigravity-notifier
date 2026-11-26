@@ -59,15 +59,12 @@ const PROBE_TIMEOUT: Duration = Duration::from_secs(10);
 /// anyone who could change the release's files on GitHub. To rotate, ship a release that lists
 /// both keys, then sign with the new one.
 ///
-/// EMPTY until Antigravity Notifier has a signing key of its own (make one with `cargo run
-/// --release --example release-sign -- keygen`, keep the private half in the release Mac's login
-/// keychain as `antigravitynotifier-release-signing`, and list the public half here: RELEASING.md,
-/// "The update signing key"). While it is empty a release build verifies nothing, so it never
-/// updates itself and the daily check is off (`auto_update_enabled`). The keys of ccn and
-/// codex-notifier are deliberately not here: trusting one would let anything signed for that
-/// product install as antigravity-notifier. Debug builds also trust
+/// Antigravity Notifier's own key, made 26 Nov 2026; the private half is in the release Mac's
+/// login keychain as `antigravitynotifier-release-signing` (RELEASING.md, "The update signing
+/// key"). The keys of ccn and codex-notifier are deliberately not here: trusting one would let
+/// anything signed for that product install as antigravity-notifier. Debug builds also trust
 /// `ANTIGRAVITY_NOTIFIER_UPDATE_PUBLIC_KEY`, which is how the tests sign their releases.
-const RELEASE_KEYS: &[&str] = &[];
+const RELEASE_KEYS: &[&str] = &["82c67760427ba196edad705eec52fd9270d2b8694f20f2aa8041bc688dedcbaa"];
 
 pub struct Mode {
     /// Only report whether a newer release exists
@@ -956,9 +953,11 @@ mod signature_tests {
 
     #[test]
     fn the_built_in_release_keys_are_valid_public_keys() {
-        // Empty for now (no signing key yet), which turns self-update off; any key listed
-        // later must be a real one
+        // At least one, or self-update and the daily check are off; never ccn's (9af03746…) or
+        // codex-notifier's (eeb6e55b…)
+        assert!(!RELEASE_KEYS.is_empty());
         for key in RELEASE_KEYS {
+            assert!(!key.starts_with("9af03746") && !key.starts_with("eeb6e55b"), "{key}");
             let bytes = unhex::<32>(key).expect("64 hex characters");
             assert!(ed25519_dalek::VerifyingKey::from_bytes(&bytes).is_ok());
         }
