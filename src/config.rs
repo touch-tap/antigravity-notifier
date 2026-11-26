@@ -499,10 +499,10 @@ fn merge_changes(on_disk: &mut toml::Table, was: &toml::Table, now: &toml::Table
     }
 }
 
-/// The server to talk to for a saved `server_url`: empty means the default; anything else (a
-/// staging or local server, or the same Worker under another name) is kept.
+/// The server to talk to for a saved `server_url`: empty, or the Worker's own workers.dev
+/// address, means the default; anything else (a staging or local server) is kept.
 fn effective_server_url(saved: &str) -> String {
-    if saved.is_empty() {
+    if saved.is_empty() || saved.trim_end_matches('/') == crate::brand::WORKERS_DEV_URL {
         DEFAULT_SERVER_URL.to_string()
     } else {
         saved.to_string()
@@ -1165,6 +1165,13 @@ mod write_tests {
     #[test]
     fn an_empty_server_url_reads_as_the_default() {
         assert_eq!(effective_server_url(""), DEFAULT_SERVER_URL);
+        assert_eq!(DEFAULT_SERVER_URL, "https://api.antigravitynotifier.com");
+        for workers_dev in [
+            "https://ccnotifier-api.touchtap.workers.dev",
+            "https://ccnotifier-api.touchtap.workers.dev/",
+        ] {
+            assert_eq!(effective_server_url(workers_dev), DEFAULT_SERVER_URL);
+        }
         assert_eq!(
             effective_server_url("https://api.claudecodenotifier.com"),
             "https://api.claudecodenotifier.com"

@@ -89,7 +89,7 @@ mod tests {
 
     #[test]
     fn one_platform_goes_in_the_url_otherwise_the_page_chooses() {
-        let base = "https://ccnotifier-api.touchtap.workers.dev/rate?app=antigravity";
+        let base = "https://api.antigravitynotifier.com/rate?app=antigravity";
         assert_eq!(url(&list(&["ios"])), format!("{base}&platform=ios&ref=cli"));
         assert_eq!(
             url(&list(&["android", "android"])),

@@ -1,19 +1,21 @@
-//! Every name and address that belongs to the Antigravity Notifier brand, in one place. Several
-//! are placeholders until the product launches: the list in README.md ("Before a release") says
-//! which. The install scripts, package manifests and locale files carry their own copies of the
-//! website address (grep for `antigravitynotifier.com`).
+//! Every name and address that belongs to the Antigravity Notifier brand, in one place. The
+//! install scripts, package manifests and locale files carry their own copies of the website
+//! address (grep for `antigravitynotifier.com`).
 
-/// The shared Worker that also serves Claude Code Notifier and Notifier for Codex.
-/// PLACEHOLDER: *.workers.dev is blocked in mainland China, so this becomes a custom domain
-/// (api.antigravitynotifier.com) once the domain is registered.
-pub const DEFAULT_SERVER_URL: &str = "https://ccnotifier-api.touchtap.workers.dev";
+/// The shared Worker that also serves Claude Code Notifier and Notifier for Codex, under this
+/// product's own domain (*.workers.dev is blocked in mainland China).
+pub const DEFAULT_SERVER_URL: &str = "https://api.antigravitynotifier.com";
+
+/// The same Worker's own address. A config that saved it reads as the default, so it moves to
+/// the custom domain too (as ccn does for its own).
+pub const WORKERS_DEV_URL: &str = "https://ccnotifier-api.touchtap.workers.dev";
 
 /// What this client calls itself when it registers (`clientKind`) and on every request (`X-App`).
 /// The server must know both before pairing works.
 pub const CLIENT_KIND: &str = "antigravity_cli";
 pub const APP_HEADER: &str = "antigravity";
 
-/// PLACEHOLDER: the domain is not registered yet.
+/// Live since 26 Nov 2026
 pub const WEBSITE: &str = "antigravitynotifier.com";
 
 /// Where a licence is managed or erased: `<WEBSITE>/licence`
@@ -26,9 +28,7 @@ pub fn cli_page() -> String {
     format!("{WEBSITE}/cli")
 }
 
-/// PLACEHOLDER: the repository touch-tap/antigravity-notifier does not exist yet, so `upgrade`
-/// finds no release.
-
+/// The public release repository: `upgrade` downloads only from here.
 pub const GITHUB_LATEST: &str =
     "https://api.github.com/repos/touch-tap/antigravity-notifier/releases/latest";
 pub const RELEASES_BASE: &str =
