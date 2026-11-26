@@ -152,7 +152,12 @@ pub fn run(
                 return None;
             }
             let project = inp.project_name();
-            let message = crate::hook::final_message(input, state).map(|m| m.text);
+            let message = crate::hook::final_message(input, state);
+            crate::hook::log_stop(&stop, message.as_ref());
+            if let Some(message) = &message {
+                state.done_step = Some(message.step);
+            }
+            let message = message.map(|m| m.text);
             let body = payload::done_text(message.as_deref(), stop.error.as_deref(), state);
             state.done_execution = Some(stop.execution);
             let _ = state.save();

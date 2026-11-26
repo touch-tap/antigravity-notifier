@@ -445,11 +445,42 @@ pub fn question_card(input: &Input, questions: &[Value], remote: bool) -> (Value
     (card, key)
 }
 
+/// Antigravity writes the files it touched as Markdown links to their full `file://` address,
+/// which on a phone is a line of path. `[notes.txt](file:///a/b/notes.txt)` becomes `notes.txt`;
+/// links to anything else are left as they are.
+pub fn plain_file_links(text: &str) -> String {
+    let mut out = String::with_capacity(text.len());
+    let mut rest = text;
+    while let Some(open) = rest.find('[') {
+        let (before, from_open) = rest.split_at(open);
+        out.push_str(before);
+        let link = from_open[1..].find("](file://").and_then(|mid| {
+            let label = &from_open[1..1 + mid];
+            let after = &from_open[1 + mid + 2..];
+            let close = after.find(')')?;
+            let simple = !label.is_empty() && !label.contains(['[', ']', '\n']);
+            simple.then_some((label, &after[close + 1..]))
+        });
+        match link {
+            Some((label, after)) => {
+                out.push_str(label);
+                rest = after;
+            }
+            None => {
+                out.push('[');
+                rest = &from_open[1..];
+            }
+        }
+    }
+    out.push_str(rest);
+    out
+}
+
 /// What the done card says. `last_message` is Antigravity's final message from the transcript;
 /// `error` is set when the turn ended because something went wrong.
 pub fn done_text(last_message: Option<&str>, error: Option<&str>, state: &SessionState) -> String {
     let last = last_message
-        .map(|s| SessionState::truncate(s.trim(), 1500))
+        .map(|s| SessionState::truncate(plain_file_links(s).trim(), 1500))
         .filter(|s| !s.is_empty());
     if let Some(error) = error {
         let line = t!(
@@ -803,6 +834,33 @@ mod tests {
         assert!(questions_from_input(&Value::Null).is_empty());
         assert!(questions_from_input(&json!("x")).is_empty());
         assert_eq!(first_question(&json!("x")), None);
+    }
+
+    #[test]
+    fn file_links_become_their_labels() {
+        assert_eq!(
+            plain_file_links("Created [notes.txt](file:///Users/dev/projects/demo/notes.txt), updated `beta`."),
+            "Created notes.txt, updated `beta`."
+        );
+        assert_eq!(
+            plain_file_links("[a.rs](file:///x/a.rs) and [b.rs](file:///x/b.rs#L3)"),
+            "a.rs and b.rs"
+        );
+        // Other links, brackets and broken ones stay
+        for same in [
+            "See [the docs](https://example.com/a) first.",
+            "array[0] and list[1](x)",
+            "[unclosed](file:///x/a.rs",
+            "[](file:///x)",
+            "plain text, ünïcödé [",
+            "",
+        ] {
+            assert_eq!(plain_file_links(same), same);
+        }
+        assert_eq!(
+            plain_file_links("[x] then [a.rs](file:///x/a.rs)"),
+            "[x] then a.rs"
+        );
     }
 
     #[test]

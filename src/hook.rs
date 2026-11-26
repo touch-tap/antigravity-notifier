@@ -377,6 +377,20 @@ pub fn final_message(input: &Value, state: &SessionState) -> Option<transcript::
     None
 }
 
+/// One log line per announced stop: which message the done card got. Never its text.
+pub fn log_stop(stop: &StopInfo, message: Option<&transcript::Message>) {
+    let found = match message {
+        Some(m) => format!(
+            "final message is transcript step {} ({} characters)",
+            m.step,
+            m.text.chars().count()
+        ),
+        None => "no final message in the transcript".to_string(),
+    };
+    let error = if stop.error.is_some() { ", ended in an error" } else { "" };
+    log(&format!("Stop: execution {}, {found}{error}", stop.execution));
+}
+
 /// Whether Antigravity is running one prompt and exiting (`agy -p`), with nobody to answer a
 /// local prompt and often nobody watching at all: a script, a cron job. Nothing waits for the
 /// phone then. A hold that ran out would end in `force_ask`, which print mode answers with a
@@ -934,13 +948,15 @@ impl Ctx {
             return Ok(None);
         }
         let message = final_message(&self.input, &self.state);
+        log_stop(&stop, message.as_ref());
         if let Some(message) = &message {
             self.state.done_step = Some(message.step);
         }
         self.state.done_execution = Some(stop.execution);
         // Saved before anything waits, so a second Stop finds it
         self.state.save()?;
-        let text = message.as_ref().map(|m| m.text.as_str());
+        let text = message.as_ref().map(|m| payload::plain_file_links(&m.text));
+        let text = text.as_deref();
 
         if self.live_updates_allowed() {
             // Before the done card, which may hold for the phone's answer
