@@ -130,7 +130,7 @@ if args.contains("--status") {
     if let url = value("--url") { info["url"] = url }
     if let id = value("--activate"), validBundleID(id) { info["activate"] = id }
     content.userInfo = info
-    // One thread per Codex session keeps Notification Center tidy
+    // One thread per Antigravity session keeps Notification Center tidy
     if let thread = value("--thread") { content.threadIdentifier = thread }
 
     // macOS only shows the permission prompt to an app opened through Launch Services, which

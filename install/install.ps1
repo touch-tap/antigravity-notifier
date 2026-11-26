@@ -12,7 +12,7 @@
 # $env:ANTIGRAVITY_NOTIFIER_NO_ANALYTICS = "1" (or DO_NOT_TRACK) stops the anonymous install events.
 #
 # Ported from ccn's install.ps1 (claudecodenotifier.com). Pairing runs next on the same line and installs
-# the Codex hooks.
+# the Antigravity hooks.
 $ErrorActionPreference = 'Stop'
 $ProgressPreference = 'SilentlyContinue'
 
@@ -24,13 +24,13 @@ $arch = if ($env:PROCESSOR_ARCHITECTURE -eq 'ARM64' -or $env:PROCESSOR_ARCHITEW6
 function Send-SetupEvent([string]$name, [hashtable]$properties = @{}) {
     if (($env:ANTIGRAVITY_NOTIFIER_NO_ANALYTICS -and $env:ANTIGRAVITY_NOTIFIER_NO_ANALYTICS -ne '0') -or ($env:DO_NOT_TRACK -and $env:DO_NOT_TRACK -ne '0')) { return }
     $properties['method'] = 'powershell'
-    $properties['agent'] = 'codex'
+    $properties['agent'] = 'antigravity'
     $body = @{
         context = @{ platform = 'cli'; deviceModel = "windows-$arch"; environment = 'production' }
         events = @(@{ name = $name; properties = $properties })
     } | ConvertTo-Json -Depth 5 -Compress
     $server = if ($env:ANTIGRAVITY_NOTIFIER_SERVER_URL) { $env:ANTIGRAVITY_NOTIFIER_SERVER_URL } else { 'https://ccnotifier-api.touchtap.workers.dev' }
-    try { Invoke-RestMethod -Method Post -Uri "$server/api/events" -ContentType 'application/json' -Headers @{ 'X-App' = 'codex' } -Body $body -TimeoutSec 3 | Out-Null } catch { }
+    try { Invoke-RestMethod -Method Post -Uri "$server/api/events" -ContentType 'application/json' -Headers @{ 'X-App' = 'antigravity' } -Body $body -TimeoutSec 3 | Out-Null } catch { }
 }
 
 $repo = 'touch-tap/antigravity-notifier'

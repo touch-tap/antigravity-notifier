@@ -25,7 +25,7 @@ linux_intel=$(sha x86_64-unknown-linux-musl)
 
 cat <<RUBY
 class AntigravityNotifier < Formula
-  desc "Phone notifications and approvals for OpenAI Codex, from any terminal"
+  desc "Phone notifications and approvals for Google Antigravity, from any terminal"
   homepage "https://antigravitynotifier.com/cli"
   version "$version"
 
@@ -57,7 +57,7 @@ class AntigravityNotifier < Formula
 
   def caveats
     <<~EOS
-      Run \`antigravity-notifier\` to finish setting up: it installs the Codex hooks (desktop
+      Run \`antigravity-notifier\` to finish setting up: it installs the Antigravity hooks (desktop
       notifications from then on) and shows a QR code to pair your phone, or run
         antigravity-notifier pair <the code on your phone>
     EOS

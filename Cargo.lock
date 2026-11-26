@@ -100,7 +100,7 @@ dependencies = [
 
 [[package]]
 name = "antigravity-notifier"
-version = "0.1.6"
+version = "0.1.0"
 dependencies = [
  "anyhow",
  "chrono",
@@ -120,7 +120,6 @@ dependencies = [
  "sys-locale",
  "tar",
  "toml 1.1.8+spec-1.1.0",
- "toml_edit 0.23.10+spec-1.0.0",
  "ureq",
  "uuid",
  "windows",
@@ -2288,15 +2287,6 @@ dependencies = [
 
 [[package]]
 name = "toml_datetime"
-version = "0.7.5+spec-1.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "92e1cfed4a3038bc5a127e35a2d360f145e1f4b971b551a2ba5fd7aedf7e1347"
-dependencies = [
- "serde_core",
-]
-
-[[package]]
-name = "toml_datetime"
 version = "1.1.2+spec-1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2b86d767906c6c42421dcba507eb9d203e779497710a47782a224bb871653053"
@@ -2315,19 +2305,6 @@ dependencies = [
  "serde_spanned 0.6.9",
  "toml_datetime 0.6.11",
  "toml_write",
- "winnow 0.7.15",
-]
-
-[[package]]
-name = "toml_edit"
-version = "0.23.10+spec-1.0.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "84c8b9f757e028cee9fa244aea147aab2a9ec09d5325a9b01e0a49730c2b5269"
-dependencies = [
- "indexmap",
- "toml_datetime 0.7.5+spec-1.1.0",
- "toml_parser",
- "toml_writer",
  "winnow 0.7.15",
 ]
 

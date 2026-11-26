@@ -58,8 +58,11 @@ release installs and that a tampered or swapped `SHA256SUMS`, or a missing signa
 `SHA256SUMS` by a key in `RELEASE_KEYS` (src/update.rs). The private key lives only in the release
 Mac's login keychain as the generic password `antigravitynotifier-release-signing` (account `touchtap`),
 and `scripts/release.sh` refuses to start without it or if its public half isn't in `RELEASE_KEYS`.
-It was created on 8 Nov 2026 with `cargo run --release --example release-sign -- keygen`; public key
-`eeb6e55bc550642bf30ec67b867d9cc3230830259a39709496b5059a4a78ce5f`. It is separate from ccn's key.
+**No key exists yet (26 Nov 2026) and `RELEASE_KEYS` is empty**, so a release build never
+updates itself and the daily check is off. Before the first release: create a key with `cargo run
+--release --example release-sign -- keygen`, store the private half as below, and list the public
+half in `RELEASE_KEYS`. It must be a new key, not ccn's or codex-notifier's: a shared key would
+let a release signed for one product install as another.
 
 Keep a copy in the company password manager: without it no later release can be signed and every
 installed antigravity-notifier would stop updating itself. To copy it:

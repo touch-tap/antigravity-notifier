@@ -88,17 +88,17 @@ PackageUrl: https://antigravitynotifier.com/cli
 License: PolyForm-Shield-1.0.0
 LicenseUrl: https://github.com/touch-tap/antigravity-notifier/blob/$tag/LICENSE.md
 Copyright: Copyright TouchTap Ltd
-ShortDescription: Antigravity Notifier in the terminal, with phone notifications and approvals for OpenAI Codex
+ShortDescription: Antigravity Notifier in the terminal, with phone notifications and approvals for Google Antigravity
 Description: |-
-  Get a push on your phone when OpenAI Codex finishes or needs you, and approve, deny or answer
-  from there. antigravity-notifier is one small binary that Codex calls through its hooks: it runs for a
+  Get a push on your phone when Google Antigravity finishes or needs you, and approve, deny or answer
+  from there. antigravity-notifier is one small binary that Antigravity calls through its hooks: it runs for a
   few milliseconds when something happens and exits, with no app running in the background. It
   also shows a Windows toast on the desktop. Pair it with the Antigravity Notifier app for iPhone or
   Android with "antigravity-notifier pair <code>", or run "antigravity-notifier" and scan the QR code.
 Moniker: antigravity-notifier
 Tags:
-  - codex
-  - openai-codex
+  - antigravity
+  - google-antigravity
   - notifications
   - cli
   - hooks

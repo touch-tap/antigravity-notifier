@@ -1,7 +1,7 @@
 [package]
 name = "antigravity-notifier"
-version = "0.1.6"
-description = "Antigravity Notifier in the terminal: a push on your phone when OpenAI Codex finishes or needs you, and answers from there"
+version = "0.1.0"
+description = "Antigravity Notifier in the terminal: a push on your phone when Google Antigravity finishes or needs you, and answers from there"
 edition = "2024"
 license-file = "LICENSE.md"
 
@@ -18,7 +18,6 @@ serde_json = { version = "1.0.154", features = ["preserve_order"] }
 sys-locale = "0.3"
 sha2 = "0.10"
 toml = "1.1.8"
-toml_edit = "0.23"
 ureq = { version = "3.5.0", features = ["json"] }
 uuid = { version = "1.29.0", features = ["v4"] }
 rust-i18n = "4"

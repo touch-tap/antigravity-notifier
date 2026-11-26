@@ -38,7 +38,7 @@ manifest() {
 cat <<JSON
 {
     "version": "$version",
-    "description": "Antigravity Notifier in the terminal: phone notifications and approvals for OpenAI Codex",
+    "description": "Antigravity Notifier in the terminal: phone notifications and approvals for Google Antigravity",
     "homepage": "https://antigravitynotifier.com/cli",
     "license": {
         "identifier": "PolyForm-Shield-1.0.0",

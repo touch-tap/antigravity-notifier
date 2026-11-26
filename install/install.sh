@@ -39,12 +39,12 @@ case "$(uname -s)" in Darwin) model="macos" ;; Linux) model="linux" ;; *) model=
 case "$(uname -m)" in arm64|aarch64) model="$model-aarch64" ;; x86_64|amd64) model="$model-x86_64" ;; *) model="$model-other" ;; esac
 track() {
   case "${ANTIGRAVITY_NOTIFIER_NO_ANALYTICS:-}${DO_NOT_TRACK:-}" in ""|0|00) ;; *) return 0 ;; esac
-  body="{\"context\":{\"platform\":\"cli\",\"deviceModel\":\"$model\",\"environment\":\"production\"},\"events\":[{\"name\":\"$1\",\"properties\":{\"agent\":\"codex\",\"method\":\"script\"${2:+,$2}}}]}"
+  body="{\"context\":{\"platform\":\"cli\",\"deviceModel\":\"$model\",\"environment\":\"production\"},\"events\":[{\"name\":\"$1\",\"properties\":{\"agent\":\"antigravity\",\"method\":\"script\"${2:+,$2}}}]}"
   url="${ANTIGRAVITY_NOTIFIER_SERVER_URL:-https://ccnotifier-api.touchtap.workers.dev}/api/events"
   if command -v curl >/dev/null 2>&1; then
-    curl -fsS -m 3 -H 'Content-Type: application/json' -H 'X-App: codex' -d "$body" "$url" >/dev/null 2>&1 || true
+    curl -fsS -m 3 -H 'Content-Type: application/json' -H 'X-App: antigravity' -d "$body" "$url" >/dev/null 2>&1 || true
   elif command -v wget >/dev/null 2>&1; then
-    wget -q -T 3 -O /dev/null --header='Content-Type: application/json' --header='X-App: codex' --post-data="$body" "$url" >/dev/null 2>&1 || true
+    wget -q -T 3 -O /dev/null --header='Content-Type: application/json' --header='X-App: antigravity' --post-data="$body" "$url" >/dev/null 2>&1 || true
   fi
 }
 track cli_install_started "\"pairing\":\"$([ -n "$code" ] && echo yes || echo no)\""
@@ -156,7 +156,7 @@ fi
 # exec replaces this shell, so the EXIT trap never runs: clear the download first
 rm -rf "$tmp"
 trap - EXIT
-# Pairing installs the Codex hooks and marks them trusted. stdin is the piped script, so give pair
+# Pairing installs the Antigravity hooks. stdin is the piped script, so give pair
 # the terminal for anything it asks.
 say ""
 if [ -n "$code" ]; then
@@ -169,7 +169,7 @@ elif (: < /dev/tty) 2>/dev/null; then
   # No code: show a QR code to scan with the phone, which also offers the app if it isn't installed
   exec "$dir/antigravity-notifier" pair < /dev/tty
 else
-  say "To get Codex on your phone: open Antigravity Notifier, tap Machines > Link a computer, and run"
+  say "To get Antigravity on your phone: open Antigravity Notifier, tap Machines > Link a computer, and run"
   say "  $cli pair <the code on your phone>"
   say "or run \`$cli\` in a terminal and scan the QR code."
 fi

@@ -32,42 +32,44 @@ jobs:
       - name: The notifier app is embedded and written out intact
         if: runner.os == 'macOS'
         env:
-          ANTIGRAVITY_NOTIFIER_HOME: ${{ runner.temp }}/cxn-notifier
-          CODEX_HOME: ${{ runner.temp }}/antigravity-notifier-app
+          ANTIGRAVITY_NOTIFIER_HOME: ${{ runner.temp }}/agn-notifier
+          ANTIGRAVITY_NOTIFIER_GEMINI_HOME: ${{ runner.temp }}/gemini-app
           ANTIGRAVITY_NOTIFIER_SERVER_URL: http://127.0.0.1:9
         run: |
-          mkdir -p "$CODEX_HOME"
           ./target/debug/antigravity-notifier doctor | grep "desktop notifications"
           codesign --verify --strict "$ANTIGRAVITY_NOTIFIER_HOME/Antigravity Notifier.app"
       - name: Smoke test the hook without a pairing
         shell: bash
         env:
-          ANTIGRAVITY_NOTIFIER_HOME: ${{ runner.temp }}/cxn
-          CODEX_HOME: ${{ runner.temp }}/codex
+          ANTIGRAVITY_NOTIFIER_HOME: ${{ runner.temp }}/agn
+          ANTIGRAVITY_NOTIFIER_GEMINI_HOME: ${{ runner.temp }}/gemini
           ANTIGRAVITY_NOTIFIER_SERVER_URL: http://127.0.0.1:9
           ANTIGRAVITY_NOTIFIER_PRESENCE: present
           ANTIGRAVITY_NOTIFIER_NOTIFY: "off"
         run: |
-          mkdir -p "$CODEX_HOME"
-          printf 'model = "gpt-5.4"\n' > "$CODEX_HOME/config.toml"
-          # An unpaired hook must exit 0 quickly and print nothing that changes Codex's behaviour
-          out=$(echo '{"hook_event_name":"Stop","session_id":"ci","cwd":"/tmp"}' | ./target/debug/antigravity-notifier hook)
-          test -z "$out"
+          H="$ANTIGRAVITY_NOTIFIER_GEMINI_HOME/config/hooks.json"
+          mkdir -p "$(dirname "$H")"
+          printf '{ "mine": { "Stop": [ { "type": "command", "command": "echo hi" } ] } }\n' > "$H"
+          # Antigravity blocks a tool call whose PreToolUse hook fails or prints no decision:
+          # an unpaired hook must exit 0 and allow, whatever it is given
+          out=$(./target/debug/antigravity-notifier hook PreToolUse < tests/fixtures/pre_tool_use_run_command.json)
+          test "$out" = '{"decision":"allow"}'
+          out=$(echo 'not json' | ./target/debug/antigravity-notifier hook PreToolUse)
+          test "$out" = '{"decision":"allow"}'
+          out=$(./target/debug/antigravity-notifier hook Stop < tests/fixtures/stop.json)
+          test "$out" = '{}'
           ./target/debug/antigravity-notifier setup
-          grep -q '"Stop"' "$CODEX_HOME/hooks.json"
-          grep -q 'trusted_hash' "$CODEX_HOME/config.toml"
-          grep -q 'model = "gpt-5.4"' "$CODEX_HOME/config.toml"
+          grep -q '"antigravity-notifier"' "$H"
+          grep -q 'hook PreToolUse' "$H"
+          grep -q 'echo hi' "$H"
           # A second setup changes nothing
-          before=$(cat "$CODEX_HOME/hooks.json" "$CODEX_HOME/config.toml")
+          before=$(cat "$H")
           ./target/debug/antigravity-notifier setup
-          test "$before" = "$(cat "$CODEX_HOME/hooks.json" "$CODEX_HOME/config.toml")"
+          test "$before" = "$(cat "$H")"
           ./target/debug/antigravity-notifier uninstall
-          # Uninstall removes the hooks and their trust entries and leaves the rest of config.toml
-          if [ -e "$CODEX_HOME/hooks.json" ] && grep -q 'antigravity-notifier' "$CODEX_HOME/hooks.json"; then
-            echo "hooks still installed"; exit 1
-          fi
-          if grep -q 'trusted_hash' "$CODEX_HOME/config.toml"; then echo "trust entries left"; exit 1; fi
-          test "$(tr -d ' \n\r' < "$CODEX_HOME/config.toml")" = 'model="gpt-5.4"'
+          # Uninstall removes our group and leaves the other one
+          if grep -q 'antigravity-notifier' "$H"; then echo "hooks still installed"; exit 1; fi
+          grep -q 'echo hi' "$H"
 
   install-scripts:
     strategy:
@@ -99,8 +101,8 @@ jobs:
         env:
           ANTIGRAVITY_NOTIFIER_DOWNLOAD_BASE: http://127.0.0.1:8765
           ANTIGRAVITY_NOTIFIER_INSTALL_DIR: ${{ runner.temp }}/bin
-          ANTIGRAVITY_NOTIFIER_HOME: ${{ runner.temp }}/cxn-install
-          CODEX_HOME: ${{ runner.temp }}/codex-install
+          ANTIGRAVITY_NOTIFIER_HOME: ${{ runner.temp }}/agn-install
+          ANTIGRAVITY_NOTIFIER_GEMINI_HOME: ${{ runner.temp }}/gemini-install
           ANTIGRAVITY_NOTIFIER_SERVER_URL: http://127.0.0.1:9
         run: |
           sh install/install.sh
@@ -111,8 +113,8 @@ jobs:
         env:
           ANTIGRAVITY_NOTIFIER_DOWNLOAD_BASE: http://127.0.0.1:8765
           ANTIGRAVITY_NOTIFIER_INSTALL_DIR: ${{ runner.temp }}\bin
-          ANTIGRAVITY_NOTIFIER_HOME: ${{ runner.temp }}\cxn-install
-          CODEX_HOME: ${{ runner.temp }}\codex-install
+          ANTIGRAVITY_NOTIFIER_HOME: ${{ runner.temp }}\agn-install
+          ANTIGRAVITY_NOTIFIER_GEMINI_HOME: ${{ runner.temp }}\gemini-install
           ANTIGRAVITY_NOTIFIER_SERVER_URL: http://127.0.0.1:9
         run: |
           Get-Content install/install.ps1 -Raw | iex

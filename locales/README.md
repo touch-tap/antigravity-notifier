@@ -1,7 +1,7 @@
 # Translating antigravity-notifier
 
 `antigravity-notifier` is the Antigravity Notifier command for the terminal. Everything a person reads from it
-(terminal output, desktop notifications, the one-line messages it hands to Codex, `--help`
+(terminal output, desktop notifications, the one-line messages it hands to Antigravity, `--help`
 descriptions) lives in one YAML file per language in this folder. `en.yml` is the source; a
 translation is a copy of it with the values changed and the keys left alone. No Rust changes are
 needed: the files are compiled into the binary, and a missing file or key falls back to English.
@@ -55,14 +55,14 @@ Do not translate:
 
 - Command lines and command names: `antigravity-notifier pair`, `antigravity-notifier pair <code>`, `antigravity-notifier setup`,
   `antigravity-notifier unlock --lifetime`, `antigravity-notifier activate <key>`, `antigravity-notifier doctor`, `antigravity-notifier config set pair_nudges off`,
-  `codex`, `npx @touchtap/antigravity-notifier`. The `<code>` and `<key>` placeholders inside them may be
+  `agy`, `npx @touchtap/antigravity-notifier`. The `<code>` and `<key>` placeholders inside them may be
   translated if your language's readers would expect it, but keep the angle brackets.
 - Setting keys and their values: `notify_on_done`, `quiet_hours`, `hold_ceiling_seconds`,
-  `credential_store`, `auto_update`, `pair_nudges`, `keychain`, `file`, `on`, `off`, `HH:MM`.
+  `credential_store`, `auto_update`, `pair_nudges`, `phone_approvals`, `all`, `commands`, `keychain`, `file`, `on`, `off`, `HH:MM`.
   They are what the user types back.
 - File and product names: `SHA256SUMS`, `antigravity-notifier.log`, `config.toml`, `tmux`,
   `AppleScript`, `npx`, `Homebrew`, App Store, Google Play, `Ctrl+C`, `Enter`.
-- Product names: "Antigravity Notifier", "Codex". The phone app is "the Antigravity Notifier app".
+- Product names: "Antigravity Notifier", "Antigravity". The phone app is "the Antigravity Notifier app".
 - URLs and paths: `antigravitynotifier.com/licence`, `%{path}`, `%{url}`.
 - Key formats: `CCN-…-%{last4}` (the server issues every licence key with the CCN- prefix).
 - The `ok ` / `!! ` markers are added by the program, not in the YAML.
@@ -105,10 +105,10 @@ too), "unlock" for buying a licence; use the same words the app uses on screen.
   macOS and Windows cut notifications to two or three lines. `local.first_nudge` is appended to
   the end of another message, so keep it very short (English: 33 characters).
 - Phone cards (`payload.*`): shown on the phone's lock screen and in the app, and repeated in the
-  desktop notification, when Codex gave no text of its own. Keep them as short as English. The
+  desktop notification, when Antigravity gave no text of its own. Keep them as short as English. The
   phone shows them exactly as sent, in this computer's language.
 - `systemMessage` lines (`local.pair_message`, `hook.*_message`, `update.available_message`): one
-  line that Codex shows in the terminal; aim for the English length, never more than about
+  line that Antigravity shows in the terminal; aim for the English length, never more than about
   220 characters. They start with "Antigravity Notifier:" so the reader knows who is talking: keep
   that prefix.
 - `--help` descriptions (`cli.*`): one line each, no full stop at the end (clap prints them in a

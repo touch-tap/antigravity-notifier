@@ -21,10 +21,10 @@ cp $new/$asset $new/SHA256SUMS $W/www/unsigned/
 (cd $W/www && exec python3 -m http.server $port >/dev/null 2>&1) & srv=$!
 sleep 1
 run() { # $1 = folder name; installs the old binary fresh and upgrades against that folder
-  rm -rf $W/bin $W/home; mkdir -p $W/bin $W/home/codex
+  rm -rf $W/bin $W/home; mkdir -p $W/bin $W/home/gemini
   tar xzf $old/$asset -C $W/bin
   echo "== $1: installed $($W/bin/antigravity-notifier --version)"
-  ANTIGRAVITY_NOTIFIER_HOME=$W/home/cxn CODEX_HOME=$W/home/codex ANTIGRAVITY_NOTIFIER_NO_ANALYTICS=1 \
+  ANTIGRAVITY_NOTIFIER_HOME=$W/home/cxn ANTIGRAVITY_NOTIFIER_GEMINI_HOME=$W/home/gemini ANTIGRAVITY_NOTIFIER_NO_ANALYTICS=1 \
   ANTIGRAVITY_NOTIFIER_CREDENTIAL_STORE=file ANTIGRAVITY_NOTIFIER_SERVER_URL=http://127.0.0.1:$port \
   ANTIGRAVITY_NOTIFIER_DOWNLOAD_BASE=http://127.0.0.1:$port/$1 $W/bin/antigravity-notifier upgrade 2>&1 | sed 's/^/   | /'
   after=$($W/bin/antigravity-notifier --version)

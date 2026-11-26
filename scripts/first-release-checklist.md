@@ -2,7 +2,9 @@
 
 Run on the release Mac (this one: it has the Developer ID certificate, the `ccn-notary` notarytool
 profile and the `antigravitynotifier-release-signing` key), from the engine repo, in this order.
-Prepared 8 Nov 2026; the dry run, signing and upgrade checks in RELEASING.md all passed.
+Carried over from codex-notifier on 26 Nov 2026 and NOT yet run for this product: the GitHub
+repository, the signing key (RELEASING.md), the npm packages, the Homebrew formula and the
+website (antigravitynotifier.com) do not exist yet.
 
 ```sh
 cd ~/Documents/Development/touchtap/antigravitynotifier
@@ -16,7 +18,7 @@ pbcopy < /dev/null
 # 1. Create the repository (it must be PUBLIC: install scripts, Homebrew, Scoop, winget and npm
 #    all download the release assets anonymously) and push main.
 gh repo create touch-tap/antigravity-notifier --public \
-  --description "Antigravity Notifier in the terminal: phone notifications and approvals for OpenAI Codex" \
+  --description "Antigravity Notifier in the terminal: phone notifications and approvals for Google Antigravity" \
   --homepage https://antigravitynotifier.com/cli --source . --remote origin --push
 
 # 2. No CI secrets are needed: both workflows use the built-in GITHUB_TOKEN. Check that Actions may
@@ -39,7 +41,7 @@ gh release edit v0.1.0 -R touch-tap/antigravity-notifier --draft=false --latest
 
 # 5. Smoke test the public install path on this Mac, in a scratch folder (in a terminal it ends by
 #    showing a pairing QR code: Ctrl-C there):
-tmp=$(mktemp -d); ANTIGRAVITY_NOTIFIER_INSTALL_DIR=$tmp/bin ANTIGRAVITY_NOTIFIER_HOME=$tmp/h CODEX_HOME=$tmp/c \
+tmp=$(mktemp -d); ANTIGRAVITY_NOTIFIER_INSTALL_DIR=$tmp/bin ANTIGRAVITY_NOTIFIER_HOME=$tmp/h ANTIGRAVITY_NOTIFIER_GEMINI_HOME=$tmp/c \
   sh -c 'curl -fsSL https://antigravitynotifier.com/install.sh | sh' </dev/null
 "$tmp/bin/antigravity-notifier" --version          # antigravity-notifier 0.1.0
 codesign -dv "$tmp/bin/antigravity-notifier" 2>&1 | grep TeamIdentifier   # 4ABJZNGY79

@@ -1,7 +1,7 @@
 {
   "name": "@touchtap/antigravity-notifier",
   "version": "0.1.0",
-  "description": "Phone notifications and approvals for OpenAI Codex, from any terminal",
+  "description": "Phone notifications and approvals for Google Antigravity, from any terminal",
   "homepage": "https://antigravitynotifier.com/cli",
   "license": "SEE LICENSE IN LICENSE.md",
   "bin": { "antigravity-notifier": "bin/antigravity-notifier.js" },
