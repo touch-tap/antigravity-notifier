@@ -195,6 +195,7 @@ hook:
   needs_attention: "확인이 필요해요"
   # Shown on Antigravity's own permission prompt when a request waited for the phone and nobody answered
   no_answer: "휴대폰에서 답이 없어요"
+  unreachable: "휴대폰에 연결할 수 없습니다"
 
 # Suggests the Claude Code Notifier app (and its ccn CLI) to someone who also uses Claude Code (crosspromo.rs).
 # "Claude Code Notifier", command and url are not translated; never name one computer platform.

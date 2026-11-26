@@ -249,13 +249,24 @@ fn a_paired_computer_with_the_user_present_allows_at_once_without_the_network() 
 }
 
 #[test]
-fn a_server_that_cannot_be_reached_never_blocks_an_away_user() {
+fn a_server_that_cannot_be_reached_hands_the_call_back_to_the_terminal() {
     let sandbox =
         Sandbox::paired("away-offline", DEAD_SERVER).with("ANTIGRAVITY_NOTIFIER_PRESENCE", "away");
-    // The approval card can't be sent, so nothing waits: Antigravity decides by itself
+    // The approval card can't be sent. The engine never answers for the user: the command goes to
+    // Antigravity's own prompt, which says why, and nothing waits
     let started = Instant::now();
-    assert_eq!(answer(&sandbox.hook(&["PreToolUse"], RUN_COMMAND.as_bytes())), allow());
+    let command = answer(&sandbox.hook(&["PreToolUse"], RUN_COMMAND.as_bytes()));
+    assert_eq!(command["decision"], "force_ask");
+    assert_eq!(command["reason"], "Couldn't reach your phone");
+    // A file write isn't sent to the phone by default (phone_approvals = commands): Antigravity decides
     assert_eq!(answer(&sandbox.hook(&["PreToolUse"], WRITE_FILE.as_bytes())), allow());
+    // With phone_approvals = all it is, so it is handed back too
+    let all = Sandbox::paired("away-offline-all", DEAD_SERVER).with("ANTIGRAVITY_NOTIFIER_PRESENCE", "away");
+    let mut config = std::fs::read_to_string(all.root.join("home/config.toml")).unwrap();
+    config.push_str("phone_approvals = \"all\"\n");
+    std::fs::write(all.root.join("home/config.toml"), config).unwrap();
+    assert_eq!(answer(&all.hook(&["PreToolUse"], WRITE_FILE.as_bytes()))["decision"], "force_ask");
+    // A question is never answered for the user either: it shows in the terminal
     assert_eq!(answer(&sandbox.hook(&["PreToolUse"], ASK_QUESTION.as_bytes())), allow());
     assert_eq!(answer(&sandbox.hook(&["PreToolUse"], READ_FILE.as_bytes())), allow());
     assert_eq!(answer(&sandbox.hook(&["Stop"], STOP.as_bytes())), json!({}));

@@ -196,6 +196,7 @@ hook:
   needs_attention: "Richiede la tua attenzione"
   # Shown on Antigravity's own permission prompt when a request waited for the phone and nobody answered
   no_answer: "Nessuna risposta dal telefono"
+  unreachable: "Impossibile raggiungere il telefono"
 
 # Suggests the Claude Code Notifier app (and its ccn CLI) to someone who also uses Claude Code (crosspromo.rs).
 # "Claude Code Notifier", command and url are not translated; never name one computer platform.

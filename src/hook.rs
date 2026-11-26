@@ -151,14 +151,32 @@ fn deadlines(event: Option<&str>) -> (Duration, Duration) {
 
 /// What the watchdog says when time is up. A tool call that was waiting for the phone goes to
 /// the local prompt, as it does when the hold ends by itself; anything else is the fallback.
-fn timed_out_answer(event: Option<&str>, holding: bool, is_question: bool) -> Value {
+fn timed_out_answer(event: Option<&str>, holding: bool, is_question: bool, asking: bool) -> Value {
     match event {
         Some("PreToolUse") if holding && !is_question => respond::force_ask(),
+        // Stuck before the card was even out: still the user's decision, at the local prompt
+        Some("PreToolUse") | None if asking => respond::hand_back(),
+        _ => fallback(event),
+    }
+}
+
+/// The fallback, unless the phone was being asked to approve this call: then the local prompt.
+fn fallback_unless_asking(event: Option<&str>) -> Value {
+    failure_answer(event, ASKING.load(Ordering::SeqCst))
+}
+
+fn failure_answer(event: Option<&str>, asking: bool) -> Value {
+    match event {
+        Some("PreToolUse") | None if asking => respond::hand_back(),
         _ => fallback(event),
     }
 }
 
 static HOLDING_QUESTION: AtomicBool = AtomicBool::new(false);
+/// Set from the moment a tool call is going to the phone for approval (the user is away and the call is
+/// one the phone approves) until that is settled. While it is set, nothing that goes wrong may end in
+/// `allow`: the engine never answers for the user, so every failure hands the call to the local prompt.
+static ASKING: AtomicBool = AtomicBool::new(false);
 
 fn start_watchdog(event: Option<&'static str>) {
     let started = Instant::now();
@@ -173,7 +191,7 @@ fn start_watchdog(event: Option<&'static str>) {
             let limit = if held { holding } else { quick };
             if started.elapsed() >= limit {
                 let question = HOLDING_QUESTION.load(Ordering::SeqCst);
-                emit(&timed_out_answer(event, held, question));
+                emit(&timed_out_answer(event, held, question, ASKING.load(Ordering::SeqCst)));
                 std::process::exit(0);
             }
         }
@@ -213,17 +231,17 @@ pub fn main(event_arg: Option<String>) {
     }));
     let answer = match outcome {
         Ok(Ok(Some(output))) => checked(event, output),
-        Ok(Ok(None)) => fallback(event),
+        Ok(Ok(None)) => fallback_unless_asking(event),
         Ok(Err(err)) => {
             log(&format!("{} hook error: {err:#}", event.unwrap_or("?")));
-            fallback(event)
+            fallback_unless_asking(event)
         }
         Err(_) => {
             // Logging is guarded too: nothing may stop the answer below
             let _ = std::panic::catch_unwind(|| {
                 log("hook panicked; answered as if nothing was installed")
             });
-            fallback(event)
+            fallback_unless_asking(event)
         }
     };
     emit(&answer);
@@ -239,7 +257,7 @@ fn checked(event: Option<&str>, output: Value) -> Value {
         .is_some_and(|d| !d.is_empty());
     if needs_decision && !has_decision {
         // A message for the user can ride along with the decision
-        let mut answer = fallback(event);
+        let mut answer = fallback_unless_asking(event);
         if let Some(message) = output.get("systemMessage") {
             answer["systemMessage"] = message.clone();
         }
@@ -458,14 +476,16 @@ fn print_mode_of(args: &str) -> Option<bool> {
 /// How a card that may wait for the phone ended.
 #[derive(Debug, PartialEq)]
 enum Hold {
-    /// Nothing waited: the user is at the keyboard, presence is unknown, quiet hours, a
-    /// headless run, or the card could not be sent
+    /// Nothing waited: the user is at the keyboard, presence is unknown, quiet hours or a
+    /// headless run
     NotHeld,
     /// The phone answered
     Answered(String),
     /// The hook waited and no answer came: time ran out, the user came back to the keyboard,
     /// or the request was settled elsewhere
     Unanswered,
+    /// The phone was to be asked, and the server took the card without giving anything to wait on
+    Unreachable,
 }
 
 struct Ctx {
@@ -887,9 +907,15 @@ impl Ctx {
                 self.watch_for_walking_away();
                 Ok(answer)
             }
+            // The phone was to be asked and couldn't be: never an answer of our own. The local
+            // prompt takes over, saying why.
+            Ok(Hold::Unreachable) => {
+                log("approval card not accepted by the server: handed back to the local prompt");
+                Ok(respond::hand_back())
+            }
             Err(err) => {
-                log(&format!("approval card not sent: {err:#}"));
-                Ok(respond::allow())
+                log(&format!("approval card not sent: {err:#}; handed back to the local prompt"));
+                Ok(respond::hand_back())
             }
         }
     }
@@ -1142,8 +1168,11 @@ impl Ctx {
             return Ok(Hold::NotHeld);
         }
 
+        // From here the phone is being asked: a failure must not turn into an answer
+        ASKING.store(!is_question, Ordering::SeqCst);
         let Some(id) = self.send_card(kind, key, card, true)? else {
-            return Ok(Hold::NotHeld);
+            // Accepted with no notification to wait on: there is no answer to fetch
+            return Ok(Hold::Unreachable);
         };
         log(&format!("holding {kind} {id} for up to {ceiling}s"));
         HOLDING_QUESTION.store(is_question, Ordering::SeqCst);
@@ -1331,11 +1360,35 @@ mod tests {
         assert!(Duration::from_secs(hookcfg::MAX_TOOL_HOLD) + Duration::from_secs(60) <= PRE_TOOL_DEADLINE);
         assert!(Duration::from_secs(600) < STOP_DEADLINE);
         // What it says: the local prompt for an approval that was waiting, allow otherwise
-        assert_eq!(timed_out_answer(Some("PreToolUse"), true, false)["decision"], "force_ask");
-        assert_eq!(timed_out_answer(Some("PreToolUse"), true, true)["decision"], "allow");
-        assert_eq!(timed_out_answer(Some("PreToolUse"), false, false)["decision"], "allow");
-        assert_eq!(timed_out_answer(None, false, false)["decision"], "allow");
-        assert_eq!(timed_out_answer(Some("Stop"), true, false), json!({}));
+        assert_eq!(timed_out_answer(Some("PreToolUse"), true, false, true)["decision"], "force_ask");
+        assert_eq!(timed_out_answer(Some("PreToolUse"), true, true, false)["decision"], "allow");
+        assert_eq!(timed_out_answer(Some("PreToolUse"), false, false, false)["decision"], "allow");
+        assert_eq!(timed_out_answer(None, false, false, false)["decision"], "allow");
+        assert_eq!(timed_out_answer(Some("Stop"), true, false, false), json!({}));
+        // Stuck after deciding to ask the phone but before the hold began: never an answer of our own
+        let stuck = timed_out_answer(Some("PreToolUse"), false, false, true);
+        assert_eq!(stuck["decision"], "force_ask");
+        assert_eq!(stuck["reason"], "Couldn't reach your phone");
+        assert_eq!(timed_out_answer(None, false, false, true)["decision"], "force_ask");
+        assert_eq!(timed_out_answer(Some("Stop"), false, false, true), json!({}));
+    }
+
+    /// The engine never answers for the user: once the phone is being asked to approve a call, an error,
+    /// a panic or an answer with no decision all hand the call to the local prompt. A call the phone was
+    /// never going to be asked about still defers to Antigravity (`allow`), and Stop never continues.
+    #[test]
+    fn a_failure_while_asking_the_phone_hands_the_call_back() {
+        for event in [Some("PreToolUse"), None] {
+            let asked = failure_answer(event, true);
+            assert_eq!(asked["decision"], "force_ask", "{event:?}");
+            assert_eq!(asked["reason"], "Couldn't reach your phone");
+            assert_eq!(failure_answer(event, false), json!({ "decision": "allow" }), "{event:?}");
+        }
+        for event in ["Stop", "SessionStart", "PreInvocation", "PostToolUse"] {
+            assert_eq!(failure_answer(Some(event), true), json!({}), "{event}");
+        }
+        assert_eq!(respond::hand_back()["decision"], "force_ask");
+        assert_ne!(respond::hand_back()["reason"], respond::force_ask()["reason"]);
     }
 
     #[test]

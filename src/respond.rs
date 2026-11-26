@@ -31,6 +31,13 @@ pub fn force_ask() -> Value {
     json!({ "decision": "force_ask", "reason": t!("hook.no_answer") })
 }
 
+/// PreToolUse: the phone was going to be asked and could not be (the card could not be sent, the server
+/// did not answer, something broke on the way). The engine never answers for the user, so the local
+/// prompt takes over, saying why.
+pub fn hand_back() -> Value {
+    json!({ "decision": "force_ask", "reason": t!("hook.unreachable") })
+}
+
 /// Any other event with nothing to say
 pub fn nothing() -> Value {
     json!({})

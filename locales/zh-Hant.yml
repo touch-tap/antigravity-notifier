@@ -195,6 +195,7 @@ hook:
   needs_attention: "需要你處理"
   # Shown on Antigravity's own permission prompt when a request waited for the phone and nobody answered
   no_answer: "手機沒有回應"
+  unreachable: "無法連線到你的手機"
 
 # Suggests the Claude Code Notifier app (and its ccn CLI) to someone who also uses Claude Code (crosspromo.rs).
 # "Claude Code Notifier", command and url are not translated; never name one computer platform.

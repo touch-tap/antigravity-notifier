@@ -199,6 +199,7 @@ hook:
   needs_attention: "يحتاج إلى انتباهك"
   # Shown on Antigravity's own permission prompt when a request waited for the phone and nobody answered
   no_answer: "لا رد من هاتفك"
+  unreachable: "تعذّر الوصول إلى هاتفك"
 
 # Suggests the Claude Code Notifier app (and its ccn CLI) to someone who also uses Claude Code (crosspromo.rs).
 # "Claude Code Notifier", command and url are not translated; never name one computer platform.
