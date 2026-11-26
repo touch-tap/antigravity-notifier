@@ -64,7 +64,7 @@ test notification it can answer, and `antigravity-notifier` shows the answer.
 | On your phone | How it works underneath |
 | --- | --- |
 | "Antigravity has finished", with its last message, the moment a turn ends | the `Stop` hook reads the message from the conversation's `transcript_full.jsonl` |
-| Approve or deny a command or file change while you are away | the `PreToolUse` hook holds the call and answers `auto_approve` or `deny` |
+| Approve or deny a command while you are away (file changes too, if you ask) | the `PreToolUse` hook holds the call and answers `auto_approve` or `deny` |
 | Answer a question Antigravity asked | `PreToolUse` on `ask_question` denies the call with your answers as the reason, which the model reads and continues from |
 | Send a short follow-up right after Antigravity finishes | `Stop` answers `continue` with it |
 | A lock-screen card while Antigravity works (current step, files, lines) | `write_file` and `edit_file` calls seen by `PreToolUse`, counted once `PostToolUse` says they ran |
@@ -114,14 +114,14 @@ docs in places:
   Antigravity's own permission policy as if nothing were installed. A watchdog answers if the
   hook has not (`src/hook.rs`, `tests/hook.rs`).
 - **Approvals live in `PreToolUse`.** There is no permission event. While the user is away, a
-  `run_command`, a file write or edit, or another tool that changes something waits for the
-  phone: approve is `auto_approve` ("Allow for session" then lets that tool through for the
+  `run_command` waits for the phone: approve is `auto_approve` ("Allow for session" then lets that tool through for the
   rest of the conversation), deny is `deny` with the note from the phone as the reason, and no
   answer is `force_ask`, which shows Antigravity's own prompt with "No answer from your phone"
   on it. Read-only tools never wait. While a hook holds, Antigravity shows no prompt of its own,
   which is why nothing is held when the user is present.
-  `antigravity-notifier config set phone_approvals commands` keeps it to shell commands, `off`
-  turns approvals off.
+  `antigravity-notifier config set phone_approvals all` also holds file writes and edits and
+  other tools that change something (Antigravity's Auto mode makes those without asking, so by
+  default they don't wait); `off` turns approvals off.
 - **Print mode is never held.** In `agy -p` nobody can answer a local prompt, and `force_ask` is
   answered with a denial, so a script would stall and then fail. The hook finds `agy -p` among
   its parent processes and sends cards as notes instead (`ANTIGRAVITY_NOTIFIER_HEADLESS=0|1`
@@ -157,8 +157,8 @@ Settings: `notify_on_done`, `notify_on_permission`, `notify_on_question`, `quiet
 `quiet_when_present` (default on), `hold_ceiling_seconds` (30–3600, default 600),
 `presence_threshold_seconds` (default 30), `stop_hold_seconds` (0–600, default 120), `sound`, and
 the local-only `desktop_notifications`, `credential_store` (`keychain` or `file`), `auto_update`,
-`pair_nudges`, `phone_approvals` (`all`, `commands` or `off`: which tool calls wait for the
-phone), `hold_without_presence` (hold for the phone even where presence can't be read) and
+`pair_nudges`, `phone_approvals` (`commands` by default, `all` or `off`: which tool calls wait
+for the phone), `hold_without_presence` (hold for the phone even where presence can't be read) and
 `cross_promo` (default on: someone who also uses Claude Code, without
 [ccn](https://claudecodenotifier.com) installed, hears about the Claude Code Notifier app and its
 one-line install after every pairing, with a QR code for the app, then as one line in `status`

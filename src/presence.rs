@@ -9,26 +9,119 @@ use std::time::{Duration, Instant};
 /// Each idle probe that runs another program gets this long. A hook polls presence every second
 /// while it holds, so a probe that hangs (a D-Bus call to a session bus that never answers) must
 /// not hang the hook with it.
-#[cfg_attr(not(target_os = "linux"), allow(dead_code))]
+#[cfg_attr(not(any(target_os = "macos", target_os = "linux")), allow(dead_code))]
 const PROBE_TIMEOUT: Duration = Duration::from_millis(500);
 
+/// What `idle_seconds` reports while the screen is locked: longer than any threshold
+const LOCKED_IDLE: f64 = 1e9;
+/// Past this much input idle time nobody is asking whether the screen is locked as well
+const LOCK_CHECK_BELOW: f64 = 3600.0;
+
+/// The test knob: `ANTIGRAVITY_NOTIFIER_PRESENCE=away|present|unknown|locked` pins the answer
+/// (`unknown`: as where idle time can't be read; `locked`: input a moment ago, but the screen is
+/// locked); `file:<path>` reads one of those words from a file each time, so a test can change
+/// it while a hook or watcher runs. None when the variable is unset or says something else.
+fn pinned() -> Option<String> {
+    let value = std::env::var("ANTIGRAVITY_NOTIFIER_PRESENCE").ok()?;
+    let value = match value.strip_prefix("file:") {
+        Some(path) => std::fs::read_to_string(path)
+            .unwrap_or_default()
+            .trim()
+            .to_string(),
+        None => value,
+    };
+    matches!(
+        value.as_str(),
+        "away" | "present" | "present-elsewhere" | "unknown" | "locked"
+    )
+    .then_some(value)
+}
+
+/// Seconds since anyone was at this computer, or None when that can't be told. A locked screen
+/// counts as away at once, whatever the input counter says: locking is itself input, and a
+/// mouse nudged on a locked screen is nobody at the terminal.
 pub fn idle_seconds() -> Option<f64> {
-    // Test hook: ANTIGRAVITY_NOTIFIER_PRESENCE=away|present|unknown pins the answer (unknown: as where idle time
-    // can't be read); file:<path> reads it from a file each time
-    if let Ok(value) = std::env::var("ANTIGRAVITY_NOTIFIER_PRESENCE") {
-        let value = match value.strip_prefix("file:") {
-            Some(path) => std::fs::read_to_string(path)
-                .unwrap_or_default()
-                .trim()
-                .to_string(),
-            None => value,
+    combine(input_idle_seconds(), screen_locked)
+}
+
+/// `idle_seconds` from its two parts. The lock is only asked about when it could change the
+/// answer. An unknown lock state changes nothing: "can't tell" never becomes "away".
+fn combine(idle: Option<f64>, locked: impl FnOnce() -> Option<bool>) -> Option<f64> {
+    if idle.is_some_and(|idle| idle >= LOCK_CHECK_BELOW) {
+        return idle;
+    }
+    match locked() {
+        Some(true) => Some(LOCKED_IDLE),
+        _ => idle,
+    }
+}
+
+/// Whether the screen is locked. None where that can't be read (Windows, a Linux without
+/// logind, over ssh), which callers treat as "no information".
+///
+/// macOS: `IOConsoleLocked` on the I/O Registry's root (present on macOS 27; an older macOS
+/// without the key reads as unknown). A display that has gone to sleep without locking is not
+/// detected: its power state is not in the registry on Apple silicon. Linux: logind's
+/// `LockedHint` for this session, which GNOME, KDE and most lockers set.
+pub fn screen_locked() -> Option<bool> {
+    if let Some(value) = pinned() {
+        return Some(value == "locked");
+    }
+    #[cfg(target_os = "macos")]
+    {
+        let text = run_bounded("ioreg", &["-n", "Root", "-d", "1"], PROBE_TIMEOUT)?;
+        console_locked(&text)
+    }
+    #[cfg(target_os = "linux")]
+    {
+        let session = std::env::var("XDG_SESSION_ID")
+            .ok()
+            .filter(|id| !id.is_empty() && id.chars().all(|c| c.is_ascii_alphanumeric()))
+            .unwrap_or_else(|| "auto".to_string());
+        let text = run_bounded(
+            "loginctl",
+            &["show-session", &session, "-p", "LockedHint", "--value"],
+            PROBE_TIMEOUT,
+        )?;
+        locked_hint(&text)
+    }
+    #[cfg(not(any(target_os = "macos", target_os = "linux")))]
+    {
+        None
+    }
+}
+
+/// `"IOConsoleLocked" = Yes` in `ioreg -n Root -d1`
+#[cfg_attr(not(target_os = "macos"), allow(dead_code))]
+fn console_locked(ioreg: &str) -> Option<bool> {
+    let line = ioreg.lines().find(|l| l.contains("\"IOConsoleLocked\""))?;
+    match line.split('=').nth(1)?.trim() {
+        "Yes" => Some(true),
+        "No" => Some(false),
+        _ => None,
+    }
+}
+
+/// `yes` or `no` from `loginctl show-session ... -p LockedHint --value` (older systemd prints
+/// `LockedHint=yes`)
+#[cfg_attr(not(target_os = "linux"), allow(dead_code))]
+fn locked_hint(text: &str) -> Option<bool> {
+    match text.trim().trim_start_matches("LockedHint=") {
+        "yes" => Some(true),
+        "no" => Some(false),
+        _ => None,
+    }
+}
+
+/// Seconds since the keyboard or mouse was last touched, or None when that can't be read.
+fn input_idle_seconds() -> Option<f64> {
+    if let Some(value) = pinned() {
+        return match value.as_str() {
+            "away" => Some(1e9),
+            "unknown" => None,
+            // present, present-elsewhere, and locked (which `screen_locked` turns into away)
+            _ => Some(0.0),
         };
-        match value.as_str() {
-            "away" => return Some(1e9),
-            "present" => return Some(0.0),
-            "unknown" => return None,
-            _ => {}
-        }
     }
     #[cfg(target_os = "macos")]
     {
@@ -51,6 +144,17 @@ pub fn idle_seconds() -> Option<f64> {
 /// True when the user touched the keyboard or mouse within `threshold` seconds.
 pub fn user_present(threshold: f64) -> bool {
     idle_seconds().map(|idle| idle < threshold).unwrap_or(false)
+}
+
+/// Whether the user has come back since a hook began waiting `waited` ago: input within the
+/// threshold that is also newer than the wait itself, on a screen that is not locked. A screen
+/// that unlocks or wakes by itself (a watch, a notification) is nobody typing.
+pub fn returned_since(waited: Duration, threshold: f64) -> bool {
+    returned(idle_seconds(), waited, threshold)
+}
+
+fn returned(idle: Option<f64>, waited: Duration, threshold: f64) -> bool {
+    idle.is_some_and(|idle| idle < threshold && idle < waited.as_secs_f64())
 }
 
 /// Whether a blocking hook may hold Antigravity for the phone, given what presence detection said.
@@ -101,9 +205,7 @@ fn run_bounded(program: &str, args: &[&str], timeout: Duration) -> Option<String
 /// on macOS, with that terminal the frontmost app. Someone typing in a browser is not at the
 /// terminal. Where the terminal can't be identified (Linux, Windows, ssh), activity alone decides.
 pub fn at_terminal(threshold: f64) -> bool {
-    if let Ok(value) = std::env::var("ANTIGRAVITY_NOTIFIER_PRESENCE")
-        && value == "present-elsewhere"
-    {
+    if pinned().is_some_and(|value| value == "present-elsewhere") {
         return false;
     }
     user_present(threshold) && terminal_frontmost().unwrap_or(true)
@@ -319,6 +421,62 @@ mod tests {
             Some("com.apple.Terminal")
         );
         assert_eq!(super::front_bundle_id("nothing"), None);
+    }
+
+    #[test]
+    fn a_locked_screen_is_away_whatever_the_input_counter_says() {
+        use super::{LOCKED_IDLE, combine};
+        // Input two seconds ago, screen locked: away
+        assert_eq!(combine(Some(2.0), || Some(true)), Some(LOCKED_IDLE));
+        // Not locked, or no way to tell: the input counter stands
+        assert_eq!(combine(Some(2.0), || Some(false)), Some(2.0));
+        assert_eq!(combine(Some(2.0), || None), Some(2.0));
+        // Input unreadable: a lock is still known to be away, and nothing else is invented
+        assert_eq!(combine(None, || Some(true)), Some(LOCKED_IDLE));
+        assert_eq!(combine(None, || Some(false)), None);
+        assert_eq!(combine(None, || None), None);
+        // Long idle already: the lock isn't even asked about
+        assert_eq!(
+            combine(Some(7200.0), || panic!("not needed")),
+            Some(7200.0)
+        );
+    }
+
+    #[test]
+    fn reads_the_lock_state_the_system_reports() {
+        use super::{console_locked, locked_hint};
+        // `ioreg -n Root -d1` on macOS 27, unlocked and locked
+        let unlocked = "+-o Root  <class IORegistryEntry, id 0x100000100, retain 44>\n    {\n      \"IOKitBuildVersion\" = \"Darwin Kernel Version 27.0.0\"\n      \"IOConsoleLocked\" = No\n      \"IOConsoleUsers\" = ({\"kCGSSessionOnConsoleKey\"=Yes})\n    }\n";
+        assert_eq!(console_locked(unlocked), Some(false));
+        assert_eq!(
+            console_locked(&unlocked.replace("\"IOConsoleLocked\" = No", "\"IOConsoleLocked\" = Yes")),
+            Some(true)
+        );
+        // The key is missing (an older macOS), or says something new: unknown, never "locked"
+        assert_eq!(console_locked("\"IOConsoleUsers\" = ({\"kCGSSessionOnConsoleKey\"=Yes})"), None);
+        assert_eq!(console_locked("\"IOConsoleLocked\" = Maybe"), None);
+        assert_eq!(console_locked(""), None);
+        assert_eq!(locked_hint("yes\n"), Some(true));
+        assert_eq!(locked_hint("no\n"), Some(false));
+        assert_eq!(locked_hint("LockedHint=yes\n"), Some(true));
+        assert_eq!(locked_hint(""), None);
+        assert_eq!(locked_hint("Failed to get session path"), None);
+    }
+
+    #[test]
+    fn coming_back_means_input_after_the_wait_began() {
+        use super::returned;
+        use std::time::Duration;
+        let secs = Duration::from_secs;
+        // Typed 2 s ago, having waited 40 s: back
+        assert!(returned(Some(2.0), secs(40), 30.0));
+        // The last input was before the wait began (they locked the screen and left, and it
+        // has since unlocked by itself): not back
+        assert!(!returned(Some(12.0), secs(5), 30.0));
+        // Input long ago, a locked screen, or no way to tell
+        assert!(!returned(Some(90.0), secs(200), 30.0));
+        assert!(!returned(Some(super::LOCKED_IDLE), secs(200), 30.0));
+        assert!(!returned(None, secs(200), 30.0));
     }
 
     #[test]

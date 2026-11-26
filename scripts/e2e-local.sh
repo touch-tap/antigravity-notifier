@@ -107,7 +107,14 @@ wait
 echo "  | $out"
 echo "$out" | grep -q '"decision":"deny"' && echo "$out" | grep -q 'use trash instead' && ok "deny with the note as the reason" || bad "no deny"
 
-echo "== PreToolUse write_file, user away, phone allows for the session"
+echo "== PreToolUse write_file, user away: not held by default (phone_approvals commands)"
+start=$(date +%s)
+out=$(tool write_file "{\"Path\":\"$S/proj/z.ts\",\"Content\":\"x\\n\"}" call4b | PRESENCE=away hook PreToolUse)
+took=$(( $(date +%s) - start ))
+[ "$out" = '{"decision":"allow"}' ] && [ $took -lt 5 ] && ok "allow in ${took}s" || bad "output '$out' in ${took}s"
+$B config set phone_approvals all >/dev/null 2>&1
+
+echo "== PreToolUse write_file, phone_approvals all, user away, phone allows for the session"
 ( sleep 2; answer "a" ) &
 out=$(tool write_file "{\"Path\":\"$S/proj/a.ts\",\"Content\":\"one\\ntwo\\n\",\"Overwrite\":true}" call5 | PRESENCE=away hook PreToolUse)
 wait

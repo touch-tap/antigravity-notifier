@@ -324,10 +324,11 @@ pub struct Config {
     /// Hold Antigravity for the phone even where presence can't be detected (`antigravity-notifier config set
     /// hold_without_presence on`; default off, since typing can't then release the hold)
     pub hold_without_presence: bool,
-    /// Which tool calls wait for the phone while the user is away: `all` (commands, file edits
-    /// and other tools that change something; the default), `commands` (shell commands only) or
-    /// `off` (`antigravity-notifier config set phone_approvals commands`). Questions and done
-    /// cards are not affected.
+    /// Which tool calls wait for the phone while the user is away: `commands` (shell commands
+    /// only; the default, since Antigravity's Auto mode edits files without asking and a hold on
+    /// every edit would stall it), `all` (also file edits and other tools that change something)
+    /// or `off` (`antigravity-notifier config set phone_approvals all`). Questions and done cards
+    /// are not affected.
     pub phone_approvals: String,
     /// Whether to mention ccn, the Claude Code notifier, to someone who also uses Claude Code
     /// (`antigravity-notifier config set cross_promo off`; default on). Its cadence is in crosspromo.rs.
@@ -384,7 +385,7 @@ impl Default for Config {
             update_available: None,
             update_announced_at: None,
             hold_without_presence: false,
-            phone_approvals: "all".to_string(),
+            phone_approvals: "commands".to_string(),
             cross_promo: true,
             cross_promo_last_at: None,
             cross_promo_count: 0,
@@ -623,13 +624,13 @@ impl Config {
     }
 
     /// Whether a tool call of this kind should wait for the phone (`phone_approvals`). An
-    /// unknown value counts as `all`.
+    /// unknown value counts as the default, `commands`.
     pub fn approval_wanted(&self, class: crate::payload::ToolClass) -> bool {
         use crate::payload::ToolClass;
         match self.phone_approvals.as_str() {
             "off" => false,
-            "commands" => class == ToolClass::Command,
-            _ => class.side_effects(),
+            "all" => class.side_effects(),
+            _ => class == ToolClass::Command,
         }
     }
 
@@ -1040,6 +1041,23 @@ mod locale_tests {
             .iter()
             .map(|v| v.map(str::to_string))
             .collect()
+    }
+
+    #[test]
+    fn only_commands_wait_for_the_phone_unless_asked() {
+        use crate::payload::ToolClass::{Command, Edit, Other, Passive, Question};
+        use super::Config;
+        let mut cfg = Config::default();
+        assert_eq!(cfg.phone_approvals, "commands");
+        let wanted = |cfg: &Config| [Command, Edit, Other, Passive, Question].map(|c| cfg.approval_wanted(c));
+        assert_eq!(wanted(&cfg), [true, false, false, false, false]);
+        cfg.phone_approvals = "all".into();
+        assert_eq!(wanted(&cfg), [true, true, true, false, false]);
+        cfg.phone_approvals = "off".into();
+        assert_eq!(wanted(&cfg), [false; 5]);
+        // A value from a newer or older version reads as the default
+        cfg.phone_approvals = "everything".into();
+        assert_eq!(wanted(&cfg), [true, false, false, false, false]);
     }
 
     #[test]

@@ -1120,7 +1120,8 @@ impl Ctx {
         HOLDING_QUESTION.store(is_question, Ordering::SeqCst);
         HOLDING.store(true, Ordering::SeqCst);
 
-        let deadline = Instant::now() + Duration::from_secs(ceiling);
+        let hold_started = Instant::now();
+        let deadline = hold_started + Duration::from_secs(ceiling);
         let (tx, rx) = mpsc::channel::<Option<String>>();
         let api = self.api.clone();
         let poll_id = id.clone();
@@ -1171,7 +1172,8 @@ impl Ctx {
                 }
                 Ok(None) => return Ok(Hold::Unanswered),
                 Err(mpsc::RecvTimeoutError::Timeout) => {
-                    if presence::user_present(threshold) {
+                    // Real input since the hold began, not a screen that woke by itself
+                    if presence::returned_since(hold_started.elapsed(), threshold) {
                         log(&format!("{id}: user returned to the keyboard"));
                         return Ok(Hold::Unanswered);
                     }
