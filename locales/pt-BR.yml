@@ -55,7 +55,7 @@ common:
 
 pair:
   reregister: "O pareamento antigo deste computador foi removido, então ele será registrado de novo."
-  code_not_recognised: "Esse código não foi reconhecido. O código de 6 dígitos está no app Antigravity Notifier em Computadores > Conectar um computador; ele muda a cada 24 horas, então copie a linha que o app mostra agora."
+  code_not_recognised: "Esse código não foi reconhecido. O código de 6 dígitos está no app Antigravity Notifier em Agentes > Conectar um computador; ele muda a cada 24 horas, então copie a linha que o app mostra agora."
   offer_qr: "Pressione Enter para mostrar um QR code aqui em vez disso (escaneie com o celular), ou Ctrl+C."
   options_without_terminal: "Rode `antigravity-notifier pair <code>` de novo com o código que o app mostra agora, ou rode `antigravity-notifier pair` para mostrar um QR code aqui e escanear com o celular."
   scan: "  Escaneie isto com a câmera do celular para conectá-lo. Se ainda não tem o app, isto\n  leva à App Store ou ao Google Play: instale e escaneie de novo."

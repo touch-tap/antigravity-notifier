@@ -56,7 +56,7 @@ common:
 
 pair:
   reregister: "Il vecchio abbinamento di questo computer è stato rimosso, quindi verrà registrato di nuovo."
-  code_not_recognised: "Codice non riconosciuto. Il codice a 6 cifre è nell'app Antigravity Notifier, in Computer > Collega un computer; cambia ogni 24 ore, quindi copia la riga che l'app mostra adesso."
+  code_not_recognised: "Codice non riconosciuto. Il codice a 6 cifre è nell'app Antigravity Notifier, in Agenti > Collega un computer; cambia ogni 24 ore, quindi copia la riga che l'app mostra adesso."
   offer_qr: "Premi Invio per mostrare qui un codice QR al suo posto (scansionalo con il telefono), oppure Ctrl+C."
   options_without_terminal: "Esegui di nuovo `antigravity-notifier pair <codice>` con il codice che l'app mostra adesso, oppure `antigravity-notifier pair` per mostrare qui un codice QR e scansionarlo con il telefono."
   scan: "  Scansiona questo con la fotocamera del telefono per collegarlo. Se non hai ancora l'app,\n  ti porta sull'App Store o su Google Play: installala, poi scansiona di nuovo."

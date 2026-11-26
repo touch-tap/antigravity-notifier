@@ -56,7 +56,7 @@ common:
 
 pair:
   reregister: "L'ancien jumelage de cet ordinateur a été supprimé, il va donc être enregistré à nouveau."
-  code_not_recognised: "Ce code n'a pas été reconnu. Le code à 6 chiffres est dans l'app Antigravity Notifier, sous Ordinateurs > Associer un ordinateur ; il change toutes les 24 heures, alors copie la ligne que l'app affiche en ce moment."
+  code_not_recognised: "Ce code n'a pas été reconnu. Le code à 6 chiffres est dans l'app Antigravity Notifier, sous Agents > Associer un ordinateur ; il change toutes les 24 heures, alors copie la ligne que l'app affiche en ce moment."
   offer_qr: "Appuie sur Entrée pour afficher plutôt un QR code ici (scanne-le avec ton téléphone), ou Ctrl+C."
   options_without_terminal: "Relance `antigravity-notifier pair <code>` avec le code que l'app affiche maintenant, ou lance `antigravity-notifier pair` pour afficher un QR code ici et le scanner avec ton téléphone."
   scan: "  Scanne ceci avec l'appareil photo de ton téléphone pour le connecter. Sans l'app, cela\n  t'emmène sur l'App Store ou Google Play : installe-la, puis scanne à nouveau."

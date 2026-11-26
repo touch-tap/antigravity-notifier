@@ -57,7 +57,7 @@ common:
 
 pair:
   reregister: "This computer's old pairing has been removed, so it will be registered again."
-  code_not_recognised: "That code wasn't recognised. The 6-digit code is in the Antigravity Notifier app under Machines > Link a computer; it changes every 24 hours, so copy the line the app shows right now."
+  code_not_recognised: "That code wasn't recognised. The 6-digit code is in the Antigravity Notifier app under Agents > Link a computer; it changes every 24 hours, so copy the line the app shows right now."
   offer_qr: "Press Enter to show a QR code here instead (scan it with your phone), or Ctrl+C."
   options_without_terminal: "Run `antigravity-notifier pair <code>` again with the code the app shows now, or run `antigravity-notifier pair` to show a QR code here and scan it with your phone."
   scan: "  Scan this with your phone's camera to connect it. Without the app yet, it\n  takes you to the App Store or Google Play: install, then scan again."

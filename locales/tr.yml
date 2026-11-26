@@ -58,7 +58,7 @@ common:
 
 pair:
   reregister: "Bu bilgisayarın eski eşlemesi kaldırıldı, bu yüzden yeniden kaydedilecek."
-  code_not_recognised: "Bu kod tanınmadı. 6 haneli kod, Antigravity Notifier uygulamasında Bilgisayarlar > Bilgisayar bağla altında; her 24 saatte değişir, bu yüzden uygulamanın şu an gösterdiği satırı kopyalayın."
+  code_not_recognised: "Bu kod tanınmadı. 6 haneli kod, Antigravity Notifier uygulamasında Ajanlar > Bilgisayar bağla altında; her 24 saatte değişir, bu yüzden uygulamanın şu an gösterdiği satırı kopyalayın."
   offer_qr: "Bunun yerine burada bir QR kodu göstermek için Enter'a basın (telefonunuzla tarayın) ya da Ctrl+C."
   options_without_terminal: "Uygulamanın şu an gösterdiği kodla `antigravity-notifier pair <kod>` komutunu yeniden çalıştırın ya da burada bir QR kodu gösterip telefonunuzla taramak için `antigravity-notifier pair` çalıştırın."
   scan: "  Telefonunuzu bağlamak için bunu kamerasıyla tarayın. Uygulama henüz yoksa sizi\n  App Store'a veya Google Play'e götürür: kurun, sonra yeniden tarayın."

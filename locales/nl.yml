@@ -55,7 +55,7 @@ common:
 
 pair:
   reregister: "De oude koppeling van deze computer is verwijderd, dus hij wordt opnieuw geregistreerd."
-  code_not_recognised: "Die code is niet herkend. De 6-cijferige code staat in de app Antigravity Notifier onder Computers > Koppel een computer; hij verandert elke 24 uur, dus kopieer de regel die de app nu toont."
+  code_not_recognised: "Die code is niet herkend. De 6-cijferige code staat in de app Antigravity Notifier onder Agents > Koppel een computer; hij verandert elke 24 uur, dus kopieer de regel die de app nu toont."
   offer_qr: "Druk op Enter om hier in plaats daarvan een QR-code te tonen (scan die met je telefoon), of Ctrl+C."
   options_without_terminal: "Voer `antigravity-notifier pair <code>` opnieuw uit met de code die de app nu toont, of voer `antigravity-notifier pair` uit om hier een QR-code te tonen en scan die met je telefoon."
   scan: "  Scan dit met de camera van je telefoon om hem te koppelen. Heb je de app nog niet,\n  dan brengt het je naar de App Store of Google Play: installeer, en scan opnieuw."

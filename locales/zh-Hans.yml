@@ -55,7 +55,7 @@ common:
 
 pair:
   reregister: "这台电脑之前的配对已被移除，所以会重新注册。"
-  code_not_recognised: "无法识别这个配对码。6 位配对码在 Antigravity Notifier 应用的“电脑 > 连接电脑”里；它每 24 小时更换一次，所以请复制应用此刻显示的那一行。"
+  code_not_recognised: "无法识别这个配对码。6 位配对码在 Antigravity Notifier 应用的“智能体 > 连接电脑”里；它每 24 小时更换一次，所以请复制应用此刻显示的那一行。"
   offer_qr: "按 Enter 改为在这里显示二维码（用手机扫描），或按 Ctrl+C 退出。"
   options_without_terminal: "用应用现在显示的配对码再次运行 `antigravity-notifier pair <code>`，或运行 `antigravity-notifier pair` 在这里显示二维码，再用手机扫描。"
   scan: "  用手机相机扫描它即可连接。还没有应用的话，它会带你去 App Store 或\n  Google Play: 安装后再扫一次。"

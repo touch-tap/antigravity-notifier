@@ -188,6 +188,21 @@ mod tests {
         }
     }
 
+    /// The phone app's computers live on its Agents tab (it has no "Machines" tab): the help for a code
+    /// that wasn't recognised must send people there, in every language
+    #[test]
+    fn the_pairing_help_names_the_agents_tab() {
+        let english = rust_i18n::t!("pair.code_not_recognised", locale = "en");
+        assert!(english.contains("under Agents > Link a computer"), "{english}");
+        for locale in crate::config::LOCALES {
+            let text = rust_i18n::t!("pair.code_not_recognised", locale = locale);
+            assert!(text.contains(" > "), "{locale}: {text}");
+            assert!(!text.contains("Machines"), "{locale}: {text}");
+        }
+        let german = rust_i18n::t!("pair.code_not_recognised", locale = "de");
+        assert!(german.contains("unter Agenten > "), "{german}");
+    }
+
     #[test]
     fn an_unknown_locale_falls_back_to_english() {
         // A locale with no file: the English text, never the raw key
