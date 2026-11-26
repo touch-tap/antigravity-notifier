@@ -1,6 +1,6 @@
-# Translating codex-notifier
+# Translating antigravity-notifier
 
-`codex-notifier` is the Notifier for Codex command for the terminal. Everything a person reads from it
+`antigravity-notifier` is the Antigravity Notifier command for the terminal. Everything a person reads from it
 (terminal output, desktop notifications, the one-line messages it hands to Codex, `--help`
 descriptions) lives in one YAML file per language in this folder. `en.yml` is the source; a
 translation is a copy of it with the values changed and the keys left alone. No Rust changes are
@@ -17,12 +17,12 @@ pt-BR.yml  ru.yml  tr.yml  vi.yml  zh-Hans.yml  zh-Hant.yml
 
 These are the same 17 as the phone apps and the website. The binary maps the OS locale onto one of
 them (`pt_PT` → `pt-BR`, `zh-TW`/`zh-HK` → `zh-Hant`, everything else Chinese → `zh-Hans`,
-`iw` → `he`); `CODEX_NOTIFIER_LANG=de` overrides the OS.
+`iw` → `he`); `ANTIGRAVITY_NOTIFIER_LANG=de` overrides the OS.
 
 Keep the file's shape: `_version: 1` at the top, then the same nested keys as `en.yml`, in the
 same order, so a diff against English is readable. Comments (`# ...`) are notes for you; copy or
 drop them as you like. Every value is double-quoted. Inside the quotes, `\"` is a quote and `\n`
-is a line break; leading spaces (`"  codex-notifier unlock ..."`) are deliberate indentation and must stay.
+is a line break; leading spaces (`"  antigravity-notifier unlock ..."`) are deliberate indentation and must stay.
 
 A new or edited file is picked up by the next `cargo build` (build.rs watches this folder).
 
@@ -53,17 +53,17 @@ for all of those in your language, even if it would ideally have more forms. Oth
 
 Do not translate:
 
-- Command lines and command names: `codex-notifier pair`, `codex-notifier pair <code>`, `codex-notifier setup`,
-  `codex-notifier unlock --lifetime`, `codex-notifier activate <key>`, `codex-notifier doctor`, `codex-notifier config set pair_nudges off`,
-  `codex`, `npx @touchtap/codex-notifier`. The `<code>` and `<key>` placeholders inside them may be
+- Command lines and command names: `antigravity-notifier pair`, `antigravity-notifier pair <code>`, `antigravity-notifier setup`,
+  `antigravity-notifier unlock --lifetime`, `antigravity-notifier activate <key>`, `antigravity-notifier doctor`, `antigravity-notifier config set pair_nudges off`,
+  `codex`, `npx @touchtap/antigravity-notifier`. The `<code>` and `<key>` placeholders inside them may be
   translated if your language's readers would expect it, but keep the angle brackets.
 - Setting keys and their values: `notify_on_done`, `quiet_hours`, `hold_ceiling_seconds`,
   `credential_store`, `auto_update`, `pair_nudges`, `keychain`, `file`, `on`, `off`, `HH:MM`.
   They are what the user types back.
-- File and product names: `SHA256SUMS`, `codex-notifier.log`, `config.toml`, `tmux`,
+- File and product names: `SHA256SUMS`, `antigravity-notifier.log`, `config.toml`, `tmux`,
   `AppleScript`, `npx`, `Homebrew`, App Store, Google Play, `Ctrl+C`, `Enter`.
-- Product names: "Notifier for Codex", "Codex". The phone app is "the Notifier for Codex app".
-- URLs and paths: `notifierforcodex.com/licence`, `%{path}`, `%{url}`.
+- Product names: "Antigravity Notifier", "Codex". The phone app is "the Antigravity Notifier app".
+- URLs and paths: `antigravitynotifier.com/licence`, `%{path}`, `%{url}`.
 - Key formats: `CCN-…-%{last4}` (the server issues every licence key with the CCN- prefix).
 - The `ok ` / `!! ` markers are added by the program, not in the YAML.
 
@@ -72,14 +72,14 @@ Translate "System Settings > Notifications" the way Apple writes it in your lang
 "Link a computer" button, copied exactly from the app's own strings (iOS `tabs.codex.machines` and
 `codex.machines.link`).
 
-`forget.yes_word` is the word the user types to confirm `codex-notifier forget` (English `yes` is always
+`forget.yes_word` is the word the user types to confirm `antigravity-notifier forget` (English `yes` is always
 accepted too); `forget.prompt` shows it through `%{yes}`. `licence.no_initial` is the first letter
 of your word for "no", for the `[Y/n]` prompt in `licence.yes_no`; `n` always means no as well.
 
 ## Register and voice
 
 Match the phone apps, the website and the push copy for your language (PushCopy strings in the
-iOS and Android apps), so a person who installs codex-notifier from the app hears the same voice:
+iOS and Android apps), so a person who installs antigravity-notifier from the app hears the same voice:
 
 - fr: `tu`, not `vous`
 - de: `du`
@@ -93,9 +93,9 @@ iOS and Android apps), so a person who installs codex-notifier from the app hear
 - pt-BR: `você`
 - it, nl, pl, ru, vi, zh: the informal-but-polite register of good developer tools
 
-Imperatives are instructions to the reader ("Run `codex-notifier pair` in a terminal"), not commands at
+Imperatives are instructions to the reader ("Run `antigravity-notifier pair` in a terminal"), not commands at
 them; keep them short. "Phone" means the paired iPhone or Android phone; "this computer" means the
-one `codex-notifier` is running on. "Pair" is the product's word for connecting a phone (the apps use it
+one `antigravity-notifier` is running on. "Pair" is the product's word for connecting a phone (the apps use it
 too), "unlock" for buying a licence; use the same words the app uses on screen.
 
 ## Length
@@ -109,10 +109,10 @@ too), "unlock" for buying a licence; use the same words the app uses on screen.
   phone shows them exactly as sent, in this computer's language.
 - `systemMessage` lines (`local.pair_message`, `hook.*_message`, `update.available_message`): one
   line that Codex shows in the terminal; aim for the English length, never more than about
-  220 characters. They start with "Notifier for Codex:" so the reader knows who is talking: keep
+  220 characters. They start with "Antigravity Notifier:" so the reader knows who is talking: keep
   that prefix.
 - `--help` descriptions (`cli.*`): one line each, no full stop at the end (clap prints them in a
-  table). `cli.about` is the first line of `codex-notifier --help`.
+  table). `cli.about` is the first line of `antigravity-notifier --help`.
 - Column layouts (`status.hint_*`, `licence.buy_options`, `licence.have_key`, `pair.pitch_*`):
   the command and the explanation are separated by spaces so they line up; keep the spaces and
   change only the words after them.
@@ -123,9 +123,9 @@ too), "unlock" for buying a licence; use the same words the app uses on screen.
 
 ```sh
 cargo test                      # keys and placeholders match English
-cargo build && CODEX_NOTIFIER_LANG=de ./target/debug/codex-notifier --help
-CODEX_NOTIFIER_LANG=de ./target/debug/codex-notifier licence
-CODEX_NOTIFIER_LANG=de ./target/debug/codex-notifier config set sound maybe    # an error message
+cargo build && ANTIGRAVITY_NOTIFIER_LANG=de ./target/debug/antigravity-notifier --help
+ANTIGRAVITY_NOTIFIER_LANG=de ./target/debug/antigravity-notifier licence
+ANTIGRAVITY_NOTIFIER_LANG=de ./target/debug/antigravity-notifier config set sound maybe    # an error message
 ```
 
 If a value looks right in the file but English shows up, the key is misspelt or the file is named

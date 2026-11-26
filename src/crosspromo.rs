@@ -1,9 +1,9 @@
-//! The one place codex-notifier mentions its sister app: Claude Code Notifier (its computer side is
+//! The one place antigravity-notifier mentions its sister app: Claude Code Notifier (its computer side is
 //! ccn), which does the same for Claude Code. Shown only to someone who has Claude Code and not ccn
-//! already, and only where the user is looking at codex-notifier anyway: the end of every
-//! `codex-notifier pair` (with a QR code for the app: the phone is in their hand), a hint in
+//! already, and only where the user is looking at antigravity-notifier anyway: the end of every
+//! `antigravity-notifier pair` (with a QR code for the app: the phone is in their hand), a hint in
 //! `status` and `doctor`, and at most twice ever in Codex at SessionStart. Never a desktop
-//! notification. ccn's own copy of this module suggests codex-notifier the same way.
+//! notification. ccn's own copy of this module suggests antigravity-notifier the same way.
 //!
 //! Detection is a few `stat` calls and at most one small file read: no network.
 
@@ -29,7 +29,7 @@ const UNIX_COMMAND: &str = "curl -fsSL https://claudecodenotifier.com/install.sh
 const WINDOWS_COMMAND: &str = "irm https://claudecodenotifier.com/install.ps1 | iex; ccn pair";
 /// The website, whose buttons take a phone to the App Store or Google Play
 pub const URL: &str = "https://claudecodenotifier.com/?ref=codex-cli";
-/// The QR code and link after `codex-notifier pair`: /get sends a phone straight to the App Store or
+/// The QR code and link after `antigravity-notifier pair`: /get sends a phone straight to the App Store or
 /// Google Play (and shows a computer both store buttons), tagged ref=codex-pair
 pub const PAIR_URL: &str = "https://claudecodenotifier.com/get?ref=codex-pair";
 /// Where a click on the SessionStart notification goes
@@ -40,7 +40,7 @@ pub const NOTIFICATION_URL: &str = "https://claudecodenotifier.com/?ref=codex-no
 pub struct Places {
     /// Claude Code's config folder: `$CLAUDE_CONFIG_DIR`, else `~/.claude`
     pub claude_dir: PathBuf,
-    /// ccn's own folder, found the way ccn finds it (and codex-notifier finds its own)
+    /// ccn's own folder, found the way ccn finds it (and antigravity-notifier finds its own)
     pub ccn_dir: PathBuf,
     /// `$PATH`
     pub path: Option<OsString>,
@@ -151,7 +151,7 @@ pub fn worth_suggesting(places: &Places) -> bool {
     claude_present(places) && !ccn_present(places)
 }
 
-/// The setting is on and `CODEX_NOTIFIER_NO_NUDGE` isn't set.
+/// The setting is on and `ANTIGRAVITY_NOTIFIER_NO_NUDGE` isn't set.
 pub fn enabled(cfg: &Config) -> bool {
     cfg.cross_promo && !crate::local::no_nudge_env()
 }
@@ -194,7 +194,7 @@ pub fn print_hint(cfg: &Config, place: &str) {
     }
 }
 
-/// After every successful `codex-notifier pair`, when eligible: the phone is in their hand, so a
+/// After every successful `antigravity-notifier pair`, when eligible: the phone is in their hand, so a
 /// QR code for the app, its link, and the one command for this computer.
 pub fn print_after_pair(cfg: &Config) {
     if !eligible(cfg) {
@@ -285,7 +285,7 @@ mod tests {
 
     fn temp(name: &str) -> PathBuf {
         let dir = std::env::temp_dir().join(format!(
-            "codex-notifier-crosspromo-{name}-{}",
+            "antigravity-notifier-crosspromo-{name}-{}",
             std::process::id()
         ));
         let _ = fs::remove_dir_all(&dir);

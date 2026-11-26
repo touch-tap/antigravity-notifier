@@ -1,14 +1,14 @@
 #!/bin/bash
-# codex-notifier end to end against CCNotifier_Server running as `wrangler dev --local --port 8799`, with curl
+# antigravity-notifier end to end against CCNotifier_Server running as `wrangler dev --local --port 8799`, with curl
 # playing the phone. Needs `cargo build` first. CXN_TEST_DIR, CXN_BIN and CXN_SERVER override the defaults.
 set -u
-S=${CXN_TEST_DIR:-/tmp/codex-notifier-e2e}; mkdir -p $S/codex-home
-B=${CXN_BIN:-$(cd "$(dirname "$0")/.." && pwd)/target/debug/codex-notifier}
+S=${CXN_TEST_DIR:-/tmp/antigravity-notifier-e2e}; mkdir -p $S/codex-home
+B=${CXN_BIN:-$(cd "$(dirname "$0")/.." && pwd)/target/debug/antigravity-notifier}
 SERVER=${CXN_SERVER:-http://127.0.0.1:8799}
-export CODEX_HOME=$S/codex-home CODEX_NOTIFIER_HOME=$S/cxn-home CODEX_NOTIFIER_SERVER_URL=$SERVER
-export CODEX_NOTIFIER_NOTIFY=off CODEX_NOTIFIER_NO_ANALYTICS=1 CODEX_NOTIFIER_CREDENTIAL_STORE=file
+export CODEX_HOME=$S/codex-home ANTIGRAVITY_NOTIFIER_HOME=$S/cxn-home ANTIGRAVITY_NOTIFIER_SERVER_URL=$SERVER
+export ANTIGRAVITY_NOTIFIER_NOTIFY=off ANTIGRAVITY_NOTIFIER_NO_ANALYTICS=1 ANTIGRAVITY_NOTIFIER_CREDENTIAL_STORE=file
 DEVICE=$(uuidgen | tr A-Z a-z)
-rm -rf $CODEX_NOTIFIER_HOME; rm -f $CODEX_HOME/hooks.json; printf 'model = "gpt-5.4"\nmodel_reasoning_effort = "low"\n' > $CODEX_HOME/config.toml
+rm -rf $ANTIGRAVITY_NOTIFIER_HOME; rm -f $CODEX_HOME/hooks.json; printf 'model = "gpt-5.4"\nmodel_reasoning_effort = "low"\n' > $CODEX_HOME/config.toml
 pass=0; fail=0
 ok()   { echo "  ok   $1"; pass=$((pass+1)); }
 bad()  { echo "  FAIL $1"; fail=$((fail+1)); }
@@ -18,17 +18,17 @@ echo "== phone shows a code"
 CODE=$(phone -X POST $SERVER/api/pairing/request-for-device -d "{\"deviceId\":\"$DEVICE\",\"platform\":\"ios\",\"name\":\"qa-codex-phone\"}" | python3 -c 'import sys,json;print(json.load(sys.stdin)["code"])')
 echo "  code $CODE"
 
-echo "== codex-notifier pair \$CODE"
+echo "== antigravity-notifier pair \$CODE"
 out=$($B pair "$CODE" --name qa-codex-mac </dev/null 2>&1); echo "$out" | sed 's/^/  | /'
 echo "$out" | grep -q "Paired with" && ok "paired" || bad "pair"
 grep -q '"SessionStart"' $CODEX_HOME/hooks.json && ok "hooks.json written" || bad "hooks.json"
 grep -q 'trusted_hash' $CODEX_HOME/config.toml && ok "trust hashes written" || bad "trust"
 
-echo "== server sees codex_cli"
+echo "== server sees antigravity_cli"
 me=$(phone $SERVER/api/pairings)
-echo "$me" | grep -q '"clientKind":"codex_cli"' && ok "pairing lists clientKind codex_cli" || bad "clientKind: $me"
+echo "$me" | grep -q '"clientKind":"antigravity_cli"' && ok "pairing lists clientKind antigravity_cli" || bad "clientKind: $me"
 
-hook() { CODEX_NOTIFIER_PRESENCE=${PRESENCE:-present} $B hook; }
+hook() { ANTIGRAVITY_NOTIFIER_PRESENCE=${PRESENCE:-present} $B hook; }
 latest_pending() {
   phone "$SERVER/api/notifications" | python3 -c '
 import sys,json
@@ -100,7 +100,7 @@ took=$(( $(date +%s) - start ))
 echo "== SessionEnd"
 out=$(echo '{"hook_event_name":"SessionEnd","session_id":"s1","cwd":"/tmp/proj","reason":"exit","transcript_path":null}' | hook)
 [ -z "$out" ] && ok "silent" || bad "output: $out"
-[ ! -e $CODEX_NOTIFIER_HOME/sessions/s1.json ] && ok "session state removed" || bad "state left"
+[ ! -e $ANTIGRAVITY_NOTIFIER_HOME/sessions/s1.json ] && ok "session state removed" || bad "state left"
 
 echo "== doctor"
 $B doctor 2>&1 | sed 's/^/  | /' | grep -i "trust\|hooks\|registered\|phones"
@@ -111,4 +111,4 @@ $B uninstall </dev/null >/dev/null 2>&1
 ! grep -q trusted_hash $CODEX_HOME/config.toml && ok "trust entries removed" || bad "trust left"
 echo
 echo "passed $pass, failed $fail"
-echo "--- log"; tail -25 $CODEX_NOTIFIER_HOME/codex-notifier.log 2>/dev/null
+echo "--- log"; tail -25 $ANTIGRAVITY_NOTIFIER_HOME/antigravity-notifier.log 2>/dev/null

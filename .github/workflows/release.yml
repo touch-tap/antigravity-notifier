@@ -39,12 +39,12 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           # scripts/release.sh signs and notarizes it on the developer's Mac and attaches it to the draft
-          gh release download "$GITHUB_REF_NAME" -p codex-notifier-macos-app.zip -D "$RUNNER_TEMP"
-          ditto -x -k "$RUNNER_TEMP/codex-notifier-macos-app.zip" "$RUNNER_TEMP"
-          app="$RUNNER_TEMP/Notifier for Codex.app"
+          gh release download "$GITHUB_REF_NAME" -p antigravity-notifier-macos-app.zip -D "$RUNNER_TEMP"
+          ditto -x -k "$RUNNER_TEMP/antigravity-notifier-macos-app.zip" "$RUNNER_TEMP"
+          app="$RUNNER_TEMP/Antigravity Notifier.app"
           codesign --verify --strict "$app"
           spctl --assess --type exec -vv "$app" 2>&1 | tee /dev/stderr | grep -q "Notarized Developer ID"
-          echo "CODEX_NOTIFIER_NOTIFIER_APP=$app" >> "$GITHUB_ENV"
+          echo "ANTIGRAVITY_NOTIFIER_NOTIFIER_APP=$app" >> "$GITHUB_ENV"
       - name: Build
         shell: bash
         run: |
@@ -59,13 +59,13 @@ jobs:
           mkdir dist
           cd target/${{ matrix.target }}/release
           if [ "${{ runner.os }}" = Windows ]; then
-            7z a ../../../dist/codex-notifier-${{ matrix.target }}.zip codex-notifier.exe
+            7z a ../../../dist/antigravity-notifier-${{ matrix.target }}.zip antigravity-notifier.exe
           else
-            tar czf ../../../dist/codex-notifier-${{ matrix.target }}.tar.gz codex-notifier
+            tar czf ../../../dist/antigravity-notifier-${{ matrix.target }}.tar.gz antigravity-notifier
           fi
       - uses: actions/upload-artifact@v4
         with:
-          name: codex-notifier-${{ matrix.target }}
+          name: antigravity-notifier-${{ matrix.target }}
           path: dist/*
 
   release:
@@ -80,7 +80,7 @@ jobs:
       - name: Checksums
         run: cd dist && sha256sum * > SHA256SUMS && cat SHA256SUMS
       - name: Homebrew formula
-        run: scripts/brew-formula.sh "${GITHUB_REF_NAME#v}" dist/SHA256SUMS > dist/codex-notifier.rb
+        run: scripts/brew-formula.sh "${GITHUB_REF_NAME#v}" dist/SHA256SUMS > dist/antigravity-notifier.rb
       - name: Add to the draft release
         env:
           GH_TOKEN: ${{ github.token }}

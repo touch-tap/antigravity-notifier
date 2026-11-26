@@ -1,4 +1,4 @@
-//! A small append-only log under the codex-notifier directory. Hooks have no terminal, so this is the only
+//! A small append-only log under the antigravity-notifier directory. Hooks have no terminal, so this is the only
 //! place their failures can go. Kept under 1 MB.
 
 use std::fs::{self, OpenOptions};
@@ -9,8 +9,8 @@ use crate::config;
 const MAX_BYTES: u64 = 1024 * 1024;
 
 pub fn log(message: &str) {
-    // Unit tests run without CODEX_NOTIFIER_HOME: they must not write to the real codex-notifier directory
-    if cfg!(test) && std::env::var_os("CODEX_NOTIFIER_HOME").is_none() {
+    // Unit tests run without ANTIGRAVITY_NOTIFIER_HOME: they must not write to the real antigravity-notifier directory
+    if cfg!(test) && std::env::var_os("ANTIGRAVITY_NOTIFIER_HOME").is_none() {
         return;
     }
     let path = config::log_path();
@@ -24,7 +24,7 @@ pub fn log(message: &str) {
     }
     let mut options = OpenOptions::new();
     options.create(true).append(true);
-    // The log names projects and errors: this user's only, like the rest of the codex-notifier directory
+    // The log names projects and errors: this user's only, like the rest of the antigravity-notifier directory
     #[cfg(unix)]
     {
         use std::os::unix::fs::OpenOptionsExt;

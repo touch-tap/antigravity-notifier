@@ -2,8 +2,8 @@
 //! after the 20th request or done card answered from the phone while Codex waited, at the next
 //! SessionStart that shows nothing else, and never the same day as the ccn suggestion or a licence
 //! nudge. A desktop notification whose click opens the server's /rate page (which sends the phone
-//! to its store), plus a line in Codex. `codex-notifier config set rate_prompt off` or
-//! `CODEX_NOTIFIER_NO_NUDGE=1` turns it off.
+//! to its store), plus a line in Codex. `antigravity-notifier config set rate_prompt off` or
+//! `ANTIGRAVITY_NOTIFIER_NO_NUDGE=1` turns it off.
 
 use rust_i18n::t;
 use serde_json::{Value, json};
@@ -14,7 +14,7 @@ const DAY: i64 = 24 * 60 * 60;
 /// Answers from the phone before the request is due
 pub const MIN_ANSWERS: u64 = 20;
 
-/// The setting is on and `CODEX_NOTIFIER_NO_NUDGE` isn't set.
+/// The setting is on and `ANTIGRAVITY_NOTIFIER_NO_NUDGE` isn't set.
 pub fn enabled(cfg: &Config) -> bool {
     cfg.rate_prompt && !crate::local::no_nudge_env()
 }
@@ -89,7 +89,7 @@ mod tests {
 
     #[test]
     fn one_platform_goes_in_the_url_otherwise_the_page_chooses() {
-        let base = "https://api.notifierforcodex.com/rate?app=codex";
+        let base = "https://ccnotifier-api.touchtap.workers.dev/rate?app=codex";
         assert_eq!(url(&list(&["ios"])), format!("{base}&platform=ios&ref=cli"));
         assert_eq!(
             url(&list(&["android", "android"])),
@@ -126,10 +126,10 @@ mod tests {
         let link = url(&list(&["ios"]));
         for lang in config::LOCALES {
             let text = rust_i18n::t!("rate.notification", locale = lang);
-            assert!(text.contains("Notifier for Codex"), "{lang}: {text}");
+            assert!(text.contains("Antigravity Notifier"), "{lang}: {text}");
             let message = rust_i18n::t!("rate.message", locale = lang, url = link);
             assert!(
-                message.contains("Notifier for Codex") && message.contains(&link),
+                message.contains("Antigravity Notifier") && message.contains(&link),
                 "{lang}: {message}"
             );
         }

@@ -1,12 +1,12 @@
-//! Signs a release's SHA256SUMS, so `codex-notifier upgrade` can tell the release came from TouchTap and not
+//! Signs a release's SHA256SUMS, so `antigravity-notifier upgrade` can tell the release came from TouchTap and not
 //! just from wherever the files were downloaded. Run on the release Mac by scripts/release.sh; the
 //! private key never leaves that Mac's keychain (see RELEASING.md, "The update signing key").
 //!
 //!   cargo run --release --example release-sign -- keygen
 //!       prints a new private key (hex) and its public key (hex) on two lines
-//!   CODEX_NOTIFIER_RELEASE_SIGNING_KEY=<hex> cargo run --release --example release-sign -- sign SHA256SUMS
+//!   ANTIGRAVITY_NOTIFIER_RELEASE_SIGNING_KEY=<hex> cargo run --release --example release-sign -- sign SHA256SUMS
 //!       writes SHA256SUMS.sig: the ed25519 signature of the file, as 128 hex characters
-//!   CODEX_NOTIFIER_RELEASE_SIGNING_KEY=<hex> cargo run --release --example release-sign -- public
+//!   ANTIGRAVITY_NOTIFIER_RELEASE_SIGNING_KEY=<hex> cargo run --release --example release-sign -- public
 //!       prints the public key, to compare with RELEASE_KEYS in src/update.rs
 
 use ed25519_dalek::{Signer, SigningKey};
@@ -27,8 +27,8 @@ fn unhex32(text: &str) -> [u8; 32] {
 }
 
 fn key_from_env() -> SigningKey {
-    let text = std::env::var("CODEX_NOTIFIER_RELEASE_SIGNING_KEY")
-        .expect("set CODEX_NOTIFIER_RELEASE_SIGNING_KEY to the private key (hex)");
+    let text = std::env::var("ANTIGRAVITY_NOTIFIER_RELEASE_SIGNING_KEY")
+        .expect("set ANTIGRAVITY_NOTIFIER_RELEASE_SIGNING_KEY to the private key (hex)");
     SigningKey::from_bytes(&unhex32(&text))
 }
 

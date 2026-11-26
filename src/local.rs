@@ -43,13 +43,13 @@ pub fn pair_system_message() -> String {
     t!("local.pair_message").into_owned()
 }
 
-/// `codex-notifier config set pair_nudges off`, or `CODEX_NOTIFIER_NO_NUDGE=1`, keeps every suggestion to pair quiet.
+/// `antigravity-notifier config set pair_nudges off`, or `ANTIGRAVITY_NOTIFIER_NO_NUDGE=1`, keeps every suggestion to pair quiet.
 pub fn nudges_enabled(cfg: &Config) -> bool {
     cfg.pair_nudges && !no_nudge_env()
 }
 
 pub fn no_nudge_env() -> bool {
-    std::env::var("CODEX_NOTIFIER_NO_NUDGE")
+    std::env::var("ANTIGRAVITY_NOTIFIER_NO_NUDGE")
         .map(|v| !v.is_empty() && v != "0")
         .unwrap_or(false)
 }
@@ -266,7 +266,7 @@ mod tests {
         );
         assert_eq!(
             first_nudge_line(),
-            "Get these on your phone: codex-notifier pair"
+            "Get these on your phone: antigravity-notifier pair"
         );
     }
 }

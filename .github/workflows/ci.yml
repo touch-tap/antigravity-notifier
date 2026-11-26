@@ -7,9 +7,9 @@ on:
 
 # Test runs must not show up in the setup analytics
 env:
-  CODEX_NOTIFIER_NO_ANALYTICS: "1"
+  ANTIGRAVITY_NOTIFIER_NO_ANALYTICS: "1"
   # Runners have no keychain a test should touch
-  CODEX_NOTIFIER_CREDENTIAL_STORE: file
+  ANTIGRAVITY_NOTIFIER_CREDENTIAL_STORE: file
 
 jobs:
   test:
@@ -26,44 +26,44 @@ jobs:
         if: runner.os == 'macOS'
         run: |
           scripts/build-macos-notifier.sh 0.0.0 "$RUNNER_TEMP"
-          echo "CODEX_NOTIFIER_NOTIFIER_APP=$RUNNER_TEMP/Notifier for Codex.app" >> "$GITHUB_ENV"
+          echo "ANTIGRAVITY_NOTIFIER_NOTIFIER_APP=$RUNNER_TEMP/Antigravity Notifier.app" >> "$GITHUB_ENV"
       - run: cargo build --locked
       - run: cargo test --locked
       - name: The notifier app is embedded and written out intact
         if: runner.os == 'macOS'
         env:
-          CODEX_NOTIFIER_HOME: ${{ runner.temp }}/cxn-notifier
-          CODEX_HOME: ${{ runner.temp }}/codex-notifier-app
-          CODEX_NOTIFIER_SERVER_URL: http://127.0.0.1:9
+          ANTIGRAVITY_NOTIFIER_HOME: ${{ runner.temp }}/cxn-notifier
+          CODEX_HOME: ${{ runner.temp }}/antigravity-notifier-app
+          ANTIGRAVITY_NOTIFIER_SERVER_URL: http://127.0.0.1:9
         run: |
           mkdir -p "$CODEX_HOME"
-          ./target/debug/codex-notifier doctor | grep "desktop notifications"
-          codesign --verify --strict "$CODEX_NOTIFIER_HOME/Notifier for Codex.app"
+          ./target/debug/antigravity-notifier doctor | grep "desktop notifications"
+          codesign --verify --strict "$ANTIGRAVITY_NOTIFIER_HOME/Antigravity Notifier.app"
       - name: Smoke test the hook without a pairing
         shell: bash
         env:
-          CODEX_NOTIFIER_HOME: ${{ runner.temp }}/cxn
+          ANTIGRAVITY_NOTIFIER_HOME: ${{ runner.temp }}/cxn
           CODEX_HOME: ${{ runner.temp }}/codex
-          CODEX_NOTIFIER_SERVER_URL: http://127.0.0.1:9
-          CODEX_NOTIFIER_PRESENCE: present
-          CODEX_NOTIFIER_NOTIFY: "off"
+          ANTIGRAVITY_NOTIFIER_SERVER_URL: http://127.0.0.1:9
+          ANTIGRAVITY_NOTIFIER_PRESENCE: present
+          ANTIGRAVITY_NOTIFIER_NOTIFY: "off"
         run: |
           mkdir -p "$CODEX_HOME"
           printf 'model = "gpt-5.4"\n' > "$CODEX_HOME/config.toml"
           # An unpaired hook must exit 0 quickly and print nothing that changes Codex's behaviour
-          out=$(echo '{"hook_event_name":"Stop","session_id":"ci","cwd":"/tmp"}' | ./target/debug/codex-notifier hook)
+          out=$(echo '{"hook_event_name":"Stop","session_id":"ci","cwd":"/tmp"}' | ./target/debug/antigravity-notifier hook)
           test -z "$out"
-          ./target/debug/codex-notifier setup
+          ./target/debug/antigravity-notifier setup
           grep -q '"Stop"' "$CODEX_HOME/hooks.json"
           grep -q 'trusted_hash' "$CODEX_HOME/config.toml"
           grep -q 'model = "gpt-5.4"' "$CODEX_HOME/config.toml"
           # A second setup changes nothing
           before=$(cat "$CODEX_HOME/hooks.json" "$CODEX_HOME/config.toml")
-          ./target/debug/codex-notifier setup
+          ./target/debug/antigravity-notifier setup
           test "$before" = "$(cat "$CODEX_HOME/hooks.json" "$CODEX_HOME/config.toml")"
-          ./target/debug/codex-notifier uninstall
+          ./target/debug/antigravity-notifier uninstall
           # Uninstall removes the hooks and their trust entries and leaves the rest of config.toml
-          if [ -e "$CODEX_HOME/hooks.json" ] && grep -q 'codex-notifier' "$CODEX_HOME/hooks.json"; then
+          if [ -e "$CODEX_HOME/hooks.json" ] && grep -q 'antigravity-notifier' "$CODEX_HOME/hooks.json"; then
             echo "hooks still installed"; exit 1
           fi
           if grep -q 'trusted_hash' "$CODEX_HOME/config.toml"; then echo "trust entries left"; exit 1; fi
@@ -87,9 +87,9 @@ jobs:
           target=$(rustc -vV | sed -n 's/^host: //p')
           target=${target/unknown-linux-gnu/unknown-linux-musl}
           if [ "$RUNNER_OS" = Windows ]; then
-            (cd target/release && 7z a ../../dist/codex-notifier-$target.zip codex-notifier.exe)
+            (cd target/release && 7z a ../../dist/antigravity-notifier-$target.zip antigravity-notifier.exe)
           else
-            tar czf dist/codex-notifier-$target.tar.gz -C target/release codex-notifier
+            tar czf dist/antigravity-notifier-$target.tar.gz -C target/release antigravity-notifier
           fi
           (cd dist && (sha256sum * 2>/dev/null || shasum -a 256 *) > SHA256SUMS && cat SHA256SUMS)
           (cd dist && python3 -m http.server 8765 >/dev/null 2>&1 &)
@@ -97,26 +97,26 @@ jobs:
       - name: install.sh
         if: runner.os != 'Windows'
         env:
-          CODEX_NOTIFIER_DOWNLOAD_BASE: http://127.0.0.1:8765
-          CODEX_NOTIFIER_INSTALL_DIR: ${{ runner.temp }}/bin
-          CODEX_NOTIFIER_HOME: ${{ runner.temp }}/cxn-install
+          ANTIGRAVITY_NOTIFIER_DOWNLOAD_BASE: http://127.0.0.1:8765
+          ANTIGRAVITY_NOTIFIER_INSTALL_DIR: ${{ runner.temp }}/bin
+          ANTIGRAVITY_NOTIFIER_HOME: ${{ runner.temp }}/cxn-install
           CODEX_HOME: ${{ runner.temp }}/codex-install
-          CODEX_NOTIFIER_SERVER_URL: http://127.0.0.1:9
+          ANTIGRAVITY_NOTIFIER_SERVER_URL: http://127.0.0.1:9
         run: |
           sh install/install.sh
-          "$CODEX_NOTIFIER_INSTALL_DIR/codex-notifier" --version
+          "$ANTIGRAVITY_NOTIFIER_INSTALL_DIR/antigravity-notifier" --version
       - name: install.ps1
         if: runner.os == 'Windows'
         shell: pwsh
         env:
-          CODEX_NOTIFIER_DOWNLOAD_BASE: http://127.0.0.1:8765
-          CODEX_NOTIFIER_INSTALL_DIR: ${{ runner.temp }}\bin
-          CODEX_NOTIFIER_HOME: ${{ runner.temp }}\cxn-install
+          ANTIGRAVITY_NOTIFIER_DOWNLOAD_BASE: http://127.0.0.1:8765
+          ANTIGRAVITY_NOTIFIER_INSTALL_DIR: ${{ runner.temp }}\bin
+          ANTIGRAVITY_NOTIFIER_HOME: ${{ runner.temp }}\cxn-install
           CODEX_HOME: ${{ runner.temp }}\codex-install
-          CODEX_NOTIFIER_SERVER_URL: http://127.0.0.1:9
+          ANTIGRAVITY_NOTIFIER_SERVER_URL: http://127.0.0.1:9
         run: |
           Get-Content install/install.ps1 -Raw | iex
-          codex-notifier --version
+          antigravity-notifier --version
           # Running it again replaces the binary in place
           Get-Content install/install.ps1 -Raw | iex
-          codex-notifier --version
+          antigravity-notifier --version

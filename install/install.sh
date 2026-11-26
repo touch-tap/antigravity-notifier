@@ -1,20 +1,20 @@
 #!/bin/sh
-# Installs codex-notifier, the Notifier for Codex CLI, on macOS or Linux, then pairs it with your phone.
+# Installs antigravity-notifier, the Antigravity Notifier, on macOS or Linux, then pairs it with your phone.
 #
-#   curl -fsSL https://notifierforcodex.com/install.sh | sh              # install, then a QR code to pair
-#   curl -fsSL https://notifierforcodex.com/install.sh | sh -s 482913    # install and pair with the app's code
-#   curl -fsSL https://notifierforcodex.com/install.sh | sh -s 482913 --licence CCN-XXXX-XXXX-XXXX-XXXX
-#   curl -fsSL https://notifierforcodex.com/install.sh | sh -s -- --licence CCN-XXXX-XXXX-XXXX-XXXX
+#   curl -fsSL https://antigravitynotifier.com/install.sh | sh              # install, then a QR code to pair
+#   curl -fsSL https://antigravitynotifier.com/install.sh | sh -s 482913    # install and pair with the app's code
+#   curl -fsSL https://antigravitynotifier.com/install.sh | sh -s 482913 --licence CCN-XXXX-XXXX-XXXX-XXXX
+#   curl -fsSL https://antigravitynotifier.com/install.sh | sh -s -- --licence CCN-XXXX-XXXX-XXXX-XXXX
 #                                                     # install, use a licence key (and pair)
 #
-# CODEX_NOTIFIER_VERSION=0.2.0 picks a release (default: the latest). CODEX_NOTIFIER_INSTALL_DIR overrides
-# ~/.local/bin. CODEX_NOTIFIER_NO_ANALYTICS=1 (or DO_NOT_TRACK=1) stops the anonymous install events.
+# ANTIGRAVITY_NOTIFIER_VERSION=0.2.0 picks a release (default: the latest). ANTIGRAVITY_NOTIFIER_INSTALL_DIR overrides
+# ~/.local/bin. ANTIGRAVITY_NOTIFIER_NO_ANALYTICS=1 (or DO_NOT_TRACK=1) stops the anonymous install events.
 #
-# Ported from ccn's install.sh (claudecodenotifier.com). Release assets are codex-notifier-<target>.tar.gz
+# Ported from ccn's install.sh (claudecodenotifier.com). Release assets are antigravity-notifier-<target>.tar.gz
 # plus SHA256SUMS on the GitHub repo below, the names scripts/npm-packages.sh in the engine repo expects.
 set -eu
 
-repo="touch-tap/codex-notifier"
+repo="touch-tap/antigravity-notifier"
 code=""
 licence=""
 while [ $# -gt 0 ]; do
@@ -25,22 +25,22 @@ while [ $# -gt 0 ]; do
     *) [ -z "$code" ] && code="$1"; shift ;;
   esac
 done
-dir="${CODEX_NOTIFIER_INSTALL_DIR:-$HOME/.local/bin}"
+dir="${ANTIGRAVITY_NOTIFIER_INSTALL_DIR:-$HOME/.local/bin}"
 
 say() { printf '%s\n' "$*"; }
 # Set reason before fail to send it with the stage (download: timeout or error)
 reason=""
-fail() { track cli_install_failed "\"stage\":\"$stage\"${reason:+,\"reason\":\"$reason\"}"; printf 'codex-notifier install: %s\n' "$*" >&2; exit 1; }
+fail() { track cli_install_failed "\"stage\":\"$stage\"${reason:+,\"reason\":\"$reason\"}"; printf 'antigravity-notifier install: %s\n' "$*" >&2; exit 1; }
 
 # One anonymous event per step, so we can see where installs fail: the event name, the stage, the
-# OS and processor. Nothing else. CODEX_NOTIFIER_NO_ANALYTICS=1 or DO_NOT_TRACK=1 turns it off.
+# OS and processor. Nothing else. ANTIGRAVITY_NOTIFIER_NO_ANALYTICS=1 or DO_NOT_TRACK=1 turns it off.
 stage="start"
 case "$(uname -s)" in Darwin) model="macos" ;; Linux) model="linux" ;; *) model="other" ;; esac
 case "$(uname -m)" in arm64|aarch64) model="$model-aarch64" ;; x86_64|amd64) model="$model-x86_64" ;; *) model="$model-other" ;; esac
 track() {
-  case "${CODEX_NOTIFIER_NO_ANALYTICS:-}${DO_NOT_TRACK:-}" in ""|0|00) ;; *) return 0 ;; esac
+  case "${ANTIGRAVITY_NOTIFIER_NO_ANALYTICS:-}${DO_NOT_TRACK:-}" in ""|0|00) ;; *) return 0 ;; esac
   body="{\"context\":{\"platform\":\"cli\",\"deviceModel\":\"$model\",\"environment\":\"production\"},\"events\":[{\"name\":\"$1\",\"properties\":{\"agent\":\"codex\",\"method\":\"script\"${2:+,$2}}}]}"
-  url="${CODEX_NOTIFIER_SERVER_URL:-https://api.notifierforcodex.com}/api/events"
+  url="${ANTIGRAVITY_NOTIFIER_SERVER_URL:-https://ccnotifier-api.touchtap.workers.dev}/api/events"
   if command -v curl >/dev/null 2>&1; then
     curl -fsS -m 3 -H 'Content-Type: application/json' -H 'X-App: codex' -d "$body" "$url" >/dev/null 2>&1 || true
   elif command -v wget >/dev/null 2>&1; then
@@ -53,7 +53,7 @@ stage="unsupported"
 case "$(uname -s)" in
   Darwin) os="apple-darwin" ;;
   Linux) os="unknown-linux-musl" ;;
-  *) fail "this script is for macOS and Linux. On Windows run: irm https://notifierforcodex.com/install.ps1 | iex" ;;
+  *) fail "this script is for macOS and Linux. On Windows run: irm https://antigravitynotifier.com/install.ps1 | iex" ;;
 esac
 case "$(uname -m)" in
   arm64|aarch64) arch="aarch64" ;;
@@ -64,12 +64,12 @@ esac
 if [ "$os" = apple-darwin ] && [ "$arch" = x86_64 ] && [ "$(sysctl -n sysctl.proc_translated 2>/dev/null || echo 0)" = 1 ]; then
   arch="aarch64"
 fi
-asset="codex-notifier-$arch-$os.tar.gz"
+asset="antigravity-notifier-$arch-$os.tar.gz"
 
-if [ -n "${CODEX_NOTIFIER_DOWNLOAD_BASE:-}" ]; then
-  base="$CODEX_NOTIFIER_DOWNLOAD_BASE"   # for testing the script against a local build
-elif [ -n "${CODEX_NOTIFIER_VERSION:-}" ]; then
-  base="https://github.com/$repo/releases/download/v${CODEX_NOTIFIER_VERSION#v}"
+if [ -n "${ANTIGRAVITY_NOTIFIER_DOWNLOAD_BASE:-}" ]; then
+  base="$ANTIGRAVITY_NOTIFIER_DOWNLOAD_BASE"   # for testing the script against a local build
+elif [ -n "${ANTIGRAVITY_NOTIFIER_VERSION:-}" ]; then
+  base="https://github.com/$repo/releases/download/v${ANTIGRAVITY_NOTIFIER_VERSION#v}"
 else
   base="https://github.com/$repo/releases/latest/download"
 fi
@@ -97,7 +97,7 @@ get() {
   if [ "$rc" -eq 28 ] || grep -qi 'timed out' "$tmp/fetch.err"; then
     reason="timeout"
     fail "could not download $3: the download timed out.
-In mainland China you can install with: npx --registry=https://registry.npmmirror.com @touchtap/codex-notifier"
+In mainland China you can install with: npx --registry=https://registry.npmmirror.com @touchtap/antigravity-notifier"
   fi
   reason="error"
   fail "could not download $3"
@@ -107,7 +107,7 @@ tmp="$(mktemp -d)"
 trap 'rm -rf "$tmp"' EXIT
 
 stage="download"
-say "Downloading codex-notifier for $arch-$os..."
+say "Downloading antigravity-notifier for $arch-$os..."
 get "$base/$asset" "$tmp/$asset" "$base/$asset"
 get "$base/SHA256SUMS" "$tmp/SHA256SUMS" "the checksums"
 
@@ -124,34 +124,34 @@ stage="unpack"
 tar xzf "$tmp/$asset" -C "$tmp" || fail "could not unpack $asset"
 mkdir -p "$dir"
 # Write beside the target and rename, so a hook running the old binary is never half-overwritten
-cp "$tmp/codex-notifier" "$dir/.codex-notifier.new"
-chmod 755 "$dir/.codex-notifier.new"
-mv "$dir/.codex-notifier.new" "$dir/codex-notifier"
+cp "$tmp/antigravity-notifier" "$dir/.antigravity-notifier.new"
+chmod 755 "$dir/.antigravity-notifier.new"
+mv "$dir/.antigravity-notifier.new" "$dir/antigravity-notifier"
 stage="run"
-version="$("$dir/codex-notifier" --version)" || fail "the downloaded codex-notifier did not run"
-say "Installed $version to $dir/codex-notifier"
+version="$("$dir/antigravity-notifier" --version)" || fail "the downloaded antigravity-notifier did not run"
+say "Installed $version to $dir/antigravity-notifier"
 
-cli="codex-notifier"
+cli="antigravity-notifier"
 case ":$PATH:" in
   *":$dir:"*) ;;
   *)
-    cli="$dir/codex-notifier"
+    cli="$dir/antigravity-notifier"
     say ""
-    say "$dir is not on your PATH. The hooks don't need it, but to type codex-notifier yourself add this to your shell profile:"
+    say "$dir is not on your PATH. The hooks don't need it, but to type antigravity-notifier yourself add this to your shell profile:"
     say "  export PATH=\"$dir:\$PATH\""
     ;;
 esac
 
 on_path=yes
-[ "$cli" = codex-notifier ] || on_path=no
+[ "$cli" = antigravity-notifier ] || on_path=no
 track cli_install_finished "\"pairing\":\"$([ -n "$code" ] && echo yes || echo no)\",\"on_path\":\"$on_path\""
 
-export CODEX_NOTIFIER_INSTALL_METHOD=script
+export ANTIGRAVITY_NOTIFIER_INSTALL_METHOD=script
 # The licence first, so the phone paired after it is unlocked as soon as it connects. A bad key
 # doesn't stop the install; the message says what to do.
 if [ -n "$licence" ]; then
   say ""
-  "$dir/codex-notifier" activate "$licence" < /dev/null || say "The licence wasn't applied. Try again later: $cli activate $licence"
+  "$dir/antigravity-notifier" activate "$licence" < /dev/null || say "The licence wasn't applied. Try again later: $cli activate $licence"
 fi
 # exec replaces this shell, so the EXIT trap never runs: clear the download first
 rm -rf "$tmp"
@@ -161,15 +161,15 @@ trap - EXIT
 say ""
 if [ -n "$code" ]; then
   if (: < /dev/tty) 2>/dev/null; then
-    exec "$dir/codex-notifier" pair "$code" < /dev/tty
+    exec "$dir/antigravity-notifier" pair "$code" < /dev/tty
   else
-    exec "$dir/codex-notifier" pair "$code"
+    exec "$dir/antigravity-notifier" pair "$code"
   fi
 elif (: < /dev/tty) 2>/dev/null; then
   # No code: show a QR code to scan with the phone, which also offers the app if it isn't installed
-  exec "$dir/codex-notifier" pair < /dev/tty
+  exec "$dir/antigravity-notifier" pair < /dev/tty
 else
-  say "To get Codex on your phone: open Notifier for Codex, tap Machines > Link a computer, and run"
+  say "To get Codex on your phone: open Antigravity Notifier, tap Machines > Link a computer, and run"
   say "  $cli pair <the code on your phone>"
   say "or run \`$cli\` in a terminal and scan the QR code."
 fi

@@ -3,14 +3,14 @@
 _version: 1
 
 cli:
-  about: "Notifier for Codex: Codex가 당신을 필요로 할 때 휴대폰으로 푸시 알림을 받고, 거기서 바로 답해요"
+  about: "Antigravity Notifier: Codex가 당신을 필요로 할 때 휴대폰으로 푸시 알림을 받고, 거기서 바로 답해요"
   pair:
     about: "이 컴퓨터를 휴대폰과 연결해요. 앱에 표시된 코드를 넘기거나, 코드 없이 실행해 앱에 입력할 코드를 받으세요"
-    code: "Notifier for Codex 앱에 표시된 6자리 코드"
+    code: "Antigravity Notifier 앱에 표시된 6자리 코드"
     name: "휴대폰에 표시되는 이 컴퓨터의 이름 (기본값: 호스트 이름)"
     no_wait: "QR 코드를 표시하고 바로 돌아와요. 휴대폰이 연결되면 알아서 완료돼요"
   setup:
-    about: "Codex 훅과 데스크톱 알림을 설치해요 (pair와 인수 없는 codex-notifier가 먼저 하는 일이에요)"
+    about: "Codex 훅과 데스크톱 알림을 설치해요 (pair와 인수 없는 antigravity-notifier가 먼저 하는 일이에요)"
   doctor:
     about: "훅, 인증 정보, 서버, 이 터미널이 지원하는 기능을 점검해요"
   test:
@@ -21,14 +21,14 @@ cli:
   config:
     about: "이 컴퓨터의 설정을 보거나 바꿔요 (휴대폰에서도 편집할 수 있어요)"
     show: "적용 중인 설정을 출력해요"
-    set: "설정 하나를 바꿔요. 예: `codex-notifier config set hold_ceiling_seconds 300` 또는 `codex-notifier config set quiet_hours 22:00-08:00`"
+    set: "설정 하나를 바꿔요. 예: `antigravity-notifier config set hold_ceiling_seconds 300` 또는 `antigravity-notifier config set quiet_hours 22:00-08:00`"
   sync:
     about: "서버에서 최신 설정을 지금 받아와요"
   unlock:
     about: "브라우저에서 이 컴퓨터의 라이선스를 구매해요. 이 컴퓨터에 연결된 모든 휴대폰이 잠금 해제돼요"
     lifetime: "매년 대신 한 번만 결제해요 (연간 라이선스를 평생 이용으로 바꿀 때도 키는 그대로예요)"
   upgrade:
-    about: "codex-notifier를 최신 릴리스로 업데이트해요 (하루에 한 번 백그라운드에서도 확인해요)"
+    about: "antigravity-notifier를 최신 릴리스로 업데이트해요 (하루에 한 번 백그라운드에서도 확인해요)"
     check: "새 릴리스가 있는지만 알려요. 최신이면 종료 코드 0, 업데이트가 있으면 10"
     quiet: "문제가 생긴 경우가 아니면 아무것도 출력하지 않아요"
   activate:
@@ -47,7 +47,7 @@ cli:
 
 common:
   your_phone: "휴대폰"
-  not_paired: "이 컴퓨터는 아직 연결되지 않았어요. 앱에 표시된 코드로 `codex-notifier pair <code>`를 실행하세요."
+  not_paired: "이 컴퓨터는 아직 연결되지 않았어요. 앱에 표시된 코드로 `antigravity-notifier pair <code>`를 실행하세요."
   store_keychain: "키체인"
   store_file: "파일"
   # 문장 속 날짜에 쓰는 chrono strftime 형식. chrono는 영어 월 이름만 알기 때문에 숫자 형식을 써요.
@@ -55,9 +55,9 @@ common:
 
 pair:
   reregister: "이 컴퓨터의 이전 연결이 제거되어 있어서 다시 등록해요."
-  code_not_recognised: "그 코드를 인식하지 못했어요. 6자리 코드는 Notifier for Codex 앱의 컴퓨터 > 컴퓨터 연결에 있어요. 24시간마다 바뀌니 앱에 지금 표시된 줄을 복사하세요."
+  code_not_recognised: "그 코드를 인식하지 못했어요. 6자리 코드는 Antigravity Notifier 앱의 컴퓨터 > 컴퓨터 연결에 있어요. 24시간마다 바뀌니 앱에 지금 표시된 줄을 복사하세요."
   offer_qr: "대신 여기에 QR 코드를 표시하려면 Enter를 누르세요 (휴대폰으로 스캔해요). 그만두려면 Ctrl+C."
-  options_without_terminal: "앱에 지금 표시된 코드로 `codex-notifier pair <code>`를 다시 실행하거나, `codex-notifier pair`를 실행해 여기에 QR 코드를 띄우고 휴대폰으로 스캔하세요."
+  options_without_terminal: "앱에 지금 표시된 코드로 `antigravity-notifier pair <code>`를 다시 실행하거나, `antigravity-notifier pair`를 실행해 여기에 QR 코드를 띄우고 휴대폰으로 스캔하세요."
   scan: "  휴대폰 카메라로 이 코드를 스캔하면 연결돼요. 앱이 아직 없다면 App Store나\n  Google Play로 이동해요. 설치한 뒤 다시 스캔하세요."
   or_type_code: "  또는 앱에서 \"컴퓨터에 코드가 표시돼요\"를 탭하고 입력하세요:  %{code}"
   enter_code: "  앱에서 \"컴퓨터에 코드가 표시돼요\"를 탭하고 입력하세요:  %{code}"
@@ -67,20 +67,20 @@ pair:
   code_lasts: "  편할 때 연결하세요. 이 코드는 %{duration} 동안 유효해요."
   completes_on_its_own: "  휴대폰이 연결되면 알아서 완료돼요."
   waiting: "  휴대폰을 기다리는 중... (Ctrl+C를 눌러도 괜찮아요. 휴대폰이 연결되면 알아서 완료돼요)"
-  code_expired: "휴대폰이 사용하기 전에 코드가 만료됐어요. `codex-notifier pair`를 다시 실행하세요."
-  code_is_six_digits: "코드는 Notifier for Codex 앱에 표시된 6자리 숫자예요"
+  code_expired: "휴대폰이 사용하기 전에 코드가 만료됐어요. `antigravity-notifier pair`를 다시 실행하세요."
+  code_is_six_digits: "코드는 Antigravity Notifier 앱에 표시된 6자리 숫자예요"
   credentials_stored: "인증 정보를 %{store}에 저장했어요 (%{path})."
   test_sent: "휴대폰에 테스트 알림을 보냈어요."
   test_failed: "아직 테스트 알림을 보낼 수 없어요: %{error}"
-  done: "끝났어요. 평소처럼 `codex`를 시작하세요. Codex가 끝나거나 당신을 필요로 하면 푸시 알림이 오고,\n휴대폰에서 승인, 거부, 답변을 할 수 있어요. `codex-notifier doctor`로 전체를 점검할 수 있어요."
+  done: "끝났어요. 평소처럼 `codex`를 시작하세요. Codex가 끝나거나 당신을 필요로 하면 푸시 알림이 오고,\n휴대폰에서 승인, 거부, 답변을 할 수 있어요. `antigravity-notifier doctor`로 전체를 점검할 수 있어요."
   paired_with: "%{name} (%{platform})과 연결됐어요."
   hours_one: "1시간"
   hours_other: "%{count}시간"
   minutes_one: "1분"
   minutes_other: "%{count}분"
   pitch: "휴대폰 앱에서 구독을 안내할 거예요. 앱 스토어를 거치지 않고 여기서 바로 전부 잠금 해제할 수도 있어요:"
-  pitch_annual: "  codex-notifier unlock             연 %{price}"
-  pitch_lifetime: "  codex-notifier unlock --lifetime  %{price} 한 번"
+  pitch_annual: "  antigravity-notifier unlock             연 %{price}"
+  pitch_lifetime: "  antigravity-notifier unlock --lifetime  %{price} 한 번"
   pitch_covers: "컴퓨터 %{computers}대와 거기에 연결된 모든 휴대폰에 적용돼요. %{days}일 환불 보장."
   welcome_no_terminal: "테스트 알림이 휴대폰으로 가고 있어요. 거기서 답해 보세요."
   welcome: "테스트 알림이 휴대폰으로 가고 있어요. 거기서 답해 보세요..."
@@ -89,15 +89,15 @@ pair:
   welcome_no_answer: "아직 답이 없어요. 알림은 휴대폰에 1시간 동안 남아 있어요."
 
 status:
-  set_up: "codex-notifier %{version}이(가) 이 컴퓨터에 \"%{name}\"으로 설정되어 있어요."
+  set_up: "antigravity-notifier %{version}이(가) 이 컴퓨터에 \"%{name}\"으로 설정되어 있어요."
   licence: "라이선스: %{line}"
-  hint_doctor: "  codex-notifier doctor     훅, 인증 정보, 서버 점검"
-  hint_test: "  codex-notifier test       휴대폰에 테스트 알림 보내기"
-  hint_pair: "  codex-notifier pair       다른 휴대폰 연결"
-  hint_help: "  codex-notifier --help     나머지 전부"
+  hint_doctor: "  antigravity-notifier doctor     훅, 인증 정보, 서버 점검"
+  hint_test: "  antigravity-notifier test       휴대폰에 테스트 알림 보내기"
+  hint_pair: "  antigravity-notifier pair       다른 휴대폰 연결"
+  hint_help: "  antigravity-notifier --help     나머지 전부"
 
 setup:
-  installed_self: "codex-notifier를 %{path}에 설치했어요."
+  installed_self: "antigravity-notifier를 %{path}에 설치했어요."
   hooks_installed: "훅을 %{path}에 설치했어요 (%{exe} 사용)."
   hooks_trusted: "%{path}에 신뢰함으로 표시해서, Codex가 /hooks에 들르지 않아도 실행해요."
 
@@ -106,25 +106,25 @@ sync:
   synced: "설정을 동기화했어요."
 
 doctor:
-  header: "codex-notifier %{version} (%{platform})"
+  header: "antigravity-notifier %{version} (%{platform})"
   config: "설정 파일: %{path}"
   credentials_present: "인증 정보: 있음 (%{store})"
-  credentials_missing: "인증 정보: 없음. `codex-notifier pair <code>`를 실행하세요"
+  credentials_missing: "인증 정보: 없음. `antigravity-notifier pair <code>`를 실행하세요"
   server_reachable: "서버: %{url}에 연결할 수 있어요"
   server_error: "서버: %{error}"
   registered: "\"%{name}\"으로 등록됨 (%{kind} %{platform}), 기능: %{capabilities}"
-  not_paired_any_more: "연결: 더 이상 연결되어 있지 않아요. `codex-notifier pair`를 실행하세요"
+  not_paired_any_more: "연결: 더 이상 연결되어 있지 않아요. `antigravity-notifier pair`를 실행하세요"
   registration_error: "등록: %{error}"
   licence: "라이선스: %{line}"
-  phones_none: "휴대폰: 아직 연결된 휴대폰이 없어서 알림은 이 데스크톱에만 남아요 (`codex-notifier pair` 실행)"
+  phones_none: "휴대폰: 아직 연결된 휴대폰이 없어서 알림은 이 데스크톱에만 남아요 (`antigravity-notifier pair` 실행)"
   phones: "휴대폰: %{names}"
   phones_error: "휴대폰: %{error}"
   hooks_all: "훅: %{count}개 모두 %{path}에 설치됨"
-  hooks_missing: "훅: %{names} 없음 (`codex-notifier setup` 실행)"
+  hooks_missing: "훅: %{names} 없음 (`antigravity-notifier setup` 실행)"
   hooks_error: "훅: %{error}"
-  hooks_stale: "훅이 다른 codex-notifier 바이너리를 가리키고 있어요. `codex-notifier setup`으로 업데이트하세요"
+  hooks_stale: "훅이 다른 antigravity-notifier 바이너리를 가리키고 있어요. `antigravity-notifier setup`으로 업데이트하세요"
   trust_ok: "신뢰: 모든 훅의 해시가 %{path}에 있음"
-  trust_missing: "신뢰: 신뢰할 때까지 Codex가 %{names}을(를) 건너뜀 (`codex-notifier setup` 실행, 또는 Codex에서 /hooks)"
+  trust_missing: "신뢰: 신뢰할 때까지 Codex가 %{names}을(를) 건너뜀 (`antigravity-notifier setup` 실행, 또는 Codex에서 /hooks)"
   presence: "자리 감지: 현재 %{idle}초 동안 입력 없음, 기준 %{threshold}초"
   replies: "답장: 휴대폰에서 보낸 승인과 질문 답변은 어떤 터미널에서도 동작해요. 대기 중인 세션에 자유 입력: %{free_text}"
   replies_tmux: "tmux로 동작해요"
@@ -133,12 +133,12 @@ doctor:
   log: "로그: %{path}"
 
 test:
-  none_paired: "연결된 휴대폰이 없어요. `codex-notifier pair <code>`를 실행하세요."
+  none_paired: "연결된 휴대폰이 없어요. `antigravity-notifier pair <code>`를 실행하세요."
   sent: "%{name} (%{platform})에 테스트 알림을 보냈어요."
   failed: "%{name}: %{error}"
 
 devices:
-  none: "연결된 휴대폰이 없어요. 앱에 표시된 코드로 `codex-notifier pair <code>`를 실행하세요."
+  none: "연결된 휴대폰이 없어요. 앱에 표시된 코드로 `antigravity-notifier pair <code>`를 실행하세요."
   # %{name}은 24칸, %{platform}은 8칸으로 맞춘 뒤 채워져요
   row: "%{name} %{platform} %{since} 연결%{off}"
   notifications_off: "  (알림 꺼짐)"
@@ -161,19 +161,19 @@ settings:
   unknown: "'%{key}'라는 설정은 없어요. 설정 목록: notify_on_done, notify_on_permission, notify_on_question, sound, quiet_when_present, quiet_hours, hold_ceiling_seconds, presence_threshold_seconds, stop_hold_seconds, reminder_interval_seconds"
 
 forget:
-  needs_yes: "codex-notifier forget에는 확인이 필요해요. 터미널에서 실행하거나 --yes를 붙이세요"
-  warning: "이 작업은 이 컴퓨터와 연결 정보를 Notifier for Codex 서버에서 지우고, `codex-notifier uninstall`과\n마찬가지로 Codex에서 codex-notifier를 제거한 뒤 여기 있는 인증 정보와 파일을 삭제해요.\n이 컴퓨터와 연결된 휴대폰에서는 이 컴퓨터가 사라져요.\n웹사이트에서 구매한 라이선스는 취소되지 않아요. notifierforcodex.com/licence의\n\"Erase my licence\"에서 처리하세요."
+  needs_yes: "antigravity-notifier forget에는 확인이 필요해요. 터미널에서 실행하거나 --yes를 붙이세요"
+  warning: "이 작업은 이 컴퓨터와 연결 정보를 Antigravity Notifier 서버에서 지우고, `antigravity-notifier uninstall`과\n마찬가지로 Codex에서 antigravity-notifier를 제거한 뒤 여기 있는 인증 정보와 파일을 삭제해요.\n이 컴퓨터와 연결된 휴대폰에서는 이 컴퓨터가 사라져요.\n웹사이트에서 구매한 라이선스는 취소되지 않아요. antigravitynotifier.com/licence의\n\"Erase my licence\"에서 처리하세요."
   # 사용자가 입력해야 하는 단어. `yes`도 항상 받아들여요
   yes_word: "예"
   prompt: "\n계속하려면 %{yes}를 입력하세요: "
   nothing_erased: "아무것도 지우지 않았어요."
   erased: "이 컴퓨터와 연결 정보를 서버에서 지웠어요."
   already_forgotten: "서버는 이미 이 컴퓨터를 잊은 상태였어요."
-  nothing_removed: "%{error}. 이 컴퓨터에서는 아무것도 제거되지 않았으니 `codex-notifier forget`을 다시 실행할 수 있어요"
+  nothing_removed: "%{error}. 이 컴퓨터에서는 아무것도 제거되지 않았으니 `antigravity-notifier forget`을 다시 실행할 수 있어요"
   not_registered: "이 컴퓨터는 서버에 등록되어 있지 않아서 서버에서 지울 것이 없어요."
 
 uninstall:
-  hooks_removed: "%{path}에서 codex-notifier 훅을, %{config}에서 그 신뢰 항목을 제거했어요."
+  hooks_removed: "%{path}에서 antigravity-notifier 훅을, %{config}에서 그 신뢰 항목을 제거했어요."
   slot_freed: "이 컴퓨터의 라이선스 자리를 비웠어요."
   unpaired_all: "모든 휴대폰의 연결을 해제했어요."
   removed_dir: "%{path}를 제거했어요."
@@ -183,17 +183,17 @@ local:
   finished_body: "Codex가 작업을 끝내고 당신을 기다리고 있어요."
   permission_title: "Codex가 권한을 요청해요"
   question_title: "Codex가 질문이 있어요"
-  first_nudge: "휴대폰으로도 받기: codex-notifier pair"
-  milestone_nudge: "지금까지 알림 10개. 휴대폰으로도 받고 잠금 화면에서 승인하려면 codex-notifier pair를 실행하세요"
-  pair_message: "Notifier for Codex: 데스크톱 알림을 받고 있어요. 휴대폰으로도 받고 거기서 승인이나 답변을 하려면 터미널에서 `codex-notifier pair`를 실행하세요."
+  first_nudge: "휴대폰으로도 받기: antigravity-notifier pair"
+  milestone_nudge: "지금까지 알림 10개. 휴대폰으로도 받고 잠금 화면에서 승인하려면 antigravity-notifier pair를 실행하세요"
+  pair_message: "Antigravity Notifier: 데스크톱 알림을 받고 있어요. 휴대폰으로도 받고 거기서 승인이나 답변을 하려면 터미널에서 `antigravity-notifier pair`를 실행하세요."
 
 hook:
-  licence_message: "Notifier for Codex: 이 컴퓨터에서는 휴대폰 알림이 잠금 해제되지 않았어요. 잠금 해제하려면: codex-notifier unlock"
-  unpaired_message: "Notifier for Codex: 이 컴퓨터가 더 이상 연결되어 있지 않아서 휴대폰으로 알림이 가지 않아요. 다시 연결하려면 터미널에서 `codex-notifier pair`를 실행하세요."
-  unpaired_notification: "이 컴퓨터가 더 이상 연결되어 있지 않아요. 다시 연결하려면 터미널에서 `codex-notifier pair`를 실행하세요."
-  paired_message: "Notifier for Codex: %{phone}과 연결됐어요. 이제 알림이 휴대폰으로 가요."
+  licence_message: "Antigravity Notifier: 이 컴퓨터에서는 휴대폰 알림이 잠금 해제되지 않았어요. 잠금 해제하려면: antigravity-notifier unlock"
+  unpaired_message: "Antigravity Notifier: 이 컴퓨터가 더 이상 연결되어 있지 않아서 휴대폰으로 알림이 가지 않아요. 다시 연결하려면 터미널에서 `antigravity-notifier pair`를 실행하세요."
+  unpaired_notification: "이 컴퓨터가 더 이상 연결되어 있지 않아요. 다시 연결하려면 터미널에서 `antigravity-notifier pair`를 실행하세요."
+  paired_message: "Antigravity Notifier: %{phone}과 연결됐어요. 이제 알림이 휴대폰으로 가요."
   # 제목, 본문, 명령은 서버가 사용자 언어로 써요. 여기서는 이어 붙이기만 해요
-  nudge_message: "Notifier for Codex: %{title} %{body} %{command}"
+  nudge_message: "Antigravity Notifier: %{title} %{body} %{command}"
   needs_attention: "확인이 필요해요"
 
 # Suggests the Claude Code Notifier app (and its ccn CLI) to someone who also uses Claude Code (crosspromo.rs).
@@ -201,60 +201,60 @@ hook:
 cross_promo:
   line: "Claude Code가 감지되었습니다. Claude Code Notifier 앱(iPhone, Android)으로 Claude Code의 승인 요청과 질문도 휴대폰으로 받으세요. 이 컴퓨터는 명령 하나로 설정됩니다: %{command}  ·  %{url}"
   notification: "Claude Code가 감지되었습니다. Claude Code Notifier 앱으로 Claude Code의 승인 요청도 휴대폰으로 받으세요."
-  # After `codex-notifier pair`, above a QR code (pair_scan) or without one (pair_steps), the app's link and the command
+  # After `antigravity-notifier pair`, above a QR code (pair_scan) or without one (pair_steps), the app's link and the command
   pair_title: "Claude Code가 감지되었습니다. Claude Code Notifier 앱(iPhone, Android)으로 Claude Code의 승인 요청과 질문도 휴대폰으로 받으세요."
   pair_scan: "스캔해서 앱을 받은 다음, 명령 하나로 이 컴퓨터를 설정하세요:"
   pair_steps: "앱을 받은 다음, 명령 하나로 이 컴퓨터를 설정하세요:"
 
 # Asks once, after 20 answers from the phone, for an app-store rating (rate.rs). url is not translated.
 rate:
-  notification: "Notifier for Codex가 마음에 드시나요? 간단한 평가가 다른 개발자들이 앱을 찾는 데 도움이 돼요."
-  message: "Notifier for Codex가 마음에 드시나요? 간단한 평가가 다른 개발자들이 앱을 찾는 데 도움이 돼요: %{url}"
+  notification: "Antigravity Notifier가 마음에 드시나요? 간단한 평가가 다른 개발자들이 앱을 찾는 데 도움이 돼요."
+  message: "Antigravity Notifier가 마음에 드시나요? 간단한 평가가 다른 개발자들이 앱을 찾는 데 도움이 돼요: %{url}"
 
 hooks:
-  doctor_presence_none: "자리 감지: 여기서는 감지할 수 없어 휴대폰을 기다리지 않습니다. 휴대폰에는 알림이 가고 터미널에서 응답합니다(그래도 기다리려면 `codex-notifier config set hold_without_presence on`)"
+  doctor_presence_none: "자리 감지: 여기서는 감지할 수 없어 휴대폰을 기다리지 않습니다. 휴대폰에는 알림이 가고 터미널에서 응답합니다(그래도 기다리려면 `antigravity-notifier config set hold_without_presence on`)"
   doctor_presence_none_hold: "자리 감지: 여기서는 감지할 수 없고 hold_without_presence가 켜져 있어, 모든 요청이 휴대폰이 응답하거나 최대 대기 시간이 지날 때까지 기다립니다"
 
 licence:
   already_licensed: "이 컴퓨터에는 이미 라이선스가 있어요 (%{licence})."
-  switch_to_lifetime: "같은 키로 평생 이용 라이선스로 바꾸려면: codex-notifier unlock --lifetime"
+  switch_to_lifetime: "같은 키로 평생 이용 라이선스로 바꾸려면: antigravity-notifier unlock --lifetime"
   checkout_open: "  브라우저에 결제 페이지가 열렸어요. 대신 휴대폰으로 결제하려면 이 코드를 스캔하세요:"
   checkout_link: "  이 링크를 열어 결제하거나 휴대폰으로 스캔하세요:"
   waiting_payment: "  결제를 기다리는 중... (Ctrl+C로 중단해도 키는 어차피 이메일로 와요)"
   upgraded: "✓ 평생 이용 라이선스로 바꿨어요. 키와 컴퓨터는 그대로이고 연간 갱신은 취소됐어요."
   licensed: "✓ 이 컴퓨터에 라이선스가 적용됐어요 (%{licence})."
-  key: "  키: %{key} (이메일로도 보냈어요). 컴퓨터 2대에 더 쓸 수 있어요: codex-notifier activate %{key}"
+  key: "  키: %{key} (이메일로도 보냈어요). 컴퓨터 2대에 더 쓸 수 있어요: antigravity-notifier activate %{key}"
   phones_unlocked: "  이 컴퓨터에 연결된 모든 휴대폰이 잠금 해제됐어요."
-  activate_with_key: "  이메일로 받은 키로 `codex-notifier activate <key>`를 실행하면 이 컴퓨터에서 쓸 수 있어요."
-  no_payment: "15분이 지나도 결제가 확인되지 않아요. 결제했다면 키가 이메일에 있어요: codex-notifier activate <key>"
+  activate_with_key: "  이메일로 받은 키로 `antigravity-notifier activate <key>`를 실행하면 이 컴퓨터에서 쓸 수 있어요."
+  no_payment: "15분이 지나도 결제가 확인되지 않아요. 결제했다면 키가 이메일에 있어요: antigravity-notifier activate <key>"
   replace_stale: "\"%{name}\"은(는) 일주일 넘게 확인되지 않았어요. 이 컴퓨터인가요? 교체할까요?"
   yes_no: " [Y/n] "
   # 이 글자(또는 n)로 시작하는 답은 '아니요'
   no_initial: "아"
   slots_full: "이 라이선스는 이미 컴퓨터 %{count}대에서 쓰고 있어요:"
-  free_one: "그 컴퓨터에서 `codex-notifier deactivate`로 자리를 비우거나 여기서 교체하세요:"
-  replace_example: "  codex-notifier activate %{key} --replace \"%{name}\""
+  free_one: "그 컴퓨터에서 `antigravity-notifier deactivate`로 자리를 비우거나 여기서 교체하세요:"
+  replace_example: "  antigravity-notifier activate %{key} --replace \"%{name}\""
   old_laptop: "예전 노트북"
   no_free_slot: "빈 컴퓨터 자리가 없어요"
   computers_on_licence: "이 라이선스의 컴퓨터:"
   activated: "✓ 라이선스 적용됨 (%{licence}). 컴퓨터 3대 중 %{count}대 사용 중."
-  pair_to_unlock: "  `codex-notifier pair`로 휴대폰을 연결하면 바로 잠금 해제돼요."
+  pair_to_unlock: "  `antigravity-notifier pair`로 휴대폰을 연결하면 바로 잠금 해제돼요."
   none: "이 컴퓨터에는 라이선스가 없어요."
   freed: "자리를 비웠어요. 이 라이선스는 이제 컴퓨터 3대 중 %{count}대를 쓰고 있어요."
-  none_buy: "이 컴퓨터에 라이선스가 없어요. 구매하려면: codex-notifier unlock"
+  none_buy: "이 컴퓨터에 라이선스가 없어요. 구매하려면: antigravity-notifier unlock"
   none_short: "이 컴퓨터에 라이선스가 없어요."
-  buy_options: "  구매하기:         codex-notifier unlock (연간) 또는 codex-notifier unlock --lifetime"
-  have_key: "  키가 이미 있다면: codex-notifier activate <key>"
+  buy_options: "  구매하기:         antigravity-notifier unlock (연간) 또는 antigravity-notifier unlock --lifetime"
+  have_key: "  키가 이미 있다면: antigravity-notifier activate <key>"
   show_licence: "라이선스:   %{licence}"
   show_key: "키:         CCN-…-%{last4}"
   show_unlocks: "잠금 해제:  %{value}"
   unlocks_yes: "예, 이 컴퓨터에 연결된 모든 휴대폰"
   unlocks_no: "아니요"
   show_computers: "컴퓨터:     3대 중 %{count}대"
-  switch_lifetime_keep_key: "키는 그대로 두고 평생 이용으로 바꾸기: codex-notifier unlock --lifetime"
+  switch_lifetime_keep_key: "키는 그대로 두고 평생 이용으로 바꾸기: antigravity-notifier unlock --lifetime"
   status_licensed: "%{licence}, 컴퓨터 3대 중 %{count}대"
-  status_unlicensed: "%{licence}: codex-notifier unlock"
-  status_none: "없음: codex-notifier unlock"
+  status_unlicensed: "%{licence}: antigravity-notifier unlock"
+  status_none: "없음: antigravity-notifier unlock"
   describe_refunded: "환불됨"
   describe_lifetime: "평생 이용"
   describe_renews: "연간, %{date} 갱신"
@@ -270,36 +270,36 @@ licence:
   computer_row: "  %{name} %{seen}%{current}"
 
 update:
-  latest: "codex-notifier %{version}이 최신이에요."
-  available_check: "codex-notifier %{version}을 쓸 수 있어요 (지금은 %{current})."
+  latest: "antigravity-notifier %{version}이 최신이에요."
+  available_check: "antigravity-notifier %{version}을 쓸 수 있어요 (지금은 %{current})."
   update_with: "  업데이트: %{command}"
-  available_run: "codex-notifier %{version}을 쓸 수 있어요: %{command}"
+  available_run: "antigravity-notifier %{version}을 쓸 수 있어요: %{command}"
   nothing_to_update: "업데이트할 것이 없어요: %{path}는 설치되어 있지 않아요%{npx}"
-  npx_note: " (npx는 매번 최신 codex-notifier를 실행해요)"
+  npx_note: " (npx는 매번 최신 antigravity-notifier를 실행해요)"
   no_release_build: "%{os}-%{arch}용 릴리스 빌드가 없어요"
-  no_build_named: "codex-notifier %{version}에는 %{asset}이라는 빌드가 없어요"
+  no_build_named: "antigravity-notifier %{version}에는 %{asset}이라는 빌드가 없어요"
   no_checksum: "SHA256SUMS에 %{asset} 항목이 없어요"
   checksum_mismatch: "%{asset}의 체크섬이 일치하지 않아요. 아무것도 바꾸지 않았어요"
-  archive_empty: "압축 파일 안에 codex-notifier가 없어요"
-  zip_empty: "zip 안에 codex-notifier.exe가 없어요"
-  did_not_run: "다운로드한 codex-notifier가 실행되지 않아서 설치된 것을 그대로 두었어요"
-  updated: "codex-notifier를 %{from} → %{to}로 업데이트했어요."
-  available_message: "Notifier for Codex: codex-notifier %{version}을 쓸 수 있어요: %{command}"
+  archive_empty: "압축 파일 안에 antigravity-notifier가 없어요"
+  zip_empty: "zip 안에 antigravity-notifier.exe가 없어요"
+  did_not_run: "다운로드한 antigravity-notifier가 실행되지 않아서 설치된 것을 그대로 두었어요"
+  updated: "antigravity-notifier를 %{from} → %{to}로 업데이트했어요."
+  available_message: "Antigravity Notifier: antigravity-notifier %{version}을 쓸 수 있어요: %{command}"
 
 notify:
-  registered_windows: "Windows 알림에 \"Notifier for Codex\"를 등록했어요."
+  registered_windows: "Windows 알림에 \"Antigravity Notifier\"를 등록했어요."
   icon_installed: "알림 아이콘을 %{path}에 설치했어요."
   doctor_applescript: "AppleScript (이 빌드에는 알림 앱이 없어요)"
   doctor_allowed: "\"%{app}\"에 허용됨"
   doctor_denied: "꺼져 있음: 시스템 설정 > 알림 > %{app}"
-  doctor_not_allowed: "아직 허용되지 않음. `codex-notifier setup`을 실행하세요"
+  doctor_not_allowed: "아직 허용되지 않음. `antigravity-notifier setup`을 실행하세요"
   mac_denied: "\"%{app}\"의 데스크톱 알림이 꺼져 있어요. 시스템 설정 > 알림에서 켜세요."
   mac_asking: "\"%{app}\"의 알림을 허용하도록 macOS에 요청하는 중..."
   mac_allowed: "\"%{app}\"의 데스크톱 알림이 허용됐어요."
   mac_not_allowed: "데스크톱 알림이 허용되지 않았어요. 시스템 설정 > 알림 > %{app}에서 켜세요."
 
 api:
-  rejected: "이 컴퓨터는 더 이상 연결되어 있지 않아요 (서버가 더 이상 인식하지 않아요). 다시 연결하려면 `codex-notifier pair`를 실행하세요"
+  rejected: "이 컴퓨터는 더 이상 연결되어 있지 않아요 (서버가 더 이상 인식하지 않아요). 다시 연결하려면 `antigravity-notifier pair`를 실행하세요"
   server_returned: "서버가 %{status}를 반환했어요"
   # 서버가 거부했을 때 하고 있던 작업. 서버 자체의 메시지가 콜론 뒤에 이어져요
   registering: "이 컴퓨터 등록"
@@ -317,13 +317,13 @@ api:
 
 # A second upgrader found the first one still running
 update_lock:
-  busy: "다른 codex-notifier 업그레이드가 이미 실행 중입니다. 몇 분 후에 다시 시도하세요"
+  busy: "다른 antigravity-notifier 업그레이드가 이미 실행 중입니다. 몇 분 후에 다시 시도하세요"
 
 local_files:
-  config_unreadable: "%{path} 파일을 읽을 수 없어요(%{error}). 그래서 codex-notifier가 덮어쓰지 않아요. 파일을 고치거나, 삭제한 뒤 `codex-notifier pair`를 다시 실행하세요."
-  slot_not_freed: "이 컴퓨터의 라이선스 자리를 비우지 못했어요(%{error}). 라이선스가 있다면 notifierforcodex.com/licence에서 키로 자리를 비우세요."
-  kept_dir: "%{path}에서 codex-notifier 파일을 제거했어요. 폴더에 다른 파일도 있어서 폴더는 그대로 두었어요."
-  remove_binary: "codex-notifier 자체는 아직 설치되어 있어요. 제거하려면: %{command}"
+  config_unreadable: "%{path} 파일을 읽을 수 없어요(%{error}). 그래서 antigravity-notifier가 덮어쓰지 않아요. 파일을 고치거나, 삭제한 뒤 `antigravity-notifier pair`를 다시 실행하세요."
+  slot_not_freed: "이 컴퓨터의 라이선스 자리를 비우지 못했어요(%{error}). 라이선스가 있다면 antigravitynotifier.com/licence에서 키로 자리를 비우세요."
+  kept_dir: "%{path}에서 antigravity-notifier 파일을 제거했어요. 폴더에 다른 파일도 있어서 폴더는 그대로 두었어요."
+  remove_binary: "antigravity-notifier 자체는 아직 설치되어 있어요. 제거하려면: %{command}"
 
 payload:
   needs_permission: "%{tool} 권한이 필요해요"
@@ -341,7 +341,7 @@ payload:
   update_plan: "계획 업데이트"
 
 net:
-  unreachable: "Notifier for Codex 서버에 연결하지 못했어요. 인터넷 연결을 확인하고 다시 시도해 주세요."
+  unreachable: "Antigravity Notifier 서버에 연결하지 못했어요. 인터넷 연결을 확인하고 다시 시도해 주세요."
   doctor_unreachable: "서버: %{url}에 연결할 수 없어요. 인터넷 연결, 프록시, 방화벽을 확인해 주세요"
 
 clap:
@@ -351,10 +351,10 @@ clap:
   options: "옵션:"
   help: "도움말 보기"
   version: "버전 보기"
-  help_command: "codex-notifier 또는 명령의 도움말 보기"
+  help_command: "antigravity-notifier 또는 명령의 도움말 보기"
   help_command_arg: "도움말을 볼 명령"
-  error_hint: "`codex-notifier --help`를 실행하면 명령과 옵션을 볼 수 있어요."
+  error_hint: "`antigravity-notifier --help`를 실행하면 명령과 옵션을 볼 수 있어요."
 
-# `codex-notifier upgrade` refused a release whose SHA256SUMS isn't signed by TouchTap
+# `antigravity-notifier upgrade` refused a release whose SHA256SUMS isn't signed by TouchTap
 update_signature:
-  invalid: "릴리스 서명을 확인할 수 없어 아무것도 변경하지 않았습니다. 나중에 다시 시도하거나 notifierforcodex.com/cli에서 다시 설치하세요"
+  invalid: "릴리스 서명을 확인할 수 없어 아무것도 변경하지 않았습니다. 나중에 다시 시도하거나 antigravitynotifier.com/cli에서 다시 설치하세요"

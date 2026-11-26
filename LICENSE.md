@@ -1,4 +1,4 @@
-Required Notice: Copyright TouchTap Ltd (https://notifierforcodex.com)
+Required Notice: Copyright TouchTap Ltd (https://antigravitynotifier.com)
 
 # PolyForm Shield License 1.0.0
 

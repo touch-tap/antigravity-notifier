@@ -99,6 +99,36 @@ dependencies = [
 ]
 
 [[package]]
+name = "antigravity-notifier"
+version = "0.1.6"
+dependencies = [
+ "anyhow",
+ "chrono",
+ "clap",
+ "directories",
+ "ed25519-dalek",
+ "flate2",
+ "keyring",
+ "libc",
+ "qrcode",
+ "rand",
+ "rust-i18n",
+ "serde",
+ "serde-saphyr",
+ "serde_json",
+ "sha2 0.10.9",
+ "sys-locale",
+ "tar",
+ "toml 1.1.8+spec-1.1.0",
+ "toml_edit 0.23.10+spec-1.0.0",
+ "ureq",
+ "uuid",
+ "windows",
+ "windows-sys 0.59.0",
+ "zip",
+]
+
+[[package]]
 name = "anyhow"
 version = "1.0.104"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -481,36 +511,6 @@ name = "cmov"
 version = "0.5.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0c9ea0ac24bc397ab3c98583a3c9ba74fa56b09a4449bbe172b9b1ddb016027a"
-
-[[package]]
-name = "codex-notifier"
-version = "0.1.6"
-dependencies = [
- "anyhow",
- "chrono",
- "clap",
- "directories",
- "ed25519-dalek",
- "flate2",
- "keyring",
- "libc",
- "qrcode",
- "rand",
- "rust-i18n",
- "serde",
- "serde-saphyr",
- "serde_json",
- "sha2 0.10.9",
- "sys-locale",
- "tar",
- "toml 1.1.8+spec-1.1.0",
- "toml_edit 0.23.10+spec-1.0.0",
- "ureq",
- "uuid",
- "windows",
- "windows-sys 0.59.0",
- "zip",
-]
 
 [[package]]
 name = "colorchoice"

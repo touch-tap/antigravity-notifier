@@ -8,7 +8,7 @@
 set -u
 old=$1; new=$2; next=${3:-0.1.1}; port=${PORT:-8791}; failures=0
 W=$(mktemp -d); trap 'kill $srv 2>/dev/null; wait $srv 2>/dev/null; rm -rf $W' EXIT
-asset=$(cd "$new" && ls codex-notifier-*.tar.gz | head -1)
+asset=$(cd "$new" && ls antigravity-notifier-*.tar.gz | head -1)
 mkdir -p $W/www/api/cli $W/www/good $W/www/tampered $W/www/swapped $W/www/unsigned
 printf '{"version":"%s","tag":"v%s","assets":["%s","SHA256SUMS","SHA256SUMS.sig"]}' $next $next $asset > $W/www/api/cli/latest
 cp $new/* $W/www/good/
@@ -23,14 +23,14 @@ sleep 1
 run() { # $1 = folder name; installs the old binary fresh and upgrades against that folder
   rm -rf $W/bin $W/home; mkdir -p $W/bin $W/home/codex
   tar xzf $old/$asset -C $W/bin
-  echo "== $1: installed $($W/bin/codex-notifier --version)"
-  CODEX_NOTIFIER_HOME=$W/home/cxn CODEX_HOME=$W/home/codex CODEX_NOTIFIER_NO_ANALYTICS=1 \
-  CODEX_NOTIFIER_CREDENTIAL_STORE=file CODEX_NOTIFIER_SERVER_URL=http://127.0.0.1:$port \
-  CODEX_NOTIFIER_DOWNLOAD_BASE=http://127.0.0.1:$port/$1 $W/bin/codex-notifier upgrade 2>&1 | sed 's/^/   | /'
-  after=$($W/bin/codex-notifier --version)
+  echo "== $1: installed $($W/bin/antigravity-notifier --version)"
+  ANTIGRAVITY_NOTIFIER_HOME=$W/home/cxn CODEX_HOME=$W/home/codex ANTIGRAVITY_NOTIFIER_NO_ANALYTICS=1 \
+  ANTIGRAVITY_NOTIFIER_CREDENTIAL_STORE=file ANTIGRAVITY_NOTIFIER_SERVER_URL=http://127.0.0.1:$port \
+  ANTIGRAVITY_NOTIFIER_DOWNLOAD_BASE=http://127.0.0.1:$port/$1 $W/bin/antigravity-notifier upgrade 2>&1 | sed 's/^/   | /'
+  after=$($W/bin/antigravity-notifier --version)
   echo "   after: $after"
-  if [ "$after" = "codex-notifier $2" ]; then echo "   ok"; else echo "   FAIL: expected codex-notifier $2"; failures=$((failures+1)); fi
+  if [ "$after" = "antigravity-notifier $2" ]; then echo "   ok"; else echo "   FAIL: expected antigravity-notifier $2"; failures=$((failures+1)); fi
 }
-installed=$(mkdir -p $W/probe; tar xzf $old/$asset -C $W/probe; $W/probe/codex-notifier --version | awk '{print $2}')
+installed=$(mkdir -p $W/probe; tar xzf $old/$asset -C $W/probe; $W/probe/antigravity-notifier --version | awk '{print $2}')
 run good $next; run tampered $installed; run swapped $installed; run unsigned $installed
 [ $failures = 0 ] && echo "All four checks passed." || { echo "$failures check(s) failed"; exit 1; }

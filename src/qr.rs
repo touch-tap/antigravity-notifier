@@ -69,7 +69,7 @@ fn ansi_supported() -> bool {
 mod tests {
     #[test]
     fn renders_a_square() {
-        let qr = super::render("https://notifierforcodex.com/c/XtibiarAdIlBbjZ31LaqsA").unwrap();
+        let qr = super::render("https://antigravitynotifier.com/c/XtibiarAdIlBbjZ31LaqsA").unwrap();
         let lines: Vec<&str> = qr.lines().collect();
         assert!(lines.len() > 10);
     }

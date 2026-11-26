@@ -2,16 +2,16 @@
 # Writes the winget manifests for a published release:
 #   scripts/winget-manifests.sh 0.2.0                 # downloads the release's SHA256SUMS from GitHub
 #   scripts/winget-manifests.sh 0.2.0 dist/SHA256SUMS # or uses a local copy
-# Output: packaging/winget/manifests/t/TouchTap/CodexNotifier/<version>/TouchTap.CodexNotifier{,.installer,.locale.en-US}.yaml,
+# Output: packaging/winget/manifests/t/TouchTap/AntigravityNotifier/<version>/TouchTap.AntigravityNotifier{,.installer,.locale.en-US}.yaml,
 # the layout microsoft/winget-pkgs expects. Submit them with `wingetcreate submit` or a PR (RELEASING.md).
 set -eu
 version=$1
 sums=${2:-}
 tag="v$version"
 root="$(cd "$(dirname "$0")/.." && pwd)"
-base="https://github.com/touch-tap/codex-notifier/releases/download/$tag"
+base="https://github.com/touch-tap/antigravity-notifier/releases/download/$tag"
 schema="1.28.0"   # the current winget manifest schema; https://github.com/microsoft/winget-pkgs/tree/master/doc/manifest/schema
-id="TouchTap.CodexNotifier"
+id="TouchTap.AntigravityNotifier"
 
 fail() { echo "winget-manifests: $*" >&2; exit 1; }
 
@@ -25,8 +25,8 @@ fi
 
 # winget writes hashes in upper case; the schema accepts either
 sha() {
-  s=$(awk -v f="codex-notifier-$1-pc-windows-msvc.zip" '$2 == f || $2 == "*" f { print toupper($1) }' "$sums")
-  [ -n "$s" ] || fail "no codex-notifier-$1-pc-windows-msvc.zip in $sums"
+  s=$(awk -v f="antigravity-notifier-$1-pc-windows-msvc.zip" '$2 == f || $2 == "*" f { print toupper($1) }' "$sums")
+  [ -n "$s" ] || fail "no antigravity-notifier-$1-pc-windows-msvc.zip in $sums"
   printf '%s' "$s"
 }
 x64=$(sha x86_64)
@@ -35,10 +35,10 @@ arm64=$(sha aarch64)
 # The day the release was published, when gh can tell us
 date=""
 if command -v gh >/dev/null 2>&1; then
-  date=$(gh release view "$tag" -R touch-tap/codex-notifier --json publishedAt --jq '.publishedAt[:10]' 2>/dev/null || true)
+  date=$(gh release view "$tag" -R touch-tap/antigravity-notifier --json publishedAt --jq '.publishedAt[:10]' 2>/dev/null || true)
 fi
 
-out="$root/packaging/winget/manifests/t/TouchTap/CodexNotifier/$version"
+out="$root/packaging/winget/manifests/t/TouchTap/AntigravityNotifier/$version"
 mkdir -p "$out"
 
 cat > "$out/$id.yaml" <<YAML
@@ -58,17 +58,17 @@ MinimumOSVersion: 10.0.0.0
 InstallerType: zip
 NestedInstallerType: portable
 NestedInstallerFiles:
-  - RelativeFilePath: codex-notifier.exe
-    PortableCommandAlias: codex-notifier.exe
+  - RelativeFilePath: antigravity-notifier.exe
+    PortableCommandAlias: antigravity-notifier.exe
 Commands:
-  - codex-notifier
+  - antigravity-notifier
 ${date:+ReleaseDate: $date
 }Installers:
   - Architecture: x64
-    InstallerUrl: $base/codex-notifier-x86_64-pc-windows-msvc.zip
+    InstallerUrl: $base/antigravity-notifier-x86_64-pc-windows-msvc.zip
     InstallerSha256: $x64
   - Architecture: arm64
-    InstallerUrl: $base/codex-notifier-aarch64-pc-windows-msvc.zip
+    InstallerUrl: $base/antigravity-notifier-aarch64-pc-windows-msvc.zip
     InstallerSha256: $arm64
 ManifestType: installer
 ManifestVersion: $schema
@@ -80,22 +80,22 @@ PackageIdentifier: $id
 PackageVersion: $version
 PackageLocale: en-US
 Publisher: TouchTap
-PublisherUrl: https://notifierforcodex.com
-PublisherSupportUrl: https://github.com/touch-tap/codex-notifier/issues
+PublisherUrl: https://antigravitynotifier.com
+PublisherSupportUrl: https://github.com/touch-tap/antigravity-notifier/issues
 Author: TouchTap Ltd
-PackageName: Notifier for Codex
-PackageUrl: https://notifierforcodex.com/cli
+PackageName: Antigravity Notifier
+PackageUrl: https://antigravitynotifier.com/cli
 License: PolyForm-Shield-1.0.0
-LicenseUrl: https://github.com/touch-tap/codex-notifier/blob/$tag/LICENSE.md
+LicenseUrl: https://github.com/touch-tap/antigravity-notifier/blob/$tag/LICENSE.md
 Copyright: Copyright TouchTap Ltd
-ShortDescription: Notifier for Codex in the terminal, with phone notifications and approvals for OpenAI Codex
+ShortDescription: Antigravity Notifier in the terminal, with phone notifications and approvals for OpenAI Codex
 Description: |-
   Get a push on your phone when OpenAI Codex finishes or needs you, and approve, deny or answer
-  from there. codex-notifier is one small binary that Codex calls through its hooks: it runs for a
+  from there. antigravity-notifier is one small binary that Codex calls through its hooks: it runs for a
   few milliseconds when something happens and exits, with no app running in the background. It
-  also shows a Windows toast on the desktop. Pair it with the Notifier for Codex app for iPhone or
-  Android with "codex-notifier pair <code>", or run "codex-notifier" and scan the QR code.
-Moniker: codex-notifier
+  also shows a Windows toast on the desktop. Pair it with the Antigravity Notifier app for iPhone or
+  Android with "antigravity-notifier pair <code>", or run "antigravity-notifier" and scan the QR code.
+Moniker: antigravity-notifier
 Tags:
   - codex
   - openai-codex
@@ -103,7 +103,7 @@ Tags:
   - cli
   - hooks
   - push-notifications
-ReleaseNotesUrl: https://github.com/touch-tap/codex-notifier/releases/tag/$tag
+ReleaseNotesUrl: https://github.com/touch-tap/antigravity-notifier/releases/tag/$tag
 ManifestType: defaultLocale
 ManifestVersion: $schema
 YAML

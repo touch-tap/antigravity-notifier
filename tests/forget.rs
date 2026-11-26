@@ -1,4 +1,4 @@
-//! `codex-notifier forget` end to end: the real binary against a one-request fake server, in a temp home.
+//! `antigravity-notifier forget` end to end: the real binary against a one-request fake server, in a temp home.
 
 use std::io::{Read, Write};
 use std::net::TcpListener;
@@ -7,25 +7,25 @@ use std::process::{Command, Output, Stdio};
 
 struct Sandbox {
     root: PathBuf,
-    /// What `CODEX_NOTIFIER_LANG` says; English unless a test is about the language
+    /// What `ANTIGRAVITY_NOTIFIER_LANG` says; English unless a test is about the language
     lang: &'static str,
 }
 
 impl Sandbox {
     fn new(name: &str) -> Sandbox {
         let root = std::env::temp_dir().join(format!(
-            "codex-notifier-forget-{name}-{}",
+            "antigravity-notifier-forget-{name}-{}",
             std::process::id()
         ));
         let _ = std::fs::remove_dir_all(&root);
         std::fs::create_dir_all(root.join("codex")).unwrap();
-        std::fs::create_dir_all(root.join("codex-notifier")).unwrap();
+        std::fs::create_dir_all(root.join("antigravity-notifier")).unwrap();
         std::fs::write(
-            root.join("codex-notifier/config.toml"),
+            root.join("antigravity-notifier/config.toml"),
             "client_id = \"test-computer\"\n",
         )
         .unwrap();
-        std::fs::write(root.join("codex-notifier/credentials"), "test-token\n").unwrap();
+        std::fs::write(root.join("antigravity-notifier/credentials"), "test-token\n").unwrap();
         std::fs::write(root.join("codex/config.toml"), "model = \"gpt-5.4\"\n").unwrap();
         std::fs::write(
             root.join("codex/hooks.json"),
@@ -36,20 +36,20 @@ impl Sandbox {
     }
 
     fn app_dir(&self) -> PathBuf {
-        self.root.join("codex-notifier")
+        self.root.join("antigravity-notifier")
     }
 
     fn run(&self, server: &str, args: &[&str]) -> Output {
-        Command::new(env!("CARGO_BIN_EXE_codex-notifier"))
+        Command::new(env!("CARGO_BIN_EXE_antigravity-notifier"))
             .args(args)
             .env("HOME", &self.root)
-            .env("CODEX_NOTIFIER_HOME", self.app_dir())
+            .env("ANTIGRAVITY_NOTIFIER_HOME", self.app_dir())
             .env("CODEX_HOME", self.root.join("codex"))
-            .env("CODEX_NOTIFIER_SERVER_URL", server)
-            .env("CODEX_NOTIFIER_CREDENTIAL_STORE", "file")
-            .env("CODEX_NOTIFIER_NOTIFY", "off")
-            .env("CODEX_NOTIFIER_NO_ANALYTICS", "1")
-            .env("CODEX_NOTIFIER_LANG", self.lang)
+            .env("ANTIGRAVITY_NOTIFIER_SERVER_URL", server)
+            .env("ANTIGRAVITY_NOTIFIER_CREDENTIAL_STORE", "file")
+            .env("ANTIGRAVITY_NOTIFIER_NOTIFY", "off")
+            .env("ANTIGRAVITY_NOTIFIER_NO_ANALYTICS", "1")
+            .env("ANTIGRAVITY_NOTIFIER_LANG", self.lang)
             .stdin(Stdio::null())
             .output()
             .unwrap()
@@ -74,7 +74,7 @@ fn fake_server(status: u16, body: &'static str) -> (String, std::thread::JoinHan
             body.len()
         );
         stream.write_all(reply.as_bytes()).unwrap();
-        // Close gracefully: Windows resets a connection closed with unread data, and codex-notifier then
+        // Close gracefully: Windows resets a connection closed with unread data, and antigravity-notifier then
         // sees "connection aborted" instead of the reply
         let _ = stream.shutdown(std::net::Shutdown::Write);
         request
@@ -117,8 +117,8 @@ fn settings_hooks_gone(sandbox: &Sandbox) -> bool {
     let hooks = std::fs::read_to_string(Path::new(&sandbox.root).join("codex/hooks.json")).unwrap();
     let config =
         std::fs::read_to_string(Path::new(&sandbox.root).join("codex/config.toml")).unwrap();
-    !hooks.contains("codex-notifier")
-        && !config.contains("codex-notifier")
+    !hooks.contains("antigravity-notifier")
+        && !config.contains("antigravity-notifier")
         && hooks.contains("echo hi")
 }
 
@@ -150,7 +150,7 @@ fn erases_on_the_server_then_removes_everything_local() {
     assert!(settings_hooks_gone(&sandbox));
 }
 
-/// The OS language (or `CODEX_NOTIFIER_LANG`) reaches the server as `Accept-Language`, mapped onto one of
+/// The OS language (or `ANTIGRAVITY_NOTIFIER_LANG`) reaches the server as `Accept-Language`, mapped onto one of
 /// the supported tags, whatever locales/*.yml files exist.
 #[test]
 fn asks_the_server_in_the_users_language() {
@@ -224,7 +224,7 @@ fn unreachable_url() -> String {
     format!("http://{}", listener.local_addr().unwrap())
 }
 
-/// `CODEX_NOTIFIER_HOME` may point at a folder that holds other things: only codex-notifier's own files go.
+/// `ANTIGRAVITY_NOTIFIER_HOME` may point at a folder that holds other things: only antigravity-notifier's own files go.
 #[test]
 fn removes_only_its_own_files_from_a_shared_folder() {
     let sandbox = Sandbox::new("shared");
@@ -280,7 +280,7 @@ fn uninstall_offline_says_the_licence_slot_was_not_freed() {
     let stderr = text(&out.stderr);
     assert!(
         stderr.contains("Couldn't free this computer's licence slot")
-            && stderr.contains("notifierforcodex.com/licence"),
+            && stderr.contains("antigravitynotifier.com/licence"),
         "{stderr}"
     );
     assert!(!sandbox.app_dir().exists());
@@ -288,10 +288,10 @@ fn uninstall_offline_says_the_licence_slot_was_not_freed() {
     // The binary is left to whatever installed it, with the command to remove it
     let stdout = text(&out.stdout);
     assert!(
-        stdout.contains("codex-notifier itself is still installed"),
+        stdout.contains("antigravity-notifier itself is still installed"),
         "{stdout}"
     );
-    let exe = std::path::Path::new(env!("CARGO_BIN_EXE_codex-notifier"));
+    let exe = std::path::Path::new(env!("CARGO_BIN_EXE_antigravity-notifier"));
     assert!(exe.exists());
 }
 

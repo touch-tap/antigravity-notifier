@@ -3,13 +3,13 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleIdentifier</key>
-	<string>com.touchtap.codexnotifier.notifier</string>
+	<string>com.touchtap.antigravitynotifier.notifier</string>
 	<key>CFBundleName</key>
-	<string>Notifier for Codex</string>
+	<string>Antigravity Notifier</string>
 	<key>CFBundleDisplayName</key>
-	<string>Notifier for Codex</string>
+	<string>Antigravity Notifier</string>
 	<key>CFBundleExecutable</key>
-	<string>codex-notifier-notifier</string>
+	<string>antigravity-notifier-notifier</string>
 	<key>CFBundleIconFile</key>
 	<string>AppIcon</string>
 	<key>CFBundleIconName</key>

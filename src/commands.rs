@@ -18,7 +18,7 @@ pub fn identity(cfg: &Config) -> Option<Value> {
         "authToken": token,
         "name": cfg.machine_name(),
         "platform": config::platform(),
-        "clientKind": "codex_cli",
+        "clientKind": "antigravity_cli",
         "clientVersion": config::VERSION,
         "capabilities": config::CAPABILITIES,
     }))
@@ -29,8 +29,8 @@ fn new_id() -> String {
 }
 
 /// This computer's API client, registering it with the server first when it has no credentials yet.
-/// A licence needs a registered computer, not a paired phone, so `codex-notifier unlock` and `codex-notifier activate`
-/// work before (or without) `codex-notifier pair`.
+/// A licence needs a registered computer, not a paired phone, so `antigravity-notifier unlock` and `antigravity-notifier activate`
+/// work before (or without) `antigravity-notifier pair`.
 pub fn ensure_registered(cfg: &mut Config) -> Result<Api> {
     if cfg.is_paired() {
         return Ok(Api::new(cfg));
@@ -44,7 +44,7 @@ pub fn ensure_registered(cfg: &mut Config) -> Result<Api> {
         "authToken": token,
         "name": machine_name,
         "platform": config::platform(),
-        "clientKind": "codex_cli",
+        "clientKind": "antigravity_cli",
         "clientVersion": config::VERSION,
         "capabilities": config::CAPABILITIES,
     }))?;
@@ -87,7 +87,7 @@ pub fn store_name(store: &str) -> String {
     }
 }
 
-/// Why `codex-notifier pair` returned without an error.
+/// Why `antigravity-notifier pair` returned without an error.
 pub enum PairOutcome {
     /// A phone paired
     Paired,
@@ -166,7 +166,7 @@ fn pair_inner(
         "authToken": token,
         "name": machine_name,
         "platform": config::platform(),
-        "clientKind": "codex_cli",
+        "clientKind": "antigravity_cli",
         "clientVersion": config::VERSION,
         "capabilities": config::CAPABILITIES,
     });
@@ -281,7 +281,7 @@ fn pair_inner(
     cfg.client_id = Some(client_id);
     cfg.machine_name = Some(machine_name);
     cfg.registered_at = Some(config::now());
-    // `codex-notifier pair` has told the user itself, so the hooks needn't
+    // `antigravity-notifier pair` has told the user itself, so the hooks needn't
     cfg.paired_message_shown = true;
     cfg.save()?;
     let store = config::store_token(&cfg, &token)?;
@@ -348,7 +348,7 @@ fn print_paired(name: Option<&str>, platform: &str) {
 }
 
 /// Asks for the code the phone shows. None (show a QR code instead) for an empty line or end of
-/// input. A pasted install line or `codex-notifier pair 123456` counts too: any line holding six digits.
+/// input. A pasted install line or `antigravity-notifier pair 123456` counts too: any line holding six digits.
 fn ask_for_phone_code() -> Result<Option<String>> {
     println!();
     println!("{}", t!("pair.ask_code"));
@@ -507,7 +507,7 @@ fn wait_for_welcome(api: &Api, notification_id: &str) {
     println!("{}", t!("pair.welcome_no_answer"));
 }
 
-/// `codex-notifier` on its own: pair when no phone is paired with this computer yet (so `npx @touchtap/codex-notifier` and a
+/// `antigravity-notifier` on its own: pair when no phone is paired with this computer yet (so `npx @touchtap/antigravity-notifier` and a
 /// fresh `brew install` go straight to the QR code), otherwise say where things stand.
 pub fn default_command() -> Result<()> {
     ensure_setup()?;
@@ -515,7 +515,7 @@ pub fn default_command() -> Result<()> {
     if !cfg.is_paired() {
         return pair(None, None, false);
     }
-    // Registered without a phone (`codex-notifier activate` or `codex-notifier unlock` before pairing, or a QR code
+    // Registered without a phone (`antigravity-notifier activate` or `antigravity-notifier unlock` before pairing, or a QR code
     // nobody scanned yet): pairing is next
     let api = Api::new(&cfg);
     if matches!(list_phones(&mut cfg, &api), Ok(devices) if devices.is_empty()) {
@@ -663,7 +663,7 @@ pub fn doctor() -> Result<()> {
                     t!(
                         "doctor.registered",
                         name = me.name,
-                        kind = me.client_kind.unwrap_or_else(|| "codex_cli".to_string()),
+                        kind = me.client_kind.unwrap_or_else(|| "antigravity_cli".to_string()),
                         platform = me
                             .platform
                             .unwrap_or_else(|| config::platform().to_string()),
@@ -1041,7 +1041,7 @@ pub fn uninstall() -> Result<()> {
     remove_local(true)
 }
 
-/// Erases this computer from the server, then removes codex-notifier exactly as `codex-notifier uninstall` does. The
+/// Erases this computer from the server, then removes antigravity-notifier exactly as `antigravity-notifier uninstall` does. The
 /// server goes first: if it can't be reached the credentials stay, so the user can try again.
 pub fn forget(yes: bool) -> Result<()> {
     use std::io::{IsTerminal, Write};
@@ -1117,7 +1117,7 @@ fn remove_local(revoke_on_server: bool) -> Result<()> {
         }
     }
     config::delete_token();
-    // codex-notifier's own files only: CODEX_NOTIFIER_HOME may point at a folder that holds other things
+    // antigravity-notifier's own files only: ANTIGRAVITY_NOTIFIER_HOME may point at a folder that holds other things
     let path = config::app_dir();
     if config::remove_local_files() {
         println!("{}", t!("uninstall.removed_dir", path = path.display()));
@@ -1131,14 +1131,14 @@ fn remove_local(revoke_on_server: bool) -> Result<()> {
     Ok(())
 }
 
-/// The command that removes the codex-notifier binary, for the way it was installed. Uninstall leaves the
+/// The command that removes the antigravity-notifier binary, for the way it was installed. Uninstall leaves the
 /// binary to its owner: Homebrew and npm would otherwise still list it.
 fn binary_removal_command() -> Option<String> {
-    // Scoop and winget have no codex-notifier package yet (ccn's manifests were not carried over),
+    // Scoop and winget have no antigravity-notifier package yet (ccn's manifests were not carried over),
     // so those installs fall through to removing the file
     Some(match telemetry::install_method() {
-        "homebrew" => "brew uninstall touch-tap/tap/codex-notifier".to_string(),
-        "npm" => "npm uninstall -g @touchtap/codex-notifier".to_string(),
+        "homebrew" => "brew uninstall touch-tap/tap/antigravity-notifier".to_string(),
+        "npm" => "npm uninstall -g @touchtap/antigravity-notifier".to_string(),
         // The install scripts, npx (whose copy went into the user's bin directory) and anything
         // else: the file the hooks ran
         _ => {
@@ -1185,9 +1185,9 @@ mod tests {
         assert_eq!(six_digits_in("482913\n"), Answer::Code("482913".into()));
         assert_eq!(six_digits_in("482 913"), Answer::Code("482913".into()));
         assert_eq!(six_digits_in("482-913"), Answer::Code("482913".into()));
-        assert_eq!(six_digits_in("codex-notifier pair 482913"), Answer::Code("482913".into()));
+        assert_eq!(six_digits_in("antigravity-notifier pair 482913"), Answer::Code("482913".into()));
         assert_eq!(
-            six_digits_in("curl -fsSL https://notifierforcodex.com/install.sh | sh -s 482913"),
+            six_digits_in("curl -fsSL https://antigravitynotifier.com/install.sh | sh -s 482913"),
             Answer::Code("482913".into())
         );
         assert_eq!(six_digits_in("48291"), Answer::NotACode);
@@ -1200,11 +1200,11 @@ mod tests {
     fn pair_failures_read_as_before() {
         assert_eq!(
             format!("{:#}", anyhow::anyhow!(PairFailure::MalformedCode)),
-            "the code is the 6 digits shown in the Notifier for Codex app"
+            "the code is the 6 digits shown in the Antigravity Notifier app"
         );
         assert_eq!(
             format!("{:#}", anyhow::anyhow!(PairFailure::CodeTimeout)),
-            "the code expired before a phone claimed it. Run `codex-notifier pair` again."
+            "the code expired before a phone claimed it. Run `antigravity-notifier pair` again."
         );
     }
 }

@@ -1,7 +1,7 @@
-//! codex-notifier: Notifier for Codex in the terminal.
+//! antigravity-notifier: Antigravity Notifier in the terminal.
 //!
 //! One binary, invoked by OpenAI Codex's lifecycle hooks. It runs for milliseconds and exits:
-//! there is no daemon, no socket and no window. `codex-notifier pair` installs the hooks once
+//! there is no daemon, no socket and no window. `antigravity-notifier pair` installs the hooks once
 //! (and marks them trusted); after that every `codex` session is covered.
 
 mod api;
@@ -36,7 +36,7 @@ rust_i18n::i18n!("locales", fallback = "en");
 // translations of its own, so `localise` swaps its headings, -h/-V and `help` for translated ones;
 // only parse errors keep clap's English message, with a translated hint underneath.
 #[derive(Parser)]
-#[command(name = "codex-notifier", version, about = t!("cli.about").to_string())]
+#[command(name = "antigravity-notifier", version, about = t!("cli.about").to_string())]
 struct Cli {
     // With no command: pair this computer if it isn't yet, otherwise show its status
     #[command(subcommand)]
@@ -83,7 +83,7 @@ enum Command {
         check: bool,
         #[arg(long, help = t!("cli.upgrade.quiet").to_string())]
         quiet: bool,
-        // Started by the daily check: never prints, logs to codex-notifier.log instead
+        // Started by the daily check: never prints, logs to antigravity-notifier.log instead
         #[arg(long, hide = true)]
         background: bool,
     },
@@ -189,9 +189,9 @@ fn main() {
         Command::Licence => licence::show(),
         Command::Uninstall => commands::uninstall(),
         Command::Forget { yes } => commands::forget(yes),
-        // `codex-notifier help pair` is `codex-notifier pair --help`, which prints and exits
+        // `antigravity-notifier help pair` is `antigravity-notifier pair --help`, which prints and exits
         Command::Help { command } => {
-            let args = ["codex-notifier".to_string()]
+            let args = ["antigravity-notifier".to_string()]
                 .into_iter()
                 .chain(command)
                 .chain(["--help".to_string()]);
@@ -278,10 +278,10 @@ fn localise(cmd: clap::Command, top: bool) -> clap::Command {
 /// so first; the raw chain ("POST /api/...: io: Connection refused") follows as the detail.
 fn report(err: &anyhow::Error) {
     if is_network_error(err) {
-        eprintln!("codex-notifier: {}", t!("net.unreachable"));
+        eprintln!("antigravity-notifier: {}", t!("net.unreachable"));
         eprintln!("                {err:#}");
     } else {
-        eprintln!("codex-notifier: {err:#}");
+        eprintln!("antigravity-notifier: {err:#}");
     }
 }
 

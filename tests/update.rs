@@ -1,5 +1,5 @@
-//! `codex-notifier upgrade` end to end: the real binary, copied into a temp bin directory, against a fake
-//! server that serves `/api/cli/latest`, a release archive holding a tiny script called `codex-notifier`,
+//! `antigravity-notifier upgrade` end to end: the real binary, copied into a temp bin directory, against a fake
+//! server that serves `/api/cli/latest`, a release archive holding a tiny script called `antigravity-notifier`,
 //! and its SHA256SUMS.
 
 #![cfg(unix)] // the release archive is a tar.gz of a shell script; Windows gets a zip of an exe
@@ -13,8 +13,8 @@ use std::sync::{Arc, Mutex};
 
 const VERSION: &str = env!("CARGO_PKG_VERSION");
 const NEW_VERSION: &str = "9.9.9";
-const SCRIPT: &str = "#!/bin/sh\necho \"codex-notifier 9.9.9\"\n";
-/// The key the fake releases are signed with, and one codex-notifier doesn't trust
+const SCRIPT: &str = "#!/bin/sh\necho \"antigravity-notifier 9.9.9\"\n";
+/// The key the fake releases are signed with, and one antigravity-notifier doesn't trust
 const TEST_SEED: [u8; 32] = [7; 32];
 const OTHER_SEED: [u8; 32] = [9; 32];
 
@@ -37,8 +37,8 @@ enum Sig {
 fn asset_name() -> String {
     let arch = std::env::consts::ARCH;
     match std::env::consts::OS {
-        "macos" => format!("codex-notifier-{arch}-apple-darwin.tar.gz"),
-        _ => format!("codex-notifier-{arch}-unknown-linux-musl.tar.gz"),
+        "macos" => format!("antigravity-notifier-{arch}-apple-darwin.tar.gz"),
+        _ => format!("antigravity-notifier-{arch}-unknown-linux-musl.tar.gz"),
     }
 }
 
@@ -47,23 +47,23 @@ struct Sandbox {
 }
 
 impl Sandbox {
-    /// A home with codex-notifier's config, Codex's settings (hooks pointing at the sandbox binary) and a
-    /// copy of the real codex-notifier at `bin/codex-notifier`, or at `exe_rel` when given.
+    /// A home with antigravity-notifier's config, Codex's settings (hooks pointing at the sandbox binary) and a
+    /// copy of the real antigravity-notifier at `bin/antigravity-notifier`, or at `exe_rel` when given.
     fn new(name: &str, exe_rel: &str) -> Sandbox {
         let root = std::env::temp_dir().join(format!(
-            "codex-notifier-update-{name}-{}",
+            "antigravity-notifier-update-{name}-{}",
             std::process::id()
         ));
         let _ = std::fs::remove_dir_all(&root);
         std::fs::create_dir_all(root.join("codex")).unwrap();
-        std::fs::create_dir_all(root.join("codex-notifier")).unwrap();
+        std::fs::create_dir_all(root.join("antigravity-notifier")).unwrap();
         let exe = root.join(exe_rel);
         std::fs::create_dir_all(exe.parent().unwrap()).unwrap();
-        std::fs::copy(env!("CARGO_BIN_EXE_codex-notifier"), &exe).unwrap();
-        // As `codex-notifier setup` writes it: the canonical path (macOS puts temp dirs under /private)
+        std::fs::copy(env!("CARGO_BIN_EXE_antigravity-notifier"), &exe).unwrap();
+        // As `antigravity-notifier setup` writes it: the canonical path (macOS puts temp dirs under /private)
         let exe = exe.canonicalize().unwrap();
         std::fs::write(
-            root.join("codex-notifier/config.toml"),
+            root.join("antigravity-notifier/config.toml"),
             "auto_update = true\n",
         )
         .unwrap();
@@ -79,29 +79,29 @@ impl Sandbox {
     }
 
     fn exe(&self) -> PathBuf {
-        self.root.join("bin/codex-notifier").canonicalize().unwrap()
+        self.root.join("bin/antigravity-notifier").canonicalize().unwrap()
     }
 
     fn run_exe(&self, exe: &PathBuf, server: &str, args: &[&str]) -> Output {
         Command::new(exe)
             .args(args)
             .env("HOME", &self.root)
-            .env("CODEX_NOTIFIER_HOME", self.root.join("codex-notifier"))
+            .env("ANTIGRAVITY_NOTIFIER_HOME", self.root.join("antigravity-notifier"))
             .env("CODEX_HOME", self.root.join("codex"))
-            .env("CODEX_NOTIFIER_SERVER_URL", server)
-            .env("CODEX_NOTIFIER_CREDENTIAL_STORE", "file")
-            .env("CODEX_NOTIFIER_NOTIFY", "off")
-            .env("CODEX_NOTIFIER_NO_ANALYTICS", "1")
+            .env("ANTIGRAVITY_NOTIFIER_SERVER_URL", server)
+            .env("ANTIGRAVITY_NOTIFIER_CREDENTIAL_STORE", "file")
+            .env("ANTIGRAVITY_NOTIFIER_NOTIFY", "off")
+            .env("ANTIGRAVITY_NOTIFIER_NO_ANALYTICS", "1")
             // The server's downloadBase is ignored (only GitHub's releases are trusted), so the
             // fake release is reached the way CI's is
-            .env("CODEX_NOTIFIER_DOWNLOAD_BASE", format!("{server}/dl"))
+            .env("ANTIGRAVITY_NOTIFIER_DOWNLOAD_BASE", format!("{server}/dl"))
             // A debug build also trusts this key, so the fake release can be signed here
             .env(
-                "CODEX_NOTIFIER_UPDATE_PUBLIC_KEY",
+                "ANTIGRAVITY_NOTIFIER_UPDATE_PUBLIC_KEY",
                 hex(test_key(TEST_SEED).verifying_key().as_bytes()),
             )
-            .env_remove("CODEX_NOTIFIER_INSTALL_METHOD")
-            .env_remove("CODEX_NOTIFIER_EPHEMERAL")
+            .env_remove("ANTIGRAVITY_NOTIFIER_INSTALL_METHOD")
+            .env_remove("ANTIGRAVITY_NOTIFIER_EPHEMERAL")
             .stdin(Stdio::null())
             .output()
             .unwrap()
@@ -112,7 +112,7 @@ impl Sandbox {
     }
 
     fn config(&self) -> String {
-        std::fs::read_to_string(self.root.join("codex-notifier/config.toml")).unwrap()
+        std::fs::read_to_string(self.root.join("antigravity-notifier/config.toml")).unwrap()
     }
 }
 
@@ -126,14 +126,14 @@ impl Drop for Sandbox {
 fn release(dir: &Path, correct_checksum: bool) -> (Vec<u8>, String) {
     let stage = dir.join("stage");
     std::fs::create_dir_all(&stage).unwrap();
-    std::fs::write(stage.join("codex-notifier"), SCRIPT).unwrap();
+    std::fs::write(stage.join("antigravity-notifier"), SCRIPT).unwrap();
     let archive = dir.join(asset_name());
     let status = Command::new("tar")
         .arg("czf")
         .arg(&archive)
         .arg("-C")
         .arg(&stage)
-        .arg("codex-notifier")
+        .arg("antigravity-notifier")
         .status()
         .unwrap();
     assert!(status.success(), "tar failed");
@@ -255,7 +255,7 @@ fn text(bytes: &[u8]) -> String {
 
 #[test]
 fn replaces_the_binary_with_the_verified_release() {
-    let sandbox = Sandbox::new("ok", "bin/codex-notifier");
+    let sandbox = Sandbox::new("ok", "bin/antigravity-notifier");
     let original = std::fs::read(sandbox.exe()).unwrap();
     let (url, requested) = release_server(&sandbox.root, NEW_VERSION, true);
 
@@ -263,7 +263,7 @@ fn replaces_the_binary_with_the_verified_release() {
     assert!(out.status.success(), "{}", text(&out.stderr));
     assert_eq!(
         text(&out.stdout).trim(),
-        format!("Updated codex-notifier {VERSION} → {NEW_VERSION}.")
+        format!("Updated antigravity-notifier {VERSION} → {NEW_VERSION}.")
     );
 
     let requested = requested.lock().unwrap().clone();
@@ -277,12 +277,12 @@ fn replaces_the_binary_with_the_verified_release() {
         ]
     );
 
-    // The release's codex-notifier is now the installed one, the old binary is gone, nothing is left beside it
+    // The release's antigravity-notifier is now the installed one, the old binary is gone, nothing is left beside it
     let installed = std::fs::read(sandbox.exe()).unwrap();
     assert_eq!(text(&installed), SCRIPT);
     assert_ne!(installed, original);
-    assert!(!sandbox.root.join("bin/codex-notifier.new").exists());
-    assert!(!sandbox.root.join("bin/codex-notifier.old").exists());
+    assert!(!sandbox.root.join("bin/antigravity-notifier.new").exists());
+    assert!(!sandbox.root.join("bin/antigravity-notifier.old").exists());
     assert_eq!(
         std::fs::read_dir(sandbox.root.join("bin")).unwrap().count(),
         1
@@ -291,7 +291,7 @@ fn replaces_the_binary_with_the_verified_release() {
         .arg("--version")
         .output()
         .unwrap();
-    assert_eq!(text(&version.stdout).trim(), "codex-notifier 9.9.9");
+    assert_eq!(text(&version.stdout).trim(), "antigravity-notifier 9.9.9");
 
     // The hooks already pointed at this path, so hooks.json was not rewritten
     let settings = std::fs::read_to_string(sandbox.root.join("codex/hooks.json")).unwrap();
@@ -299,14 +299,14 @@ fn replaces_the_binary_with_the_verified_release() {
     assert!(
         !sandbox
             .root
-            .join("codex/hooks.json.codex-notifier-backup")
+            .join("codex/hooks.json.antigravity-notifier-backup")
             .exists()
     );
 }
 
 #[test]
 fn a_bad_checksum_leaves_the_original_untouched() {
-    let sandbox = Sandbox::new("badsum", "bin/codex-notifier");
+    let sandbox = Sandbox::new("badsum", "bin/antigravity-notifier");
     let original = std::fs::read(sandbox.exe()).unwrap();
     let (url, _) = release_server(&sandbox.root, NEW_VERSION, false);
 
@@ -318,17 +318,17 @@ fn a_bad_checksum_leaves_the_original_untouched() {
         text(&out.stderr)
     );
     assert_eq!(std::fs::read(sandbox.exe()).unwrap(), original);
-    assert!(!sandbox.root.join("bin/codex-notifier.new").exists());
+    assert!(!sandbox.root.join("bin/antigravity-notifier.new").exists());
     let still_runs = sandbox.run(&url, &["--version"]);
     assert_eq!(
         text(&still_runs.stdout).trim(),
-        format!("codex-notifier {VERSION}")
+        format!("antigravity-notifier {VERSION}")
     );
 }
 
 #[test]
 fn says_so_when_already_the_latest() {
-    let sandbox = Sandbox::new("latest", "bin/codex-notifier");
+    let sandbox = Sandbox::new("latest", "bin/antigravity-notifier");
     let original = std::fs::read(sandbox.exe()).unwrap();
     let (url, requested) = release_server(&sandbox.root, VERSION, true);
 
@@ -336,7 +336,7 @@ fn says_so_when_already_the_latest() {
     assert!(out.status.success(), "{}", text(&out.stderr));
     assert_eq!(
         text(&out.stdout).trim(),
-        format!("codex-notifier {VERSION} is the latest.")
+        format!("antigravity-notifier {VERSION} is the latest.")
     );
     assert_eq!(std::fs::read(sandbox.exe()).unwrap(), original);
     assert_eq!(requested.lock().unwrap().len(), 1, "nothing was downloaded");
@@ -348,7 +348,7 @@ fn says_so_when_already_the_latest() {
 
 #[test]
 fn check_only_reports_and_exits_10_when_newer() {
-    let sandbox = Sandbox::new("check", "bin/codex-notifier");
+    let sandbox = Sandbox::new("check", "bin/antigravity-notifier");
     let original = std::fs::read(sandbox.exe()).unwrap();
     let (url, requested) = release_server(&sandbox.root, NEW_VERSION, true);
 
@@ -357,12 +357,12 @@ fn check_only_reports_and_exits_10_when_newer() {
     let stdout = text(&out.stdout);
     assert!(
         stdout.contains(&format!(
-            "codex-notifier {NEW_VERSION} is available (you have {VERSION})"
+            "antigravity-notifier {NEW_VERSION} is available (you have {VERSION})"
         )),
         "{stdout}"
     );
     assert!(
-        stdout.contains("Update: codex-notifier upgrade"),
+        stdout.contains("Update: antigravity-notifier upgrade"),
         "{stdout}"
     );
     assert_eq!(std::fs::read(sandbox.exe()).unwrap(), original);
@@ -377,11 +377,11 @@ fn check_only_reports_and_exits_10_when_newer() {
 fn a_homebrew_install_is_told_to_brew_upgrade_and_the_background_run_records_it() {
     let sandbox = Sandbox::new(
         "brew",
-        "homebrew/Cellar/codex-notifier/0.1.0/bin/codex-notifier",
+        "homebrew/Cellar/antigravity-notifier/0.1.0/bin/antigravity-notifier",
     );
     let exe = sandbox
         .root
-        .join("homebrew/Cellar/codex-notifier/0.1.0/bin/codex-notifier");
+        .join("homebrew/Cellar/antigravity-notifier/0.1.0/bin/antigravity-notifier");
     let original = std::fs::read(&exe).unwrap();
     let (url, requested) = release_server(&sandbox.root, NEW_VERSION, true);
 
@@ -390,7 +390,7 @@ fn a_homebrew_install_is_told_to_brew_upgrade_and_the_background_run_records_it(
     assert_eq!(
         text(&out.stdout).trim(),
         format!(
-            "codex-notifier {NEW_VERSION} is available: brew upgrade touch-tap/tap/codex-notifier"
+            "antigravity-notifier {NEW_VERSION} is available: brew upgrade touch-tap/tap/antigravity-notifier"
         )
     );
     assert_eq!(std::fs::read(&exe).unwrap(), original);
@@ -422,7 +422,7 @@ fn a_homebrew_install_is_told_to_brew_upgrade_and_the_background_run_records_it(
 
 #[test]
 fn auto_update_is_a_local_setting() {
-    let sandbox = Sandbox::new("setting", "bin/codex-notifier");
+    let sandbox = Sandbox::new("setting", "bin/antigravity-notifier");
     let out = sandbox.run(
         "http://127.0.0.1:9",
         &["config", "set", "auto_update", "off"],
@@ -444,14 +444,14 @@ fn an_intel_mac_homebrew_link_is_left_to_brew() {
     // bin, and hooks and the shell running the link. Nothing in the link's path says Homebrew.
     let sandbox = Sandbox::new(
         "brewlink",
-        "usr/local/Cellar/codex-notifier/0.1.0/bin/codex-notifier",
+        "usr/local/Cellar/antigravity-notifier/0.1.0/bin/antigravity-notifier",
     );
     let cellar = sandbox
         .root
-        .join("usr/local/Cellar/codex-notifier/0.1.0/bin/codex-notifier");
-    let link = sandbox.root.join("usr/local/bin/codex-notifier");
+        .join("usr/local/Cellar/antigravity-notifier/0.1.0/bin/antigravity-notifier");
+    let link = sandbox.root.join("usr/local/bin/antigravity-notifier");
     std::fs::create_dir_all(link.parent().unwrap()).unwrap();
-    std::os::unix::fs::symlink("../Cellar/codex-notifier/0.1.0/bin/codex-notifier", &link).unwrap();
+    std::os::unix::fs::symlink("../Cellar/antigravity-notifier/0.1.0/bin/antigravity-notifier", &link).unwrap();
     let original = std::fs::read(&cellar).unwrap();
     let (url, _) = release_server(&sandbox.root, NEW_VERSION, true);
 
@@ -460,7 +460,7 @@ fn an_intel_mac_homebrew_link_is_left_to_brew() {
     assert_eq!(
         text(&out.stdout).trim(),
         format!(
-            "codex-notifier {NEW_VERSION} is available: brew upgrade touch-tap/tap/codex-notifier"
+            "antigravity-notifier {NEW_VERSION} is available: brew upgrade touch-tap/tap/antigravity-notifier"
         )
     );
 
@@ -485,11 +485,11 @@ fn an_intel_mac_homebrew_link_is_left_to_brew() {
 
 #[test]
 fn a_second_upgrader_leaves_the_binary_to_the_first() {
-    let sandbox = Sandbox::new("locked", "bin/codex-notifier");
+    let sandbox = Sandbox::new("locked", "bin/antigravity-notifier");
     let original = std::fs::read(sandbox.exe()).unwrap();
     let (url, requested) = release_server(&sandbox.root, NEW_VERSION, true);
     // Another upgrader, started a moment ago, holds the lock
-    let lock = sandbox.root.join("codex-notifier/update.lock");
+    let lock = sandbox.root.join("antigravity-notifier/update.lock");
     std::fs::write(&lock, "1\n").unwrap();
 
     let out = sandbox.run(&url, &["upgrade"]);
@@ -523,7 +523,7 @@ fn a_second_upgrader_leaves_the_binary_to_the_first() {
 #[test]
 fn refuses_a_release_signed_by_another_key_or_not_at_all() {
     for sig in [Sig::WrongKey, Sig::Missing] {
-        let sandbox = Sandbox::new("unsigned", "bin/codex-notifier");
+        let sandbox = Sandbox::new("unsigned", "bin/antigravity-notifier");
         let original = std::fs::read(sandbox.exe()).unwrap();
         let (url, requested) = release_server_signed(&sandbox.root, NEW_VERSION, true, sig);
 

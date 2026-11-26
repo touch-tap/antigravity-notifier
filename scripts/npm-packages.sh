@@ -1,8 +1,8 @@
 #!/bin/sh
 # Builds the npm packages for a release from its assets, ready for `npm publish` in each folder:
 #   scripts/npm-packages.sh 0.2.0 dist     # dist holds the release's .tar.gz/.zip files
-# Output in npm/out/: one package per platform, @touchtap/codex-notifier pinned to the same version, and the
-# no unscoped alias: npm refuses `codexnotifier` as too close to the unrelated `codex-notifier`.
+# Output in npm/out/: one package per platform, @touchtap/antigravity-notifier pinned to the same version, and the
+# no unscoped alias: npm refuses `antigravitynotifier` as too close to the unrelated `antigravity-notifier`.
 set -eu
 version=$1
 dist=$2
@@ -19,20 +19,20 @@ for pair in darwin-arm64:aarch64-apple-darwin darwin-x64:x86_64-apple-darwin \
   target=${pair#*:}
   os=${npm_name%-*}
   cpu=${npm_name#*-}
-  dir="$out/codex-notifier-$npm_name"
+  dir="$out/antigravity-notifier-$npm_name"
   mkdir -p "$dir/bin"
   if [ "$os" = win32 ]; then
-    unzip -q -o "$dist/codex-notifier-$target.zip" -d "$dir/bin"
+    unzip -q -o "$dist/antigravity-notifier-$target.zip" -d "$dir/bin"
   else
-    tar xzf "$dist/codex-notifier-$target.tar.gz" -C "$dir/bin"
-    chmod 755 "$dir/bin/codex-notifier"
+    tar xzf "$dist/antigravity-notifier-$target.tar.gz" -C "$dir/bin"
+    chmod 755 "$dir/bin/antigravity-notifier"
   fi
   cat > "$dir/package.json" <<JSON
 {
-  "name": "@touchtap/codex-notifier-$npm_name",
+  "name": "@touchtap/antigravity-notifier-$npm_name",
   "version": "$version",
-  "description": "The codex-notifier binary for $npm_name. Install @touchtap/codex-notifier instead.",
-  "homepage": "https://notifierforcodex.com/cli",
+  "description": "The antigravity-notifier binary for $npm_name. Install @touchtap/antigravity-notifier instead.",
+  "homepage": "https://antigravitynotifier.com/cli",
   "license": "SEE LICENSE IN LICENSE.md",
   "os": ["$os"],
   "cpu": ["$cpu"],
@@ -42,7 +42,7 @@ JSON
   cp "$root/LICENSE.md" "$dir/LICENSE.md"
 done
 
-for pkg in codex-notifier; do
+for pkg in antigravity-notifier; do
   cp -R "$root/npm/$pkg" "$out/$pkg"
   cp "$root/LICENSE.md" "$out/$pkg/LICENSE.md"
 done
@@ -54,5 +54,5 @@ node -e '
     for (const deps of [p.optionalDependencies, p.dependencies]) for (const k of Object.keys(deps ?? {})) deps[k] = v;
     fs.writeFileSync(file, JSON.stringify(p, null, 2) + "\n");
   }
-' "$out/codex-notifier/package.json" "$version"
-echo "Packages in $out. Publish with scripts/npm-publish.sh (platform packages, then codex-notifier)."
+' "$out/antigravity-notifier/package.json" "$version"
+echo "Packages in $out. Publish with scripts/npm-publish.sh (platform packages, then antigravity-notifier)."

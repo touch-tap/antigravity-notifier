@@ -5,14 +5,14 @@
 _version: 1
 
 cli:
-  about: "Notifier for Codex: nhận thông báo trên điện thoại khi Codex cần bạn, và trả lời ngay từ đó"
+  about: "Antigravity Notifier: nhận thông báo trên điện thoại khi Codex cần bạn, và trả lời ngay từ đó"
   pair:
     about: "Ghép nối máy tính này với điện thoại của bạn. Truyền mã mà ứng dụng hiển thị, hoặc chạy không kèm mã để nhận một mã rồi nhập vào ứng dụng"
-    code: "Mã 6 chữ số hiển thị trong ứng dụng Notifier for Codex"
+    code: "Mã 6 chữ số hiển thị trong ứng dụng Antigravity Notifier"
     name: "Tên của máy tính này trên điện thoại của bạn (mặc định: hostname)"
     no_wait: "Hiển thị mã QR rồi thoát ngay: việc ghép nối tự hoàn tất khi điện thoại kết nối"
   setup:
-    about: "Cài các hook của Codex và thông báo trên máy tính (pair và codex-notifier không kèm lệnh sẽ làm việc này trước)"
+    about: "Cài các hook của Codex và thông báo trên máy tính (pair và antigravity-notifier không kèm lệnh sẽ làm việc này trước)"
   doctor:
     about: "Kiểm tra hook, thông tin xác thực, máy chủ và những gì terminal này hỗ trợ"
   test:
@@ -23,14 +23,14 @@ cli:
   config:
     about: "Xem hoặc thay đổi cài đặt của máy tính này (cũng có thể chỉnh từ điện thoại)"
     show: "In ra các cài đặt đang có hiệu lực"
-    set: "Đặt một cài đặt, ví dụ `codex-notifier config set hold_ceiling_seconds 300` hoặc `codex-notifier config set quiet_hours 22:00-08:00`"
+    set: "Đặt một cài đặt, ví dụ `antigravity-notifier config set hold_ceiling_seconds 300` hoặc `antigravity-notifier config set quiet_hours 22:00-08:00`"
   sync:
     about: "Lấy cài đặt mới nhất từ máy chủ ngay bây giờ"
   unlock:
     about: "Mua giấy phép cho máy tính này trong trình duyệt: mở khóa mọi điện thoại đã ghép nối với nó"
     lifetime: "Trả một lần thay vì hằng năm (hoặc chuyển giấy phép hằng năm sang trọn đời, giữ nguyên khóa)"
   upgrade:
-    about: "Cập nhật codex-notifier lên bản phát hành mới nhất (cũng được kiểm tra mỗi ngày một lần ở chế độ nền)"
+    about: "Cập nhật antigravity-notifier lên bản phát hành mới nhất (cũng được kiểm tra mỗi ngày một lần ở chế độ nền)"
     check: "Chỉ cho biết có bản mới hơn hay không: thoát với mã 0 khi đã mới nhất, 10 khi có bản mới"
     quiet: "Không in gì trừ khi có lỗi"
   activate:
@@ -49,16 +49,16 @@ cli:
 
 common:
   your_phone: "điện thoại của bạn"
-  not_paired: "máy tính này chưa được ghép nối. Chạy `codex-notifier pair <mã>` với mã trong ứng dụng."
+  not_paired: "máy tính này chưa được ghép nối. Chạy `antigravity-notifier pair <mã>` với mã trong ứng dụng."
   store_keychain: "chuỗi khóa"
   store_file: "tệp"
   date_format: "%d/%m/%Y"
 
 pair:
   reregister: "Ghép nối cũ của máy tính này đã bị gỡ, nên nó sẽ được đăng ký lại."
-  code_not_recognised: "Mã này không được nhận ra. Mã 6 chữ số nằm trong ứng dụng Notifier for Codex, mục Máy tính > Liên kết máy tính; mã thay đổi mỗi 24 giờ, nên hãy sao chép dòng mà ứng dụng đang hiển thị lúc này."
+  code_not_recognised: "Mã này không được nhận ra. Mã 6 chữ số nằm trong ứng dụng Antigravity Notifier, mục Máy tính > Liên kết máy tính; mã thay đổi mỗi 24 giờ, nên hãy sao chép dòng mà ứng dụng đang hiển thị lúc này."
   offer_qr: "Nhấn Enter để hiển thị mã QR ở đây thay thế (quét bằng điện thoại của bạn), hoặc Ctrl+C."
-  options_without_terminal: "Chạy lại `codex-notifier pair <mã>` với mã mà ứng dụng đang hiển thị, hoặc chạy `codex-notifier pair` để hiển thị mã QR ở đây rồi quét bằng điện thoại."
+  options_without_terminal: "Chạy lại `antigravity-notifier pair <mã>` với mã mà ứng dụng đang hiển thị, hoặc chạy `antigravity-notifier pair` để hiển thị mã QR ở đây rồi quét bằng điện thoại."
   scan: "  Quét mã này bằng camera điện thoại để kết nối. Nếu chưa có ứng dụng, mã sẽ đưa bạn\n  tới App Store hoặc Google Play: cài xong rồi quét lại."
   or_type_code: "  Hoặc trong ứng dụng, chạm \"Máy tính của tôi đang hiện mã\" rồi nhập:  %{code}"
   enter_code: "  Trong ứng dụng, chạm \"Máy tính của tôi đang hiện mã\" rồi nhập:  %{code}"
@@ -68,20 +68,20 @@ pair:
   code_lasts: "  Ghép nối khi bạn muốn: mã này có hiệu lực trong %{duration}."
   completes_on_its_own: "  Việc ghép nối tự hoàn tất khi điện thoại kết nối."
   waiting: "  Đang chờ điện thoại của bạn... (Ctrl+C không sao: việc ghép nối tự hoàn tất khi điện thoại kết nối)"
-  code_expired: "mã đã hết hạn trước khi có điện thoại nào dùng nó. Chạy lại `codex-notifier pair`."
-  code_is_six_digits: "mã là 6 chữ số hiển thị trong ứng dụng Notifier for Codex"
+  code_expired: "mã đã hết hạn trước khi có điện thoại nào dùng nó. Chạy lại `antigravity-notifier pair`."
+  code_is_six_digits: "mã là 6 chữ số hiển thị trong ứng dụng Antigravity Notifier"
   credentials_stored: "Thông tin xác thực đã được lưu trong %{store} (%{path})."
   test_sent: "Đã gửi một thông báo thử tới điện thoại của bạn."
   test_failed: "Chưa gửi được thông báo thử: %{error}"
-  done: "Xong. Khởi động `codex` như thường lệ: bạn sẽ nhận thông báo khi Codex hoàn tất hoặc cần bạn,\nvà có thể phê duyệt, từ chối hoặc trả lời từ điện thoại. `codex-notifier doctor` kiểm tra mọi thứ."
+  done: "Xong. Khởi động `codex` như thường lệ: bạn sẽ nhận thông báo khi Codex hoàn tất hoặc cần bạn,\nvà có thể phê duyệt, từ chối hoặc trả lời từ điện thoại. `antigravity-notifier doctor` kiểm tra mọi thứ."
   paired_with: "Đã ghép nối với %{name} (%{platform})."
   hours_one: "1 giờ"
   hours_other: "%{count} giờ"
   minutes_one: "1 phút"
   minutes_other: "%{count} phút"
   pitch: "Điện thoại của bạn sẽ đề xuất một gói đăng ký trong ứng dụng. Bạn cũng có thể mở khóa mọi thứ từ đây, ngoài các cửa hàng ứng dụng:"
-  pitch_annual: "  codex-notifier unlock             %{price} mỗi năm"
-  pitch_lifetime: "  codex-notifier unlock --lifetime  %{price} một lần"
+  pitch_annual: "  antigravity-notifier unlock             %{price} mỗi năm"
+  pitch_lifetime: "  antigravity-notifier unlock --lifetime  %{price} một lần"
   pitch_covers: "Bao gồm %{computers} máy tính và mọi điện thoại đã ghép nối với chúng. Hoàn tiền trong %{days} ngày."
   welcome_no_terminal: "Một thông báo thử đang được gửi tới điện thoại của bạn: hãy thử trả lời từ đó."
   welcome: "Một thông báo thử đang được gửi tới điện thoại của bạn. Hãy thử trả lời từ đó..."
@@ -90,15 +90,15 @@ pair:
   welcome_no_answer: "Chưa có trả lời. Thông báo sẽ ở lại trên điện thoại trong một giờ."
 
 status:
-  set_up: "codex-notifier %{version} đã được thiết lập trên máy tính này với tên \"%{name}\"."
+  set_up: "antigravity-notifier %{version} đã được thiết lập trên máy tính này với tên \"%{name}\"."
   licence: "Giấy phép: %{line}"
-  hint_doctor: "  codex-notifier doctor     kiểm tra hook, thông tin xác thực và máy chủ"
-  hint_test: "  codex-notifier test       gửi một thông báo thử tới điện thoại của bạn"
-  hint_pair: "  codex-notifier pair       ghép nối thêm một điện thoại"
-  hint_help: "  codex-notifier --help     mọi thứ còn lại"
+  hint_doctor: "  antigravity-notifier doctor     kiểm tra hook, thông tin xác thực và máy chủ"
+  hint_test: "  antigravity-notifier test       gửi một thông báo thử tới điện thoại của bạn"
+  hint_pair: "  antigravity-notifier pair       ghép nối thêm một điện thoại"
+  hint_help: "  antigravity-notifier --help     mọi thứ còn lại"
 
 setup:
-  installed_self: "Đã cài codex-notifier vào %{path}."
+  installed_self: "Đã cài antigravity-notifier vào %{path}."
   hooks_installed: "Đã cài hook vào %{path} (dùng %{exe})."
   hooks_trusted: "Đã đánh dấu tin cậy trong %{path}, nên Codex chạy chúng mà không cần vào /hooks."
 
@@ -107,25 +107,25 @@ sync:
   synced: "Đã đồng bộ cài đặt."
 
 doctor:
-  header: "codex-notifier %{version} trên %{platform}"
+  header: "antigravity-notifier %{version} trên %{platform}"
   config: "cấu hình: %{path}"
   credentials_present: "thông tin xác thực: có (%{store})"
-  credentials_missing: "thông tin xác thực: thiếu: chạy `codex-notifier pair <mã>`"
+  credentials_missing: "thông tin xác thực: thiếu: chạy `antigravity-notifier pair <mã>`"
   server_reachable: "máy chủ: %{url} truy cập được"
   server_error: "máy chủ: %{error}"
   registered: "đã đăng ký với tên \"%{name}\" (%{kind} %{platform}), khả năng: %{capabilities}"
-  not_paired_any_more: "ghép nối: không còn được ghép nối: chạy `codex-notifier pair`"
+  not_paired_any_more: "ghép nối: không còn được ghép nối: chạy `antigravity-notifier pair`"
   registration_error: "đăng ký: %{error}"
   licence: "giấy phép: %{line}"
-  phones_none: "điện thoại: chưa ghép nối chiếc nào, nên thông báo chỉ ở lại trên máy tính này (chạy `codex-notifier pair`)"
+  phones_none: "điện thoại: chưa ghép nối chiếc nào, nên thông báo chỉ ở lại trên máy tính này (chạy `antigravity-notifier pair`)"
   phones: "điện thoại: %{names}"
   phones_error: "điện thoại: %{error}"
   hooks_all: "hook: đã cài đủ %{count} trong %{path}"
-  hooks_missing: "hook: thiếu %{names} (chạy `codex-notifier setup`)"
+  hooks_missing: "hook: thiếu %{names} (chạy `antigravity-notifier setup`)"
   hooks_error: "hook: %{error}"
-  hooks_stale: "hook đang trỏ tới một tệp codex-notifier khác; chạy `codex-notifier setup` để cập nhật"
+  hooks_stale: "hook đang trỏ tới một tệp antigravity-notifier khác; chạy `antigravity-notifier setup` để cập nhật"
   trust_ok: "tin cậy: mọi hook đều có hash trong %{path}"
-  trust_missing: "tin cậy: Codex sẽ bỏ qua %{names} cho đến khi được tin cậy (chạy `codex-notifier setup`, hoặc /hooks trong Codex)"
+  trust_missing: "tin cậy: Codex sẽ bỏ qua %{names} cho đến khi được tin cậy (chạy `antigravity-notifier setup`, hoặc /hooks trong Codex)"
   presence: "hiện diện: đã rảnh %{idle}s, ngưỡng %{threshold}s"
   replies: "trả lời: phê duyệt và trả lời câu hỏi từ điện thoại hoạt động trong mọi terminal; văn bản tự do vào một phiên đang rảnh %{free_text}"
   replies_tmux: "hoạt động (tmux)"
@@ -134,12 +134,12 @@ doctor:
   log: "nhật ký: %{path}"
 
 test:
-  none_paired: "chưa có điện thoại nào được ghép nối. Chạy `codex-notifier pair <mã>`."
+  none_paired: "chưa có điện thoại nào được ghép nối. Chạy `antigravity-notifier pair <mã>`."
   sent: "Đã gửi một thông báo thử tới %{name} (%{platform})."
   failed: "%{name}: %{error}"
 
 devices:
-  none: "Chưa có điện thoại nào được ghép nối. Chạy `codex-notifier pair <mã>` với mã trong ứng dụng."
+  none: "Chưa có điện thoại nào được ghép nối. Chạy `antigravity-notifier pair <mã>` với mã trong ứng dụng."
   # %{name} is padded to 24 columns and %{platform} to 8 before they are filled in
   row: "%{name} %{platform} đã ghép nối %{since}%{off}"
   notifications_off: "  (thông báo đang tắt)"
@@ -162,19 +162,19 @@ settings:
   unknown: "cài đặt không xác định '%{key}'. Các cài đặt: notify_on_done, notify_on_permission, notify_on_question, sound, quiet_when_present, quiet_hours, hold_ceiling_seconds, presence_threshold_seconds, stop_hold_seconds, reminder_interval_seconds"
 
 forget:
-  needs_yes: "codex-notifier forget cần bạn xác nhận: chạy trong terminal, hoặc thêm --yes"
-  warning: "Lệnh này xóa máy tính này và các ghép nối của nó khỏi máy chủ Notifier for Codex, rồi gỡ codex-notifier\nkhỏi Codex và xóa thông tin xác thực cùng các tệp của nó ở đây, như `codex-notifier uninstall` làm.\nCác điện thoại đã ghép nối với máy tính này sẽ thấy nó biến mất.\nGiấy phép mua trên trang web không bị hủy: hãy làm việc đó tại notifierforcodex.com/licence\nbằng \"Xóa giấy phép của tôi\"."
+  needs_yes: "antigravity-notifier forget cần bạn xác nhận: chạy trong terminal, hoặc thêm --yes"
+  warning: "Lệnh này xóa máy tính này và các ghép nối của nó khỏi máy chủ Antigravity Notifier, rồi gỡ antigravity-notifier\nkhỏi Codex và xóa thông tin xác thực cùng các tệp của nó ở đây, như `antigravity-notifier uninstall` làm.\nCác điện thoại đã ghép nối với máy tính này sẽ thấy nó biến mất.\nGiấy phép mua trên trang web không bị hủy: hãy làm việc đó tại antigravitynotifier.com/licence\nbằng \"Xóa giấy phép của tôi\"."
   # The word the user must type; `yes` is always accepted as well
   yes_word: "có"
   prompt: "\nNhập %{yes} để tiếp tục: "
   nothing_erased: "Không có gì bị xóa."
   erased: "Đã xóa máy tính này và các ghép nối của nó khỏi máy chủ."
   already_forgotten: "Máy chủ đã quên máy tính này từ trước."
-  nothing_removed: "%{error}. Chưa gỡ gì khỏi máy tính này, nên bạn có thể chạy lại `codex-notifier forget`"
+  nothing_removed: "%{error}. Chưa gỡ gì khỏi máy tính này, nên bạn có thể chạy lại `antigravity-notifier forget`"
   not_registered: "Máy tính này chưa đăng ký với máy chủ, nên không có gì để xóa ở đó."
 
 uninstall:
-  hooks_removed: "Đã gỡ các hook của codex-notifier khỏi %{path} và các mục tin cậy của chúng khỏi %{config}."
+  hooks_removed: "Đã gỡ các hook của antigravity-notifier khỏi %{path} và các mục tin cậy của chúng khỏi %{config}."
   slot_freed: "Đã giải phóng chỗ của máy tính này trong giấy phép."
   unpaired_all: "Đã hủy ghép nối mọi điện thoại."
   removed_dir: "Đã xóa %{path}."
@@ -184,17 +184,17 @@ local:
   finished_body: "Codex đã hoàn tất và đang chờ bạn."
   permission_title: "Codex cần quyền"
   question_title: "Codex có một câu hỏi"
-  first_nudge: "Nhận trên điện thoại: codex-notifier pair"
-  milestone_nudge: "Đã có 10 thông báo. Nhận chúng trên điện thoại, phê duyệt ngay từ màn hình khóa: chạy codex-notifier pair"
-  pair_message: "Notifier for Codex: bạn đang nhận thông báo trên máy tính. Để nhận cả trên điện thoại và phê duyệt hoặc trả lời từ đó, hãy chạy `codex-notifier pair` trong terminal."
+  first_nudge: "Nhận trên điện thoại: antigravity-notifier pair"
+  milestone_nudge: "Đã có 10 thông báo. Nhận chúng trên điện thoại, phê duyệt ngay từ màn hình khóa: chạy antigravity-notifier pair"
+  pair_message: "Antigravity Notifier: bạn đang nhận thông báo trên máy tính. Để nhận cả trên điện thoại và phê duyệt hoặc trả lời từ đó, hãy chạy `antigravity-notifier pair` trong terminal."
 
 hook:
-  licence_message: "Notifier for Codex: thông báo điện thoại chưa được mở khóa cho máy tính này. Mở khóa: codex-notifier unlock"
-  unpaired_message: "Notifier for Codex: máy tính này không còn được ghép nối, nên điện thoại của bạn sẽ không nhận thông báo. Chạy `codex-notifier pair` trong terminal để kết nối lại."
-  unpaired_notification: "Máy tính này không còn được ghép nối. Chạy `codex-notifier pair` trong terminal để kết nối lại."
-  paired_message: "Notifier for Codex: đã ghép nối với %{phone}. Thông báo giờ sẽ tới điện thoại của bạn."
+  licence_message: "Antigravity Notifier: thông báo điện thoại chưa được mở khóa cho máy tính này. Mở khóa: antigravity-notifier unlock"
+  unpaired_message: "Antigravity Notifier: máy tính này không còn được ghép nối, nên điện thoại của bạn sẽ không nhận thông báo. Chạy `antigravity-notifier pair` trong terminal để kết nối lại."
+  unpaired_notification: "Máy tính này không còn được ghép nối. Chạy `antigravity-notifier pair` trong terminal để kết nối lại."
+  paired_message: "Antigravity Notifier: đã ghép nối với %{phone}. Thông báo giờ sẽ tới điện thoại của bạn."
   # The server writes title, body and command in the user's language; this only joins them
-  nudge_message: "Notifier for Codex: %{title} %{body} %{command}"
+  nudge_message: "Antigravity Notifier: %{title} %{body} %{command}"
   needs_attention: "Cần bạn chú ý"
 
 # Suggests the Claude Code Notifier app (and its ccn CLI) to someone who also uses Claude Code (crosspromo.rs).
@@ -202,60 +202,60 @@ hook:
 cross_promo:
   line: "Đã phát hiện Claude Code — nhận cả yêu cầu phê duyệt và câu hỏi của Claude Code trên điện thoại, với ứng dụng Claude Code Notifier (iPhone và Android). Thiết lập máy tính này bằng một lệnh: %{command}  ·  %{url}"
   notification: "Đã phát hiện Claude Code — nhận cả yêu cầu phê duyệt của Claude Code trên điện thoại, với ứng dụng Claude Code Notifier."
-  # After `codex-notifier pair`, above a QR code (pair_scan) or without one (pair_steps), the app's link and the command
+  # After `antigravity-notifier pair`, above a QR code (pair_scan) or without one (pair_steps), the app's link and the command
   pair_title: "Đã phát hiện Claude Code — nhận cả yêu cầu phê duyệt và câu hỏi của Claude Code trên điện thoại, với ứng dụng Claude Code Notifier (iPhone và Android)."
   pair_scan: "Quét để tải ứng dụng, rồi thiết lập máy tính này bằng một lệnh:"
   pair_steps: "Tải ứng dụng, rồi thiết lập máy tính này bằng một lệnh:"
 
 # Asks once, after 20 answers from the phone, for an app-store rating (rate.rs). url is not translated.
 rate:
-  notification: "Bạn thích Notifier for Codex? Một đánh giá nhanh giúp các nhà phát triển khác tìm thấy ứng dụng."
-  message: "Bạn thích Notifier for Codex? Một đánh giá nhanh giúp các nhà phát triển khác tìm thấy ứng dụng: %{url}"
+  notification: "Bạn thích Antigravity Notifier? Một đánh giá nhanh giúp các nhà phát triển khác tìm thấy ứng dụng."
+  message: "Bạn thích Antigravity Notifier? Một đánh giá nhanh giúp các nhà phát triển khác tìm thấy ứng dụng: %{url}"
 
 hooks:
-  doctor_presence_none: "hiện diện: không phát hiện được ở đây, nên không có gì chờ điện thoại: điện thoại nhận một thông báo và bạn trả lời trong terminal (`codex-notifier config set hold_without_presence on` để vẫn chờ)"
+  doctor_presence_none: "hiện diện: không phát hiện được ở đây, nên không có gì chờ điện thoại: điện thoại nhận một thông báo và bạn trả lời trong terminal (`antigravity-notifier config set hold_without_presence on` để vẫn chờ)"
   doctor_presence_none_hold: "hiện diện: không phát hiện được ở đây và hold_without_presence đang bật, nên mọi yêu cầu chờ điện thoại cho đến khi nó trả lời hoặc hết thời gian chờ tối đa"
 
 licence:
   already_licensed: "Máy tính này đã có giấy phép (%{licence})."
-  switch_to_lifetime: "Để chuyển sang giấy phép trọn đời, giữ nguyên khóa: codex-notifier unlock --lifetime"
+  switch_to_lifetime: "Để chuyển sang giấy phép trọn đời, giữ nguyên khóa: antigravity-notifier unlock --lifetime"
   checkout_open: "  Trang thanh toán đã mở trong trình duyệt. Để thanh toán trên điện thoại thay thế, quét mã này:"
   checkout_link: "  Mở liên kết này để thanh toán, hoặc quét bằng điện thoại:"
   waiting_payment: "  Đang chờ thanh toán... (Ctrl+C để dừng; khóa sẽ được gửi vào email của bạn dù thế nào)"
   upgraded: "✓ Đã nâng cấp lên giấy phép trọn đời. Cùng khóa, cùng các máy tính; gia hạn hằng năm đã bị hủy."
   licensed: "✓ Máy tính này đã có giấy phép (%{licence})."
-  key: "  Khóa: %{key} (cũng đã gửi qua email). Dùng trên tối đa 2 máy tính nữa: codex-notifier activate %{key}"
+  key: "  Khóa: %{key} (cũng đã gửi qua email). Dùng trên tối đa 2 máy tính nữa: antigravity-notifier activate %{key}"
   phones_unlocked: "  Mọi điện thoại đã ghép nối với máy tính này đều được mở khóa."
-  activate_with_key: "  Chạy `codex-notifier activate <khóa>` với khóa trong email để dùng trên máy tính này."
-  no_payment: "Sau 15 phút vẫn chưa có thanh toán. Nếu bạn đã trả, khóa nằm trong email của bạn: codex-notifier activate <khóa>"
+  activate_with_key: "  Chạy `antigravity-notifier activate <khóa>` với khóa trong email để dùng trên máy tính này."
+  no_payment: "Sau 15 phút vẫn chưa có thanh toán. Nếu bạn đã trả, khóa nằm trong email của bạn: antigravity-notifier activate <khóa>"
   replace_stale: "\"%{name}\" đã hơn một tuần không xuất hiện. Đó có phải máy tính này không? Thay thế nó?"
   yes_no: " [C/k] "
   # An answer starting with this letter (or n) means no
   no_initial: "k"
   slots_full: "Giấy phép này đã dùng trên %{count} máy tính:"
-  free_one: "Giải phóng một chỗ bằng `codex-notifier deactivate` trên máy đó, hoặc thay thế từ đây:"
-  replace_example: "  codex-notifier activate %{key} --replace \"%{name}\""
+  free_one: "Giải phóng một chỗ bằng `antigravity-notifier deactivate` trên máy đó, hoặc thay thế từ đây:"
+  replace_example: "  antigravity-notifier activate %{key} --replace \"%{name}\""
   old_laptop: "Laptop cũ"
   no_free_slot: "không còn chỗ trống cho máy tính"
   computers_on_licence: "Các máy tính trong giấy phép này:"
   activated: "✓ Đã có giấy phép (%{licence}). Đang dùng %{count} trong 3 máy tính."
-  pair_to_unlock: "  Ghép nối một điện thoại bằng `codex-notifier pair` và nó được mở khóa ngay."
+  pair_to_unlock: "  Ghép nối một điện thoại bằng `antigravity-notifier pair` và nó được mở khóa ngay."
   none: "Máy tính này không có giấy phép."
   freed: "Đã giải phóng. Giấy phép này hiện dùng %{count} trong 3 máy tính."
-  none_buy: "Máy tính này chưa có giấy phép. Mua một giấy phép: codex-notifier unlock"
+  none_buy: "Máy tính này chưa có giấy phép. Mua một giấy phép: antigravity-notifier unlock"
   none_short: "Máy tính này chưa có giấy phép."
-  buy_options: "  Mua giấy phép:      codex-notifier unlock (hằng năm) hoặc codex-notifier unlock --lifetime"
-  have_key: "  Đã có khóa:         codex-notifier activate <khóa>"
+  buy_options: "  Mua giấy phép:      antigravity-notifier unlock (hằng năm) hoặc antigravity-notifier unlock --lifetime"
+  have_key: "  Đã có khóa:         antigravity-notifier activate <khóa>"
   show_licence: "Giấy phép: %{licence}"
   show_key: "Khóa:      CCN-…-%{last4}"
   show_unlocks: "Mở khóa:   %{value}"
   unlocks_yes: "có, mọi điện thoại đã ghép nối với máy tính này"
   unlocks_no: "không"
   show_computers: "Máy tính:  %{count} trong 3"
-  switch_lifetime_keep_key: "Chuyển sang trọn đời, giữ nguyên khóa: codex-notifier unlock --lifetime"
+  switch_lifetime_keep_key: "Chuyển sang trọn đời, giữ nguyên khóa: antigravity-notifier unlock --lifetime"
   status_licensed: "%{licence}, %{count} trong 3 máy tính"
-  status_unlicensed: "%{licence}: codex-notifier unlock"
-  status_none: "không có: codex-notifier unlock"
+  status_unlicensed: "%{licence}: antigravity-notifier unlock"
+  status_none: "không có: antigravity-notifier unlock"
   describe_refunded: "đã hoàn tiền"
   describe_lifetime: "trọn đời"
   describe_renews: "hằng năm, gia hạn ngày %{date}"
@@ -271,36 +271,36 @@ licence:
   computer_row: "  %{name} %{seen}%{current}"
 
 update:
-  latest: "codex-notifier %{version} là bản mới nhất."
-  available_check: "Đã có codex-notifier %{version} (bạn đang dùng %{current})."
+  latest: "antigravity-notifier %{version} là bản mới nhất."
+  available_check: "Đã có antigravity-notifier %{version} (bạn đang dùng %{current})."
   update_with: "  Cập nhật: %{command}"
-  available_run: "Đã có codex-notifier %{version}: %{command}"
+  available_run: "Đã có antigravity-notifier %{version}: %{command}"
   nothing_to_update: "không có gì để cập nhật: %{path} chưa được cài%{npx}"
-  npx_note: " (npx chạy bản codex-notifier mới nhất mỗi lần)"
+  npx_note: " (npx chạy bản antigravity-notifier mới nhất mỗi lần)"
   no_release_build: "không có bản phát hành cho %{os}-%{arch}"
-  no_build_named: "codex-notifier %{version} không có bản dựng tên %{asset}"
+  no_build_named: "antigravity-notifier %{version} không có bản dựng tên %{asset}"
   no_checksum: "SHA256SUMS không có mục cho %{asset}"
   checksum_mismatch: "checksum của %{asset} không khớp: không có gì bị thay đổi"
-  archive_empty: "tệp nén không chứa codex-notifier"
-  zip_empty: "tệp zip không chứa codex-notifier.exe"
-  did_not_run: "bản codex-notifier vừa tải không chạy được, nên bản đang cài được giữ lại"
-  updated: "Đã cập nhật codex-notifier %{from} → %{to}."
-  available_message: "Notifier for Codex: đã có codex-notifier %{version}: %{command}"
+  archive_empty: "tệp nén không chứa antigravity-notifier"
+  zip_empty: "tệp zip không chứa antigravity-notifier.exe"
+  did_not_run: "bản antigravity-notifier vừa tải không chạy được, nên bản đang cài được giữ lại"
+  updated: "Đã cập nhật antigravity-notifier %{from} → %{to}."
+  available_message: "Antigravity Notifier: đã có antigravity-notifier %{version}: %{command}"
 
 notify:
-  registered_windows: "Đã đăng ký \"Notifier for Codex\" cho thông báo của Windows."
+  registered_windows: "Đã đăng ký \"Antigravity Notifier\" cho thông báo của Windows."
   icon_installed: "Đã cài biểu tượng thông báo tại %{path}."
   doctor_applescript: "AppleScript (bản dựng này không có ứng dụng thông báo)"
   doctor_allowed: "đã cho phép cho \"%{app}\""
   doctor_denied: "đang tắt: Cài đặt Hệ thống > Thông báo > %{app}"
-  doctor_not_allowed: "chưa được cho phép: chạy `codex-notifier setup`"
+  doctor_not_allowed: "chưa được cho phép: chạy `antigravity-notifier setup`"
   mac_denied: "Thông báo trên máy tính đang tắt cho \"%{app}\". Bật trong Cài đặt Hệ thống > Thông báo."
   mac_asking: "Đang yêu cầu macOS cho phép thông báo từ \"%{app}\"..."
   mac_allowed: "Thông báo trên máy tính đã được cho phép cho \"%{app}\"."
   mac_not_allowed: "Thông báo trên máy tính chưa được cho phép. Bật trong Cài đặt Hệ thống > Thông báo > %{app}."
 
 api:
-  rejected: "máy tính này không còn được ghép nối (máy chủ không còn nhận ra nó). Chạy `codex-notifier pair` để kết nối lại"
+  rejected: "máy tính này không còn được ghép nối (máy chủ không còn nhận ra nó). Chạy `antigravity-notifier pair` để kết nối lại"
   server_returned: "máy chủ trả về %{status}"
   # What was being done when the server said no; the server's own message follows a colon
   registering: "đăng ký máy tính này"
@@ -318,13 +318,13 @@ api:
 
 # A second upgrader found the first one still running
 update_lock:
-  busy: "một bản nâng cấp codex-notifier khác đang chạy. Hãy thử lại sau vài phút"
+  busy: "một bản nâng cấp antigravity-notifier khác đang chạy. Hãy thử lại sau vài phút"
 
 local_files:
-  config_unreadable: "Không đọc được %{path} (%{error}), nên codex-notifier sẽ không ghi đè lên nó. Hãy sửa tệp, hoặc xóa nó rồi chạy lại `codex-notifier pair`."
-  slot_not_freed: "Không giải phóng được chỗ của máy tính này trong giấy phép (%{error}). Nếu máy có giấy phép, hãy giải phóng chỗ tại notifierforcodex.com/licence bằng khóa của bạn."
-  kept_dir: "Đã xóa các tệp của codex-notifier khỏi %{path}. Thư mục còn chứa tệp khác nên được giữ lại."
-  remove_binary: "Bản thân codex-notifier vẫn còn được cài đặt. Để gỡ nó: %{command}"
+  config_unreadable: "Không đọc được %{path} (%{error}), nên antigravity-notifier sẽ không ghi đè lên nó. Hãy sửa tệp, hoặc xóa nó rồi chạy lại `antigravity-notifier pair`."
+  slot_not_freed: "Không giải phóng được chỗ của máy tính này trong giấy phép (%{error}). Nếu máy có giấy phép, hãy giải phóng chỗ tại antigravitynotifier.com/licence bằng khóa của bạn."
+  kept_dir: "Đã xóa các tệp của antigravity-notifier khỏi %{path}. Thư mục còn chứa tệp khác nên được giữ lại."
+  remove_binary: "Bản thân antigravity-notifier vẫn còn được cài đặt. Để gỡ nó: %{command}"
 
 payload:
   needs_permission: "%{tool} cần quyền"
@@ -342,7 +342,7 @@ payload:
   update_plan: "Cập nhật kế hoạch"
 
 net:
-  unreachable: "Không kết nối được tới máy chủ Notifier for Codex. Hãy kiểm tra kết nối internet rồi thử lại."
+  unreachable: "Không kết nối được tới máy chủ Antigravity Notifier. Hãy kiểm tra kết nối internet rồi thử lại."
   doctor_unreachable: "máy chủ: không kết nối được tới %{url}. Hãy kiểm tra kết nối internet, proxy hoặc tường lửa"
 
 clap:
@@ -352,10 +352,10 @@ clap:
   options: "Tùy chọn:"
   help: "Hiện trợ giúp"
   version: "Hiện phiên bản"
-  help_command: "Hiện trợ giúp của codex-notifier hoặc của một lệnh"
+  help_command: "Hiện trợ giúp của antigravity-notifier hoặc của một lệnh"
   help_command_arg: "Lệnh cần xem trợ giúp"
-  error_hint: "Chạy `codex-notifier --help` để xem các lệnh và tùy chọn."
+  error_hint: "Chạy `antigravity-notifier --help` để xem các lệnh và tùy chọn."
 
-# `codex-notifier upgrade` refused a release whose SHA256SUMS isn't signed by TouchTap
+# `antigravity-notifier upgrade` refused a release whose SHA256SUMS isn't signed by TouchTap
 update_signature:
-  invalid: "chữ ký của bản phát hành không hợp lệ nên không có gì bị thay đổi. Hãy thử lại sau hoặc cài lại từ notifierforcodex.com/cli"
+  invalid: "chữ ký của bản phát hành không hợp lệ nên không có gì bị thay đổi. Hãy thử lại sau hoặc cài lại từ antigravitynotifier.com/cli"

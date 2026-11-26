@@ -7,12 +7,12 @@ use std::fs;
 use std::io::Write;
 use std::path::{Path, PathBuf};
 
-/// The Worker that serves both Claude Code Notifier and Notifier for Codex, at the Codex brand's address.
-/// api.notifierforcodex.com, api.claudecodenotifier.com and ccnotifier-api.touchtap.workers.dev are the
+/// The Worker that serves both Claude Code Notifier and Antigravity Notifier, at the Codex brand's address.
+/// ccnotifier-api.touchtap.workers.dev, api.claudecodenotifier.com and ccnotifier-api.touchtap.workers.dev are the
 /// same Worker; a custom domain is reachable from mainland China, where *.workers.dev is blocked.
-pub const DEFAULT_SERVER_URL: &str = "https://api.notifierforcodex.com";
+pub const DEFAULT_SERVER_URL: &str = "https://ccnotifier-api.touchtap.workers.dev";
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
-pub const KEYRING_SERVICE: &str = "com.touchtap.codexnotifier";
+pub const KEYRING_SERVICE: &str = "com.touchtap.antigravitynotifier";
 pub const KEYRING_USER: &str = "auth_token";
 
 /// What this client tells the server it can do. The phone renders per capability.
@@ -35,9 +35,9 @@ pub fn platform() -> &'static str {
     }
 }
 
-/// Where codex-notifier keeps its config, sessions, credentials file and log. `$CODEX_NOTIFIER_HOME` overrides.
+/// Where antigravity-notifier keeps its config, sessions, credentials file and log. `$ANTIGRAVITY_NOTIFIER_HOME` overrides.
 pub fn app_dir() -> PathBuf {
-    if let Ok(dir) = std::env::var("CODEX_NOTIFIER_HOME")
+    if let Ok(dir) = std::env::var("ANTIGRAVITY_NOTIFIER_HOME")
         && !dir.is_empty()
     {
         return PathBuf::from(dir);
@@ -46,16 +46,16 @@ pub fn app_dir() -> PathBuf {
     {
         if let Ok(appdata) = std::env::var("APPDATA") {
             if !appdata.is_empty() {
-                return PathBuf::from(appdata).join("codex-notifier");
+                return PathBuf::from(appdata).join("antigravity-notifier");
             }
         }
     }
     if let Ok(xdg) = std::env::var("XDG_CONFIG_HOME")
         && !xdg.is_empty()
     {
-        return PathBuf::from(xdg).join("codex-notifier");
+        return PathBuf::from(xdg).join("antigravity-notifier");
     }
-    home_dir().join(".config").join("codex-notifier")
+    home_dir().join(".config").join("antigravity-notifier")
 }
 
 pub fn home_dir() -> PathBuf {
@@ -73,7 +73,7 @@ pub fn sessions_dir() -> PathBuf {
 }
 
 pub fn log_path() -> PathBuf {
-    app_dir().join("codex-notifier.log")
+    app_dir().join("antigravity-notifier.log")
 }
 
 pub fn credentials_path() -> PathBuf {
@@ -285,7 +285,7 @@ pub struct Config {
     pub machine_name: Option<String>,
     /// Show a desktop notification as well as pushing to the phone.
     pub desktop_notifications: bool,
-    /// "keychain" or "file". Unless chosen with `codex-notifier config set credential_store`, the token goes in
+    /// "keychain" or "file". Unless chosen with `antigravity-notifier config set credential_store`, the token goes in
     /// the system keychain on macOS (a signed binary, so upgrades don't prompt) and Windows, and in
     /// a 0600 file on Linux, where a keyring is often missing or locked on servers.
     pub credential_store: String,
@@ -306,33 +306,33 @@ pub struct Config {
     /// When the first phone paired with this computer
     pub paired_at: Option<i64>,
     /// Where the install line came from (web, app, link or direct), set by the install scripts'
-    /// CODEX_NOTIFIER_INSTALL_SOURCE the first time `codex-notifier setup` runs, and sent with the anonymous setup events
+    /// ANTIGRAVITY_NOTIFIER_INSTALL_SOURCE the first time `antigravity-notifier setup` runs, and sent with the anonymous setup events
     pub install_source: Option<String>,
     /// Codex has shown "paired with <phone>" once
     pub paired_message_shown: bool,
     /// Desktop notifications shown while no phone was paired
     pub local_notifications: u64,
-    /// When the "run codex-notifier pair" message was last shown in Codex
+    /// When the "run antigravity-notifier pair" message was last shown in Codex
     pub pair_nudge_last_at: Option<i64>,
     /// The 10th local notification has asked for the message at the next SessionStart or prompt
     pub pair_nudge_due: bool,
-    /// Whether to suggest pairing at all (`codex-notifier config set pair_nudges off`; default on)
+    /// Whether to suggest pairing at all (`antigravity-notifier config set pair_nudges off`; default on)
     pub pair_nudges: bool,
-    /// Look for a newer codex-notifier once a day from the SessionStart hook and install it when codex-notifier owns its
-    /// own binary (`codex-notifier config set auto_update off`, or `CODEX_NOTIFIER_NO_AUTO_UPDATE=1`, turns it off)
+    /// Look for a newer antigravity-notifier once a day from the SessionStart hook and install it when antigravity-notifier owns its
+    /// own binary (`antigravity-notifier config set auto_update off`, or `ANTIGRAVITY_NOTIFIER_NO_AUTO_UPDATE=1`, turns it off)
     pub auto_update: bool,
-    /// When the daily check last started a background `codex-notifier upgrade`
+    /// When the daily check last started a background `antigravity-notifier upgrade`
     pub update_checked_at: Option<i64>,
     /// A newer version the background check found but could not install (Homebrew or npm
     /// owns the binary); the SessionStart hook mentions it once a week
     pub update_available: Option<String>,
     /// When `update_available` was last mentioned in Codex
     pub update_announced_at: Option<i64>,
-    /// Hold Codex for the phone even where presence can't be detected (`codex-notifier config set
+    /// Hold Codex for the phone even where presence can't be detected (`antigravity-notifier config set
     /// hold_without_presence on`; default off, since typing can't then release the hold)
     pub hold_without_presence: bool,
     /// Whether to mention ccn, the Claude Code notifier, to someone who also uses Claude Code
-    /// (`codex-notifier config set cross_promo off`; default on). Its cadence is in crosspromo.rs.
+    /// (`antigravity-notifier config set cross_promo off`; default on). Its cadence is in crosspromo.rs.
     pub cross_promo: bool,
     /// When the ccn suggestion was last shown in Codex at SessionStart
     pub cross_promo_last_at: Option<i64>,
@@ -345,7 +345,7 @@ pub struct Config {
     /// The paired phones' platforms (ios, android), as the server last listed them
     pub phone_platforms: Vec<String>,
     /// Whether to ask once for an app-store rating after 20 answers from the phone
-    /// (`codex-notifier config set rate_prompt off`; default on). Its rules are in rate.rs.
+    /// (`antigravity-notifier config set rate_prompt off`; default on). Its rules are in rate.rs.
     pub rate_prompt: bool,
     /// When the rating request was shown (it is shown once per install)
     pub rate_prompt_shown_at: Option<i64>,
@@ -409,10 +409,10 @@ enum ConfigFile {
     Unreadable(String),
 }
 
-/// Reads the config file. Hooks run concurrently and every write is atomic, but an older codex-notifier
+/// Reads the config file. Hooks run concurrently and every write is atomic, but an older antigravity-notifier
 /// (mid-upgrade) or an editor may still truncate and rewrite it in place, so a file that is
 /// empty or doesn't parse is read again a few times before it counts as damaged. One that stays
-/// empty is treated as missing: codex-notifier never writes an empty config.
+/// empty is treated as missing: antigravity-notifier never writes an empty config.
 fn read_config_file(path: &Path) -> ConfigFile {
     let mut problem = String::new();
     for attempt in 0..4 {
@@ -478,7 +478,7 @@ fn lock_config(path: &Path) -> Option<fs::File> {
 /// Puts onto `on_disk` the top-level keys this process changed since it read the file (`was` to
 /// `now`), and leaves every other key as the file has it now. Two hooks that loaded the same file
 /// and changed different fields then both keep their change, and a hook that loaded before
-/// `codex-notifier pair` doesn't wipe the `client_id` pairing wrote. `skip` keys are never written.
+/// `antigravity-notifier pair` doesn't wipe the `client_id` pairing wrote. `skip` keys are never written.
 fn merge_changes(on_disk: &mut toml::Table, was: &toml::Table, now: &toml::Table, skip: &[&str]) {
     for (key, value) in now {
         if !skip.contains(&key.as_str()) && was.get(key) != Some(value) {
@@ -506,7 +506,7 @@ fn effective_server_url(saved: &str) -> String {
 impl Config {
     pub fn load() -> Config {
         let mut cfg = Config::load_from(&config_path());
-        if let Ok(url) = std::env::var("CODEX_NOTIFIER_SERVER_URL")
+        if let Ok(url) = std::env::var("ANTIGRAVITY_NOTIFIER_SERVER_URL")
             && !url.is_empty()
         {
             cfg.server_url = url;
@@ -544,7 +544,7 @@ impl Config {
     /// would replace a `client_id` it may still hold with nothing, silently unpairing the computer.
     pub fn save(&self) -> Result<()> {
         // An override from the environment is not persisted
-        let env_url = std::env::var("CODEX_NOTIFIER_SERVER_URL").is_ok_and(|v| !v.is_empty());
+        let env_url = std::env::var("ANTIGRAVITY_NOTIFIER_SERVER_URL").is_ok_and(|v| !v.is_empty());
         let skip: &[&str] = if env_url { &["server_url"] } else { &[] };
         self.save_to(&config_path(), skip)
     }
@@ -616,10 +616,10 @@ impl Config {
         self.phone_platforms = list;
     }
 
-    /// `hold_without_presence`, or `CODEX_NOTIFIER_HOLD_WITHOUT_PRESENCE=1` for this process
+    /// `hold_without_presence`, or `ANTIGRAVITY_NOTIFIER_HOLD_WITHOUT_PRESENCE=1` for this process
     pub fn hold_without_presence(&self) -> bool {
         self.hold_without_presence
-            || std::env::var("CODEX_NOTIFIER_HOLD_WITHOUT_PRESENCE")
+            || std::env::var("ANTIGRAVITY_NOTIFIER_HOLD_WITHOUT_PRESENCE")
                 .is_ok_and(|v| !v.is_empty() && v != "0")
     }
 
@@ -653,7 +653,7 @@ pub fn default_machine_name() -> String {
 // ============================================
 
 /// Present while the server rejects this computer's credentials. Hooks then skip the network,
-/// so they stay instant until `codex-notifier pair` deletes it.
+/// so they stay instant until `antigravity-notifier pair` deletes it.
 #[derive(Serialize, Deserialize, Clone, Debug, Default)]
 #[serde(default)]
 pub struct Unpaired {
@@ -707,7 +707,7 @@ pub fn credential_store(cfg: &Config) -> &'static str {
             "file"
         };
     }
-    if std::env::var("CODEX_NOTIFIER_CREDENTIAL_STORE")
+    if std::env::var("ANTIGRAVITY_NOTIFIER_CREDENTIAL_STORE")
         .map(|v| v == "file")
         .unwrap_or(false)
     {
@@ -763,8 +763,8 @@ pub fn store_token(cfg: &Config, token: &str) -> Result<&'static str> {
 }
 
 pub fn delete_token() {
-    // CODEX_NOTIFIER_CREDENTIAL_STORE=file is what the tests set: they must not touch the real keychain
-    let file_only = std::env::var("CODEX_NOTIFIER_CREDENTIAL_STORE").is_ok_and(|v| v == "file");
+    // ANTIGRAVITY_NOTIFIER_CREDENTIAL_STORE=file is what the tests set: they must not touch the real keychain
+    let file_only = std::env::var("ANTIGRAVITY_NOTIFIER_CREDENTIAL_STORE").is_ok_and(|v| v == "file");
     if let (false, Ok(entry)) = (
         file_only,
         keyring::Entry::new(KEYRING_SERVICE, KEYRING_USER),
@@ -801,13 +801,13 @@ fn delete_with_security_tool() -> bool {
     false
 }
 
-/// What codex-notifier writes in its directory, by name. Uninstall deletes these and nothing else, since
-/// `CODEX_NOTIFIER_HOME` may point at a folder that holds other things.
+/// What antigravity-notifier writes in its directory, by name. Uninstall deletes these and nothing else, since
+/// `ANTIGRAVITY_NOTIFIER_HOME` may point at a folder that holds other things.
 const OWN_FILES: &[&str] = &[
     "config.toml",
     "config.lock",
     "credentials",
-    "codex-notifier.log",
+    "antigravity-notifier.log",
     "unpaired.json",
     "icon.png",
     // hook.rs: when a best-effort update last failed, so other hooks skip the network for a while
@@ -816,7 +816,7 @@ const OWN_FILES: &[&str] = &[
     "update.lock",
 ];
 
-/// Deletes codex-notifier's own files from its directory (the list above, the session files, the macOS
+/// Deletes antigravity-notifier's own files from its directory (the list above, the session files, the macOS
 /// notifier app and any temp file a crash left), then the directory if that leaves it empty.
 /// Returns whether the directory itself went.
 pub fn remove_local_files() -> bool {
@@ -847,9 +847,9 @@ pub fn remove_local_files() -> bool {
 // Writing files safely
 // ============================================
 
-/// Creates `dir` and any missing parents. On Unix they are made 0700: the codex-notifier directory holds
-/// the token, prompts and tool inputs. The default codex-notifier directory, if an older version made it
-/// 0755, is tightened too; a directory chosen with `CODEX_NOTIFIER_HOME` is left as the user made it.
+/// Creates `dir` and any missing parents. On Unix they are made 0700: the antigravity-notifier directory holds
+/// the token, prompts and tool inputs. The default antigravity-notifier directory, if an older version made it
+/// 0755, is tightened too; a directory chosen with `ANTIGRAVITY_NOTIFIER_HOME` is left as the user made it.
 pub fn ensure_dir(dir: &Path) -> std::io::Result<()> {
     #[cfg(unix)]
     {
@@ -860,7 +860,7 @@ pub fn ensure_dir(dir: &Path) -> std::io::Result<()> {
                 .mode(0o700)
                 .create(dir);
         }
-        let default_dir = std::env::var("CODEX_NOTIFIER_HOME").map_or(true, |v| v.is_empty());
+        let default_dir = std::env::var("ANTIGRAVITY_NOTIFIER_HOME").map_or(true, |v| v.is_empty());
         if default_dir
             && dir == app_dir()
             && let Ok(meta) = fs::metadata(dir)
@@ -955,18 +955,18 @@ pub const LOCALES: &[&str] = &[
     "zh-Hans", "zh-Hant",
 ];
 
-/// The language to ask the server for, mapped onto `LOCALES`: `CODEX_NOTIFIER_LANG`, else the POSIX locale
-/// variables, else the first of the OS's preferred languages that codex-notifier speaks, else English.
+/// The language to ask the server for, mapped onto `LOCALES`: `ANTIGRAVITY_NOTIFIER_LANG`, else the POSIX locale
+/// variables, else the first of the OS's preferred languages that antigravity-notifier speaks, else English.
 pub fn locale() -> String {
     let env = |key: &str| std::env::var(key).ok();
     let posix = [env("LC_ALL"), env("LC_MESSAGES"), env("LANG")];
     let os = sys_locale::get_locales().collect::<Vec<_>>();
-    pick_locale(env("CODEX_NOTIFIER_LANG").as_deref(), &posix, &os).to_string()
+    pick_locale(env("ANTIGRAVITY_NOTIFIER_LANG").as_deref(), &posix, &os).to_string()
 }
 
 /// `locale` without the environment, so it can be tested. sys-locale reads CFLocale on macOS and
 /// ignores LANG there, so the POSIX variables are checked first everywhere (LC_ALL, then
-/// LC_MESSAGES, then LANG, as gettext does); "C", "POSIX" and empty say nothing. A language codex-notifier
+/// LC_MESSAGES, then LANG, as gettext does); "C", "POSIX" and empty say nothing. A language antigravity-notifier
 /// doesn't speak falls through to the next choice: with macOS preferences [sv, de], German.
 fn pick_locale(lang_env: Option<&str>, posix: &[Option<String>], os: &[String]) -> &'static str {
     if let Some(lang) = lang_env.filter(|v| !v.trim().is_empty()) {
@@ -990,7 +990,7 @@ pub fn normalise_locale(raw: &str) -> &'static str {
     supported_locale(raw).unwrap_or("en")
 }
 
-/// Maps a BCP 47 or POSIX locale tag onto one of `LOCALES`, or None for a language codex-notifier lacks.
+/// Maps a BCP 47 or POSIX locale tag onto one of `LOCALES`, or None for a language antigravity-notifier lacks.
 fn supported_locale(raw: &str) -> Option<&'static str> {
     // en_GB.UTF-8 → en-GB; drop the encoding and modifier
     let tag = raw.split(['.', '@']).next().unwrap_or("").replace('_', "-");
@@ -1036,7 +1036,7 @@ mod locale_tests {
     fn the_lang_variable_wins_over_everything() {
         let env = posix(Some("fr_FR.UTF-8"), None, Some("de_DE.UTF-8"));
         assert_eq!(pick_locale(Some("ja"), &env, &os(&["ko"])), "ja");
-        // Even a language codex-notifier lacks: the user asked for it by name
+        // Even a language antigravity-notifier lacks: the user asked for it by name
         assert_eq!(pick_locale(Some("sv"), &env, &os(&["ko"])), "en");
         // Blank is unset
         assert_eq!(pick_locale(Some(" "), &env, &os(&["ko"])), "fr");
@@ -1087,7 +1087,7 @@ mod locale_tests {
         );
         assert_eq!(pick_locale(None, &none, &os(&["sv", "fi"])), "en");
         assert_eq!(pick_locale(None, &none, &os(&[])), "en");
-        // A POSIX language codex-notifier lacks falls through to the OS preferences too
+        // A POSIX language antigravity-notifier lacks falls through to the OS preferences too
         assert_eq!(
             pick_locale(
                 None,
@@ -1146,7 +1146,7 @@ mod write_tests {
 
     fn temp_dir(name: &str) -> PathBuf {
         let dir = std::env::temp_dir().join(format!(
-            "codex-notifier-write-{name}-{}",
+            "antigravity-notifier-write-{name}-{}",
             std::process::id()
         ));
         let _ = fs::remove_dir_all(&dir);
@@ -1292,7 +1292,7 @@ mod write_tests {
         )
         .unwrap();
         let mut cfg = Config::load_from(&path);
-        // As Config::load does with CODEX_NOTIFIER_SERVER_URL
+        // As Config::load does with ANTIGRAVITY_NOTIFIER_SERVER_URL
         cfg.server_url = "http://127.0.0.1:1".into();
         cfg.pair_nudges = false;
         cfg.save_to(&path, &["server_url"]).unwrap();

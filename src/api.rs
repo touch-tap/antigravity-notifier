@@ -24,7 +24,7 @@ pub struct Api {
 }
 
 /// The server no longer accepts this computer's credentials: its record (and every pairing) is
-/// gone, for example after 60 days without use. Only `codex-notifier pair` fixes it, so nothing retries.
+/// gone, for example after 60 days without use. Only `antigravity-notifier pair` fixes it, so nothing retries.
 #[derive(Debug)]
 pub struct Rejected;
 
@@ -44,7 +44,7 @@ pub fn is_rejected(err: &anyhow::Error) -> bool {
 /// middleware answers 401 UNAUTHORIZED for an unknown token; its 403s (FORBIDDEN, NOT_SUPPORTED)
 /// are about a request, not the credentials. A 403 from in front of the server, such as a
 /// Cloudflare WAF or bot challenge (an HTML page), must not mark the computer unpaired: that
-/// would stop every hook until `codex-notifier pair`. So a 403 counts only with the server's own JSON
+/// would stop every hook until `antigravity-notifier pair`. So a 403 counts only with the server's own JSON
 /// UNAUTHORIZED code, in case it ever answers that way.
 fn credentials_rejected(status: u16, body: &str) -> bool {
     match status {
@@ -107,7 +107,7 @@ pub struct PairedDevice {
 pub struct CodeResponse {
     pub code: String,
     pub expires_in: u64,
-    /// notifierforcodex.com/c/<token>: what the QR code opens on the phone
+    /// antigravitynotifier.com/c/<token>: what the QR code opens on the phone
     #[serde(default)]
     pub link_url: Option<String>,
 }
@@ -479,7 +479,7 @@ pub struct NudgeMessage {
     pub variant: String,
     pub title: String,
     pub body: String,
-    /// What to run, e.g. `codex-notifier unlock --lifetime`
+    /// What to run, e.g. `antigravity-notifier unlock --lifetime`
     pub command: String,
 }
 
@@ -687,7 +687,7 @@ mod tests {
             .context("sending the event")
             .unwrap_err();
         assert!(is_rejected(&err));
-        assert!(format!("{err:#}").contains("Run `codex-notifier pair`"));
+        assert!(format!("{err:#}").contains("Run `antigravity-notifier pair`"));
         assert!(!is_rejected(&anyhow!("server returned 500")));
     }
 }

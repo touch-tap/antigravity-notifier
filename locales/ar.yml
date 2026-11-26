@@ -6,14 +6,14 @@
 _version: 1
 
 cli:
-  about: "Notifier for Codex: يصلك إشعار على هاتفك عندما يحتاجك Codex، وتجيب من هناك"
+  about: "Antigravity Notifier: يصلك إشعار على هاتفك عندما يحتاجك Codex، وتجيب من هناك"
   pair:
     about: "اربط هذا الكمبيوتر بهاتفك. أدخل الرمز الذي يعرضه التطبيق، أو شغّل الأمر بلا رمز لتحصل على رمز تكتبه في التطبيق"
-    code: "الرمز المكوّن من 6 أرقام المعروض في تطبيق Notifier for Codex"
+    code: "الرمز المكوّن من 6 أرقام المعروض في تطبيق Antigravity Notifier"
     name: "اسم هذا الكمبيوتر كما يظهر على هاتفك (الافتراضي: اسم المضيف)"
     no_wait: "اعرض رمز QR وارجع فورًا: يكتمل الربط من تلقاء نفسه عندما يتصل الهاتف"
   setup:
-    about: "ثبّت hooks الخاصة بـ Codex وإشعارات سطح المكتب (يقوم pair وتشغيل codex-notifier بلا أمر بهذا أولًا)"
+    about: "ثبّت hooks الخاصة بـ Codex وإشعارات سطح المكتب (يقوم pair وتشغيل antigravity-notifier بلا أمر بهذا أولًا)"
   doctor:
     about: "افحص hooks وبيانات الاعتماد والخادم وما تدعمه هذه الطرفية"
   test:
@@ -24,14 +24,14 @@ cli:
   config:
     about: "اعرض أو غيّر إعدادات هذا الكمبيوتر (يمكن تعديلها من الهاتف أيضًا)"
     show: "اطبع الإعدادات الفعلية"
-    set: "عيّن إعدادًا واحدًا، مثل `codex-notifier config set hold_ceiling_seconds 300` أو `codex-notifier config set quiet_hours 22:00-08:00`"
+    set: "عيّن إعدادًا واحدًا، مثل `antigravity-notifier config set hold_ceiling_seconds 300` أو `antigravity-notifier config set quiet_hours 22:00-08:00`"
   sync:
     about: "اجلب أحدث الإعدادات من الخادم الآن"
   unlock:
     about: "اشترِ ترخيصًا لهذا الكمبيوتر في المتصفح: يفعّل كل هاتف مرتبط به"
     lifetime: "ادفع مرة واحدة بدلًا من الدفع سنويًا (أو حوّل ترخيصًا سنويًا إلى مدى الحياة مع الاحتفاظ بالمفتاح)"
   upgrade:
-    about: "حدّث codex-notifier إلى أحدث إصدار (يُفحص ذلك أيضًا مرة يوميًا في الخلفية)"
+    about: "حدّث antigravity-notifier إلى أحدث إصدار (يُفحص ذلك أيضًا مرة يوميًا في الخلفية)"
     check: "اكتفِ بالإبلاغ عن وجود إصدار أحدث: رمز الخروج 0 إن كان الإصدار الحالي هو الأحدث، و10 إن توفر إصدار أحدث"
     quiet: "لا تطبع شيئًا إلا إذا حدث خطأ"
   activate:
@@ -50,16 +50,16 @@ cli:
 
 common:
   your_phone: "هاتفك"
-  not_paired: "هذا الكمبيوتر غير مرتبط بعد. أدخل الرمز الظاهر في التطبيق في الأمر: `codex-notifier pair <code>`"
+  not_paired: "هذا الكمبيوتر غير مرتبط بعد. أدخل الرمز الظاهر في التطبيق في الأمر: `antigravity-notifier pair <code>`"
   store_keychain: "سلسلة المفاتيح"
   store_file: "ملف"
   date_format: "%d/%m/%Y"
 
 pair:
   reregister: "أُزيل الربط القديم لهذا الكمبيوتر، لذا سيُسجَّل من جديد."
-  code_not_recognised: "لم يُتعرَّف على هذا الرمز. الرمز المكوّن من 6 أرقام موجود في تطبيق Notifier for Codex ضمن أجهزة الكمبيوتر > اربط حاسوبًا؛ وهو يتغير كل 24 ساعة، فانسخ السطر الذي يعرضه التطبيق الآن."
+  code_not_recognised: "لم يُتعرَّف على هذا الرمز. الرمز المكوّن من 6 أرقام موجود في تطبيق Antigravity Notifier ضمن أجهزة الكمبيوتر > اربط حاسوبًا؛ وهو يتغير كل 24 ساعة، فانسخ السطر الذي يعرضه التطبيق الآن."
   offer_qr: "اضغط Enter لعرض رمز QR هنا بدلًا من ذلك (وامسحه بهاتفك)، أو Ctrl+C."
-  options_without_terminal: "شغّل مجددًا `codex-notifier pair <code>` بالرمز الذي يعرضه التطبيق الآن، أو اعرض رمز QR هنا وامسحه بهاتفك بالأمر: `codex-notifier pair`"
+  options_without_terminal: "شغّل مجددًا `antigravity-notifier pair <code>` بالرمز الذي يعرضه التطبيق الآن، أو اعرض رمز QR هنا وامسحه بهاتفك بالأمر: `antigravity-notifier pair`"
   scan: "  امسح هذا بكاميرا هاتفك لربطه. إن لم يكن التطبيق مثبتًا بعد، ينقلك\n  إلى App Store أو Google Play: ثبّته ثم امسح مرة أخرى."
   or_type_code: "  أو في التطبيق، اضغط على \"الكمبيوتر يعرض رمزًا\" واكتب:  %{code}"
   enter_code: "  في التطبيق، اضغط على \"الكمبيوتر يعرض رمزًا\" واكتب:  %{code}"
@@ -69,20 +69,20 @@ pair:
   code_lasts: "  اربط وقتما تشاء: هذا الرمز صالح لمدة %{duration}."
   completes_on_its_own: "  يكتمل الربط من تلقاء نفسه عندما يتصل الهاتف."
   waiting: "  في انتظار هاتفك... (Ctrl+C آمن: يكتمل الربط من تلقاء نفسه عندما يتصل الهاتف)"
-  code_expired: "انتهت صلاحية الرمز قبل أن يستخدمه أي هاتف. شغّل الأمر مجددًا: `codex-notifier pair`"
-  code_is_six_digits: "الرمز هو الأرقام الستة المعروضة في تطبيق Notifier for Codex"
+  code_expired: "انتهت صلاحية الرمز قبل أن يستخدمه أي هاتف. شغّل الأمر مجددًا: `antigravity-notifier pair`"
+  code_is_six_digits: "الرمز هو الأرقام الستة المعروضة في تطبيق Antigravity Notifier"
   credentials_stored: "حُفظت بيانات الاعتماد في %{store}: %{path}"
   test_sent: "أُرسل إشعار تجريبي إلى هاتفك."
   test_failed: "تعذّر إرسال إشعار تجريبي حتى الآن: %{error}"
-  done: "تم. ابدأ `codex` كالمعتاد: سيصلك إشعار عندما ينتهي Codex أو يحتاجك،\nويمكنك الموافقة أو الرفض أو الإجابة من الهاتف. ولفحص كل شيء: `codex-notifier doctor`"
+  done: "تم. ابدأ `codex` كالمعتاد: سيصلك إشعار عندما ينتهي Codex أو يحتاجك،\nويمكنك الموافقة أو الرفض أو الإجابة من الهاتف. ولفحص كل شيء: `antigravity-notifier doctor`"
   paired_with: "تم الربط مع %{name} (%{platform})."
   hours_one: "ساعة واحدة"
   hours_other: "%{count} ساعة"
   minutes_one: "دقيقة واحدة"
   minutes_other: "%{count} دقيقة"
   pitch: "سيعرض هاتفك اشتراكًا داخل التطبيق. ويمكنك أيضًا تفعيل كل شيء من هنا، خارج متاجر التطبيقات:"
-  pitch_annual: "  codex-notifier unlock             %{price} سنويًا"
-  pitch_lifetime: "  codex-notifier unlock --lifetime  %{price} مرة واحدة"
+  pitch_annual: "  antigravity-notifier unlock             %{price} سنويًا"
+  pitch_lifetime: "  antigravity-notifier unlock --lifetime  %{price} مرة واحدة"
   pitch_covers: "يغطي %{computers} أجهزة كمبيوتر وكل هاتف مرتبط بها. ضمان استرداد المال خلال %{days} يومًا."
   welcome_no_terminal: "إشعار تجريبي في طريقه إلى هاتفك: جرّب الرد عليه من هناك."
   welcome: "إشعار تجريبي في طريقه إلى هاتفك. جرّب الرد عليه من هناك..."
@@ -91,15 +91,15 @@ pair:
   welcome_no_answer: "لا إجابة بعد. يبقى الإشعار على هاتفك لمدة ساعة."
 
 status:
-  set_up: "codex-notifier %{version} جاهز على هذا الكمبيوتر باسم \"%{name}\"."
+  set_up: "antigravity-notifier %{version} جاهز على هذا الكمبيوتر باسم \"%{name}\"."
   licence: "الترخيص: %{line}"
-  hint_doctor: "  codex-notifier doctor     فحص hooks وبيانات الاعتماد والخادم"
-  hint_test: "  codex-notifier test       إرسال إشعار تجريبي إلى هاتفك"
-  hint_pair: "  codex-notifier pair       ربط هاتف آخر"
-  hint_help: "  codex-notifier --help     كل ما عدا ذلك"
+  hint_doctor: "  antigravity-notifier doctor     فحص hooks وبيانات الاعتماد والخادم"
+  hint_test: "  antigravity-notifier test       إرسال إشعار تجريبي إلى هاتفك"
+  hint_pair: "  antigravity-notifier pair       ربط هاتف آخر"
+  hint_help: "  antigravity-notifier --help     كل ما عدا ذلك"
 
 setup:
-  installed_self: "ثُبّت codex-notifier في %{path}."
+  installed_self: "ثُبّت antigravity-notifier في %{path}."
   hooks_installed: "ثُبّتت hooks في %{path} (باستخدام %{exe})."
   hooks_trusted: "ووُسمت بأنها موثوقة في %{path}، فيشغّلها Codex دون زيارة /hooks."
 
@@ -108,25 +108,25 @@ sync:
   synced: "تمت مزامنة الإعدادات."
 
 doctor:
-  header: "codex-notifier %{version} على %{platform}"
+  header: "antigravity-notifier %{version} على %{platform}"
   config: "الإعدادات: %{path}"
   credentials_present: "بيانات الاعتماد: موجودة (%{store})"
-  credentials_missing: "بيانات الاعتماد: مفقودة: شغّل `codex-notifier pair <code>`"
+  credentials_missing: "بيانات الاعتماد: مفقودة: شغّل `antigravity-notifier pair <code>`"
   server_reachable: "الخادم: متاح على %{url}"
   server_error: "الخادم: %{error}"
   registered: "مسجَّل باسم \"%{name}\" (%{kind} %{platform})، الإمكانات: %{capabilities}"
-  not_paired_any_more: "الربط: لم يعد مرتبطًا: شغّل `codex-notifier pair`"
+  not_paired_any_more: "الربط: لم يعد مرتبطًا: شغّل `antigravity-notifier pair`"
   registration_error: "التسجيل: %{error}"
   licence: "الترخيص: %{line}"
-  phones_none: "الهواتف: لا يوجد هاتف مرتبط بعد، لذا تبقى الإشعارات على سطح المكتب هذا (شغّل `codex-notifier pair`)"
+  phones_none: "الهواتف: لا يوجد هاتف مرتبط بعد، لذا تبقى الإشعارات على سطح المكتب هذا (شغّل `antigravity-notifier pair`)"
   phones: "الهواتف: %{names}"
   phones_error: "الهواتف: %{error}"
   hooks_all: "hooks: مثبتة كلها (%{count}) في %{path}"
-  hooks_missing: "hooks: مفقودة %{names} (شغّل `codex-notifier setup`)"
+  hooks_missing: "hooks: مفقودة %{names} (شغّل `antigravity-notifier setup`)"
   hooks_error: "hooks: %{error}"
-  hooks_stale: "hooks تشير إلى ملف codex-notifier مختلف؛ لتحديثها شغّل `codex-notifier setup`"
+  hooks_stale: "hooks تشير إلى ملف antigravity-notifier مختلف؛ لتحديثها شغّل `antigravity-notifier setup`"
   trust_ok: "الثقة: لكل hook بصمته في %{path}"
-  trust_missing: "الثقة: سيتخطى Codex ‏%{names} حتى تُوثَق (شغّل `codex-notifier setup`، أو /hooks في Codex)"
+  trust_missing: "الثقة: سيتخطى Codex ‏%{names} حتى تُوثَق (شغّل `antigravity-notifier setup`، أو /hooks في Codex)"
   presence: "الحضور: خامل منذ %{idle} ث، الحد %{threshold} ث"
   replies: "الردود: الموافقات وإجابات الأسئلة من الهاتف تعمل في أي طرفية؛ النص الحر إلى جلسة خاملة %{free_text}"
   replies_tmux: "يعمل (tmux)"
@@ -135,12 +135,12 @@ doctor:
   log: "السجل: %{path}"
 
 test:
-  none_paired: "لا توجد هواتف مرتبطة. شغّل `codex-notifier pair <code>`."
+  none_paired: "لا توجد هواتف مرتبطة. شغّل `antigravity-notifier pair <code>`."
   sent: "أُرسل إشعار تجريبي إلى %{name} (%{platform})."
   failed: "%{name}: %{error}"
 
 devices:
-  none: "لا توجد هواتف مرتبطة. أدخل الرمز الظاهر في التطبيق في الأمر: `codex-notifier pair <code>`"
+  none: "لا توجد هواتف مرتبطة. أدخل الرمز الظاهر في التطبيق في الأمر: `antigravity-notifier pair <code>`"
   # %{name} is padded to 24 columns and %{platform} to 8 before they are filled in
   row: "%{name} %{platform} مرتبط منذ %{since}%{off}"
   notifications_off: "  (الإشعارات متوقفة)"
@@ -163,19 +163,19 @@ settings:
   unknown: "إعداد غير معروف '%{key}'. الإعدادات المتاحة: notify_on_done, notify_on_permission, notify_on_question, sound, quiet_when_present, quiet_hours, hold_ceiling_seconds, presence_threshold_seconds, stop_hold_seconds, reminder_interval_seconds"
 
 forget:
-  needs_yes: "codex-notifier forget يحتاج إلى تأكيد منك: شغّله في طرفية، أو أضف --yes"
-  warning: "هذا يمسح هذا الكمبيوتر وارتباطاته من خادم Notifier for Codex، ثم يزيل codex-notifier من Codex\nويحذف بيانات اعتماده وملفاته هنا، كما يفعل `codex-notifier uninstall`.\nستلاحظ الهواتف المرتبطة بهذا الكمبيوتر اختفاءه.\nالترخيص المشترى من الموقع لا يُلغى: افعل ذلك من notifierforcodex.com/licence\nعبر \"مسح ترخيصي\"."
+  needs_yes: "antigravity-notifier forget يحتاج إلى تأكيد منك: شغّله في طرفية، أو أضف --yes"
+  warning: "هذا يمسح هذا الكمبيوتر وارتباطاته من خادم Antigravity Notifier، ثم يزيل antigravity-notifier من Codex\nويحذف بيانات اعتماده وملفاته هنا، كما يفعل `antigravity-notifier uninstall`.\nستلاحظ الهواتف المرتبطة بهذا الكمبيوتر اختفاءه.\nالترخيص المشترى من الموقع لا يُلغى: افعل ذلك من antigravitynotifier.com/licence\nعبر \"مسح ترخيصي\"."
   # The word the user must type; `yes` is always accepted as well
   yes_word: "نعم"
   prompt: "\nاكتب %{yes} للمتابعة: "
   nothing_erased: "لم يُمسح شيء."
   erased: "مُسح هذا الكمبيوتر وارتباطاته من الخادم."
   already_forgotten: "كان الخادم قد نسي هذا الكمبيوتر بالفعل."
-  nothing_removed: "%{error}. لم يُزَل شيء من هذا الكمبيوتر، فيمكنك إعادة تشغيل `codex-notifier forget`"
+  nothing_removed: "%{error}. لم يُزَل شيء من هذا الكمبيوتر، فيمكنك إعادة تشغيل `antigravity-notifier forget`"
   not_registered: "هذا الكمبيوتر غير مسجَّل لدى الخادم، فلا شيء يُمسح هناك."
 
 uninstall:
-  hooks_removed: "أُزيلت hooks الخاصة بـ codex-notifier من %{path} وإدخالات الثقة الخاصة بها من %{config}."
+  hooks_removed: "أُزيلت hooks الخاصة بـ antigravity-notifier من %{path} وإدخالات الثقة الخاصة بها من %{config}."
   slot_freed: "أُفرغ مكان هذا الكمبيوتر على الترخيص."
   unpaired_all: "أُلغي ربط كل الهواتف."
   removed_dir: "أُزيل %{path}."
@@ -185,17 +185,17 @@ local:
   finished_body: "انتهى Codex وهو ينتظرك."
   permission_title: "Codex يحتاج إلى إذن"
   question_title: "لدى Codex سؤال"
-  first_nudge: "على هاتفك أيضًا: codex-notifier pair"
-  milestone_nudge: "10 إشعارات حتى الآن. استقبلها على هاتفك، مع الموافقة من شاشة القفل: codex-notifier pair"
-  pair_message: "Notifier for Codex: تصلك إشعارات سطح المكتب. لتصلك على هاتفك أيضًا وتوافق أو تجيب من هناك، شغّل في طرفية: `codex-notifier pair`"
+  first_nudge: "على هاتفك أيضًا: antigravity-notifier pair"
+  milestone_nudge: "10 إشعارات حتى الآن. استقبلها على هاتفك، مع الموافقة من شاشة القفل: antigravity-notifier pair"
+  pair_message: "Antigravity Notifier: تصلك إشعارات سطح المكتب. لتصلك على هاتفك أيضًا وتوافق أو تجيب من هناك، شغّل في طرفية: `antigravity-notifier pair`"
 
 hook:
-  licence_message: "Notifier for Codex: إشعارات الهاتف غير مفعّلة لهذا الكمبيوتر. لتفعيلها: codex-notifier unlock"
-  unpaired_message: "Notifier for Codex: هذا الكمبيوتر لم يعد مرتبطًا، فلن تصل الإشعارات إلى هاتفك. لإعادة الربط شغّل في طرفية: `codex-notifier pair`"
-  unpaired_notification: "هذا الكمبيوتر لم يعد مرتبطًا. لإعادة الربط شغّل في طرفية: `codex-notifier pair`"
-  paired_message: "Notifier for Codex: تم الربط مع %{phone}. تصل الإشعارات الآن إلى هاتفك."
+  licence_message: "Antigravity Notifier: إشعارات الهاتف غير مفعّلة لهذا الكمبيوتر. لتفعيلها: antigravity-notifier unlock"
+  unpaired_message: "Antigravity Notifier: هذا الكمبيوتر لم يعد مرتبطًا، فلن تصل الإشعارات إلى هاتفك. لإعادة الربط شغّل في طرفية: `antigravity-notifier pair`"
+  unpaired_notification: "هذا الكمبيوتر لم يعد مرتبطًا. لإعادة الربط شغّل في طرفية: `antigravity-notifier pair`"
+  paired_message: "Antigravity Notifier: تم الربط مع %{phone}. تصل الإشعارات الآن إلى هاتفك."
   # The server writes title, body and command in the user's language; this only joins them
-  nudge_message: "Notifier for Codex: %{title} %{body} %{command}"
+  nudge_message: "Antigravity Notifier: %{title} %{body} %{command}"
   needs_attention: "يحتاج إلى انتباهك"
 
 # Suggests the Claude Code Notifier app (and its ccn CLI) to someone who also uses Claude Code (crosspromo.rs).
@@ -203,60 +203,60 @@ hook:
 cross_promo:
   line: "تم اكتشاف Claude Code — احصل على موافقات Claude Code وأسئلته على هاتفك أيضًا، مع تطبيق Claude Code Notifier (iPhone وAndroid). جهّز هذا الكمبيوتر بأمر واحد: %{command}  ·  %{url}"
   notification: "تم اكتشاف Claude Code — احصل على موافقات Claude Code على هاتفك أيضًا، مع تطبيق Claude Code Notifier."
-  # After `codex-notifier pair`, above a QR code (pair_scan) or without one (pair_steps), the app's link and the command
+  # After `antigravity-notifier pair`, above a QR code (pair_scan) or without one (pair_steps), the app's link and the command
   pair_title: "تم اكتشاف Claude Code — احصل على موافقات Claude Code وأسئلته على هاتفك أيضًا، مع تطبيق Claude Code Notifier (iPhone وAndroid)."
   pair_scan: "امسح الرمز لتحصل على التطبيق، ثم جهّز هذا الكمبيوتر بأمر واحد:"
   pair_steps: "احصل على التطبيق، ثم جهّز هذا الكمبيوتر بأمر واحد:"
 
 # Asks once, after 20 answers from the phone, for an app-store rating (rate.rs). url is not translated.
 rate:
-  notification: "هل يعجبك Notifier for Codex؟ تقييم سريع يساعد مطورين آخرين على العثور عليه."
-  message: "هل يعجبك Notifier for Codex؟ تقييم سريع يساعد مطورين آخرين على العثور عليه: %{url}"
+  notification: "هل يعجبك Antigravity Notifier؟ تقييم سريع يساعد مطورين آخرين على العثور عليه."
+  message: "هل يعجبك Antigravity Notifier؟ تقييم سريع يساعد مطورين آخرين على العثور عليه: %{url}"
 
 hooks:
-  doctor_presence_none: "الحضور: لا يمكن رصده هنا، لذا لا شيء ينتظر الهاتف: يصله تنبيه وتجيب أنت في الطرفية (`codex-notifier config set hold_without_presence on` للانتظار رغم ذلك)"
+  doctor_presence_none: "الحضور: لا يمكن رصده هنا، لذا لا شيء ينتظر الهاتف: يصله تنبيه وتجيب أنت في الطرفية (`antigravity-notifier config set hold_without_presence on` للانتظار رغم ذلك)"
   doctor_presence_none_hold: "الحضور: لا يمكن رصده هنا، وhold_without_presence مفعّل، لذا ينتظر كل طلب الهاتف حتى يجيب أو تنقضي المدة القصوى"
 
 licence:
   already_licensed: "هذا الكمبيوتر مرخّص بالفعل (%{licence})."
-  switch_to_lifetime: "للتحويل إلى ترخيص مدى الحياة مع الاحتفاظ بالمفتاح نفسه: codex-notifier unlock --lifetime"
+  switch_to_lifetime: "للتحويل إلى ترخيص مدى الحياة مع الاحتفاظ بالمفتاح نفسه: antigravity-notifier unlock --lifetime"
   checkout_open: "  صفحة الدفع مفتوحة في متصفحك. للدفع من هاتفك بدلًا من ذلك، امسح هذا:"
   checkout_link: "  افتح هذا الرابط للدفع، أو امسحه بهاتفك:"
   waiting_payment: "  في انتظار الدفع... (Ctrl+C للإيقاف؛ يُرسل المفتاح إلى بريدك في كل الأحوال)"
   upgraded: "✓ تم التحويل إلى ترخيص مدى الحياة. المفتاح نفسه وأجهزة الكمبيوتر نفسها؛ وأُلغي التجديد السنوي."
   licensed: "✓ هذا الكمبيوتر مرخّص (%{licence})."
-  key: "  المفتاح: %{key} (أُرسل بالبريد أيضًا). استخدمه على جهازَي كمبيوتر إضافيَّين: codex-notifier activate %{key}"
+  key: "  المفتاح: %{key} (أُرسل بالبريد أيضًا). استخدمه على جهازَي كمبيوتر إضافيَّين: antigravity-notifier activate %{key}"
   phones_unlocked: "  كل هاتف مرتبط بهذا الكمبيوتر مفعّل."
-  activate_with_key: "  لاستخدام المفتاح المُرسل بالبريد على هذا الكمبيوتر، شغّل: `codex-notifier activate <key>`"
-  no_payment: "لم يصل الدفع بعد 15 دقيقة. إن كنت قد دفعت، فالمفتاح في بريدك: codex-notifier activate <key>"
+  activate_with_key: "  لاستخدام المفتاح المُرسل بالبريد على هذا الكمبيوتر، شغّل: `antigravity-notifier activate <key>`"
+  no_payment: "لم يصل الدفع بعد 15 دقيقة. إن كنت قد دفعت، فالمفتاح في بريدك: antigravity-notifier activate <key>"
   replace_stale: "لم يُشاهَد \"%{name}\" منذ أكثر من أسبوع. هل هو هذا الكمبيوتر؟ أتريد استبداله؟"
   yes_no: " [Y/n] "
   # An answer starting with this letter (or n) means no
   no_initial: "ل"
   slots_full: "هذا الترخيص مستخدم بالفعل على %{count} أجهزة كمبيوتر:"
-  free_one: "أفرغ مكانًا بتشغيل `codex-notifier deactivate` على ذلك الكمبيوتر، أو استبدله من هنا:"
-  replace_example: "  codex-notifier activate %{key} --replace \"%{name}\""
+  free_one: "أفرغ مكانًا بتشغيل `antigravity-notifier deactivate` على ذلك الكمبيوتر، أو استبدله من هنا:"
+  replace_example: "  antigravity-notifier activate %{key} --replace \"%{name}\""
   old_laptop: "حاسوب محمول قديم"
   no_free_slot: "لا يوجد مكان شاغر لكمبيوتر"
   computers_on_licence: "أجهزة الكمبيوتر على هذا الترخيص:"
   activated: "✓ مرخّص (%{licence}). المستخدم: %{count} من 3 أجهزة كمبيوتر."
-  pair_to_unlock: "  اربط هاتفًا بالأمر `codex-notifier pair` وسيُفعَّل فورًا."
+  pair_to_unlock: "  اربط هاتفًا بالأمر `antigravity-notifier pair` وسيُفعَّل فورًا."
   none: "لا ترخيص لهذا الكمبيوتر."
   freed: "أُفرغ المكان. يستخدم هذا الترخيص الآن %{count} من 3 أجهزة كمبيوتر."
-  none_buy: "لا ترخيص على هذا الكمبيوتر. لشراء واحد: codex-notifier unlock"
+  none_buy: "لا ترخيص على هذا الكمبيوتر. لشراء واحد: antigravity-notifier unlock"
   none_short: "لا ترخيص على هذا الكمبيوتر."
-  buy_options: "  للشراء:             codex-notifier unlock (سنوي) أو codex-notifier unlock --lifetime"
-  have_key: "  لديك مفتاح بالفعل:  codex-notifier activate <key>"
+  buy_options: "  للشراء:             antigravity-notifier unlock (سنوي) أو antigravity-notifier unlock --lifetime"
+  have_key: "  لديك مفتاح بالفعل:  antigravity-notifier activate <key>"
   show_licence: "الترخيص:         %{licence}"
   show_key: "المفتاح:         CCN-…-%{last4}"
   show_unlocks: "التفعيل:         %{value}"
   unlocks_yes: "نعم، كل هاتف مرتبط بهذا الكمبيوتر"
   unlocks_no: "لا"
   show_computers: "أجهزة الكمبيوتر: %{count} من 3"
-  switch_lifetime_keep_key: "للتحويل إلى مدى الحياة مع الاحتفاظ بالمفتاح: codex-notifier unlock --lifetime"
+  switch_lifetime_keep_key: "للتحويل إلى مدى الحياة مع الاحتفاظ بالمفتاح: antigravity-notifier unlock --lifetime"
   status_licensed: "%{licence}، %{count} من 3 أجهزة كمبيوتر"
-  status_unlicensed: "%{licence}: codex-notifier unlock"
-  status_none: "لا يوجد: codex-notifier unlock"
+  status_unlicensed: "%{licence}: antigravity-notifier unlock"
+  status_none: "لا يوجد: antigravity-notifier unlock"
   describe_refunded: "مستردّ"
   describe_lifetime: "مدى الحياة"
   describe_renews: "سنوي، يتجدد في %{date}"
@@ -272,36 +272,36 @@ licence:
   computer_row: "  %{name} %{seen}%{current}"
 
 update:
-  latest: "codex-notifier %{version} هو الأحدث."
-  available_check: "codex-notifier %{version} متاح (لديك %{current})."
+  latest: "antigravity-notifier %{version} هو الأحدث."
+  available_check: "antigravity-notifier %{version} متاح (لديك %{current})."
   update_with: "  للتحديث: %{command}"
-  available_run: "codex-notifier %{version} متاح: %{command}"
+  available_run: "antigravity-notifier %{version} متاح: %{command}"
   nothing_to_update: "لا شيء للتحديث: %{path} غير مثبت%{npx}"
-  npx_note: " (npx يشغّل أحدث codex-notifier في كل مرة)"
+  npx_note: " (npx يشغّل أحدث antigravity-notifier في كل مرة)"
   no_release_build: "لا يوجد إصدار لـ %{os}-%{arch}"
-  no_build_named: "codex-notifier %{version} لا يحتوي على بناء باسم %{asset}"
+  no_build_named: "antigravity-notifier %{version} لا يحتوي على بناء باسم %{asset}"
   no_checksum: "SHA256SUMS لا يحتوي على إدخال لـ %{asset}"
   checksum_mismatch: "المجموع الاختباري لـ %{asset} غير متطابق: لم يتغير شيء"
-  archive_empty: "الأرشيف لا يحتوي على codex-notifier"
-  zip_empty: "ملف zip لا يحتوي على codex-notifier.exe"
-  did_not_run: "لم يعمل codex-notifier الذي نُزّل، لذا أُبقي على الإصدار المثبت"
-  updated: "تم تحديث codex-notifier %{from} → %{to}."
-  available_message: "Notifier for Codex: codex-notifier %{version} متاح: %{command}"
+  archive_empty: "الأرشيف لا يحتوي على antigravity-notifier"
+  zip_empty: "ملف zip لا يحتوي على antigravity-notifier.exe"
+  did_not_run: "لم يعمل antigravity-notifier الذي نُزّل، لذا أُبقي على الإصدار المثبت"
+  updated: "تم تحديث antigravity-notifier %{from} → %{to}."
+  available_message: "Antigravity Notifier: antigravity-notifier %{version} متاح: %{command}"
 
 notify:
-  registered_windows: "سُجّل \"Notifier for Codex\" لإشعارات Windows."
+  registered_windows: "سُجّل \"Antigravity Notifier\" لإشعارات Windows."
   icon_installed: "ثُبّتت أيقونة الإشعارات في %{path}."
   doctor_applescript: "AppleScript (هذا البناء بلا تطبيق إشعارات)"
   doctor_allowed: "مسموح بها لـ \"%{app}\""
   doctor_denied: "متوقفة: إعدادات النظام > الإشعارات > %{app}"
-  doctor_not_allowed: "غير مسموح بها بعد: شغّل `codex-notifier setup`"
+  doctor_not_allowed: "غير مسموح بها بعد: شغّل `antigravity-notifier setup`"
   mac_denied: "إشعارات سطح المكتب متوقفة لـ \"%{app}\". فعّلها من إعدادات النظام > الإشعارات."
   mac_asking: "يُطلب من macOS السماح بالإشعارات من \"%{app}\"..."
   mac_allowed: "إشعارات سطح المكتب مسموح بها لـ \"%{app}\"."
   mac_not_allowed: "إشعارات سطح المكتب غير مسموح بها. فعّلها من إعدادات النظام > الإشعارات > %{app}."
 
 api:
-  rejected: "هذا الكمبيوتر لم يعد مرتبطًا (الخادم لم يعد يعرفه). لإعادة الربط شغّل `codex-notifier pair`"
+  rejected: "هذا الكمبيوتر لم يعد مرتبطًا (الخادم لم يعد يعرفه). لإعادة الربط شغّل `antigravity-notifier pair`"
   server_returned: "أعاد الخادم %{status}"
   # What was being done when the server said no; the server's own message follows a colon
   registering: "تسجيل هذا الكمبيوتر"
@@ -319,13 +319,13 @@ api:
 
 # A second upgrader found the first one still running
 update_lock:
-  busy: "هناك ترقية أخرى لـ codex-notifier قيد التشغيل بالفعل. حاول مرة أخرى بعد بضع دقائق"
+  busy: "هناك ترقية أخرى لـ antigravity-notifier قيد التشغيل بالفعل. حاول مرة أخرى بعد بضع دقائق"
 
 local_files:
-  config_unreadable: "تعذّرت قراءة %{path} (%{error})، لذا لن يكتب codex-notifier فوقه. أصلِح الملف، أو احذفه ثم شغّل `codex-notifier pair` من جديد."
-  slot_not_freed: "تعذّر إفراغ مكان هذا الكمبيوتر على الترخيص (%{error}). إن كان له ترخيص، فأفرغ مكانه من notifierforcodex.com/licence باستخدام مفتاحك."
-  kept_dir: "أُزيلت ملفات codex-notifier من %{path}. يحتوي المجلد على ملفات أخرى أيضًا، لذا تُرك في مكانه."
-  remove_binary: "ما زال codex-notifier نفسه مثبّتًا. لإزالته: %{command}"
+  config_unreadable: "تعذّرت قراءة %{path} (%{error})، لذا لن يكتب antigravity-notifier فوقه. أصلِح الملف، أو احذفه ثم شغّل `antigravity-notifier pair` من جديد."
+  slot_not_freed: "تعذّر إفراغ مكان هذا الكمبيوتر على الترخيص (%{error}). إن كان له ترخيص، فأفرغ مكانه من antigravitynotifier.com/licence باستخدام مفتاحك."
+  kept_dir: "أُزيلت ملفات antigravity-notifier من %{path}. يحتوي المجلد على ملفات أخرى أيضًا، لذا تُرك في مكانه."
+  remove_binary: "ما زال antigravity-notifier نفسه مثبّتًا. لإزالته: %{command}"
 
 payload:
   needs_permission: "%{tool} يحتاج إلى إذن"
@@ -343,7 +343,7 @@ payload:
   update_plan: "تحديث الخطة"
 
 net:
-  unreachable: "تعذّر الوصول إلى خادم Notifier for Codex. تحقّق من اتصالك بالإنترنت وحاول مرة أخرى."
+  unreachable: "تعذّر الوصول إلى خادم Antigravity Notifier. تحقّق من اتصالك بالإنترنت وحاول مرة أخرى."
   doctor_unreachable: "الخادم: تعذّر الوصول إلى %{url}. تحقّق من اتصالك بالإنترنت أو الوكيل أو جدار الحماية"
 
 clap:
@@ -353,10 +353,10 @@ clap:
   options: "الخيارات:"
   help: "عرض المساعدة"
   version: "عرض الإصدار"
-  help_command: "عرض المساعدة لـ codex-notifier أو لأحد أوامره"
+  help_command: "عرض المساعدة لـ antigravity-notifier أو لأحد أوامره"
   help_command_arg: "الأمر الذي تريد عرض مساعدته"
-  error_hint: "شغّل `codex-notifier --help` لعرض الأوامر والخيارات."
+  error_hint: "شغّل `antigravity-notifier --help` لعرض الأوامر والخيارات."
 
-# `codex-notifier upgrade` refused a release whose SHA256SUMS isn't signed by TouchTap
+# `antigravity-notifier upgrade` refused a release whose SHA256SUMS isn't signed by TouchTap
 update_signature:
-  invalid: "تعذّر التحقق من توقيع الإصدار، لذلك لم يتغيّر شيء. حاول لاحقًا أو أعد التثبيت من notifierforcodex.com/cli"
+  invalid: "تعذّر التحقق من توقيع الإصدار، لذلك لم يتغيّر شيء. حاول لاحقًا أو أعد التثبيت من antigravitynotifier.com/cli"

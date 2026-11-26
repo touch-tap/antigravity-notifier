@@ -1,13 +1,13 @@
 //! Anonymous setup events: where installing, pairing, licensing and updating get stuck, so it can
 //! be fixed.
 //!
-//! Sent by the install scripts and by commands people type (`codex-notifier pair`, `codex-notifier activate`, the
+//! Sent by the install scripts and by commands people type (`antigravity-notifier pair`, `antigravity-notifier activate`, the
 //! pitch), by the detached background updater (`cli_updated`, `cli_update_failed`), and from one
 //! hook: SessionStart posts `cli_nudge_shown` when it shows a licence nudge, at most once a day.
 //! Never anything about sessions, prompts or the computer's name. Each event is a name plus a few
-//! short words (the stage that failed, how codex-notifier was installed), posted once with a short timeout
+//! short words (the stage that failed, how antigravity-notifier was installed), posted once with a short timeout
 //! and no retry: 3 s, or 1 s inside a hook, which Codex waits on.
-//! `CODEX_NOTIFIER_NO_ANALYTICS=1` or `DO_NOT_TRACK=1` turns them off.
+//! `ANTIGRAVITY_NOTIFIER_NO_ANALYTICS=1` or `DO_NOT_TRACK=1` turns them off.
 
 use serde_json::{Map, Value, json};
 use std::time::Duration;
@@ -20,23 +20,23 @@ fn enabled() -> bool {
             .map(|v| !v.is_empty() && v != "0")
             .unwrap_or(false)
     };
-    !set("CODEX_NOTIFIER_NO_ANALYTICS") && !set("DO_NOT_TRACK")
+    !set("ANTIGRAVITY_NOTIFIER_NO_ANALYTICS") && !set("DO_NOT_TRACK")
 }
 
-/// How this binary got here: the install script tells it, npx sets CODEX_NOTIFIER_EPHEMERAL, Homebrew
+/// How this binary got here: the install script tells it, npx sets ANTIGRAVITY_NOTIFIER_EPHEMERAL, Homebrew
 /// and npm from where the binary really lives.
 pub fn install_method() -> &'static str {
-    if let Ok(method) = std::env::var("CODEX_NOTIFIER_INSTALL_METHOD") {
+    if let Ok(method) = std::env::var("ANTIGRAVITY_NOTIFIER_INSTALL_METHOD") {
         match method.as_str() {
             "script" => return "script",
             "powershell" => return "powershell",
             _ => {}
         }
     }
-    if std::env::var("CODEX_NOTIFIER_EPHEMERAL").is_ok() {
+    if std::env::var("ANTIGRAVITY_NOTIFIER_EPHEMERAL").is_ok() {
         return "npx";
     }
-    // macOS reports the path codex-notifier was started by, so brew's `/usr/local/bin/codex-notifier` link must be
+    // macOS reports the path antigravity-notifier was started by, so brew's `/usr/local/bin/antigravity-notifier` link must be
     // resolved to its Cellar before the path can say anything; update.rs decides it the same way
     std::env::current_exe()
         .ok()
@@ -47,12 +47,12 @@ pub fn install_method() -> &'static str {
 /// The longest install source kept; install.sh and install.ps1 apply the same cap.
 const MAX_SOURCE_LEN: usize = 32;
 
-/// The install scripts' CODEX_NOTIFIER_INSTALL_SOURCE. The website can tag an install line with any short
+/// The install scripts' ANTIGRAVITY_NOTIFIER_INSTALL_SOURCE. The website can tag an install line with any short
 /// source (web, app, link, a campaign), so this keeps the same values the scripts send:
 /// lowercase letters, digits, `_` and `-`, up to 32 of them, and "other" for anything else.
 /// None when it is not set.
 pub fn install_source_from_env() -> Option<String> {
-    let value = std::env::var("CODEX_NOTIFIER_INSTALL_SOURCE").ok()?;
+    let value = std::env::var("ANTIGRAVITY_NOTIFIER_INSTALL_SOURCE").ok()?;
     clean_source(&value)
 }
 
@@ -68,12 +68,12 @@ fn clean_source(value: &str) -> Option<String> {
 }
 
 /// Where this computer's install line was copied from: this run's environment first, then what
-/// `codex-notifier setup` remembered. None for Homebrew, npm and npx installs, which have no install line.
+/// `antigravity-notifier setup` remembered. None for Homebrew, npm and npx installs, which have no install line.
 pub fn install_source(cfg: &Config) -> Option<String> {
     install_source_from_env().or_else(|| cfg.install_source.clone())
 }
 
-/// Remembers the install source on the first run that carries one, so a later `codex-notifier pair` typed by
+/// Remembers the install source on the first run that carries one, so a later `antigravity-notifier pair` typed by
 /// hand still reports it. Never overwrites: the first install line is the one that brought them.
 pub fn remember_install_source() {
     if let Some(source) = install_source_from_env() {
@@ -95,7 +95,7 @@ fn timeout() -> Duration {
     }
 }
 
-/// `event`, sent by a detached `codex-notifier telemetry` process so nothing waits for it, not even
+/// `event`, sent by a detached `antigravity-notifier telemetry` process so nothing waits for it, not even
 /// for the short timeout: what a hook, or a hint in `status` and `doctor`, uses.
 pub fn event_detached(name: &str, properties: &[(&str, &str)]) {
     if !enabled() {
@@ -109,7 +109,7 @@ pub fn event_detached(name: &str, properties: &[(&str, &str)]) {
     }
 }
 
-/// `codex-notifier telemetry <name> [key=value...]`, the detached half of `event_detached`.
+/// `antigravity-notifier telemetry <name> [key=value...]`, the detached half of `event_detached`.
 pub fn event_from_args(name: &str, properties: &[String]) {
     let pairs: Vec<(&str, &str)> = properties
         .iter()
@@ -133,7 +133,7 @@ pub fn event(name: &str, properties: &[(&str, &str)]) {
             .entry("source".to_string())
             .or_insert(Value::from(source));
     }
-    let custom_server = std::env::var("CODEX_NOTIFIER_SERVER_URL").is_ok();
+    let custom_server = std::env::var("ANTIGRAVITY_NOTIFIER_SERVER_URL").is_ok();
     let body = json!({
         "context": {
             "platform": "cli",
@@ -160,7 +160,7 @@ pub fn event(name: &str, properties: &[(&str, &str)]) {
         .send_json(body);
 }
 
-/// A short reason for a failed pairing: the typed kind when codex-notifier raised it itself (its message is
+/// A short reason for a failed pairing: the typed kind when antigravity-notifier raised it itself (its message is
 /// in the user's language), otherwise from the server's message or the transport error.
 pub fn failure_reason(err: &anyhow::Error) -> &'static str {
     use crate::commands::PairFailure;
@@ -208,8 +208,8 @@ mod tests {
 
     #[test]
     fn install_source_falls_back_to_the_remembered_one() {
-        // The test runner doesn't set CODEX_NOTIFIER_INSTALL_SOURCE, so only the config speaks
-        if std::env::var("CODEX_NOTIFIER_INSTALL_SOURCE").is_ok() {
+        // The test runner doesn't set ANTIGRAVITY_NOTIFIER_INSTALL_SOURCE, so only the config speaks
+        if std::env::var("ANTIGRAVITY_NOTIFIER_INSTALL_SOURCE").is_ok() {
             return;
         }
         let mut cfg = Config::default();

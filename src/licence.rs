@@ -1,4 +1,4 @@
-//! Licences bought on the web: `codex-notifier unlock`, `codex-notifier activate`, `codex-notifier deactivate`, `codex-notifier licence`.
+//! Licences bought on the web: `antigravity-notifier unlock`, `antigravity-notifier activate`, `antigravity-notifier deactivate`, `antigravity-notifier licence`.
 //!
 //! A licence covers up to 3 computers, and every phone paired with a licensed computer is unlocked.
 //! Keys are only ever typed here or on the website's licence page, never in the phone apps.
@@ -13,7 +13,7 @@ use crate::commands::ensure_registered;
 use crate::config::{self, Config};
 use crate::{qr, telemetry};
 
-/// How long `codex-notifier unlock` waits for the payment before leaving it to the emailed key.
+/// How long `antigravity-notifier unlock` waits for the payment before leaving it to the emailed key.
 const CHECKOUT_WAIT: Duration = Duration::from_secs(15 * 60);
 /// A computer with this machine's name not seen for this long is probably this one, reinstalled.
 const STALE_SLOT_SECS: i64 = 7 * 24 * 3600;
@@ -250,7 +250,7 @@ pub fn show() -> Result<()> {
     Ok(())
 }
 
-/// One line for bare `codex-notifier` and `codex-notifier doctor`, with whether this computer is licensed, or None when
+/// One line for bare `antigravity-notifier` and `antigravity-notifier doctor`, with whether this computer is licensed, or None when
 /// the server can't be asked quickly.
 pub fn status_line(api: &Api) -> Option<(bool, String)> {
     let status = api.licence_status(Duration::from_secs(5)).ok()?;

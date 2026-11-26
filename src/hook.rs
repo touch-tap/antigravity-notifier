@@ -1,4 +1,4 @@
-//! The hook dispatcher. Codex runs `codex-notifier hook` with the event JSON on stdin; this decides
+//! The hook dispatcher. Codex runs `antigravity-notifier hook` with the event JSON on stdin; this decides
 //! what to do and prints a decision when it has one. It never exits non-zero: a failure here
 //! must not block Codex.
 //!
@@ -60,17 +60,17 @@ pub fn licence_nudge_allowed(now: i64, paired_at: Option<i64>, last_shown: Optio
 }
 
 /// Shown once, when a SessionStart finds the first phone paired (the user paired from the phone
-/// after leaving `codex-notifier pair`, or scanned the QR code later)
+/// after leaving `antigravity-notifier pair`, or scanned the QR code later)
 fn paired_system_message(phone: &str) -> String {
     t!("hook.paired_message", phone = phone).into_owned()
 }
 
 /// The server writes the nudge for Claude Code Notifier's `ccn` (Nov 2026: CliCopy is not yet
 /// per app), so its command and any mention of Claude are put in Codex's words here.
-/// TODO: drop once the server writes codex_cli copy itself.
+/// TODO: drop once the server writes antigravity_cli copy itself.
 fn codex_wording(mut message: api::NudgeMessage) -> api::NudgeMessage {
     let fix = |text: &str| {
-        // The product name first: "Claude Code Notifier" is "Notifier for Codex", not "Codex Notifier"
+        // The product name first: "Claude Code Notifier" is "Antigravity Notifier", not "Codex Notifier"
         text.replace("Claude Code Notifier", crate::notify::APP_NAME)
             .replace("Claude Code", "Codex")
             .replace("Claude", "Codex")
@@ -78,7 +78,7 @@ fn codex_wording(mut message: api::NudgeMessage) -> api::NudgeMessage {
     message.title = fix(&message.title);
     message.body = fix(&message.body);
     if let Some(rest) = message.command.strip_prefix("ccn ") {
-        message.command = format!("codex-notifier {rest}");
+        message.command = format!("antigravity-notifier {rest}");
     }
     message
 }
@@ -112,7 +112,7 @@ fn run_inner() -> Result<Option<Value>> {
     let mut cfg = Config::load();
     let mut state = SessionState::load(&session_id);
     state.touch(&input);
-    // Once a day, start a detached look for a newer codex-notifier; the hook itself never waits on it
+    // Once a day, start a detached look for a newer antigravity-notifier; the hook itself never waits on it
     let update_message = if event == "SessionStart" {
         crate::update::daily_check(&mut cfg)
     } else {
@@ -130,7 +130,7 @@ fn run_inner() -> Result<Option<Value>> {
 
     if let Some(mut flag) = Unpaired::load() {
         // No network while unpaired, except a once-a-day check at SessionStart in case the
-        // rejection was a server mistake. `codex-notifier pair` deletes the flag.
+        // rejection was a server mistake. `antigravity-notifier pair` deletes the flag.
         let recheck =
             event == "SessionStart" && config::now() - flag.checked_at > Unpaired::RECHECK_AFTER;
         if !(recheck && still_accepted(&api, &mut flag)) {
@@ -140,7 +140,7 @@ fn run_inner() -> Result<Option<Value>> {
     }
 
     // Registered but no phone known to be paired: one quick question at SessionStart, so a phone
-    // that paired while no `codex-notifier pair` was watching is picked up
+    // that paired while no `antigravity-notifier pair` was watching is picked up
     let announce = if event == "SessionStart" && cfg.phones.unwrap_or(0) == 0 {
         check_phones(&mut cfg, &api)
     } else {
@@ -161,7 +161,7 @@ fn run_inner() -> Result<Option<Value>> {
     let result = ctx.dispatch(&event);
     if ctx.api.was_rejected() {
         log(&format!(
-            "{event}: the server rejected this computer's credentials; run `codex-notifier pair`"
+            "{event}: the server rejected this computer's credentials; run `antigravity-notifier pair`"
         ));
         return Ok(unpaired(&ctx.cfg, &event, &mut ctx.state, Unpaired::new()).or(update_message));
     }
@@ -343,7 +343,7 @@ impl Ctx {
 
     /// Once a day, asks whether this computer should be told about licences, and tells it when the
     /// cadence allows (`licence_nudge_allowed`). The server writes the message and picks the
-    /// variant; `CODEX_NOTIFIER_NO_NUDGE=1` turns it off.
+    /// variant; `ANTIGRAVITY_NOTIFIER_NO_NUDGE=1` turns it off.
     fn licence_nudge(&mut self, now: i64) -> Option<Value> {
         if local::no_nudge_env()
             || now - self.cfg.licence_checked_at.unwrap_or(0) < LICENCE_CHECK_EVERY
@@ -751,9 +751,9 @@ mod tests {
         );
         assert_eq!(
             message.body,
-            "Approvals from Codex reach you. Notifier for Codex unlocks once."
+            "Approvals from Codex reach you. Antigravity Notifier unlocks once."
         );
-        assert_eq!(message.command, "codex-notifier unlock --lifetime");
+        assert_eq!(message.command, "antigravity-notifier unlock --lifetime");
     }
 
     #[test]

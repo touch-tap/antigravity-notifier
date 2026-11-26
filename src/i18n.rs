@@ -9,7 +9,7 @@
 //! the anyhow contexts that wrap an OS error around a path or request ("reading X",
 //! "GET url"), which are diagnostics and what `telemetry::failure_reason` classifies.
 
-/// Sets the process locale from `CODEX_NOTIFIER_LANG` or the OS, and makes sure the console can show it.
+/// Sets the process locale from `ANTIGRAVITY_NOTIFIER_LANG` or the OS, and makes sure the console can show it.
 pub fn init() {
     utf8_console();
     rust_i18n::set_locale(&crate::config::locale());
@@ -192,7 +192,7 @@ mod tests {
     fn an_unknown_locale_falls_back_to_english() {
         // A locale with no file: the English text, never the raw key
         let text = rust_i18n::t!("cli.about", locale = "xx");
-        assert!(text.starts_with("Notifier for Codex: get a push"), "{text}");
+        assert!(text.starts_with("Antigravity Notifier: get a push"), "{text}");
         let text = rust_i18n::t!(
             "pair.paired_with",
             locale = "xx",

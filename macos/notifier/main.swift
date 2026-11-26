@@ -1,14 +1,14 @@
-// Notifier for Codex.app: posts codex-notifier's desktop notifications on macOS, so they carry our name and icon
-// instead of Script Editor's. codex-notifier runs the executable inside the bundle directly:
+// Antigravity Notifier.app: posts antigravity-notifier's desktop notifications on macOS, so they carry our name and icon
+// instead of Script Editor's. antigravity-notifier runs the executable inside the bundle directly:
 //
-//   codex-notifier-notifier --title T --body B [--sound] [--url U] [--activate ID]
+//   antigravity-notifier-notifier --title T --body B [--sound] [--url U] [--activate ID]
 //                                               post one notification, exit when it is delivered
 //                                               (through AppleScript until permission has been asked);
 //                                               a click opens U, which AppleScript puts in the body instead,
 //                                               or else brings the running app with bundle id ID (the
 //                                               session's terminal) to the front
-//   codex-notifier-notifier --request-permission           ask for permission now (codex-notifier setup); prints granted|denied
-//   codex-notifier-notifier --status                       prints authorized|denied|not-determined (codex-notifier doctor)
+//   antigravity-notifier-notifier --request-permission           ask for permission now (antigravity-notifier setup); prints granted|denied
+//   antigravity-notifier-notifier --status                       prints authorized|denied|not-determined (antigravity-notifier doctor)
 //
 // Launched with no arguments (macOS does that when a notification is clicked) it opens the
 // notification's URL, or brings its app forward, and quits.
@@ -38,7 +38,7 @@ func run(_ path: String, _ arguments: [String]) {
     process.waitUntilExit()
 }
 
-// A reverse-DNS bundle id, checked as codex-notifier checks it (presence::valid_bundle_id): ASCII
+// A reverse-DNS bundle id, checked as antigravity-notifier checks it (presence::valid_bundle_id): ASCII
 // letters, digits, '.' and '-', starting with a letter or digit, two parts or more and none empty,
 // 155 at most
 func validBundleID(_ id: String) -> Bool {
@@ -134,7 +134,7 @@ if args.contains("--status") {
     if let thread = value("--thread") { content.threadIdentifier = thread }
 
     // macOS only shows the permission prompt to an app opened through Launch Services, which
-    // `codex-notifier setup` does. Until it has asked, post through AppleScript so nothing is lost; once the
+    // `antigravity-notifier setup` does. Until it has asked, post through AppleScript so nothing is lost; once the
     // user has turned us off, stay quiet.
     center.getNotificationSettings { settings in
         switch settings.authorizationStatus {

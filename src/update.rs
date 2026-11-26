@@ -1,23 +1,23 @@
-//! `codex-notifier upgrade`: replaces this binary with the latest release, or says how to update when a
+//! `antigravity-notifier upgrade`: replaces this binary with the latest release, or says how to update when a
 //! package manager owns it (Homebrew, npm). Also the once-a-day check behind it.
 //!
 //! Wiring for the SessionStart hook (hook.rs): call `update::daily_check(&mut self.cfg)` once per
 //! SessionStart, after the config is loaded. It returns within ~100 ms and never touches the
 //! network itself. `None` means nothing to say. At most once a day it saves `update_checked_at`
-//! and spawns `codex-notifier upgrade --quiet --background`, fully detached from the hook and the terminal,
-//! which installs a newer release in place when codex-notifier owns its binary. When something else owns it
+//! and spawns `antigravity-notifier upgrade --quiet --background`, fully detached from the hook and the terminal,
+//! which installs a newer release in place when antigravity-notifier owns its binary. When something else owns it
 //! the background run records `update_available` instead, and `daily_check` then returns
-//! `Some({"systemMessage": "Notifier for Codex: codex-notifier X is available: <command>"})` once a week,
-//! for the hook to return as its output. `codex-notifier config set auto_update off` or
-//! `CODEX_NOTIFIER_NO_AUTO_UPDATE=1` turns all of this off.
+//! `Some({"systemMessage": "Antigravity Notifier: antigravity-notifier X is available: <command>"})` once a week,
+//! for the hook to return as its output. `antigravity-notifier config set auto_update off` or
+//! `ANTIGRAVITY_NOTIFIER_NO_AUTO_UPDATE=1` turns all of this off.
 //!
 //! Where the latest version comes from: `GET {server}/api/cli/latest` when its reply lists
-//! codex-notifier's archives (today it only knows ccn's, so it never does), falling back to the
+//! antigravity-notifier's archives (today it only knows ccn's, so it never does), falling back to the
 //! GitHub releases API. The assets are the ones a release workflow (ccn's release.yml, not yet
 //! carried over) publishes under the
-//! release's `downloadBase`: `codex-notifier-<triple>.tar.gz` (Unix) or `codex-notifier-<triple>.zip` (Windows), plus
+//! release's `downloadBase`: `antigravity-notifier-<triple>.tar.gz` (Unix) or `antigravity-notifier-<triple>.zip` (Windows), plus
 //! `SHA256SUMS`. That base is pinned to this repository's GitHub releases over https whatever the
-//! server says (`CODEX_NOTIFIER_DOWNLOAD_BASE` overrides it for tests), because SHA256SUMS comes from the same
+//! server says (`ANTIGRAVITY_NOTIFIER_DOWNLOAD_BASE` overrides it for tests), because SHA256SUMS comes from the same
 //! place as the archive: a base anyone else chose could vouch for its own binary. SHA256SUMS must
 //! also carry `SHA256SUMS.sig`, an ed25519 signature by a key in `RELEASE_KEYS`, made on the
 //! release Mac, so changing the files on GitHub isn't enough either. The download is
@@ -42,12 +42,12 @@ use crate::{hookcfg, telemetry};
 const CHECK_EVERY: i64 = 24 * 60 * 60;
 /// How often Codex is told about a version a package manager has to install.
 const ANNOUNCE_EVERY: i64 = 7 * 24 * 60 * 60;
-/// `codex-notifier upgrade --check` exits with this when a newer release exists.
+/// `antigravity-notifier upgrade --check` exits with this when a newer release exists.
 const EXIT_UPDATE_AVAILABLE: i32 = 10;
 // Where scripts/release.sh and .github/workflows/release.yml publish (RELEASING.md). Until the
-// touch-tap/codex-notifier repository has a published release, `codex-notifier upgrade` finds nothing and says so.
-const GITHUB_LATEST: &str = "https://api.github.com/repos/touch-tap/codex-notifier/releases/latest";
-const RELEASES_BASE: &str = "https://github.com/touch-tap/codex-notifier/releases/download";
+// touch-tap/antigravity-notifier repository has a published release, `antigravity-notifier upgrade` finds nothing and says so.
+const GITHUB_LATEST: &str = "https://api.github.com/repos/touch-tap/antigravity-notifier/releases/latest";
+const RELEASES_BASE: &str = "https://github.com/touch-tap/antigravity-notifier/releases/download";
 /// Release archives are about 2 MB; anything near this is not one of ours.
 const MAX_DOWNLOAD: u64 = 64 * 1024 * 1024;
 /// An update lock older than this was left by an upgrader that died: two 120 s downloads and the
@@ -60,12 +60,12 @@ const PROBE_TIMEOUT: Duration = Duration::from_secs(10);
 /// anyone who could change the release's files on GitHub. To rotate, ship a release that lists
 /// both keys, then sign with the new one.
 ///
-/// Notifier for Codex's own key, created on 8 Nov 2026 with `cargo run --release --example
+/// Antigravity Notifier's own key, created on 8 Nov 2026 with `cargo run --release --example
 /// release-sign -- keygen`. The private half lives only in the release Mac's login keychain as the
-/// generic password `codexnotifier-release-signing` (account `touchtap`); scripts/release.sh reads
+/// generic password `antigravitynotifier-release-signing` (account `touchtap`); scripts/release.sh reads
 /// it from there (RELEASING.md, "The update signing key"). ccn's key (9af03746…) is deliberately
-/// not here: trusting it would let anything signed for ccn install as codex-notifier. Debug builds
-/// also trust `CODEX_NOTIFIER_UPDATE_PUBLIC_KEY`, which is how the tests sign their releases.
+/// not here: trusting it would let anything signed for ccn install as antigravity-notifier. Debug builds
+/// also trust `ANTIGRAVITY_NOTIFIER_UPDATE_PUBLIC_KEY`, which is how the tests sign their releases.
 const RELEASE_KEYS: &[&str] = &["eeb6e55bc550642bf30ec67b867d9cc3230830259a39709496b5059a4a78ce5f"];
 
 pub struct Mode {
@@ -73,7 +73,7 @@ pub struct Mode {
     pub check: bool,
     /// Print nothing on success
     pub quiet: bool,
-    /// Started by `daily_check`: never prints, logs to codex-notifier.log, records what it cannot install
+    /// Started by `daily_check`: never prints, logs to antigravity-notifier.log, records what it cannot install
     pub background: bool,
 }
 
@@ -84,7 +84,7 @@ struct Latest {
     assets: Option<Vec<String>>,
 }
 
-/// What `codex-notifier upgrade` can do for an installed binary.
+/// What `antigravity-notifier upgrade` can do for an installed binary.
 #[derive(Debug, PartialEq)]
 pub enum Action {
     /// Download the release and swap it in at this path
@@ -109,10 +109,10 @@ pub fn run(mode: Mode) -> Result<()> {
     }
 }
 
-/// `CODEX_NOTIFIER_DOWNLOAD_BASE`: where to fetch the archive and SHA256SUMS instead of GitHub, for the
+/// `ANTIGRAVITY_NOTIFIER_DOWNLOAD_BASE`: where to fetch the archive and SHA256SUMS instead of GitHub, for the
 /// tests and CI's local release server. The install scripts read the same variable.
 fn download_base_override() -> Option<String> {
-    std::env::var("CODEX_NOTIFIER_DOWNLOAD_BASE")
+    std::env::var("ANTIGRAVITY_NOTIFIER_DOWNLOAD_BASE")
         .ok()
         .filter(|base| !base.is_empty())
 }
@@ -165,7 +165,7 @@ fn run_inner(mode: &Mode) -> Result<i32> {
                 cfg.update_available = Some(latest.version.clone());
                 let _ = cfg.save();
                 log(&format!(
-                    "codex-notifier {} is available, installed with {method}: {command}",
+                    "antigravity-notifier {} is available, installed with {method}: {command}",
                     latest.version
                 ));
             } else {
@@ -201,7 +201,7 @@ fn run_inner(mode: &Mode) -> Result<i32> {
     // Two SessionStarts a moment apart can each start an upgrader: only one downloads and swaps
     let Some(_lock) = UpdateLock::acquire().map_err(|e| failed("install", e))? else {
         if mode.background {
-            log("update: another codex-notifier upgrade is already running");
+            log("update: another antigravity-notifier upgrade is already running");
             return Ok(0);
         }
         bail!("{}", t!("update_lock.busy"));
@@ -295,11 +295,11 @@ fn failed(stage: &str, err: anyhow::Error) -> anyhow::Error {
 fn update_command(action: &Action) -> &'static str {
     match action {
         Action::Run(command) => command,
-        Action::Replace(_) => "codex-notifier upgrade",
+        Action::Replace(_) => "antigravity-notifier upgrade",
     }
 }
 
-/// `codex-notifier config set auto_update on|off`, kept here so commands.rs needs no change.
+/// `antigravity-notifier config set auto_update on|off`, kept here so commands.rs needs no change.
 pub fn set_auto_update(value: &str) -> Result<()> {
     let on = match value.to_ascii_lowercase().as_str() {
         "true" | "on" | "yes" | "1" => true,
@@ -317,7 +317,7 @@ pub fn set_auto_update(value: &str) -> Result<()> {
     Ok(())
 }
 
-/// On Windows a running codex-notifier.exe is renamed to codex-notifier.old.exe by an update, and can only be deleted
+/// On Windows a running antigravity-notifier.exe is renamed to antigravity-notifier.old.exe by an update, and can only be deleted
 /// once it has exited: every start tries. Nothing to do elsewhere.
 pub fn remove_leftovers() {
     #[cfg(windows)]
@@ -343,13 +343,13 @@ fn next_step(cfg: &Config, now: i64) -> (bool, Option<String>) {
 }
 
 fn auto_update_enabled(cfg: &Config) -> bool {
-    let off = std::env::var("CODEX_NOTIFIER_NO_AUTO_UPDATE")
+    let off = std::env::var("ANTIGRAVITY_NOTIFIER_NO_AUTO_UPDATE")
         .map(|v| !v.is_empty() && v != "0")
         .unwrap_or(false);
     cfg.auto_update && !off
 }
 
-/// Once a day, starts `codex-notifier upgrade --quiet --background` detached from the hook, and once a week
+/// Once a day, starts `antigravity-notifier upgrade --quiet --background` detached from the hook, and once a week
 /// returns a `systemMessage` for a newer version that a package manager has to install. Returns
 /// within ~100 ms: it never waits for the network. Called from the SessionStart hook.
 pub fn daily_check(cfg: &mut Config) -> Option<Value> {
@@ -376,7 +376,7 @@ pub fn daily_check(cfg: &mut Config) -> Option<Value> {
     }))
 }
 
-/// Runs this same binary as `codex-notifier upgrade --quiet --background`, detached (`spawn_detached`).
+/// Runs this same binary as `antigravity-notifier upgrade --quiet --background`, detached (`spawn_detached`).
 fn spawn_background() {
     if let Err(err) = spawn_detached(&["upgrade", "--quiet", "--background"]) {
         log(&format!("update check could not start: {err}"));
@@ -421,7 +421,7 @@ pub fn spawn_detached(args: &[&str]) -> std::io::Result<()> {
 /// scripts and npx told telemetry ("script", "powershell", "npx") or "other".
 ///
 /// Decided from the resolved path: `hookcfg::exe_path` maps a Cellar binary back to brew's link,
-/// and on an Intel Mac that link is `/usr/local/bin/codex-notifier`, which says nothing about Homebrew. Taken
+/// and on an Intel Mac that link is `/usr/local/bin/antigravity-notifier`, which says nothing about Homebrew. Taken
 /// at face value, the daily upgrade would replace brew's symlink with a file of its own.
 fn detect_method(exe: &Path) -> &'static str {
     method_from_path_resolved(exe).unwrap_or_else(telemetry::install_method)
@@ -437,8 +437,8 @@ pub(crate) fn method_from_path_resolved(exe: &Path) -> Option<&'static str> {
 
 fn method_from_path(exe: &Path) -> Option<&'static str> {
     let path = exe.to_string_lossy().replace('\\', "/");
-    // `/Cellar/codex-notifier/` under any prefix: /opt/homebrew, /usr/local, ~/.linuxbrew or a custom one
-    if path.contains("/Cellar/codex-notifier/")
+    // `/Cellar/antigravity-notifier/` under any prefix: /opt/homebrew, /usr/local, ~/.linuxbrew or a custom one
+    if path.contains("/Cellar/antigravity-notifier/")
         || path.contains("/homebrew/")
         || path.contains("linuxbrew")
     {
@@ -453,8 +453,8 @@ fn method_from_path(exe: &Path) -> Option<&'static str> {
 /// What to do for a binary installed by `method` at `exe`.
 pub fn action_for(method: &str, exe: &Path) -> Action {
     match method {
-        "homebrew" => Action::Run("brew upgrade touch-tap/tap/codex-notifier"),
-        "npm" => Action::Run("npm install -g @touchtap/codex-notifier@latest"),
+        "homebrew" => Action::Run("brew upgrade touch-tap/tap/antigravity-notifier"),
+        "npm" => Action::Run("npm install -g @touchtap/antigravity-notifier@latest"),
         _ => Action::Replace(exe.to_path_buf()),
     }
 }
@@ -501,8 +501,8 @@ fn is_newer(candidate: &str, current: &str) -> bool {
     compare_versions(candidate, current) == Some(Ordering::Greater)
 }
 
-/// Every codex-notifier release archive starts with this.
-const ASSET_PREFIX: &str = "codex-notifier-";
+/// Every antigravity-notifier release archive starts with this.
+const ASSET_PREFIX: &str = "antigravity-notifier-";
 
 /// The release asset for an OS and processor, named as release.yml names them.
 fn asset_name(os: &str, arch: &str) -> Option<String> {
@@ -510,9 +510,9 @@ fn asset_name(os: &str, arch: &str) -> Option<String> {
         return None;
     }
     Some(match os {
-        "macos" => format!("codex-notifier-{arch}-apple-darwin.tar.gz"),
-        "linux" => format!("codex-notifier-{arch}-unknown-linux-musl.tar.gz"),
-        "windows" => format!("codex-notifier-{arch}-pc-windows-msvc.zip"),
+        "macos" => format!("antigravity-notifier-{arch}-apple-darwin.tar.gz"),
+        "linux" => format!("antigravity-notifier-{arch}-unknown-linux-musl.tar.gz"),
+        "windows" => format!("antigravity-notifier-{arch}-pc-windows-msvc.zip"),
         _ => return None,
     })
 }
@@ -532,12 +532,12 @@ fn checksum_for(sums: &str, asset: &str) -> Option<String> {
 }
 
 /// The keys a release signature may verify against. A debug build (the tests) also accepts
-/// `CODEX_NOTIFIER_UPDATE_PUBLIC_KEY`, so tests can sign with a key of their own; a release build never does,
+/// `ANTIGRAVITY_NOTIFIER_UPDATE_PUBLIC_KEY`, so tests can sign with a key of their own; a release build never does,
 /// or the variable would let anyone who can set it vouch for their own binary.
 fn release_keys() -> Vec<String> {
     let mut keys: Vec<String> = RELEASE_KEYS.iter().map(|k| k.to_string()).collect();
     if cfg!(debug_assertions)
-        && let Ok(key) = std::env::var("CODEX_NOTIFIER_UPDATE_PUBLIC_KEY")
+        && let Ok(key) = std::env::var("ANTIGRAVITY_NOTIFIER_UPDATE_PUBLIC_KEY")
         && !key.is_empty()
     {
         keys.push(key);
@@ -596,7 +596,7 @@ fn agent_with(timeout: Duration, https_only: bool) -> ureq::Agent {
         .timeout_global(Some(timeout))
         .https_only(https_only)
         .http_status_as_error(false)
-        .user_agent(format!("codex-notifier/{VERSION}"))
+        .user_agent(format!("antigravity-notifier/{VERSION}"))
         .build()
         .new_agent()
 }
@@ -684,16 +684,16 @@ fn latest_from_server(v: &Value) -> Result<Latest> {
             "update: ignoring the server's downloadBase {base:?}; using {download_base}"
         ));
     }
-    // One Worker serves Claude Code Notifier and Notifier for Codex, and (Nov 2026) its
-    // /api/cli/latest only knows ccn's releases. A reply that doesn't list codex-notifier's
+    // One Worker serves Claude Code Notifier and Antigravity Notifier, and (Nov 2026) its
+    // /api/cli/latest only knows ccn's releases. A reply that doesn't list antigravity-notifier's
     // archives is someone else's release, so GitHub is asked instead.
-    // TODO: drop this once the server answers per app (X-App or clientKind codex_cli).
+    // TODO: drop this once the server answers per app (X-App or clientKind antigravity_cli).
     let assets = asset_list(&v["assets"], |a| a.as_str());
     if !assets
         .as_ref()
         .is_some_and(|names| names.iter().any(|n| n.starts_with(ASSET_PREFIX)))
     {
-        bail!("the server's latest release is not codex-notifier's");
+        bail!("the server's latest release is not antigravity-notifier's");
     }
     Ok(Latest {
         version,
@@ -727,7 +727,7 @@ fn asset_list(list: &Value, name: impl Fn(&Value) -> Option<&str>) -> Option<Vec
 // Unpacking and installing
 // ============================================
 
-/// The `codex-notifier` (or `codex-notifier.exe`) inside a release archive.
+/// The `antigravity-notifier` (or `antigravity-notifier.exe`) inside a release archive.
 #[cfg(unix)]
 fn extract_binary(archive: &[u8]) -> Result<Vec<u8>> {
     use std::io::Read;
@@ -738,13 +738,13 @@ fn extract_binary(archive: &[u8]) -> Result<Vec<u8>> {
         let is_ccn = entry
             .path()
             .ok()
-            .and_then(|p| p.file_name().map(|n| n == "codex-notifier"))
+            .and_then(|p| p.file_name().map(|n| n == "antigravity-notifier"))
             .unwrap_or(false);
         if is_ccn && entry.header().entry_type().is_file() {
             let mut bytes = Vec::with_capacity(entry.size() as usize);
             entry
                 .read_to_end(&mut bytes)
-                .context("unpacking codex-notifier")?;
+                .context("unpacking antigravity-notifier")?;
             return Ok(bytes);
         }
     }
@@ -760,18 +760,18 @@ fn extract_binary(archive: &[u8]) -> Result<Vec<u8>> {
         .find(|n| {
             Path::new(n)
                 .file_name()
-                .map(|f| f.eq_ignore_ascii_case("codex-notifier.exe"))
+                .map(|f| f.eq_ignore_ascii_case("antigravity-notifier.exe"))
                 .unwrap_or(false)
         })
         .with_context(|| t!("update.zip_empty").into_owned())?;
-    let mut file = zip.by_name(&name).context("unpacking codex-notifier.exe")?;
+    let mut file = zip.by_name(&name).context("unpacking antigravity-notifier.exe")?;
     let mut bytes = Vec::with_capacity(file.size() as usize);
     file.read_to_end(&mut bytes)
-        .context("unpacking codex-notifier.exe")?;
+        .context("unpacking antigravity-notifier.exe")?;
     Ok(bytes)
 }
 
-/// `update.lock` in codex-notifier's folder, made with create_new so exactly one upgrader holds it; removed
+/// `update.lock` in antigravity-notifier's folder, made with create_new so exactly one upgrader holds it; removed
 /// when dropped. A lock older than STALE_LOCK is taken over.
 struct UpdateLock(PathBuf);
 
@@ -840,7 +840,7 @@ fn install_binary(bytes: &[u8], target: &Path) -> Result<()> {
     let name = target
         .file_name()
         .map(|n| n.to_string_lossy().to_string())
-        .unwrap_or_else(|| "codex-notifier".to_string());
+        .unwrap_or_else(|| "antigravity-notifier".to_string());
     let tmp = dir.join(format!("{name}.{}.new", std::process::id()));
     let result = write_and_swap(bytes, &tmp, target);
     if result.is_err() {
@@ -940,7 +940,7 @@ mod signature_tests {
         let key = SigningKey::from_bytes(&[1; 32]);
         let other = SigningKey::from_bytes(&[2; 32]);
         let keys = vec![hex(key.verifying_key().as_bytes())];
-        let sums = b"abc  codex-notifier-x86_64-unknown-linux-gnu.tar.gz\n";
+        let sums = b"abc  antigravity-notifier-x86_64-unknown-linux-gnu.tar.gz\n";
         let good = format!("{}\n", hex(&key.sign(sums).to_bytes()));
         assert!(signature_valid(sums, good.as_bytes(), &keys));
         // Another key, other contents, and things that aren't signatures
@@ -993,27 +993,27 @@ mod tests {
     fn asset_names_match_the_release_workflow() {
         assert_eq!(
             asset_name("macos", "aarch64").unwrap(),
-            "codex-notifier-aarch64-apple-darwin.tar.gz"
+            "antigravity-notifier-aarch64-apple-darwin.tar.gz"
         );
         assert_eq!(
             asset_name("macos", "x86_64").unwrap(),
-            "codex-notifier-x86_64-apple-darwin.tar.gz"
+            "antigravity-notifier-x86_64-apple-darwin.tar.gz"
         );
         assert_eq!(
             asset_name("linux", "x86_64").unwrap(),
-            "codex-notifier-x86_64-unknown-linux-musl.tar.gz"
+            "antigravity-notifier-x86_64-unknown-linux-musl.tar.gz"
         );
         assert_eq!(
             asset_name("linux", "aarch64").unwrap(),
-            "codex-notifier-aarch64-unknown-linux-musl.tar.gz"
+            "antigravity-notifier-aarch64-unknown-linux-musl.tar.gz"
         );
         assert_eq!(
             asset_name("windows", "x86_64").unwrap(),
-            "codex-notifier-x86_64-pc-windows-msvc.zip"
+            "antigravity-notifier-x86_64-pc-windows-msvc.zip"
         );
         assert_eq!(
             asset_name("windows", "aarch64").unwrap(),
-            "codex-notifier-aarch64-pc-windows-msvc.zip"
+            "antigravity-notifier-aarch64-pc-windows-msvc.zip"
         );
         assert_eq!(asset_name("linux", "riscv64"), None);
         assert_eq!(asset_name("freebsd", "x86_64"), None);
@@ -1023,26 +1023,26 @@ mod tests {
     #[test]
     fn sha256sums_lines_are_looked_up_by_name() {
         let sums = "\
-0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef  codex-notifier-aarch64-apple-darwin.tar.gz
-ABCDEF0123456789abcdef0123456789abcdef0123456789abcdef0123456789 *codex-notifier-x86_64-pc-windows-msvc.zip
-deadbeef  codex-notifier-x86_64-apple-darwin.tar.gz
+0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef  antigravity-notifier-aarch64-apple-darwin.tar.gz
+ABCDEF0123456789abcdef0123456789abcdef0123456789abcdef0123456789 *antigravity-notifier-x86_64-pc-windows-msvc.zip
+deadbeef  antigravity-notifier-x86_64-apple-darwin.tar.gz
 ";
         assert_eq!(
-            checksum_for(sums, "codex-notifier-aarch64-apple-darwin.tar.gz").as_deref(),
+            checksum_for(sums, "antigravity-notifier-aarch64-apple-darwin.tar.gz").as_deref(),
             Some("0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef")
         );
         assert_eq!(
-            checksum_for(sums, "codex-notifier-x86_64-pc-windows-msvc.zip").as_deref(),
+            checksum_for(sums, "antigravity-notifier-x86_64-pc-windows-msvc.zip").as_deref(),
             Some("abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789"),
             "the binary-mode star is dropped and the hash lowercased"
         );
         assert_eq!(
-            checksum_for(sums, "codex-notifier-x86_64-apple-darwin.tar.gz"),
+            checksum_for(sums, "antigravity-notifier-x86_64-apple-darwin.tar.gz"),
             None,
             "a short hash is not a sha256"
         );
         assert_eq!(
-            checksum_for(sums, "codex-notifier-aarch64-unknown-linux-musl.tar.gz"),
+            checksum_for(sums, "antigravity-notifier-aarch64-unknown-linux-musl.tar.gz"),
             None
         );
         assert_eq!(
@@ -1056,48 +1056,48 @@ deadbeef  codex-notifier-x86_64-apple-darwin.tar.gz
         let p = |s: &str| PathBuf::from(s);
         assert_eq!(
             method_from_path(&p(
-                "/opt/homebrew/Cellar/codex-notifier/0.2.0/bin/codex-notifier"
+                "/opt/homebrew/Cellar/antigravity-notifier/0.2.0/bin/antigravity-notifier"
             )),
             Some("homebrew")
         );
         assert_eq!(
-            method_from_path(&p("/home/linuxbrew/.linuxbrew/bin/codex-notifier")),
+            method_from_path(&p("/home/linuxbrew/.linuxbrew/bin/antigravity-notifier")),
             Some("homebrew")
         );
         assert_eq!(
             method_from_path(&p(
-                "/usr/local/lib/node_modules/@touchtap/codex-notifier-darwin-arm64/bin/codex-notifier"
+                "/usr/local/lib/node_modules/@touchtap/antigravity-notifier-darwin-arm64/bin/antigravity-notifier"
             )),
             Some("npm")
         );
         assert_eq!(
             method_from_path(&p(
-                "/usr/local/Cellar/codex-notifier/0.2.0/bin/codex-notifier"
+                "/usr/local/Cellar/antigravity-notifier/0.2.0/bin/antigravity-notifier"
             )),
             Some("homebrew"),
             "an Intel Mac's prefix has no `homebrew` in it"
         );
         assert_eq!(
-            method_from_path(&p("/Users/jack/.local/bin/codex-notifier")),
+            method_from_path(&p("/Users/jack/.local/bin/antigravity-notifier")),
             None
         );
         assert_eq!(
             method_from_path(&p(
-                r"C:\Users\jack\AppData\Local\Programs\codex-notifier\codex-notifier.exe"
+                r"C:\Users\jack\AppData\Local\Programs\antigravity-notifier\antigravity-notifier.exe"
             )),
             None
         );
 
-        let exe = p("/Users/jack/.local/bin/codex-notifier");
+        let exe = p("/Users/jack/.local/bin/antigravity-notifier");
         assert_eq!(
             action_for("homebrew", &exe),
-            Action::Run("brew upgrade touch-tap/tap/codex-notifier")
+            Action::Run("brew upgrade touch-tap/tap/antigravity-notifier")
         );
         assert_eq!(
             action_for("npm", &exe),
-            Action::Run("npm install -g @touchtap/codex-notifier@latest")
+            Action::Run("npm install -g @touchtap/antigravity-notifier@latest")
         );
-        // Scoop and winget have no codex-notifier package (yet), so nothing detects them
+        // Scoop and winget have no antigravity-notifier package (yet), so nothing detects them
         for method in ["script", "powershell", "npx", "other"] {
             assert_eq!(action_for(method, &exe), Action::Replace(exe.clone()));
         }
@@ -1107,14 +1107,14 @@ deadbeef  codex-notifier-x86_64-apple-darwin.tar.gz
     fn the_server_and_github_replies_both_give_a_download_base() {
         let server = json!({
             "version": "0.3.0", "tag": "v0.3.0", "publishedAt": 1761800000,
-            "downloadBase": "https://github.com/touch-tap/codex-notifier/releases/download/v0.3.0",
-            "assets": ["codex-notifier-aarch64-apple-darwin.tar.gz", "SHA256SUMS"]
+            "downloadBase": "https://github.com/touch-tap/antigravity-notifier/releases/download/v0.3.0",
+            "assets": ["antigravity-notifier-aarch64-apple-darwin.tar.gz", "SHA256SUMS"]
         });
         let latest = latest_from_server(&server).unwrap();
         assert_eq!(latest.version, "0.3.0");
         assert_eq!(
             latest.download_base,
-            "https://github.com/touch-tap/codex-notifier/releases/download/v0.3.0"
+            "https://github.com/touch-tap/antigravity-notifier/releases/download/v0.3.0"
         );
         assert_eq!(latest.assets.unwrap().len(), 2);
 
@@ -1129,33 +1129,33 @@ deadbeef  codex-notifier-x86_64-apple-darwin.tar.gz
 
         let github = json!({
             "tag_name": "v0.3.1",
-            "assets": [{ "name": "codex-notifier-x86_64-pc-windows-msvc.zip" }, { "name": "SHA256SUMS" }]
+            "assets": [{ "name": "antigravity-notifier-x86_64-pc-windows-msvc.zip" }, { "name": "SHA256SUMS" }]
         });
         let latest = latest_from_github(&github).unwrap();
         assert_eq!(latest.version, "0.3.1");
         assert_eq!(
             latest.download_base,
-            "https://github.com/touch-tap/codex-notifier/releases/download/v0.3.1"
+            "https://github.com/touch-tap/antigravity-notifier/releases/download/v0.3.1"
         );
         assert_eq!(
             latest.assets.unwrap(),
-            vec!["codex-notifier-x86_64-pc-windows-msvc.zip", "SHA256SUMS"]
+            vec!["antigravity-notifier-x86_64-pc-windows-msvc.zip", "SHA256SUMS"]
         );
         assert!(latest_from_server(&json!({})).is_err());
     }
 
     #[test]
     fn the_download_base_is_always_this_repositorys_releases() {
-        let pinned = "https://github.com/touch-tap/codex-notifier/releases/download/v0.4.0";
+        let pinned = "https://github.com/touch-tap/antigravity-notifier/releases/download/v0.4.0";
         for hostile in [
-            "http://github.com/touch-tap/codex-notifier/releases/download/v0.4.0",
-            "https://evil.example/codex-notifier/v0.4.0",
-            "https://github.com/someone-else/codex-notifier/releases/download/v0.4.0",
-            "https://github.com/touch-tap/codex-notifier/releases/download/v0.4.0/../../../x",
+            "http://github.com/touch-tap/antigravity-notifier/releases/download/v0.4.0",
+            "https://evil.example/antigravity-notifier/v0.4.0",
+            "https://github.com/someone-else/antigravity-notifier/releases/download/v0.4.0",
+            "https://github.com/touch-tap/antigravity-notifier/releases/download/v0.4.0/../../../x",
         ] {
             let latest = latest_from_server(&json!({
                 "version": "0.4.0", "tag": "v0.4.0", "downloadBase": hostile,
-                "assets": ["codex-notifier-aarch64-apple-darwin.tar.gz"]
+                "assets": ["antigravity-notifier-aarch64-apple-darwin.tar.gz"]
             }))
             .unwrap();
             assert_eq!(latest.download_base, pinned, "{hostile} was not ignored");
@@ -1163,7 +1163,7 @@ deadbeef  codex-notifier-x86_64-apple-darwin.tar.gz
         // A trailing slash on the right base is still the right base
         let latest = latest_from_server(&json!({
             "version": "0.4.0", "tag": "v0.4.0", "downloadBase": format!("{pinned}/"),
-            "assets": ["codex-notifier-aarch64-apple-darwin.tar.gz"]
+            "assets": ["antigravity-notifier-aarch64-apple-darwin.tar.gz"]
         }))
         .unwrap();
         assert_eq!(latest.download_base, pinned);
@@ -1181,7 +1181,7 @@ deadbeef  codex-notifier-x86_64-apple-darwin.tar.gz
         }
         assert_eq!(
             pinned_base("v0.4.0-beta.1").as_deref(),
-            Some("https://github.com/touch-tap/codex-notifier/releases/download/v0.4.0-beta.1")
+            Some("https://github.com/touch-tap/antigravity-notifier/releases/download/v0.4.0-beta.1")
         );
     }
 
@@ -1228,7 +1228,7 @@ deadbeef  codex-notifier-x86_64-apple-darwin.tar.gz
     #[test]
     fn only_one_upgrader_holds_the_lock_and_a_stale_one_is_taken_over() {
         let dir =
-            std::env::temp_dir().join(format!("codex-notifier-update-lock-{}", std::process::id()));
+            std::env::temp_dir().join(format!("antigravity-notifier-update-lock-{}", std::process::id()));
         let _ = fs::remove_dir_all(&dir);
         fs::create_dir_all(&dir).unwrap();
         let path = dir.join("update.lock");
@@ -1264,7 +1264,7 @@ deadbeef  codex-notifier-x86_64-apple-darwin.tar.gz
     fn a_new_binary_that_hangs_does_not_count_as_running() {
         use std::os::unix::fs::PermissionsExt;
         let dir = std::env::temp_dir().join(format!(
-            "codex-notifier-update-probe-{}",
+            "antigravity-notifier-update-probe-{}",
             std::process::id()
         ));
         let _ = fs::remove_dir_all(&dir);
@@ -1275,10 +1275,10 @@ deadbeef  codex-notifier-x86_64-apple-darwin.tar.gz
             fs::set_permissions(&path, fs::Permissions::from_mode(0o755)).unwrap();
             path
         };
-        let ok = script("ok", "echo codex-notifier 9.9.9");
+        let ok = script("ok", "echo antigravity-notifier 9.9.9");
         let hangs = script("hangs", "exec sleep 30");
         let silent = script("silent", "exit 0");
-        let fails = script("fails", "echo codex-notifier; exit 1");
+        let fails = script("fails", "echo antigravity-notifier; exit 1");
 
         assert!(runs_within(&ok, Duration::from_secs(5)));
         let started = std::time::Instant::now();
@@ -1305,7 +1305,7 @@ deadbeef  codex-notifier-x86_64-apple-darwin.tar.gz
             header.set_mode(0o755);
             header.set_cksum();
             builder
-                .append_data(&mut header, "codex-notifier", &b"hello"[..])
+                .append_data(&mut header, "antigravity-notifier", &b"hello"[..])
                 .unwrap();
             builder.finish().unwrap();
         }

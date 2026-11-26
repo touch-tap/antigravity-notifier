@@ -1,16 +1,16 @@
 # Deutsch. Übersetzt locales/en.yml; siehe locales/README.md. Register: du. Begriffe wie in der
-# App Notifier for Codex: koppeln (pair), verbinden (connect), Lizenz, freischalten, Handy, Computer.
+# App Antigravity Notifier: koppeln (pair), verbinden (connect), Lizenz, freischalten, Handy, Computer.
 _version: 1
 
 cli:
-  about: "Notifier for Codex: bekomme einen Push aufs Handy, wenn Codex dich braucht, und antworte von dort"
+  about: "Antigravity Notifier: bekomme einen Push aufs Handy, wenn Codex dich braucht, und antworte von dort"
   pair:
     about: "Diesen Computer mit deinem Handy koppeln. Gib den Code aus der App an, oder starte ohne Code und bekomme einen zum Eintippen in die App"
-    code: "Der 6-stellige Code aus der App Notifier for Codex"
+    code: "Der 6-stellige Code aus der App Antigravity Notifier"
     name: "Wie dieser Computer auf deinem Handy heißt (Standard: der Hostname)"
     no_wait: "QR-Code anzeigen und sofort zurückkehren: die Kopplung wird von selbst abgeschlossen, sobald das Handy sich verbindet"
   setup:
-    about: "Die Codex Hooks und Desktop-Mitteilungen installieren (pair und codex-notifier ohne Argumente tun das zuerst)"
+    about: "Die Codex Hooks und Desktop-Mitteilungen installieren (pair und antigravity-notifier ohne Argumente tun das zuerst)"
   doctor:
     about: "Hooks, Zugangsdaten, Server und die Fähigkeiten dieses Terminals prüfen"
   test:
@@ -21,14 +21,14 @@ cli:
   config:
     about: "Einstellungen dieses Computers anzeigen oder ändern (auch vom Handy aus änderbar)"
     show: "Die wirksamen Einstellungen ausgeben"
-    set: "Eine Einstellung setzen, z. B. `codex-notifier config set hold_ceiling_seconds 300` oder `codex-notifier config set quiet_hours 22:00-08:00`"
+    set: "Eine Einstellung setzen, z. B. `antigravity-notifier config set hold_ceiling_seconds 300` oder `antigravity-notifier config set quiet_hours 22:00-08:00`"
   sync:
     about: "Die neuesten Einstellungen jetzt vom Server holen"
   unlock:
     about: "Eine Lizenz für diesen Computer im Browser kaufen: schaltet jedes damit gekoppelte Handy frei"
     lifetime: "Einmal zahlen statt jährlich (oder eine Jahreslizenz auf lebenslang umstellen, der Schlüssel bleibt)"
   upgrade:
-    about: "codex-notifier auf die neueste Version aktualisieren (wird auch einmal täglich im Hintergrund geprüft)"
+    about: "antigravity-notifier auf die neueste Version aktualisieren (wird auch einmal täglich im Hintergrund geprüft)"
     check: "Nur sagen, ob eine neuere Version existiert: Exit 0 wenn aktuell, 10 wenn eine verfügbar ist"
     quiet: "Nichts ausgeben, außer etwas ist schiefgegangen"
   activate:
@@ -47,16 +47,16 @@ cli:
 
 common:
   your_phone: "dein Handy"
-  not_paired: "dieser Computer ist noch nicht gekoppelt. Führe `codex-notifier pair <code>` mit dem Code aus der App aus."
+  not_paired: "dieser Computer ist noch nicht gekoppelt. Führe `antigravity-notifier pair <code>` mit dem Code aus der App aus."
   store_keychain: "Schlüsselbund"
   store_file: "Datei"
   date_format: "%d.%m.%Y"
 
 pair:
   reregister: "Die alte Kopplung dieses Computers wurde entfernt, deshalb wird er neu registriert."
-  code_not_recognised: "Dieser Code wurde nicht erkannt. Der 6-stellige Code steht in der App Notifier for Codex unter Computer > Computer verbinden; er ändert sich alle 24 Stunden, kopiere also die Zeile, die die App gerade jetzt anzeigt."
+  code_not_recognised: "Dieser Code wurde nicht erkannt. Der 6-stellige Code steht in der App Antigravity Notifier unter Computer > Computer verbinden; er ändert sich alle 24 Stunden, kopiere also die Zeile, die die App gerade jetzt anzeigt."
   offer_qr: "Drücke Enter, um stattdessen hier einen QR-Code anzuzeigen (mit dem Handy scannen), oder Ctrl+C."
-  options_without_terminal: "Führe `codex-notifier pair <code>` noch einmal mit dem Code aus, den die App jetzt anzeigt, oder `codex-notifier pair`, um hier einen QR-Code anzuzeigen und ihn mit dem Handy zu scannen."
+  options_without_terminal: "Führe `antigravity-notifier pair <code>` noch einmal mit dem Code aus, den die App jetzt anzeigt, oder `antigravity-notifier pair`, um hier einen QR-Code anzuzeigen und ihn mit dem Handy zu scannen."
   scan: "  Scanne das mit der Kamera deines Handys, um es zu verbinden. Ohne die App führt es\n  dich zum App Store oder zu Google Play: installieren, dann noch einmal scannen."
   or_type_code: "  Oder tippe in der App auf „Mein Computer zeigt einen Code“ und gib ein:  %{code}"
   enter_code: "  Tippe in der App auf „Mein Computer zeigt einen Code“ und gib ein:  %{code}"
@@ -66,20 +66,20 @@ pair:
   code_lasts: "  Kopple, wann du willst: dieser Code gilt %{duration}."
   completes_on_its_own: "  Die Kopplung wird von selbst abgeschlossen, sobald das Handy sich verbindet."
   waiting: "  Warte auf dein Handy... (Ctrl+C ist unbedenklich: die Kopplung wird von selbst abgeschlossen, sobald das Handy sich verbindet)"
-  code_expired: "der Code ist abgelaufen, bevor ein Handy ihn eingelöst hat. Führe `codex-notifier pair` noch einmal aus."
-  code_is_six_digits: "der Code sind die 6 Ziffern aus der App Notifier for Codex"
+  code_expired: "der Code ist abgelaufen, bevor ein Handy ihn eingelöst hat. Führe `antigravity-notifier pair` noch einmal aus."
+  code_is_six_digits: "der Code sind die 6 Ziffern aus der App Antigravity Notifier"
   credentials_stored: "Zugangsdaten gespeichert: %{store} (%{path})."
   test_sent: "Testmitteilung an dein Handy gesendet."
   test_failed: "Testmitteilung konnte noch nicht gesendet werden: %{error}"
-  done: "Fertig. Starte `codex` wie gewohnt: du bekommst einen Push, wenn Codex fertig ist oder dich\nbraucht, und kannst vom Handy aus erlauben, ablehnen oder antworten. `codex-notifier doctor` prüft alles."
+  done: "Fertig. Starte `codex` wie gewohnt: du bekommst einen Push, wenn Codex fertig ist oder dich\nbraucht, und kannst vom Handy aus erlauben, ablehnen oder antworten. `antigravity-notifier doctor` prüft alles."
   paired_with: "Gekoppelt mit %{name} (%{platform})."
   hours_one: "1 Stunde"
   hours_other: "%{count} Stunden"
   minutes_one: "1 Minute"
   minutes_other: "%{count} Minuten"
   pitch: "Dein Handy bietet in der App ein Abo an. Du kannst auch von hier aus alles freischalten, ohne die App-Stores:"
-  pitch_annual: "  codex-notifier unlock             %{price} im Jahr"
-  pitch_lifetime: "  codex-notifier unlock --lifetime  %{price} einmalig"
+  pitch_annual: "  antigravity-notifier unlock             %{price} im Jahr"
+  pitch_lifetime: "  antigravity-notifier unlock --lifetime  %{price} einmalig"
   pitch_covers: "Gilt für %{computers} Computer und jedes damit gekoppelte Handy. %{days} Tage Geld-zurück."
   welcome_no_terminal: "Eine Testmitteilung ist auf dem Weg zu deinem Handy: antworte dort doch gleich darauf."
   welcome: "Eine Testmitteilung ist auf dem Weg zu deinem Handy. Antworte dort doch gleich darauf..."
@@ -88,15 +88,15 @@ pair:
   welcome_no_answer: "Noch keine Antwort. Die Mitteilung bleibt eine Stunde auf deinem Handy."
 
 status:
-  set_up: "codex-notifier %{version} ist auf diesem Computer als \"%{name}\" eingerichtet."
+  set_up: "antigravity-notifier %{version} ist auf diesem Computer als \"%{name}\" eingerichtet."
   licence: "Lizenz: %{line}"
-  hint_doctor: "  codex-notifier doctor     Hooks, Zugangsdaten und Server prüfen"
-  hint_test: "  codex-notifier test       eine Testmitteilung an dein Handy senden"
-  hint_pair: "  codex-notifier pair       ein weiteres Handy koppeln"
-  hint_help: "  codex-notifier --help     alles andere"
+  hint_doctor: "  antigravity-notifier doctor     Hooks, Zugangsdaten und Server prüfen"
+  hint_test: "  antigravity-notifier test       eine Testmitteilung an dein Handy senden"
+  hint_pair: "  antigravity-notifier pair       ein weiteres Handy koppeln"
+  hint_help: "  antigravity-notifier --help     alles andere"
 
 setup:
-  installed_self: "codex-notifier installiert nach %{path}."
+  installed_self: "antigravity-notifier installiert nach %{path}."
   hooks_installed: "Hooks installiert in %{path} (verwendet %{exe})."
   hooks_trusted: "Als vertrauenswürdig markiert in %{path}, damit Codex sie ohne einen Besuch in /hooks ausführt."
 
@@ -105,25 +105,25 @@ sync:
   synced: "Einstellungen synchronisiert."
 
 doctor:
-  header: "codex-notifier %{version} auf %{platform}"
+  header: "antigravity-notifier %{version} auf %{platform}"
   config: "Konfiguration: %{path}"
   credentials_present: "Zugangsdaten: vorhanden (%{store})"
-  credentials_missing: "Zugangsdaten: fehlen: führe `codex-notifier pair <code>` aus"
+  credentials_missing: "Zugangsdaten: fehlen: führe `antigravity-notifier pair <code>` aus"
   server_reachable: "Server: %{url} erreichbar"
   server_error: "Server: %{error}"
   registered: "registriert als \"%{name}\" (%{kind} %{platform}), Fähigkeiten: %{capabilities}"
-  not_paired_any_more: "Kopplung: nicht mehr gekoppelt: führe `codex-notifier pair` aus"
+  not_paired_any_more: "Kopplung: nicht mehr gekoppelt: führe `antigravity-notifier pair` aus"
   registration_error: "Registrierung: %{error}"
   licence: "Lizenz: %{line}"
-  phones_none: "Handys: noch keins gekoppelt, Mitteilungen bleiben also auf diesem Desktop (führe `codex-notifier pair` aus)"
+  phones_none: "Handys: noch keins gekoppelt, Mitteilungen bleiben also auf diesem Desktop (führe `antigravity-notifier pair` aus)"
   phones: "Handys: %{names}"
   phones_error: "Handys: %{error}"
   hooks_all: "Hooks: alle %{count} installiert in %{path}"
-  hooks_missing: "Hooks: es fehlen %{names} (führe `codex-notifier setup` aus)"
+  hooks_missing: "Hooks: es fehlen %{names} (führe `antigravity-notifier setup` aus)"
   hooks_error: "Hooks: %{error}"
-  hooks_stale: "die Hooks zeigen auf eine andere codex-notifier-Binary; führe `codex-notifier setup` aus, um sie zu aktualisieren"
+  hooks_stale: "die Hooks zeigen auf eine andere antigravity-notifier-Binary; führe `antigravity-notifier setup` aus, um sie zu aktualisieren"
   trust_ok: "Vertrauen: jeder Hook hat seinen Hash in %{path}"
-  trust_missing: "Vertrauen: Codex überspringt %{names}, bis sie vertraut sind (führe `codex-notifier setup` aus oder /hooks in Codex)"
+  trust_missing: "Vertrauen: Codex überspringt %{names}, bis sie vertraut sind (führe `antigravity-notifier setup` aus oder /hooks in Codex)"
   presence: "Anwesenheit: gerade %{idle}s untätig, Schwelle %{threshold}s"
   replies: "Antworten: Freigaben und Antworten auf Fragen vom Handy funktionieren in jedem Terminal; freier Text in eine untätige Sitzung %{free_text}"
   replies_tmux: "funktioniert (tmux)"
@@ -132,12 +132,12 @@ doctor:
   log: "Log: %{path}"
 
 test:
-  none_paired: "kein Handy ist gekoppelt. Führe `codex-notifier pair <code>` aus."
+  none_paired: "kein Handy ist gekoppelt. Führe `antigravity-notifier pair <code>` aus."
   sent: "Testmitteilung an %{name} (%{platform}) gesendet."
   failed: "%{name}: %{error}"
 
 devices:
-  none: "Keine Handys gekoppelt. Führe `codex-notifier pair <code>` mit dem Code aus der App aus."
+  none: "Keine Handys gekoppelt. Führe `antigravity-notifier pair <code>` mit dem Code aus der App aus."
   # %{name} wird auf 24 Spalten aufgefüllt, %{platform} auf 8, bevor sie eingesetzt werden
   row: "%{name} %{platform} gekoppelt %{since}%{off}"
   notifications_off: "  (Mitteilungen aus)"
@@ -160,19 +160,19 @@ settings:
   unknown: "unbekannte Einstellung '%{key}'. Einstellungen: notify_on_done, notify_on_permission, notify_on_question, sound, quiet_when_present, quiet_hours, hold_ceiling_seconds, presence_threshold_seconds, stop_hold_seconds, reminder_interval_seconds"
 
 forget:
-  needs_yes: "codex-notifier forget braucht ein Ja von dir: führe es in einem Terminal aus oder ergänze --yes"
-  warning: "Das löscht diesen Computer und seine Kopplungen vom Server von Notifier for Codex, entfernt dann\ncodex-notifier aus Codex und löscht seine Zugangsdaten und Dateien hier, wie `codex-notifier uninstall`.\nHandys, die mit diesem Computer gekoppelt sind, sehen ihn verschwinden.\nEine auf der Website gekaufte Lizenz wird nicht gekündigt: das geht auf\nnotifierforcodex.com/licence mit \"Erase my licence\"."
+  needs_yes: "antigravity-notifier forget braucht ein Ja von dir: führe es in einem Terminal aus oder ergänze --yes"
+  warning: "Das löscht diesen Computer und seine Kopplungen vom Server von Antigravity Notifier, entfernt dann\nantigravity-notifier aus Codex und löscht seine Zugangsdaten und Dateien hier, wie `antigravity-notifier uninstall`.\nHandys, die mit diesem Computer gekoppelt sind, sehen ihn verschwinden.\nEine auf der Website gekaufte Lizenz wird nicht gekündigt: das geht auf\nantigravitynotifier.com/licence mit \"Erase my licence\"."
   # Das Wort, das der Nutzer tippen muss; `yes` wird immer auch akzeptiert
   yes_word: "ja"
   prompt: "\nTippe %{yes}, um fortzufahren: "
   nothing_erased: "Nichts wurde gelöscht."
   erased: "Dieser Computer und seine Kopplungen wurden vom Server gelöscht."
   already_forgotten: "Der Server kannte diesen Computer schon nicht mehr."
-  nothing_removed: "%{error}. Auf diesem Computer wurde nichts entfernt, du kannst `codex-notifier forget` also noch einmal ausführen"
+  nothing_removed: "%{error}. Auf diesem Computer wurde nichts entfernt, du kannst `antigravity-notifier forget` also noch einmal ausführen"
   not_registered: "Dieser Computer ist nicht beim Server registriert, dort gibt es also nichts zu löschen."
 
 uninstall:
-  hooks_removed: "Die Hooks von codex-notifier aus %{path} und ihre Vertrauenseinträge aus %{config} entfernt."
+  hooks_removed: "Die Hooks von antigravity-notifier aus %{path} und ihre Vertrauenseinträge aus %{config} entfernt."
   slot_freed: "Lizenzplatz dieses Computers freigegeben."
   unpaired_all: "Alle Handys entkoppelt."
   removed_dir: "%{path} entfernt."
@@ -182,17 +182,17 @@ local:
   finished_body: "Codex ist fertig und wartet auf dich."
   permission_title: "Codex braucht eine Freigabe"
   question_title: "Codex hat eine Frage"
-  first_nudge: "Aufs Handy holen: codex-notifier pair"
-  milestone_nudge: "Schon 10 Mitteilungen. Hol sie dir aufs Handy, mit Freigaben vom Sperrbildschirm: führe codex-notifier pair aus"
-  pair_message: "Notifier for Codex: du bekommst Desktop-Mitteilungen. Um sie auch auf dem Handy zu bekommen und von dort zu erlauben oder zu antworten, führe `codex-notifier pair` in einem Terminal aus."
+  first_nudge: "Aufs Handy holen: antigravity-notifier pair"
+  milestone_nudge: "Schon 10 Mitteilungen. Hol sie dir aufs Handy, mit Freigaben vom Sperrbildschirm: führe antigravity-notifier pair aus"
+  pair_message: "Antigravity Notifier: du bekommst Desktop-Mitteilungen. Um sie auch auf dem Handy zu bekommen und von dort zu erlauben oder zu antworten, führe `antigravity-notifier pair` in einem Terminal aus."
 
 hook:
-  licence_message: "Notifier for Codex: Handy-Mitteilungen sind für diesen Computer nicht freigeschaltet. Freischalten: codex-notifier unlock"
-  unpaired_message: "Notifier for Codex: dieser Computer ist nicht mehr gekoppelt, dein Handy bekommt also keine Mitteilungen. Führe `codex-notifier pair` in einem Terminal aus, um ihn neu zu verbinden."
-  unpaired_notification: "Dieser Computer ist nicht mehr gekoppelt. Führe `codex-notifier pair` in einem Terminal aus, um ihn neu zu verbinden."
-  paired_message: "Notifier for Codex: gekoppelt mit %{phone}. Mitteilungen gehen jetzt an dein Handy."
+  licence_message: "Antigravity Notifier: Handy-Mitteilungen sind für diesen Computer nicht freigeschaltet. Freischalten: antigravity-notifier unlock"
+  unpaired_message: "Antigravity Notifier: dieser Computer ist nicht mehr gekoppelt, dein Handy bekommt also keine Mitteilungen. Führe `antigravity-notifier pair` in einem Terminal aus, um ihn neu zu verbinden."
+  unpaired_notification: "Dieser Computer ist nicht mehr gekoppelt. Führe `antigravity-notifier pair` in einem Terminal aus, um ihn neu zu verbinden."
+  paired_message: "Antigravity Notifier: gekoppelt mit %{phone}. Mitteilungen gehen jetzt an dein Handy."
   # Der Server schreibt Titel, Text und Befehl in der Sprache des Nutzers; das hier fügt sie nur zusammen
-  nudge_message: "Notifier for Codex: %{title} %{body} %{command}"
+  nudge_message: "Antigravity Notifier: %{title} %{body} %{command}"
   needs_attention: "Braucht deine Aufmerksamkeit"
 
 # Suggests the Claude Code Notifier app (and its ccn CLI) to someone who also uses Claude Code (crosspromo.rs).
@@ -200,60 +200,60 @@ hook:
 cross_promo:
   line: "Claude Code erkannt – hol dir die Freigaben und Fragen von Claude Code auch aufs Handy, mit der App Claude Code Notifier (iPhone und Android). Diesen Computer richtest du mit einem Befehl ein: %{command}  ·  %{url}"
   notification: "Claude Code erkannt – hol dir die Freigaben von Claude Code auch aufs Handy, mit der App Claude Code Notifier."
-  # After `codex-notifier pair`, above a QR code (pair_scan) or without one (pair_steps), the app's link and the command
+  # After `antigravity-notifier pair`, above a QR code (pair_scan) or without one (pair_steps), the app's link and the command
   pair_title: "Claude Code erkannt – hol dir die Freigaben und Fragen von Claude Code auch aufs Handy, mit der App Claude Code Notifier (iPhone und Android)."
   pair_scan: "Scanne den Code für die App und richte dann diesen Computer mit einem Befehl ein:"
   pair_steps: "Hol dir die App und richte dann diesen Computer mit einem Befehl ein:"
 
 # Asks once, after 20 answers from the phone, for an app-store rating (rate.rs). url is not translated.
 rate:
-  notification: "Gefällt dir Notifier for Codex? Eine kurze Bewertung hilft anderen Entwicklern, die App zu finden."
-  message: "Gefällt dir Notifier for Codex? Eine kurze Bewertung hilft anderen Entwicklern, die App zu finden: %{url}"
+  notification: "Gefällt dir Antigravity Notifier? Eine kurze Bewertung hilft anderen Entwicklern, die App zu finden."
+  message: "Gefällt dir Antigravity Notifier? Eine kurze Bewertung hilft anderen Entwicklern, die App zu finden: %{url}"
 
 hooks:
-  doctor_presence_none: "Anwesenheit: hier nicht erkennbar, daher wartet nichts auf das Handy: Es bekommt einen Hinweis, und du antwortest im Terminal (`codex-notifier config set hold_without_presence on`, um trotzdem zu warten)"
+  doctor_presence_none: "Anwesenheit: hier nicht erkennbar, daher wartet nichts auf das Handy: Es bekommt einen Hinweis, und du antwortest im Terminal (`antigravity-notifier config set hold_without_presence on`, um trotzdem zu warten)"
   doctor_presence_none_hold: "Anwesenheit: hier nicht erkennbar, und hold_without_presence ist an, daher wartet jede Anfrage auf das Handy, bis es antwortet oder die Höchstdauer abläuft"
 
 licence:
   already_licensed: "Dieser Computer ist bereits lizenziert (%{licence})."
-  switch_to_lifetime: "Auf eine lebenslange Lizenz umstellen, mit demselben Schlüssel: codex-notifier unlock --lifetime"
+  switch_to_lifetime: "Auf eine lebenslange Lizenz umstellen, mit demselben Schlüssel: antigravity-notifier unlock --lifetime"
   checkout_open: "  Die Kasse ist in deinem Browser geöffnet. Um stattdessen am Handy zu zahlen, scanne das:"
   checkout_link: "  Öffne diesen Link zum Zahlen, oder scanne ihn mit deinem Handy:"
   waiting_payment: "  Warte auf die Zahlung... (Ctrl+C zum Abbrechen; den Schlüssel bekommst du so oder so per E-Mail)"
   upgraded: "✓ Auf eine lebenslange Lizenz umgestellt. Gleicher Schlüssel, gleiche Computer; die jährliche Verlängerung ist gekündigt."
   licensed: "✓ Dieser Computer ist lizenziert (%{licence})."
-  key: "  Schlüssel: %{key} (auch per E-Mail). Nutze ihn auf bis zu 2 weiteren Computern: codex-notifier activate %{key}"
+  key: "  Schlüssel: %{key} (auch per E-Mail). Nutze ihn auf bis zu 2 weiteren Computern: antigravity-notifier activate %{key}"
   phones_unlocked: "  Jedes mit diesem Computer gekoppelte Handy ist freigeschaltet."
-  activate_with_key: "  Führe `codex-notifier activate <key>` mit dem Schlüssel aus der E-Mail aus, um ihn auf diesem Computer zu nutzen."
-  no_payment: "Nach 15 Minuten immer noch keine Zahlung. Falls du bezahlt hast, steht der Schlüssel in deiner E-Mail: codex-notifier activate <key>"
+  activate_with_key: "  Führe `antigravity-notifier activate <key>` mit dem Schlüssel aus der E-Mail aus, um ihn auf diesem Computer zu nutzen."
+  no_payment: "Nach 15 Minuten immer noch keine Zahlung. Falls du bezahlt hast, steht der Schlüssel in deiner E-Mail: antigravity-notifier activate <key>"
   replace_stale: "\"%{name}\" wurde seit über einer Woche nicht gesehen. Ist das dieser Computer? Ersetzen?"
   yes_no: " [J/n] "
   # Eine Antwort, die mit diesem Buchstaben (oder n) beginnt, bedeutet nein
   no_initial: "n"
   slots_full: "Diese Lizenz ist schon auf %{count} Computern:"
-  free_one: "Gib einen mit `codex-notifier deactivate` auf diesem Computer frei, oder ersetze ihn von hier aus:"
-  replace_example: "  codex-notifier activate %{key} --replace \"%{name}\""
+  free_one: "Gib einen mit `antigravity-notifier deactivate` auf diesem Computer frei, oder ersetze ihn von hier aus:"
+  replace_example: "  antigravity-notifier activate %{key} --replace \"%{name}\""
   old_laptop: "Altes Laptop"
   no_free_slot: "kein freier Computerplatz"
   computers_on_licence: "Computer auf dieser Lizenz:"
   activated: "✓ Lizenziert (%{licence}). %{count} von 3 Computern in Benutzung."
-  pair_to_unlock: "  Kopple ein Handy mit `codex-notifier pair`, und es ist sofort freigeschaltet."
+  pair_to_unlock: "  Kopple ein Handy mit `antigravity-notifier pair`, und es ist sofort freigeschaltet."
   none: "Dieser Computer hat keine Lizenz."
   freed: "Freigegeben. Diese Lizenz hat jetzt %{count} von 3 Computern in Benutzung."
-  none_buy: "Keine Lizenz auf diesem Computer. Eine kaufen: codex-notifier unlock"
+  none_buy: "Keine Lizenz auf diesem Computer. Eine kaufen: antigravity-notifier unlock"
   none_short: "Keine Lizenz auf diesem Computer."
-  buy_options: "  Eine kaufen:        codex-notifier unlock (jährlich) oder codex-notifier unlock --lifetime"
-  have_key: "  Schlüssel schon da: codex-notifier activate <key>"
+  buy_options: "  Eine kaufen:        antigravity-notifier unlock (jährlich) oder antigravity-notifier unlock --lifetime"
+  have_key: "  Schlüssel schon da: antigravity-notifier activate <key>"
   show_licence: "Lizenz:        %{licence}"
   show_key: "Schlüssel:     CCN-…-%{last4}"
   show_unlocks: "Freischaltung: %{value}"
   unlocks_yes: "ja, jedes mit diesem Computer gekoppelte Handy"
   unlocks_no: "nein"
   show_computers: "Computer:      %{count} von 3"
-  switch_lifetime_keep_key: "Auf lebenslang umstellen, Schlüssel bleibt: codex-notifier unlock --lifetime"
+  switch_lifetime_keep_key: "Auf lebenslang umstellen, Schlüssel bleibt: antigravity-notifier unlock --lifetime"
   status_licensed: "%{licence}, %{count} von 3 Computern"
-  status_unlicensed: "%{licence}: codex-notifier unlock"
-  status_none: "keine: codex-notifier unlock"
+  status_unlicensed: "%{licence}: antigravity-notifier unlock"
+  status_none: "keine: antigravity-notifier unlock"
   describe_refunded: "erstattet"
   describe_lifetime: "lebenslang"
   describe_renews: "jährlich, verlängert sich am %{date}"
@@ -269,36 +269,36 @@ licence:
   computer_row: "  %{name} %{seen}%{current}"
 
 update:
-  latest: "codex-notifier %{version} ist die neueste Version."
-  available_check: "codex-notifier %{version} ist verfügbar (du hast %{current})."
+  latest: "antigravity-notifier %{version} ist die neueste Version."
+  available_check: "antigravity-notifier %{version} ist verfügbar (du hast %{current})."
   update_with: "  Aktualisieren: %{command}"
-  available_run: "codex-notifier %{version} ist verfügbar: %{command}"
+  available_run: "antigravity-notifier %{version} ist verfügbar: %{command}"
   nothing_to_update: "nichts zu aktualisieren: %{path} ist nicht installiert%{npx}"
-  npx_note: " (npx führt jedes Mal das neueste codex-notifier aus)"
+  npx_note: " (npx führt jedes Mal das neueste antigravity-notifier aus)"
   no_release_build: "kein Release-Build für %{os}-%{arch}"
-  no_build_named: "codex-notifier %{version} hat keinen Build namens %{asset}"
+  no_build_named: "antigravity-notifier %{version} hat keinen Build namens %{asset}"
   no_checksum: "SHA256SUMS hat keinen Eintrag für %{asset}"
   checksum_mismatch: "Prüfsumme von %{asset} stimmt nicht: nichts wurde geändert"
-  archive_empty: "im Archiv ist kein codex-notifier"
-  zip_empty: "in der Zip-Datei ist keine codex-notifier.exe"
-  did_not_run: "das heruntergeladene codex-notifier ließ sich nicht starten, deshalb wurde das installierte behalten"
-  updated: "codex-notifier aktualisiert: %{from} → %{to}."
-  available_message: "Notifier for Codex: codex-notifier %{version} ist verfügbar: %{command}"
+  archive_empty: "im Archiv ist kein antigravity-notifier"
+  zip_empty: "in der Zip-Datei ist keine antigravity-notifier.exe"
+  did_not_run: "das heruntergeladene antigravity-notifier ließ sich nicht starten, deshalb wurde das installierte behalten"
+  updated: "antigravity-notifier aktualisiert: %{from} → %{to}."
+  available_message: "Antigravity Notifier: antigravity-notifier %{version} ist verfügbar: %{command}"
 
 notify:
-  registered_windows: "\"Notifier for Codex\" für Windows-Benachrichtigungen registriert."
+  registered_windows: "\"Antigravity Notifier\" für Windows-Benachrichtigungen registriert."
   icon_installed: "Mitteilungssymbol installiert unter %{path}."
   doctor_applescript: "AppleScript (dieser Build hat keine Mitteilungs-App)"
   doctor_allowed: "erlaubt für \"%{app}\""
   doctor_denied: "ausgeschaltet: Systemeinstellungen > Mitteilungen > %{app}"
-  doctor_not_allowed: "noch nicht erlaubt: führe `codex-notifier setup` aus"
+  doctor_not_allowed: "noch nicht erlaubt: führe `antigravity-notifier setup` aus"
   mac_denied: "Desktop-Mitteilungen sind für \"%{app}\" ausgeschaltet. Schalte sie in Systemeinstellungen > Mitteilungen ein."
   mac_asking: "Bitte macOS, Mitteilungen von \"%{app}\" zu erlauben..."
   mac_allowed: "Desktop-Mitteilungen sind für \"%{app}\" erlaubt."
   mac_not_allowed: "Desktop-Mitteilungen sind nicht erlaubt. Schalte sie in Systemeinstellungen > Mitteilungen > %{app} ein."
 
 api:
-  rejected: "dieser Computer ist nicht mehr gekoppelt (der Server kennt ihn nicht mehr). Führe `codex-notifier pair` aus, um ihn neu zu verbinden"
+  rejected: "dieser Computer ist nicht mehr gekoppelt (der Server kennt ihn nicht mehr). Führe `antigravity-notifier pair` aus, um ihn neu zu verbinden"
   server_returned: "Server antwortete mit %{status}"
   # Was gerade getan wurde, als der Server ablehnte; die Meldung des Servers folgt nach einem Doppelpunkt
   registering: "Registrieren dieses Computers"
@@ -316,13 +316,13 @@ api:
 
 # A second upgrader found the first one still running
 update_lock:
-  busy: "es läuft bereits ein anderes codex-notifier-Upgrade. Versuche es in ein paar Minuten noch einmal"
+  busy: "es läuft bereits ein anderes antigravity-notifier-Upgrade. Versuche es in ein paar Minuten noch einmal"
 
 local_files:
-  config_unreadable: "%{path} lässt sich nicht lesen (%{error}), deshalb überschreibt codex-notifier die Datei nicht. Repariere sie oder lösche sie und führe `codex-notifier pair` noch einmal aus."
-  slot_not_freed: "Der Lizenzplatz dieses Computers konnte nicht freigegeben werden (%{error}). Falls er eine Lizenz hat, gib den Platz mit deinem Schlüssel auf notifierforcodex.com/licence frei."
-  kept_dir: "Die Dateien von codex-notifier wurden aus %{path} entfernt. Der Ordner enthält noch andere Dateien und bleibt deshalb bestehen."
-  remove_binary: "codex-notifier selbst ist noch installiert. So entfernst du es: %{command}"
+  config_unreadable: "%{path} lässt sich nicht lesen (%{error}), deshalb überschreibt antigravity-notifier die Datei nicht. Repariere sie oder lösche sie und führe `antigravity-notifier pair` noch einmal aus."
+  slot_not_freed: "Der Lizenzplatz dieses Computers konnte nicht freigegeben werden (%{error}). Falls er eine Lizenz hat, gib den Platz mit deinem Schlüssel auf antigravitynotifier.com/licence frei."
+  kept_dir: "Die Dateien von antigravity-notifier wurden aus %{path} entfernt. Der Ordner enthält noch andere Dateien und bleibt deshalb bestehen."
+  remove_binary: "antigravity-notifier selbst ist noch installiert. So entfernst du es: %{command}"
 
 payload:
   needs_permission: "%{tool} braucht eine Freigabe"
@@ -340,7 +340,7 @@ payload:
   update_plan: "Den Plan aktualisieren"
 
 net:
-  unreachable: "Der Server von Notifier for Codex ist nicht erreichbar. Prüfe deine Internetverbindung und versuch es noch einmal."
+  unreachable: "Der Server von Antigravity Notifier ist nicht erreichbar. Prüfe deine Internetverbindung und versuch es noch einmal."
   doctor_unreachable: "Server: %{url} nicht erreichbar. Prüfe Internetverbindung, Proxy oder Firewall"
 
 clap:
@@ -350,10 +350,10 @@ clap:
   options: "Optionen:"
   help: "Hilfe anzeigen"
   version: "Version anzeigen"
-  help_command: "Hilfe zu codex-notifier oder zu einem seiner Befehle anzeigen"
+  help_command: "Hilfe zu antigravity-notifier oder zu einem seiner Befehle anzeigen"
   help_command_arg: "Der Befehl, zu dem die Hilfe angezeigt wird"
-  error_hint: "Mit `codex-notifier --help` siehst du alle Befehle und Optionen."
+  error_hint: "Mit `antigravity-notifier --help` siehst du alle Befehle und Optionen."
 
-# `codex-notifier upgrade` refused a release whose SHA256SUMS isn't signed by TouchTap
+# `antigravity-notifier upgrade` refused a release whose SHA256SUMS isn't signed by TouchTap
 update_signature:
-  invalid: "die Signatur des Release stimmt nicht, daher wurde nichts geändert. Versuch es später noch einmal oder installiere neu über notifierforcodex.com/cli"
+  invalid: "die Signatur des Release stimmt nicht, daher wurde nichts geändert. Versuch es später noch einmal oder installiere neu über antigravitynotifier.com/cli"
