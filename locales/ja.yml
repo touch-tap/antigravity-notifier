@@ -160,7 +160,9 @@ settings:
 
 forget:
   needs_yes: "antigravity-notifier forget には確認が必要です。ターミナルで実行するか、--yes を付けてください"
-  warning: "この操作は、このコンピュータとそのペアリングを Antigravity Notifier のサーバーから消去し、\n`antigravity-notifier uninstall` と同じように Antigravity から antigravity-notifier を取り除き、ここにある認証情報とファイルを削除します。\nこのコンピュータとペアリングしていたスマートフォンからは、このコンピュータが消えます。\nウェブサイトで購入したライセンスは解約されません。%{licence_url} の\n「Erase my licence」から行ってください。"
+  warning: "この操作は、このコンピュータとそのペアリングを Antigravity Notifier のサーバーから消去し、\n`antigravity-notifier uninstall` と同じように Antigravity から antigravity-notifier を取り除き、ここにある認証情報とファイルを削除します。\nこのコンピュータとペアリングしていたスマートフォンからは、このコンピュータが消えます。"
+  # Printed under the warning only where licences are sold on the website
+  warning_licence: "ウェブサイトで購入したライセンスは解約されません。%{licence_url} の\n「Erase my licence」から行ってください。"
   # ユーザーが入力する確認の言葉。`yes` も常に受け付けられる
   yes_word: "はい"
   prompt: "\n続けるには %{yes} と入力してください: "

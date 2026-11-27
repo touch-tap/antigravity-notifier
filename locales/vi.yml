@@ -163,7 +163,9 @@ settings:
 
 forget:
   needs_yes: "antigravity-notifier forget cần bạn xác nhận: chạy trong terminal, hoặc thêm --yes"
-  warning: "Lệnh này xóa máy tính này và các ghép nối của nó khỏi máy chủ Antigravity Notifier, rồi gỡ antigravity-notifier\nkhỏi Antigravity và xóa thông tin xác thực cùng các tệp của nó ở đây, như `antigravity-notifier uninstall` làm.\nCác điện thoại đã ghép nối với máy tính này sẽ thấy nó biến mất.\nGiấy phép mua trên trang web không bị hủy: hãy làm việc đó tại %{licence_url}\nbằng \"Xóa giấy phép của tôi\"."
+  warning: "Lệnh này xóa máy tính này và các ghép nối của nó khỏi máy chủ Antigravity Notifier, rồi gỡ antigravity-notifier\nkhỏi Antigravity và xóa thông tin xác thực cùng các tệp của nó ở đây, như `antigravity-notifier uninstall` làm.\nCác điện thoại đã ghép nối với máy tính này sẽ thấy nó biến mất."
+  # Printed under the warning only where licences are sold on the website
+  warning_licence: "Giấy phép mua trên trang web không bị hủy: hãy làm việc đó tại %{licence_url}\nbằng \"Xóa giấy phép của tôi\"."
   # The word the user must type; `yes` is always accepted as well
   yes_word: "có"
   prompt: "\nNhập %{yes} để tiếp tục: "

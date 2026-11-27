@@ -250,9 +250,23 @@ pub fn show() -> Result<()> {
     Ok(())
 }
 
+/// Whether anything outside the licence commands themselves may mention web licences
+/// (`brand::WEB_LICENCES`).
+pub fn offered() -> bool {
+    // Debug builds can be told otherwise, so the tests still cover a brand that sells them
+    #[cfg(debug_assertions)]
+    if let Ok(value) = std::env::var("ANTIGRAVITY_NOTIFIER_TEST_WEB_LICENCES") {
+        return value == "1";
+    }
+    crate::brand::WEB_LICENCES
+}
+
 /// One line for bare `antigravity-notifier` and `antigravity-notifier doctor`, with whether this computer is licensed, or None when
 /// the server can't be asked quickly.
 pub fn status_line(api: &Api) -> Option<(bool, String)> {
+    if !offered() {
+        return None;
+    }
     let status = api.licence_status(Duration::from_secs(5)).ok()?;
     Some(match &status.licence {
         Some(l) if status.licensed => (

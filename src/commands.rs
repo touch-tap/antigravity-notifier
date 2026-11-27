@@ -443,6 +443,9 @@ pub fn list_phones(cfg: &mut Config, api: &Api) -> Result<Vec<api::PairedDevice>
 /// After pairing, the one place the web licence is offered with its price. The server decides
 /// whether there is an offer and what it costs; an older server sends none.
 fn licence_pitch(api: &Api) {
+    if !licence::offered() {
+        return;
+    }
     let Ok(status) = api.licence_status(Duration::from_secs(5)) else {
         return;
     };
@@ -1055,7 +1058,13 @@ pub fn forget(yes: bool) -> Result<()> {
     if !yes && !std::io::stdin().is_terminal() {
         bail!("{}", t!("forget.needs_yes"));
     }
-    println!("{}", t!("forget.warning", licence_url = crate::brand::licence_page()));
+    println!("{}", t!("forget.warning"));
+    if licence::offered() {
+        println!(
+            "{}",
+            t!("forget.warning_licence", licence_url = crate::brand::licence_page())
+        );
+    }
     if !yes {
         let yes_word = t!("forget.yes_word");
         print!("{}", t!("forget.prompt", yes = yes_word));
@@ -1100,7 +1109,13 @@ fn remove_local(revoke_on_server: bool) -> Result<()> {
     if revoke_on_server && cfg.is_paired() {
         let api = Api::new(&cfg);
         // Free the licence slot first, so a reinstall (which is a new computer) doesn't find it taken
-        match api.deactivate_licence() {
+        // (no slot can be held where licences aren't sold, and nothing should say otherwise)
+        let freed = if licence::offered() {
+            api.deactivate_licence()
+        } else {
+            Ok(false)
+        };
+        match freed {
             Ok(true) => println!("{}", t!("uninstall.slot_freed")),
             // No licence, or the server had already forgotten this computer: no slot to free
             Ok(false) => {}
@@ -1139,13 +1154,18 @@ fn remove_local(revoke_on_server: bool) -> Result<()> {
 }
 
 /// The command that removes the antigravity-notifier binary, for the way it was installed. Uninstall leaves the
-/// binary to its owner: Homebrew and npm would otherwise still list it.
+/// binary to its owner: Homebrew, npm and Scoop would otherwise still list it.
 fn binary_removal_command() -> Option<String> {
-    // Scoop and winget have no antigravity-notifier package yet (ccn's manifests were not carried over),
-    // so those installs fall through to removing the file
-    Some(match telemetry::install_method() {
+    // winget has no antigravity-notifier package (never submitted), so such an install falls
+    // through to removing the file
+    removal_command_for(telemetry::install_method())
+}
+
+fn removal_command_for(method: &str) -> Option<String> {
+    Some(match method {
         "homebrew" => "brew uninstall touch-tap/tap/antigravity-notifier".to_string(),
         "npm" => "npm uninstall -g @touchtap/antigravity-notifier".to_string(),
+        "scoop" => "scoop uninstall antigravity-notifier".to_string(),
         // The install scripts, npx (whose copy went into the user's bin directory) and anything
         // else: the file the hooks ran
         _ => {
@@ -1162,6 +1182,22 @@ fn binary_removal_command() -> Option<String> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn a_package_managers_binary_is_removed_by_the_package_manager() {
+        assert_eq!(
+            removal_command_for("scoop").as_deref(),
+            Some("scoop uninstall antigravity-notifier")
+        );
+        assert_eq!(
+            removal_command_for("homebrew").as_deref(),
+            Some("brew uninstall touch-tap/tap/antigravity-notifier")
+        );
+        assert_eq!(
+            removal_command_for("npm").as_deref(),
+            Some("npm uninstall -g @touchtap/antigravity-notifier")
+        );
+    }
 
     #[test]
     fn code_lifetimes_read_naturally() {

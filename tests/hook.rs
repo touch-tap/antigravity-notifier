@@ -463,6 +463,81 @@ impl Watched {
     }
 }
 
+/// Antigravity reads a hook's output to end-of-file, and a pipe ends only when every process
+/// holding its write end has let go. The watcher outlives the hook by up to fifteen minutes, so
+/// it must not hold the hook's stdout or stderr: if it did, a tool call allowed at the keyboard
+/// would hang for as long as the watcher ran (as it did on Windows in 0.1.0).
+#[test]
+fn the_hooks_output_closes_as_soon_as_it_has_answered_though_the_watcher_lives_on() {
+    use std::io::Read;
+    use std::sync::mpsc;
+
+    let w = Watched::new("watch-output-closes");
+    let mut input: Value = serde_json::from_str(RUN_COMMAND).unwrap();
+    input["toolCall"]["id"] = json!("call_a");
+    let mut command = Command::new(env!("CARGO_BIN_EXE_antigravity-notifier"));
+    command
+        .args(["hook", "PreToolUse"])
+        .env("HOME", &w.sandbox.root)
+        .env("ANTIGRAVITY_NOTIFIER_HOME", w.sandbox.root.join("home"))
+        .env("ANTIGRAVITY_NOTIFIER_GEMINI_HOME", w.sandbox.root.join("gemini"))
+        .env("ANTIGRAVITY_NOTIFIER_CREDENTIAL_STORE", "file")
+        .env("ANTIGRAVITY_NOTIFIER_NOTIFY", "off")
+        .env("ANTIGRAVITY_NOTIFIER_NO_ANALYTICS", "1")
+        .env("ANTIGRAVITY_NOTIFIER_NO_AUTO_UPDATE", "1")
+        .env("ANTIGRAVITY_NOTIFIER_HEADLESS", "0")
+        .env("ANTIGRAVITY_NOTIFIER_LANG", "en")
+        .env_remove("ANTIGRAVITY_NOTIFIER_SERVER_URL")
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped());
+    for (key, value) in &w.sandbox.env {
+        command.env(key, value);
+    }
+    let mut child = command.spawn().unwrap();
+    let _ = child.stdin.take().unwrap().write_all(input.to_string().as_bytes());
+
+    // Each stream is read to its end on a thread, so a stream that stays open fails this test
+    // after a few seconds instead of blocking it until the watcher gives up
+    let (sender, ended) = mpsc::channel();
+    let mut stdout = child.stdout.take().unwrap();
+    let mut stderr = child.stderr.take().unwrap();
+    let out_sender = sender.clone();
+    std::thread::spawn(move || {
+        let mut text = String::new();
+        let _ = stdout.read_to_string(&mut text);
+        let _ = out_sender.send(("stdout", text));
+    });
+    std::thread::spawn(move || {
+        let mut text = String::new();
+        let _ = stderr.read_to_string(&mut text);
+        let _ = sender.send(("stderr", text));
+    });
+    let mut answered = None;
+    for _ in 0..2 {
+        match ended.recv_timeout(Duration::from_secs(8)) {
+            Ok(("stdout", text)) => answered = Some(text),
+            Ok(_) => {}
+            Err(_) => panic!(
+                "the hook's output was still open 8 s after it started: the watcher is holding it"
+            ),
+        }
+    }
+    assert!(child.wait().unwrap().success());
+    let answered: Value = serde_json::from_str(answered.unwrap().trim()).unwrap();
+    assert_eq!(answered, allow());
+
+    // The streams closed because the watcher let go of them, not because it never started or
+    // died: it is still there to notice the user leaving
+    assert!(w.note().exists(), "the hook left a note for the watcher");
+    w.user_is("away");
+    assert_eq!(
+        w.server.wait_for_alerts(1, Duration::from_secs(10)),
+        1,
+        "the watcher outlived the hook and alerted"
+    );
+}
+
 #[test]
 fn the_watcher_ends_when_the_tool_call_finishes() {
     let w = Watched::new("watch-finished");

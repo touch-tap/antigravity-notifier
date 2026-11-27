@@ -160,7 +160,9 @@ settings:
 
 forget:
   needs_yes: "antigravity-notifier forget에는 확인이 필요해요. 터미널에서 실행하거나 --yes를 붙이세요"
-  warning: "이 작업은 이 컴퓨터와 연결 정보를 Antigravity Notifier 서버에서 지우고, `antigravity-notifier uninstall`과\n마찬가지로 Antigravity에서 antigravity-notifier를 제거한 뒤 여기 있는 인증 정보와 파일을 삭제해요.\n이 컴퓨터와 연결된 휴대폰에서는 이 컴퓨터가 사라져요.\n웹사이트에서 구매한 라이선스는 취소되지 않아요. %{licence_url}의\n\"Erase my licence\"에서 처리하세요."
+  warning: "이 작업은 이 컴퓨터와 연결 정보를 Antigravity Notifier 서버에서 지우고, `antigravity-notifier uninstall`과\n마찬가지로 Antigravity에서 antigravity-notifier를 제거한 뒤 여기 있는 인증 정보와 파일을 삭제해요.\n이 컴퓨터와 연결된 휴대폰에서는 이 컴퓨터가 사라져요."
+  # Printed under the warning only where licences are sold on the website
+  warning_licence: "웹사이트에서 구매한 라이선스는 취소되지 않아요. %{licence_url}의\n\"Erase my licence\"에서 처리하세요."
   # 사용자가 입력해야 하는 단어. `yes`도 항상 받아들여요
   yes_word: "예"
   prompt: "\n계속하려면 %{yes}를 입력하세요: "

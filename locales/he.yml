@@ -164,7 +164,9 @@ settings:
 
 forget:
   needs_yes: "antigravity-notifier forget דורש אישור מכם: הריצו אותו בטרמינל, או הוסיפו --yes"
-  warning: "זה מוחק את המחשב הזה ואת הצימודים שלו משרת Antigravity Notifier, ואז מסיר את antigravity-notifier\nמ-Antigravity ומוחק את פרטי הגישה והקבצים שלו כאן, כמו `antigravity-notifier uninstall`.\nטלפונים שמצומדים למחשב הזה יראו אותו נעלם.\nרישיון שנרכש באתר לא מבוטל: עשו זאת ב-%{licence_url}\nעם \"מחיקת הרישיון שלי\"."
+  warning: "זה מוחק את המחשב הזה ואת הצימודים שלו משרת Antigravity Notifier, ואז מסיר את antigravity-notifier\nמ-Antigravity ומוחק את פרטי הגישה והקבצים שלו כאן, כמו `antigravity-notifier uninstall`.\nטלפונים שמצומדים למחשב הזה יראו אותו נעלם."
+  # Printed under the warning only where licences are sold on the website
+  warning_licence: "רישיון שנרכש באתר לא מבוטל: עשו זאת ב-%{licence_url}\nעם \"מחיקת הרישיון שלי\"."
   # The word the user must type; `yes` is always accepted as well
   yes_word: "כן"
   prompt: "\nהקלידו %{yes} כדי להמשיך: "

@@ -162,7 +162,9 @@ settings:
 
 forget:
   needs_yes: "antigravity-notifier forget needs a yes from you: run it in a terminal, or add --yes"
-  warning: "This erases this computer and its pairings from the Antigravity Notifier server, then\nremoves antigravity-notifier from Antigravity and deletes its credentials and files here, as `antigravity-notifier uninstall` does.\nPhones paired with this computer will see it disappear.\nA licence bought on the website is not cancelled: do that at %{licence_url}\nwith \"Erase my licence\"."
+  warning: "This erases this computer and its pairings from the Antigravity Notifier server, then\nremoves antigravity-notifier from Antigravity and deletes its credentials and files here, as `antigravity-notifier uninstall` does.\nPhones paired with this computer will see it disappear."
+  # Printed under the warning only where licences are sold on the website
+  warning_licence: "A licence bought on the website is not cancelled: do that at %{licence_url}\nwith \"Erase my licence\"."
   # The word the user must type; `yes` is always accepted as well
   yes_word: "yes"
   prompt: "\nType %{yes} to continue: "

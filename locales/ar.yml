@@ -164,7 +164,9 @@ settings:
 
 forget:
   needs_yes: "antigravity-notifier forget يحتاج إلى تأكيد منك: شغّله في طرفية، أو أضف --yes"
-  warning: "هذا يمسح هذا الكمبيوتر وارتباطاته من خادم Antigravity Notifier، ثم يزيل antigravity-notifier من Antigravity\nويحذف بيانات اعتماده وملفاته هنا، كما يفعل `antigravity-notifier uninstall`.\nستلاحظ الهواتف المرتبطة بهذا الكمبيوتر اختفاءه.\nالترخيص المشترى من الموقع لا يُلغى: افعل ذلك من %{licence_url}\nعبر \"مسح ترخيصي\"."
+  warning: "هذا يمسح هذا الكمبيوتر وارتباطاته من خادم Antigravity Notifier، ثم يزيل antigravity-notifier من Antigravity\nويحذف بيانات اعتماده وملفاته هنا، كما يفعل `antigravity-notifier uninstall`.\nستلاحظ الهواتف المرتبطة بهذا الكمبيوتر اختفاءه."
+  # Printed under the warning only where licences are sold on the website
+  warning_licence: "الترخيص المشترى من الموقع لا يُلغى: افعل ذلك من %{licence_url}\nعبر \"مسح ترخيصي\"."
   # The word the user must type; `yes` is always accepted as well
   yes_word: "نعم"
   prompt: "\nاكتب %{yes} للمتابعة: "

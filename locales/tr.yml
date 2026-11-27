@@ -163,7 +163,9 @@ settings:
 
 forget:
   needs_yes: "antigravity-notifier forget sizden bir onay bekler: bir terminalde çalıştırın ya da --yes ekleyin"
-  warning: "Bu, bu bilgisayarı ve eşlemelerini Antigravity Notifier sunucusundan siler, sonra `antigravity-notifier uninstall`\ngibi antigravity-notifier'ı Antigravity'den kaldırır ve buradaki kimlik bilgilerini ve dosyalarını siler.\nBu bilgisayarla eşlenen telefonlar onun kaybolduğunu görür.\nWeb sitesinden satın alınan bir lisans iptal edilmez: bunu %{licence_url}\nadresinde \"Lisansımı sil\" ile yapın."
+  warning: "Bu, bu bilgisayarı ve eşlemelerini Antigravity Notifier sunucusundan siler, sonra `antigravity-notifier uninstall`\ngibi antigravity-notifier'ı Antigravity'den kaldırır ve buradaki kimlik bilgilerini ve dosyalarını siler.\nBu bilgisayarla eşlenen telefonlar onun kaybolduğunu görür."
+  # Printed under the warning only where licences are sold on the website
+  warning_licence: "Web sitesinden satın alınan bir lisans iptal edilmez: bunu %{licence_url}\nadresinde \"Lisansımı sil\" ile yapın."
   # The word the user must type; `yes` is always accepted as well
   yes_word: "evet"
   prompt: "\nDevam etmek için %{yes} yazın: "

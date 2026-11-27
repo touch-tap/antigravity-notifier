@@ -160,7 +160,9 @@ settings:
 
 forget:
   needs_yes: "antigravity-notifier forget 需要你確認：在終端機中執行它，或加上 --yes"
-  warning: "這會從 Antigravity Notifier 伺服器上抹除這台電腦及其配對，然後像 `antigravity-notifier uninstall` 一樣\n從 Antigravity 中移除 antigravity-notifier，並刪除這裡的憑證和檔案。\n與這台電腦配對的手機會看到它消失。\n在網站上購買的授權不會被取消：請到 %{licence_url}\n使用「Erase my licence」處理。"
+  warning: "這會從 Antigravity Notifier 伺服器上抹除這台電腦及其配對，然後像 `antigravity-notifier uninstall` 一樣\n從 Antigravity 中移除 antigravity-notifier，並刪除這裡的憑證和檔案。\n與這台電腦配對的手機會看到它消失。"
+  # Printed under the warning only where licences are sold on the website
+  warning_licence: "在網站上購買的授權不會被取消：請到 %{licence_url}\n使用「Erase my licence」處理。"
   # 使用者必須輸入的詞；`yes` 始終也可以
   yes_word: "是"
   prompt: "\n輸入 %{yes} 繼續: "

@@ -160,7 +160,9 @@ settings:
 
 forget:
   needs_yes: "antigravity-notifier forget heeft een ja van je nodig: voer het uit in een terminal, of voeg --yes toe"
-  warning: "Dit wist deze computer en zijn koppelingen van de server van Antigravity Notifier, verwijdert\ndaarna antigravity-notifier uit Antigravity en wist hier zijn inloggegevens en bestanden, zoals `antigravity-notifier uninstall`\ndoet. Telefoons die aan deze computer gekoppeld zijn, zien hem verdwijnen.\nEen licentie die op de website is gekocht wordt niet opgezegd: doe dat op\n%{licence_url} met \"Wis mijn licentie\"."
+  warning: "Dit wist deze computer en zijn koppelingen van de server van Antigravity Notifier, verwijdert\ndaarna antigravity-notifier uit Antigravity en wist hier zijn inloggegevens en bestanden, zoals `antigravity-notifier uninstall`\ndoet. Telefoons die aan deze computer gekoppeld zijn, zien hem verdwijnen."
+  # Printed under the warning only where licences are sold on the website
+  warning_licence: "Een licentie die op de website is gekocht wordt niet opgezegd: doe dat op\n%{licence_url} met \"Wis mijn licentie\"."
   # Het woord dat de gebruiker moet typen; `yes` wordt altijd ook geaccepteerd
   yes_word: "ja"
   prompt: "\nTyp %{yes} om door te gaan: "

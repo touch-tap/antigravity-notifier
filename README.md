@@ -8,18 +8,22 @@ background. Not affiliated with Google.
 hooks. It runs for a few milliseconds when something happens and exits. Install it once with
 `antigravity-notifier pair`; after that every Antigravity session is covered, however you start it.
 
-**Status: engine built 26 Nov 2026, not released.** Forked from
-[codex-notifier](https://github.com/touch-tap/codex-notifier) 0.1.6 (itself a fork of ccn). The
-hook layer is written against what agy 1.5.18 was measured to do and has run against the real
-CLI with a stand-in server (`tests/fixtures/` holds its payloads). It has not yet paired with the
-real server, which does not know this client yet.
+**Status: released on 27 Nov 2026 ([releases](https://github.com/touch-tap/antigravity-notifier/releases),
+[changelog](CHANGELOG.md)). The phone apps are not downloadable yet:** Antigravity Notifier for
+iPhone and Android is in App Store and Google Play review, so for now there is no phone to pair
+with. Until the apps are out, installing this gives you desktop notifications on the computer
+only.
+
+Forked from [codex-notifier](https://github.com/touch-tap/codex-notifier) 0.1.6 (itself a fork of
+ccn). The hook layer is written against what agy 1.5.18 was measured to do (`tests/fixtures/`
+holds its payloads).
 
 From codex-notifier and ccn it carries: 17 languages (`locales/`), desktop notifications before
-any phone is paired (local mode), `upgrade`, web licences (`unlock`, `activate`, `deactivate`,
-`licence`), holding only when presence can be detected, atomic config writes and install-source
-tracking.
+any phone is paired (local mode), `upgrade`, holding only when presence can be detected, atomic
+config writes and install-source tracking. Purchases are made in the phone apps; nothing is sold
+from the terminal.
 
-### Before a release
+### Where things stand
 
 Every address and identity the binary uses is in `src/brand.rs`.
 
@@ -28,17 +32,16 @@ Every address and identity the binary uses is in `src/brand.rs`.
 - **API host.** The default server is `https://api.antigravitynotifier.com`, the shared Worker
   under this product's domain (mainland China can't reach `*.workers.dev`). A config that saved
   the workers.dev address reads as the default.
-- **Website.** `antigravitynotifier.com` is live, including `/cli`, `/licence`, `/get`,
+- **Website.** `antigravitynotifier.com` is live, including `/cli`, `/get`,
   `install.sh` and `install.ps1` (byte-for-byte the copies in `install/`).
-- **Release repository.** `touch-tap/antigravity-notifier` is not created yet, so `upgrade` finds
-  nothing; nor are the Homebrew formula, the Scoop manifest or the npm packages
-  (`@touchtap/antigravity-notifier`). `scripts/first-release-checklist.md` creates them.
+- **Releases.** This repository's GitHub releases are what the install scripts and `upgrade`
+  download. The Homebrew formula (`touch-tap/tap`), the Scoop manifest (`touch-tap/scoop-bucket`)
+  and the npm packages (`@touchtap/antigravity-notifier`) are published from them; there is no
+  winget package. RELEASING.md has the steps.
 - **Update signing key.** Antigravity Notifier's own key (26 Nov 2026) is in `RELEASE_KEYS`; the
   private half is in the release Mac's keychain (RELEASING.md). Back it up.
-- **Server copy.** The server's licence nudge is still written for ccn; the engine rewrites its
-  `ccn` command and "Claude" until the server answers per app. Licence keys still read `CCN-…`.
 - **Messages in Antigravity.** The Claude Code and Codex engines show one-line notes in the
-  agent (`systemMessage`: "paired with…", the licence nudge, an update notice). Antigravity
+  agent (`systemMessage`: "paired with…", an update notice). Antigravity
   accepts that output from SessionStart but was not seen to show it or pass it to the model, so
   for now those notes reach the user only where they are also desktop notifications.
 - **Cross-promotion.** Someone who also has Claude Code and not ccn is told about Claude Code
@@ -63,10 +66,13 @@ From source:
 ```sh
 cargo build --release
 ./target/release/antigravity-notifier pair 482913     # the code the phone app shows
-./target/release/antigravity-notifier                 # or show a QR code here
+./target/release/antigravity-notifier                 # or be asked for that code
 ```
 
-`antigravity-notifier` on its own pairs a computer that isn't paired yet. Once paired, the phone gets a
+`antigravity-notifier` on its own pairs a computer that isn't paired yet: in a terminal it asks
+for the 6-digit code the app shows, and pressing Enter without one shows a QR code to scan
+instead (where nothing can be typed, as at the end of an install script, it shows the QR code and
+its digits straight away). Once paired, the phone gets a
 test notification it can answer, and `antigravity-notifier` shows the answer.
 
 ## What you get
@@ -159,7 +165,7 @@ docs in places:
 
 ```
 antigravity-notifier                     pair if this computer isn't paired yet, otherwise show its status
-antigravity-notifier pair [CODE]         pair with a phone (installs the hooks); without a code, shows a QR code
+antigravity-notifier pair [CODE]         pair with a phone (installs the hooks); without a code, asks for it (Enter: a QR code)
 antigravity-notifier doctor              check hooks, credentials, server, presence detection
 antigravity-notifier test                send a test notification
 antigravity-notifier devices             list paired phones; antigravity-notifier devices revoke <name>
@@ -168,7 +174,6 @@ antigravity-notifier config set KEY VAL  e.g. hold_ceiling_seconds 300, quiet_ho
 antigravity-notifier sync                pull settings from the server now
 antigravity-notifier setup               reinstall the hooks (after moving the binary)
 antigravity-notifier upgrade [--check]   update to the latest release (also checked once a day in the background)
-antigravity-notifier unlock [--lifetime] buy a web licence for this computer; activate/deactivate/licence manage it
 antigravity-notifier uninstall           remove hooks, pairings, credentials and local state
 antigravity-notifier forget [--yes]      erase this computer and its pairings from the server, then uninstall
 ```
@@ -203,8 +208,7 @@ after 20 answers from the phone, a desktop notification asks for an app-store ra
 `antigravity-notifier pair` and the other commands people type send a few anonymous events (pairing
 started, paired or failed with a short reason; how and from where it was installed; the OS and
 processor; `agent: antigravity`). The background updater sends `cli_updated` or `cli_update_failed`, and
-the one hook that sends anything is SessionStart, when it shows a licence nudge (at most once a
-day) or the ccn suggestion or rating request (`cli_cross_promo_shown`, `cli_rate_prompt_shown`, sent by a detached process so nothing waits). Nothing about your sessions, prompts or computer name is included. Set
+the one hook that sends anything is SessionStart, when it shows the ccn suggestion or rating request (`cli_cross_promo_shown`, `cli_rate_prompt_shown`, sent by a detached process so nothing waits). Nothing about your sessions, prompts or computer name is included. Set
 `ANTIGRAVITY_NOTIFIER_NO_ANALYTICS=1` or `DO_NOT_TRACK=1` to turn them off.
 
 ## Development
@@ -241,7 +245,7 @@ don't use it to build a product that competes with Antigravity Notifier.
 
 `npm/antigravity-notifier` is `@touchtap/antigravity-notifier` (command `antigravity-notifier`), which pulls in the
 binary for the platform from `@touchtap/antigravity-notifier-<os>-<cpu>`. There is no unscoped
-alias. Nothing is published yet.
+alias. All seven are published with each release.
 `scripts/npm-packages.sh <version> <dist>` builds all seven from a
 release's archives (`antigravity-notifier-<target>.tar.gz`/`.zip`) and `scripts/npm-publish.sh` publishes
 them in order. Publishing under `@touchtap` needs an owner of the npm org. See RELEASING.md.

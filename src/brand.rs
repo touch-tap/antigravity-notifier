@@ -18,6 +18,15 @@ pub const APP_HEADER: &str = "antigravity";
 /// Live since 26 Nov 2026
 pub const WEBSITE: &str = "antigravitynotifier.com";
 
+/// Whether licences sold on the website (outside the app stores) are offered for this brand.
+/// Off: Antigravity Notifier launched with the phone apps' own purchases only, and the server
+/// answers its checkout with 503. While it is off, `unlock`, `activate`, `deactivate` and `licence`
+/// are left out of `--help`, nothing prints or nudges about them (after pairing, in `status` and
+/// `doctor`, at SessionStart, in `forget` and `uninstall`), and the README must not mention them
+/// (a test in main.rs holds all three to it). The commands themselves are still there, so turning
+/// this on is the whole change, with the README's command list.
+pub const WEB_LICENCES: bool = false;
+
 /// Where a licence is managed or erased: `<WEBSITE>/licence`
 pub fn licence_page() -> String {
     format!("{WEBSITE}/licence")
