@@ -23,20 +23,18 @@ tracking.
 
 Every address and identity the binary uses is in `src/brand.rs`.
 
-- **Server.** `clientKind: "antigravity_cli"` and `X-App: antigravity` are not accepted by the
-  deployed server yet (Nov 2026: on a branch). Pairing fails until they are.
-- **API host.** The default server is `https://ccnotifier-api.touchtap.workers.dev`, the shared
-  Worker's own address, which mainland China cannot reach. It should become a custom domain.
-- **Website.** `antigravitynotifier.com` is a placeholder: the domain is not registered. It is in
-  `brand.rs`, the install scripts' comments, `install.sh`'s Windows hint, the npm wrapper, the
-  package manifests (`scripts/brew-formula.sh`, `scoop-bucket.sh`, `winget-manifests.sh`,
-  `npm-packages.sh`, `packaging/scoop/`), `LICENSE.md` and `scripts/first-release-checklist.md`.
-- **Release repository.** `touch-tap/antigravity-notifier` does not exist, so `upgrade` finds
-  nothing. Nor do the Homebrew formula, the Scoop and winget manifests or the npm packages
-  (`@touchtap/antigravity-notifier`).
-- **Update signing key.** `RELEASE_KEYS` in `src/update.rs` is empty, so a release build never
-  updates itself and the daily check is off. Make a key (RELEASING.md), list its public half,
-  and `scripts/release.sh` will run. The keys of ccn and codex-notifier must not be reused.
+- **Server.** The deployed server accepts `clientKind: "antigravity_cli"` and `X-App: antigravity`
+  (since 26 Nov 2026), and answers `/api/cli/latest` per app.
+- **API host.** The default server is `https://api.antigravitynotifier.com`, the shared Worker
+  under this product's domain (mainland China can't reach `*.workers.dev`). A config that saved
+  the workers.dev address reads as the default.
+- **Website.** `antigravitynotifier.com` is live, including `/cli`, `/licence`, `/get`,
+  `install.sh` and `install.ps1` (byte-for-byte the copies in `install/`).
+- **Release repository.** `touch-tap/antigravity-notifier` is not created yet, so `upgrade` finds
+  nothing; nor are the Homebrew formula, the Scoop manifest or the npm packages
+  (`@touchtap/antigravity-notifier`). `scripts/first-release-checklist.md` creates them.
+- **Update signing key.** Antigravity Notifier's own key (26 Nov 2026) is in `RELEASE_KEYS`; the
+  private half is in the release Mac's keychain (RELEASING.md). Back it up.
 - **Server copy.** The server's licence nudge is still written for ccn; the engine rewrites its
   `ccn` command and "Claude" until the server answers per app. Licence keys still read `CCN-…`.
 - **Messages in Antigravity.** The Claude Code and Codex engines show one-line notes in the
@@ -50,7 +48,17 @@ Every address and identity the binary uses is in `src/brand.rs`.
 - **Not measured:** Antigravity's desktop app and IDE (they share the hooks file), Windows and
   Linux, and holds longer than 600 s.
 
-## Install (today: from source)
+## Install
+
+```sh
+curl -fsSL https://antigravitynotifier.com/install.sh | sh          # macOS, Linux
+irm https://antigravitynotifier.com/install.ps1 | iex; antigravity-notifier pair   # Windows
+brew install touch-tap/tap/antigravity-notifier
+scoop bucket add touch-tap https://github.com/touch-tap/scoop-bucket; scoop install antigravity-notifier
+npm install -g @touchtap/antigravity-notifier
+```
+
+From source:
 
 ```sh
 cargo build --release

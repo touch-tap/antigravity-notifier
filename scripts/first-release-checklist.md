@@ -2,12 +2,14 @@
 
 Run on the release Mac (this one: it has the Developer ID certificate, the `ccn-notary` notarytool
 profile and the `antigravitynotifier-release-signing` key), from the engine repo, in this order.
-Carried over from codex-notifier on 26 Nov 2026 and NOT yet run for this product: the GitHub
-repository, the signing key (RELEASING.md), the npm packages, the Homebrew formula and the
-website (antigravitynotifier.com) do not exist yet.
+Prepared 27 Nov 2026: the update signing key exists (RELEASING.md), the website
+(antigravitynotifier.com) and api.antigravitynotifier.com are live, the dry run passed. Not yet
+created: the GitHub repository, the npm packages, the Homebrew formula, the Scoop manifest.
 
 ```sh
 cd ~/Documents/Development/touchtap/antigravitynotifier
+# The engine branch becomes main (main is still codex-notifier 0.1.6 here)
+git checkout main && git merge --ff-only feature/antigravity-engine
 
 # 0. Back up the update signing key to the company password manager (once). Without it no later
 #    release can be signed and every installed antigravity-notifier stops updating itself.
@@ -34,6 +36,10 @@ gh run watch -R touch-tap/antigravity-notifier "$(gh run list -R touch-tap/antig
 scripts/release.sh 0.1.0
 #    If the wait fails: scripts/release.sh 0.1.0 --resume
 
+#    Release notes: the 0.1.0 section of CHANGELOG.md
+awk '/^## 0.1.0/{p=1;next} /^## /{p=0} p' CHANGELOG.md > /tmp/agn-notes.md
+gh release edit v0.1.0 -R touch-tap/antigravity-notifier --notes-file /tmp/agn-notes.md
+
 # 4. Check the draft: 6 archives + antigravity-notifier-macos-app.zip + SHA256SUMS + SHA256SUMS.sig + antigravity-notifier.rb
 gh release view v0.1.0 -R touch-tap/antigravity-notifier --json assets --jq '.assets[].name'
 #    Then publish it (it becomes "latest"; install.sh/ps1 and upgrade see it from now on):
@@ -57,7 +63,8 @@ brew install touch-tap/tap/antigravity-notifier && antigravity-notifier --versio
 scripts/scoop-bucket.sh 0.1.0
 git -C ../scoop-bucket push
 
-# 8. winget (manifests here; first submission is reviewed by a person)
+# 8. winget: SKIP for now, as for codex-notifier (never submitted; ccn's first PR was closed
+#    because the Windows binary needs the VC runtime: link the CRT statically first). To prepare:
 scripts/winget-manifests.sh 0.1.0
 #    On a Windows machine:  wingetcreate submit --token <github token> packaging/winget/manifests/t/TouchTap/AntigravityNotifier/0.1.0
 #    or fork microsoft/winget-pkgs, copy that folder to manifests/t/TouchTap/AntigravityNotifier/0.1.0,
@@ -74,7 +81,6 @@ scripts/npm-packages.sh 0.1.0 dist/release
 scripts/npm-publish.sh                       # in a real terminal: passkey in the browser
 #    npm can take ~5 minutes to show new versions; don't re-publish. Then:
 npx --prefer-online @touchtap/antigravity-notifier@0.1.0 --version
-npx --prefer-online antigravitynotifier@0.1.0 --version
 
 # 11. Website: the install scripts must still match the engine's copies byte for byte
 cmp install/install.sh ../AntigravityNotifier_Website/install.sh && cmp install/install.ps1 ../AntigravityNotifier_Website/install.ps1
@@ -83,12 +89,12 @@ curl -fsSL https://antigravitynotifier.com/install.sh | cmp - install/install.sh
 # 12. Log it in the change log (admin token as in the CCN memory notes)
 curl -fsS -X POST https://ccnotifier-api.touchtap.workers.dev/api/admin/changes \
   -H "Authorization: Bearer $ADMIN_TOKEN" -H 'Content-Type: application/json' \
-  -d "{\"occurredAt\": $(date +%s), \"category\": \"release\", \"platform\": \"cli\",
+  -d "{\"occurredAt\": $(date +%s), \"category\": \"release\", \"platform\": \"cli\", \"app\": \"antigravity\",
        \"title\": \"antigravity-notifier 0.1.0: first public release\",
-       \"details\": \"Antigravity Notifier on GitHub (touch-tap/antigravity-notifier), install.sh/ps1, Homebrew, Scoop and npm; winget submitted\",
+       \"details\": \"Antigravity Notifier CLI on GitHub (touch-tap/antigravity-notifier), install.sh/ps1, Homebrew, Scoop and npm (winget not submitted). Default server api.antigravitynotifier.com; cross-promotes Claude Code Notifier and Notifier for Codex.\",
        \"version\": \"0.1.0\"}"
 ```
 
-Afterwards: `antigravity-notifier upgrade --check` on an installed copy says it is the latest. The server's
-`/api/cli/latest` still answers with ccn's release, which antigravity-notifier ignores in favour of GitHub's
-releases API until the server answers per app.
+Afterwards: `antigravity-notifier upgrade --check` on an installed copy says it is the latest. The
+server's `/api/cli/latest` answers per app (X-App antigravity: `NO_RELEASE` until this release is
+published; it may cache for up to an hour), and the engine falls back to GitHub's releases API.
