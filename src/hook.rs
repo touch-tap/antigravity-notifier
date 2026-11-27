@@ -786,7 +786,9 @@ impl Ctx {
                 .record_platforms(platforms.iter().map(String::as_str));
             let _ = self.cfg.save();
         }
-        if !status.nudge {
+        // The check above still runs where licences aren't sold: it is also how the hook learns
+        // which phone platforms are paired
+        if !status.nudge || !crate::licence::offered() {
             return None;
         }
         let since = self.cfg.paired_at.or(self.cfg.registered_at);

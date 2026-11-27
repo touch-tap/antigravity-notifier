@@ -160,7 +160,9 @@ settings:
 
 forget:
   needs_yes: "antigravity-notifier forget нужно ваше подтверждение: выполните его в терминале или добавьте --yes"
-  warning: "Это стирает этот компьютер и его подключения с сервера Antigravity Notifier, затем убирает antigravity-notifier\nиз Antigravity и удаляет здесь его учётные данные и файлы, как делает `antigravity-notifier uninstall`.\nТелефоны, подключённые к этому компьютеру, увидят, что он исчез.\nЛицензия, купленная на сайте, не отменяется: сделайте это на %{licence_url}\nчерез \"Стереть мою лицензию\"."
+  warning: "Это стирает этот компьютер и его подключения с сервера Antigravity Notifier, затем убирает antigravity-notifier\nиз Antigravity и удаляет здесь его учётные данные и файлы, как делает `antigravity-notifier uninstall`.\nТелефоны, подключённые к этому компьютеру, увидят, что он исчез."
+  # Printed under the warning only where licences are sold on the website
+  warning_licence: "Лицензия, купленная на сайте, не отменяется: сделайте это на %{licence_url}\nчерез \"Стереть мою лицензию\"."
   # Слово, которое должен ввести пользователь; `yes` принимается всегда
   yes_word: "да"
   prompt: "\nВведите %{yes}, чтобы продолжить: "

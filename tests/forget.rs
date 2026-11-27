@@ -39,9 +39,21 @@ impl Sandbox {
         self.root.join("antigravity-notifier")
     }
 
+    /// As the brand ships: no licences sold on the website (`brand::WEB_LICENCES` is off)
     fn run(&self, server: &str, args: &[&str]) -> Output {
+        self.run_with_licences(server, args, false)
+    }
+
+    /// As a brand that sells web licences behaves (ccn, codex-notifier, and this one if the
+    /// switch is ever turned on)
+    fn run_selling_licences(&self, server: &str, args: &[&str]) -> Output {
+        self.run_with_licences(server, args, true)
+    }
+
+    fn run_with_licences(&self, server: &str, args: &[&str], sold: bool) -> Output {
         Command::new(env!("CARGO_BIN_EXE_antigravity-notifier"))
             .args(args)
+            .env("ANTIGRAVITY_NOTIFIER_TEST_WEB_LICENCES", if sold { "1" } else { "0" })
             .env("HOME", &self.root)
             .env("ANTIGRAVITY_NOTIFIER_HOME", self.app_dir())
             .env("ANTIGRAVITY_NOTIFIER_GEMINI_HOME", self.root.join("gemini"))
@@ -143,9 +155,24 @@ fn erases_on_the_server_then_removes_everything_local() {
         stdout.contains("Erased this computer and its pairings from the server."),
         "{stdout}"
     );
-    assert!(stdout.contains("Erase my licence"), "{stdout}");
+    // No licences are sold for this brand, so nothing says a word about one
+    assert!(!stdout.to_lowercase().contains("licence"), "{stdout}");
     assert!(!sandbox.app_dir().exists());
     assert!(settings_hooks_gone(&sandbox));
+}
+
+#[test]
+fn where_licences_are_sold_forget_says_how_to_erase_one() {
+    let sandbox = Sandbox::new("ok-licences");
+    let (url, server) = fake_server(200, r#"{"success":true,"data":{"deleted":true}}"#);
+    let out = sandbox.run_selling_licences(&url, &["forget", "--yes"]);
+    server.join().unwrap();
+    assert!(out.status.success(), "{}", text(&out.stderr));
+    let stdout = text(&out.stdout);
+    assert!(
+        stdout.contains("antigravitynotifier.com/licence") && stdout.contains("Erase my licence"),
+        "{stdout}"
+    );
 }
 
 /// The OS language (or `ANTIGRAVITY_NOTIFIER_LANG`) reaches the server as `Accept-Language`, mapped onto one of
@@ -273,7 +300,7 @@ fn walk(dir: &Path) -> Vec<String> {
 #[test]
 fn uninstall_offline_says_the_licence_slot_was_not_freed() {
     let sandbox = Sandbox::new("uninstall-offline");
-    let out = sandbox.run(&unreachable_url(), &["uninstall"]);
+    let out = sandbox.run_selling_licences(&unreachable_url(), &["uninstall"]);
     assert!(out.status.success(), "{}", text(&out.stderr));
     let stderr = text(&out.stderr);
     assert!(
@@ -293,12 +320,24 @@ fn uninstall_offline_says_the_licence_slot_was_not_freed() {
     assert!(exe.exists());
 }
 
+/// No licences are sold for this brand: uninstall, even offline, has no slot to talk about.
+#[test]
+fn uninstall_says_nothing_of_licences_where_none_are_sold() {
+    let sandbox = Sandbox::new("uninstall-plain");
+    let out = sandbox.run(&unreachable_url(), &["uninstall"]);
+    assert!(out.status.success(), "{}", text(&out.stderr));
+    let said = format!("{}{}", text(&out.stdout), text(&out.stderr)).to_lowercase();
+    assert!(!said.contains("licence") && !said.contains("unlock"), "{said}");
+    assert!(!sandbox.app_dir().exists());
+    assert!(settings_hooks_gone(&sandbox));
+}
+
 /// A server that has already forgotten the computer has no slot for it: nothing to report.
 #[test]
 fn uninstall_after_the_server_forgot_the_computer_is_quiet_about_the_slot() {
     let sandbox = Sandbox::new("uninstall-gone");
     let (url, server) = fake_server(401, r#"{"error":{"code":"UNAUTHORIZED","message":"no"}}"#);
-    let out = sandbox.run(&url, &["uninstall"]);
+    let out = sandbox.run_selling_licences(&url, &["uninstall"]);
     let request = server.join().unwrap();
     assert!(
         request.starts_with("POST /api/clients/me/licence/deactivate "),

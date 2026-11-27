@@ -74,7 +74,7 @@ enum Command {
     },
     #[command(about = t!("cli.sync.about").to_string())]
     Sync,
-    #[command(alias = "buy", about = t!("cli.unlock.about").to_string())]
+    #[command(alias = "buy", hide = !brand::WEB_LICENCES, about = t!("cli.unlock.about").to_string())]
     Unlock {
         #[arg(long, help = t!("cli.unlock.lifetime").to_string())]
         lifetime: bool,
@@ -89,16 +89,16 @@ enum Command {
         #[arg(long, hide = true)]
         background: bool,
     },
-    #[command(about = t!("cli.activate.about").to_string())]
+    #[command(hide = !brand::WEB_LICENCES, about = t!("cli.activate.about").to_string())]
     Activate {
         #[arg(help = t!("cli.activate.key").to_string())]
         key: String,
         #[arg(long, help = t!("cli.activate.replace").to_string())]
         replace: Option<String>,
     },
-    #[command(about = t!("cli.deactivate.about").to_string())]
+    #[command(hide = !brand::WEB_LICENCES, about = t!("cli.deactivate.about").to_string())]
     Deactivate,
-    #[command(alias = "license", about = t!("cli.licence.about").to_string())]
+    #[command(alias = "license", hide = !brand::WEB_LICENCES, about = t!("cli.licence.about").to_string())]
     Licence,
     #[command(about = t!("cli.uninstall.about").to_string())]
     Uninstall,
@@ -360,6 +360,37 @@ mod tests {
         let help = cmd.render_help().to_string();
         assert!(!help.contains("Print this message"), "{help}");
         assert!(help.contains("--version"), "{help}");
+    }
+
+    /// `brand::WEB_LICENCES` decides whether web licences are mentioned at all: in `--help`, in
+    /// the README, and in the lines other commands print.
+    #[test]
+    fn web_licences_are_mentioned_only_when_the_brand_sells_them() {
+        let mut cmd = super::localise(<super::Cli as clap::CommandFactory>::command(), true);
+        cmd.build();
+        let help = cmd.render_help().to_string();
+        let readme = include_str!("../README.md");
+        // The README's command list, and its prose about buying or managing a licence
+        let readme_commands: Vec<&str> = readme
+            .lines()
+            .filter(|line| {
+                ["unlock", "activate", "web licence", "licence nudge", "/licence"]
+                    .iter()
+                    .any(|word| line.contains(word))
+            })
+            .collect();
+        for name in ["unlock", "activate", "deactivate", "licence"] {
+            let listed = help.lines().any(|line| line.trim_start().starts_with(name));
+            assert_eq!(listed, crate::brand::WEB_LICENCES, "`{name}` in --help:\n{help}");
+            // Hidden is not removed: the command still parses, so the switch is the only change
+            assert!(cmd.find_subcommand(name).is_some(), "{name}");
+        }
+        assert_eq!(
+            !readme_commands.is_empty(),
+            crate::brand::WEB_LICENCES,
+            "README lines about web licences: {readme_commands:#?}"
+        );
+        assert_eq!(crate::licence::offered(), crate::brand::WEB_LICENCES);
     }
 
     #[test]

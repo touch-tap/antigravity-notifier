@@ -443,6 +443,9 @@ pub fn list_phones(cfg: &mut Config, api: &Api) -> Result<Vec<api::PairedDevice>
 /// After pairing, the one place the web licence is offered with its price. The server decides
 /// whether there is an offer and what it costs; an older server sends none.
 fn licence_pitch(api: &Api) {
+    if !licence::offered() {
+        return;
+    }
     let Ok(status) = api.licence_status(Duration::from_secs(5)) else {
         return;
     };
@@ -1055,7 +1058,13 @@ pub fn forget(yes: bool) -> Result<()> {
     if !yes && !std::io::stdin().is_terminal() {
         bail!("{}", t!("forget.needs_yes"));
     }
-    println!("{}", t!("forget.warning", licence_url = crate::brand::licence_page()));
+    println!("{}", t!("forget.warning"));
+    if licence::offered() {
+        println!(
+            "{}",
+            t!("forget.warning_licence", licence_url = crate::brand::licence_page())
+        );
+    }
     if !yes {
         let yes_word = t!("forget.yes_word");
         print!("{}", t!("forget.prompt", yes = yes_word));
@@ -1100,7 +1109,13 @@ fn remove_local(revoke_on_server: bool) -> Result<()> {
     if revoke_on_server && cfg.is_paired() {
         let api = Api::new(&cfg);
         // Free the licence slot first, so a reinstall (which is a new computer) doesn't find it taken
-        match api.deactivate_licence() {
+        // (no slot can be held where licences aren't sold, and nothing should say otherwise)
+        let freed = if licence::offered() {
+            api.deactivate_licence()
+        } else {
+            Ok(false)
+        };
+        match freed {
             Ok(true) => println!("{}", t!("uninstall.slot_freed")),
             // No licence, or the server had already forgotten this computer: no slot to free
             Ok(false) => {}

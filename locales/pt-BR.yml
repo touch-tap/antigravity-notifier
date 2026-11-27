@@ -160,7 +160,9 @@ settings:
 
 forget:
   needs_yes: "antigravity-notifier forget precisa de um sim seu: rode em um terminal, ou adicione --yes"
-  warning: "Isto apaga este computador e seus pareamentos do servidor do Antigravity Notifier, depois\nremove o antigravity-notifier do Antigravity e exclui suas credenciais e arquivos aqui, como faz `antigravity-notifier uninstall`.\nOs celulares pareados com este computador vão vê-lo desaparecer.\nUma licença comprada no site não é cancelada: faça isso em %{licence_url}\ncom \"Apagar minha licença\"."
+  warning: "Isto apaga este computador e seus pareamentos do servidor do Antigravity Notifier, depois\nremove o antigravity-notifier do Antigravity e exclui suas credenciais e arquivos aqui, como faz `antigravity-notifier uninstall`.\nOs celulares pareados com este computador vão vê-lo desaparecer."
+  # Printed under the warning only where licences are sold on the website
+  warning_licence: "Uma licença comprada no site não é cancelada: faça isso em %{licence_url}\ncom \"Apagar minha licença\"."
   # A palavra que o usuário precisa digitar; `yes` também é sempre aceito
   yes_word: "sim"
   prompt: "\nDigite %{yes} para continuar: "

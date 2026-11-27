@@ -160,7 +160,9 @@ settings:
 
 forget:
   needs_yes: "antigravity-notifier forget potrzebuje Twojego potwierdzenia: uruchom je w terminalu albo dodaj --yes"
-  warning: "To usuwa ten komputer i jego parowania z serwera Antigravity Notifier, potem usuwa antigravity-notifier\nz Antigravity i kasuje tu jego dane logowania i pliki, tak jak `antigravity-notifier uninstall`.\nTelefony sparowane z tym komputerem zobaczą, że znika.\nLicencja kupiona na stronie nie zostaje anulowana: zrób to na %{licence_url}\nprzez \"Usuń moją licencję\"."
+  warning: "To usuwa ten komputer i jego parowania z serwera Antigravity Notifier, potem usuwa antigravity-notifier\nz Antigravity i kasuje tu jego dane logowania i pliki, tak jak `antigravity-notifier uninstall`.\nTelefony sparowane z tym komputerem zobaczą, że znika."
+  # Printed under the warning only where licences are sold on the website
+  warning_licence: "Licencja kupiona na stronie nie zostaje anulowana: zrób to na %{licence_url}\nprzez \"Usuń moją licencję\"."
   # Słowo, które użytkownik musi wpisać; `yes` jest zawsze przyjmowane również
   yes_word: "tak"
   prompt: "\nWpisz %{yes}, aby kontynuować: "

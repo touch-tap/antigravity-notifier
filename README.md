@@ -15,9 +15,9 @@ CLI with a stand-in server (`tests/fixtures/` holds its payloads). It has not ye
 real server, which does not know this client yet.
 
 From codex-notifier and ccn it carries: 17 languages (`locales/`), desktop notifications before
-any phone is paired (local mode), `upgrade`, web licences (`unlock`, `activate`, `deactivate`,
-`licence`), holding only when presence can be detected, atomic config writes and install-source
-tracking.
+any phone is paired (local mode), `upgrade`, holding only when presence can be detected, atomic
+config writes and install-source tracking. Purchases are made in the phone apps; nothing is sold
+from the terminal.
 
 ### Before a release
 
@@ -28,17 +28,15 @@ Every address and identity the binary uses is in `src/brand.rs`.
 - **API host.** The default server is `https://api.antigravitynotifier.com`, the shared Worker
   under this product's domain (mainland China can't reach `*.workers.dev`). A config that saved
   the workers.dev address reads as the default.
-- **Website.** `antigravitynotifier.com` is live, including `/cli`, `/licence`, `/get`,
+- **Website.** `antigravitynotifier.com` is live, including `/cli`, `/get`,
   `install.sh` and `install.ps1` (byte-for-byte the copies in `install/`).
 - **Release repository.** `touch-tap/antigravity-notifier` is not created yet, so `upgrade` finds
   nothing; nor are the Homebrew formula, the Scoop manifest or the npm packages
   (`@touchtap/antigravity-notifier`). `scripts/first-release-checklist.md` creates them.
 - **Update signing key.** Antigravity Notifier's own key (26 Nov 2026) is in `RELEASE_KEYS`; the
   private half is in the release Mac's keychain (RELEASING.md). Back it up.
-- **Server copy.** The server's licence nudge is still written for ccn; the engine rewrites its
-  `ccn` command and "Claude" until the server answers per app. Licence keys still read `CCN-…`.
 - **Messages in Antigravity.** The Claude Code and Codex engines show one-line notes in the
-  agent (`systemMessage`: "paired with…", the licence nudge, an update notice). Antigravity
+  agent (`systemMessage`: "paired with…", an update notice). Antigravity
   accepts that output from SessionStart but was not seen to show it or pass it to the model, so
   for now those notes reach the user only where they are also desktop notifications.
 - **Cross-promotion.** Someone who also has Claude Code and not ccn is told about Claude Code
@@ -168,7 +166,6 @@ antigravity-notifier config set KEY VAL  e.g. hold_ceiling_seconds 300, quiet_ho
 antigravity-notifier sync                pull settings from the server now
 antigravity-notifier setup               reinstall the hooks (after moving the binary)
 antigravity-notifier upgrade [--check]   update to the latest release (also checked once a day in the background)
-antigravity-notifier unlock [--lifetime] buy a web licence for this computer; activate/deactivate/licence manage it
 antigravity-notifier uninstall           remove hooks, pairings, credentials and local state
 antigravity-notifier forget [--yes]      erase this computer and its pairings from the server, then uninstall
 ```
@@ -203,8 +200,7 @@ after 20 answers from the phone, a desktop notification asks for an app-store ra
 `antigravity-notifier pair` and the other commands people type send a few anonymous events (pairing
 started, paired or failed with a short reason; how and from where it was installed; the OS and
 processor; `agent: antigravity`). The background updater sends `cli_updated` or `cli_update_failed`, and
-the one hook that sends anything is SessionStart, when it shows a licence nudge (at most once a
-day) or the ccn suggestion or rating request (`cli_cross_promo_shown`, `cli_rate_prompt_shown`, sent by a detached process so nothing waits). Nothing about your sessions, prompts or computer name is included. Set
+the one hook that sends anything is SessionStart, when it shows the ccn suggestion or rating request (`cli_cross_promo_shown`, `cli_rate_prompt_shown`, sent by a detached process so nothing waits). Nothing about your sessions, prompts or computer name is included. Set
 `ANTIGRAVITY_NOTIFIER_NO_ANALYTICS=1` or `DO_NOT_TRACK=1` to turn them off.
 
 ## Development

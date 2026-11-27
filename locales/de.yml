@@ -161,7 +161,9 @@ settings:
 
 forget:
   needs_yes: "antigravity-notifier forget braucht ein Ja von dir: führe es in einem Terminal aus oder ergänze --yes"
-  warning: "Das löscht diesen Computer und seine Kopplungen vom Server von Antigravity Notifier, entfernt dann\nantigravity-notifier aus Antigravity und löscht seine Zugangsdaten und Dateien hier, wie `antigravity-notifier uninstall`.\nHandys, die mit diesem Computer gekoppelt sind, sehen ihn verschwinden.\nEine auf der Website gekaufte Lizenz wird nicht gekündigt: das geht auf\n%{licence_url} mit \"Erase my licence\"."
+  warning: "Das löscht diesen Computer und seine Kopplungen vom Server von Antigravity Notifier, entfernt dann\nantigravity-notifier aus Antigravity und löscht seine Zugangsdaten und Dateien hier, wie `antigravity-notifier uninstall`.\nHandys, die mit diesem Computer gekoppelt sind, sehen ihn verschwinden."
+  # Printed under the warning only where licences are sold on the website
+  warning_licence: "Eine auf der Website gekaufte Lizenz wird nicht gekündigt: das geht auf\n%{licence_url} mit \"Erase my licence\"."
   # Das Wort, das der Nutzer tippen muss; `yes` wird immer auch akzeptiert
   yes_word: "ja"
   prompt: "\nTippe %{yes}, um fortzufahren: "
