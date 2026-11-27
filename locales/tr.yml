@@ -210,6 +210,13 @@ cross_promo:
   pair_scan: "Uygulamayı almak için tarayın, ardından bu bilgisayarı tek komutla kurun:"
   pair_steps: "Uygulamayı indirin, ardından bu bilgisayarı tek komutla kurun:"
 
+cross_promo_codex:
+  line: "Codex bulundu: Notifier for Codex uygulamasıyla (iPhone ve Android) Codex'in onay isteklerini ve sorularını da telefonunuza alın. Bu bilgisayarı tek komutla kurun: %{command}  ·  %{url}"
+  notification: "Codex bulundu: Notifier for Codex uygulamasıyla Codex'in onay isteklerini de telefonunuza alın."
+  pair_title: "Codex bulundu: Notifier for Codex uygulamasıyla (iPhone ve Android) Codex'in onay isteklerini ve sorularını da telefonunuza alın."
+  pair_scan: "Uygulamayı almak için tarayın, ardından bu bilgisayarı tek komutla kurun:"
+  pair_steps: "Uygulamayı indirin, ardından bu bilgisayarı tek komutla kurun:"
+
 # The push when a tool call that was allowed with the user at the keyboard is still open after
 # they walked away (walkaway.rs). %{summary} is the command or file; it can't be approved from the phone.
 walkaway:

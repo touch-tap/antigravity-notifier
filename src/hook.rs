@@ -1507,14 +1507,15 @@ mod tests {
     #[test]
     fn antigravity_wording_never_touches_the_ccn_suggestion() {
         // antigravity_wording would turn the line into nonsense about Antigravity...
-        let line = crate::crosspromo::line();
+        let ccn = crate::crosspromo::Sister::ClaudeCode;
+        let line = ccn.line();
         let rewritten = antigravity_wording(api::NudgeMessage {
             id: String::new(),
             kind: String::new(),
             variant: String::new(),
             title: String::new(),
             body: line.clone(),
-            command: crate::crosspromo::command().into(),
+            command: ccn.command().into(),
         });
         assert_ne!(rewritten.body, line);
         // ...so the SessionStart message is the line as written, naming Claude Code and ccn
@@ -1525,14 +1526,16 @@ mod tests {
         let places = crate::crosspromo::Places {
             claude_dir: dir.join(".claude"),
             ccn_dir: dir.join("ccn"),
+            codex_dir: dir.join(".codex"),
+            codex_notifier_dir: dir.join("codex-notifier"),
             path: None,
         };
         let mut cfg = Config::default();
         cfg.paired_at = Some(0);
-        let shown = crate::crosspromo::session_line(&mut cfg, 10 * DAY, &places).unwrap();
+        let (_, shown) = crate::crosspromo::session_line(&mut cfg, 10 * DAY, &places).unwrap();
         assert_eq!(shown, line);
         assert!(shown.contains("Claude Code approvals"), "{shown}");
-        assert!(shown.contains(crate::crosspromo::command()), "{shown}");
+        assert!(shown.contains(ccn.command()), "{shown}");
         assert!(!shown.contains("Antigravity"), "{shown}");
     }
 

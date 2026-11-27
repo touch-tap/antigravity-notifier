@@ -207,6 +207,13 @@ cross_promo:
   pair_scan: "掃描以取得應用程式，然後用一個指令設定這台電腦："
   pair_steps: "取得應用程式，然後用一個指令設定這台電腦："
 
+cross_promo_codex:
+  line: "偵測到 Codex：用 Notifier for Codex 應用程式（iPhone 和 Android），Codex 的核准請求和提問也能傳到你的手機。一個指令即可設定這台電腦：%{command}  ·  %{url}"
+  notification: "偵測到 Codex：用 Notifier for Codex 應用程式，Codex 的核准請求也能傳到你的手機。"
+  pair_title: "偵測到 Codex：用 Notifier for Codex 應用程式（iPhone 和 Android），Codex 的核准請求和提問也能傳到你的手機。"
+  pair_scan: "掃描以取得應用程式，然後用一個指令設定這台電腦："
+  pair_steps: "取得應用程式，然後用一個指令設定這台電腦："
+
 # The push when a tool call that was allowed with the user at the keyboard is still open after
 # they walked away (walkaway.rs). %{summary} is the command or file; it can't be approved from the phone.
 walkaway:

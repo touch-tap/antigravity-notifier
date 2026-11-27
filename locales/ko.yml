@@ -207,6 +207,13 @@ cross_promo:
   pair_scan: "스캔해서 앱을 받은 다음, 명령 하나로 이 컴퓨터를 설정하세요:"
   pair_steps: "앱을 받은 다음, 명령 하나로 이 컴퓨터를 설정하세요:"
 
+cross_promo_codex:
+  line: "Codex가 감지되었습니다. Notifier for Codex 앱(iPhone, Android)으로 Codex의 승인 요청과 질문도 휴대폰으로 받으세요. 이 컴퓨터는 명령 하나로 설정됩니다: %{command}  ·  %{url}"
+  notification: "Codex가 감지되었습니다. Notifier for Codex 앱으로 Codex의 승인 요청도 휴대폰으로 받으세요."
+  pair_title: "Codex가 감지되었습니다. Notifier for Codex 앱(iPhone, Android)으로 Codex의 승인 요청과 질문도 휴대폰으로 받으세요."
+  pair_scan: "스캔해서 앱을 받은 다음, 명령 하나로 이 컴퓨터를 설정하세요:"
+  pair_steps: "앱을 받은 다음, 명령 하나로 이 컴퓨터를 설정하세요:"
+
 # The push when a tool call that was allowed with the user at the keyboard is still open after
 # they walked away (walkaway.rs). %{summary} is the command or file; it can't be approved from the phone.
 walkaway:

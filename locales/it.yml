@@ -208,6 +208,13 @@ cross_promo:
   pair_scan: "Scansiona per scaricare l'app, poi configura questo computer con un solo comando:"
   pair_steps: "Scarica l'app, poi configura questo computer con un solo comando:"
 
+cross_promo_codex:
+  line: "Codex rilevato: ricevi anche sul telefono le approvazioni e le domande di Codex, con l'app Notifier for Codex (iPhone e Android). Configura questo computer con un solo comando: %{command}  ·  %{url}"
+  notification: "Codex rilevato: ricevi anche sul telefono le approvazioni di Codex, con l'app Notifier for Codex."
+  pair_title: "Codex rilevato: ricevi anche sul telefono le approvazioni e le domande di Codex, con l'app Notifier for Codex (iPhone e Android)."
+  pair_scan: "Scansiona per scaricare l'app, poi configura questo computer con un solo comando:"
+  pair_steps: "Scarica l'app, poi configura questo computer con un solo comando:"
+
 # The push when a tool call that was allowed with the user at the keyboard is still open after
 # they walked away (walkaway.rs). %{summary} is the command or file; it can't be approved from the phone.
 walkaway:

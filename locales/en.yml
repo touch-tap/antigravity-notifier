@@ -209,6 +209,14 @@ cross_promo:
   pair_scan: "Scan for the app, then set up this computer with one command:"
   pair_steps: "Get the app, then set up this computer with one command:"
 
+# The same for Notifier for Codex, to someone with OpenAI's Codex CLI and not codex-notifier
+cross_promo_codex:
+  line: "Codex detected — get Codex approvals and questions on your phone too, with the Notifier for Codex app (iPhone and Android). Set up this computer with one command: %{command}  ·  %{url}"
+  notification: "Codex detected — get Codex approvals on your phone too, with the Notifier for Codex app."
+  pair_title: "Codex detected — get Codex approvals and questions on your phone too, with the Notifier for Codex app (iPhone and Android)."
+  pair_scan: "Scan for the app, then set up this computer with one command:"
+  pair_steps: "Get the app, then set up this computer with one command:"
+
 # The push when a tool call that was allowed with the user at the keyboard is still open after
 # they walked away (walkaway.rs). %{summary} is the command or file; it can't be approved from the phone.
 walkaway:

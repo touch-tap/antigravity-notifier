@@ -210,6 +210,13 @@ cross_promo:
   pair_scan: "Quét để tải ứng dụng, rồi thiết lập máy tính này bằng một lệnh:"
   pair_steps: "Tải ứng dụng, rồi thiết lập máy tính này bằng một lệnh:"
 
+cross_promo_codex:
+  line: "Đã phát hiện Codex — nhận cả yêu cầu phê duyệt và câu hỏi của Codex trên điện thoại, với ứng dụng Notifier for Codex (iPhone và Android). Thiết lập máy tính này bằng một lệnh: %{command}  ·  %{url}"
+  notification: "Đã phát hiện Codex — nhận cả yêu cầu phê duyệt của Codex trên điện thoại, với ứng dụng Notifier for Codex."
+  pair_title: "Đã phát hiện Codex — nhận cả yêu cầu phê duyệt và câu hỏi của Codex trên điện thoại, với ứng dụng Notifier for Codex (iPhone và Android)."
+  pair_scan: "Quét để tải ứng dụng, rồi thiết lập máy tính này bằng một lệnh:"
+  pair_steps: "Tải ứng dụng, rồi thiết lập máy tính này bằng một lệnh:"
+
 # The push when a tool call that was allowed with the user at the keyboard is still open after
 # they walked away (walkaway.rs). %{summary} is the command or file; it can't be approved from the phone.
 walkaway:

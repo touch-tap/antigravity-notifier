@@ -43,8 +43,10 @@ Every address and identity the binary uses is in `src/brand.rs`.
   agent (`systemMessage`: "paired with…", the licence nudge, an update notice). Antigravity
   accepts that output from SessionStart but was not seen to show it or pass it to the model, so
   for now those notes reach the user only where they are also desktop notifications.
-- **Cross-promotion.** Someone who also has Claude Code is told about Claude Code Notifier (as
-  codex-notifier does, with `ref=antigravity-*` tags). Nothing promotes Notifier for Codex yet.
+- **Cross-promotion.** Someone who also has Claude Code and not ccn is told about Claude Code
+  Notifier; someone with Codex and not codex-notifier about Notifier for Codex (Claude Code
+  Notifier first when both qualify; two SessionStart mentions in all). Links carry
+  `ref=antigravity-cli`, `-pair` and `-notification`.
 - **Not measured:** Antigravity's desktop app and IDE (they share the hooks file), Windows and
   Linux, and holds longer than 600 s.
 

@@ -211,6 +211,13 @@ cross_promo:
   pair_scan: "סרקו כדי להוריד את האפליקציה, ואז הגדירו את המחשב הזה בפקודה אחת:"
   pair_steps: "הורידו את האפליקציה, ואז הגדירו את המחשב הזה בפקודה אחת:"
 
+cross_promo_codex:
+  line: "זוהה Codex — קבלו גם את האישורים והשאלות של Codex בטלפון, עם האפליקציה Notifier for Codex (iPhone ו-Android). הגדירו את המחשב הזה בפקודה אחת: %{command}  ·  %{url}"
+  notification: "זוהה Codex — קבלו גם את האישורים של Codex בטלפון, עם האפליקציה Notifier for Codex."
+  pair_title: "זוהה Codex — קבלו גם את האישורים והשאלות של Codex בטלפון, עם האפליקציה Notifier for Codex (iPhone ו-Android)."
+  pair_scan: "סרקו כדי להוריד את האפליקציה, ואז הגדירו את המחשב הזה בפקודה אחת:"
+  pair_steps: "הורידו את האפליקציה, ואז הגדירו את המחשב הזה בפקודה אחת:"
+
 # The push when a tool call that was allowed with the user at the keyboard is still open after
 # they walked away (walkaway.rs). %{summary} is the command or file; it can't be approved from the phone.
 walkaway:

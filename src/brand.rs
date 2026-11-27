@@ -48,3 +48,18 @@ pub mod claude_code {
     pub const NOTIFICATION_URL: &str =
         "https://claudecodenotifier.com/?ref=antigravity-notification";
 }
+
+/// Our sister app for OpenAI's Codex CLI (Notifier for Codex, computer side codex-notifier), which
+/// crosspromo.rs suggests to someone who uses Codex and not Claude Code. These are live; only the
+/// `ref` tags are new. Its install scripts end in `codex-notifier pair`, as ccn's do.
+pub mod codex {
+    pub const UNIX_COMMAND: &str = "curl -fsSL https://notifierforcodex.com/install.sh | sh";
+    pub const WINDOWS_COMMAND: &str =
+        "irm https://notifierforcodex.com/install.ps1 | iex; codex-notifier pair";
+    /// The website, whose buttons take a phone to the App Store or Google Play
+    pub const URL: &str = "https://notifierforcodex.com/?ref=antigravity-cli";
+    /// The QR code and link after `antigravity-notifier pair`
+    pub const PAIR_URL: &str = "https://notifierforcodex.com/get?ref=antigravity-pair";
+    /// Where a click on the SessionStart notification goes
+    pub const NOTIFICATION_URL: &str = "https://notifierforcodex.com/?ref=antigravity-notification";
+}
