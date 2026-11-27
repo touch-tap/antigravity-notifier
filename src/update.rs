@@ -11,10 +11,10 @@
 //! for the hook to return as its output. `antigravity-notifier config set auto_update off` or
 //! `ANTIGRAVITY_NOTIFIER_NO_AUTO_UPDATE=1` turns all of this off.
 //!
-//! Where the latest version comes from: `GET {server}/api/cli/latest` when its reply lists
-//! antigravity-notifier's archives (today it only knows ccn's, so it never does), falling back to the
-//! GitHub releases API. The assets are the ones a release workflow (ccn's release.yml, not yet
-//! carried over) publishes under the
+//! Where the latest version comes from: `GET {server}/api/cli/latest`, which answers per app
+//! (`X-App`), when its reply lists antigravity-notifier's archives, falling back to the GitHub
+//! releases API. The assets are the ones the Release workflow (.github/workflows/release.yml)
+//! publishes under the
 //! release's `downloadBase`: `antigravity-notifier-<triple>.tar.gz` (Unix) or `antigravity-notifier-<triple>.zip` (Windows), plus
 //! `SHA256SUMS`. That base is pinned to this repository's GitHub releases over https whatever the
 //! server says (`ANTIGRAVITY_NOTIFIER_DOWNLOAD_BASE` overrides it for tests), because SHA256SUMS comes from the same
@@ -791,10 +791,10 @@ fn latest_from_server(v: &Value) -> Result<Latest> {
             "update: ignoring the server's downloadBase {base:?}; using {download_base}"
         ));
     }
-    // One Worker serves Claude Code Notifier and Antigravity Notifier, and (Nov 2026) its
-    // /api/cli/latest only knows ccn's releases. A reply that doesn't list antigravity-notifier's
-    // archives is someone else's release, so GitHub is asked instead.
-    // TODO: drop this once the server answers per app (X-App or clientKind antigravity_cli).
+    // One Worker serves Claude Code Notifier, Notifier for Codex and Antigravity Notifier, and
+    // answers /api/cli/latest per app (X-App). A reply that doesn't list antigravity-notifier's
+    // archives is still someone else's release (an older or misconfigured server), so GitHub is
+    // asked instead.
     let assets = asset_list(&v["assets"], |a| a.as_str());
     if !assets
         .as_ref()
