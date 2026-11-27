@@ -1,6 +1,6 @@
 [package]
 name = "antigravity-notifier"
-version = "0.1.0"
+version = "0.1.1"
 description = "Antigravity Notifier in the terminal: a push on your phone when Google Antigravity finishes or needs you, and answers from there"
 edition = "2024"
 license-file = "LICENSE.md"

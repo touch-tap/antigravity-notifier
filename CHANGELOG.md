@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.1.1
+
+- **Windows: a tool call allowed at the keyboard could hang for up to 15 minutes.** On a paired
+  PC the hook answered at once but the walk-away watcher it starts kept the hook's output open,
+  so Antigravity went on waiting for the hook until the watcher gave up. The background update
+  check and the anonymous setup events were started the same way and could hold a hook for as
+  long as they ran. All three now start with none of the hook's handles. macOS and Linux were
+  not affected. If you installed 0.1.0 on Windows, run `antigravity-notifier upgrade`.
+- A Scoop install is recognised: `upgrade` says `scoop update antigravity-notifier` instead of
+  replacing Scoop's copy, and `uninstall` says `scoop uninstall antigravity-notifier`.
+- No web licences for Antigravity Notifier: `unlock`, `activate`, `deactivate` and `licence` are
+  no longer listed in `--help`, and nothing mentions them after pairing, in `status`, `doctor`,
+  `forget` or `uninstall`, or at session start. Purchases are made in the phone apps.
+- The install scripts send their anonymous install event to `api.antigravitynotifier.com`, as the
+  binary does (they used a `workers.dev` address that mainland China cannot reach).
+- README brought up to date. The phone apps are still in App Store and Google Play review.
+
 ## 0.1.0 (first public release)
 
 Antigravity Notifier in the terminal: phone notifications and approvals for Google Antigravity's
