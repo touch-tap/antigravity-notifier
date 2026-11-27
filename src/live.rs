@@ -67,9 +67,11 @@ pub fn line_delta(old: &str, new: &str) -> (u64, u64) {
         .count();
     let old = &old[head..old.len() - tail];
     let new = &new[head..new.len() - tail];
-    let common = if old.is_empty() || new.is_empty() {
-        0
-    } else if old.len().saturating_mul(new.len()) > MAX_DIFF_CELLS {
+    // Nothing in common when one side is empty, and not worth measuring when the table is too big
+    let common = if old.is_empty()
+        || new.is_empty()
+        || old.len().saturating_mul(new.len()) > MAX_DIFF_CELLS
+    {
         0
     } else {
         common_lines(old, new)
