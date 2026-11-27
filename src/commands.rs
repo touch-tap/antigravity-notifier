@@ -1139,13 +1139,18 @@ fn remove_local(revoke_on_server: bool) -> Result<()> {
 }
 
 /// The command that removes the antigravity-notifier binary, for the way it was installed. Uninstall leaves the
-/// binary to its owner: Homebrew and npm would otherwise still list it.
+/// binary to its owner: Homebrew, npm and Scoop would otherwise still list it.
 fn binary_removal_command() -> Option<String> {
-    // Scoop and winget have no antigravity-notifier package yet (ccn's manifests were not carried over),
-    // so those installs fall through to removing the file
-    Some(match telemetry::install_method() {
+    // winget has no antigravity-notifier package (never submitted), so such an install falls
+    // through to removing the file
+    removal_command_for(telemetry::install_method())
+}
+
+fn removal_command_for(method: &str) -> Option<String> {
+    Some(match method {
         "homebrew" => "brew uninstall touch-tap/tap/antigravity-notifier".to_string(),
         "npm" => "npm uninstall -g @touchtap/antigravity-notifier".to_string(),
+        "scoop" => "scoop uninstall antigravity-notifier".to_string(),
         // The install scripts, npx (whose copy went into the user's bin directory) and anything
         // else: the file the hooks ran
         _ => {
@@ -1162,6 +1167,22 @@ fn binary_removal_command() -> Option<String> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn a_package_managers_binary_is_removed_by_the_package_manager() {
+        assert_eq!(
+            removal_command_for("scoop").as_deref(),
+            Some("scoop uninstall antigravity-notifier")
+        );
+        assert_eq!(
+            removal_command_for("homebrew").as_deref(),
+            Some("brew uninstall touch-tap/tap/antigravity-notifier")
+        );
+        assert_eq!(
+            removal_command_for("npm").as_deref(),
+            Some("npm uninstall -g @touchtap/antigravity-notifier")
+        );
+    }
 
     #[test]
     fn code_lifetimes_read_naturally() {
