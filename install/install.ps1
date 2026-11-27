@@ -29,7 +29,7 @@ function Send-SetupEvent([string]$name, [hashtable]$properties = @{}) {
         context = @{ platform = 'cli'; deviceModel = "windows-$arch"; environment = 'production' }
         events = @(@{ name = $name; properties = $properties })
     } | ConvertTo-Json -Depth 5 -Compress
-    $server = if ($env:ANTIGRAVITY_NOTIFIER_SERVER_URL) { $env:ANTIGRAVITY_NOTIFIER_SERVER_URL } else { 'https://ccnotifier-api.touchtap.workers.dev' }
+    $server = if ($env:ANTIGRAVITY_NOTIFIER_SERVER_URL) { $env:ANTIGRAVITY_NOTIFIER_SERVER_URL } else { 'https://api.antigravitynotifier.com' }
     try { Invoke-RestMethod -Method Post -Uri "$server/api/events" -ContentType 'application/json' -Headers @{ 'X-App' = 'antigravity' } -Body $body -TimeoutSec 3 | Out-Null } catch { }
 }
 
